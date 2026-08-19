@@ -1,0 +1,9 @@
+targets:
+  $default:
+    builders:
+      drift_dev:
+        options:
+          # ISO-8601 text keeps timestamps readable in a raw database dump and
+          # makes the planned JSON export a straight copy of the column.
+          store_date_time_values_as_text: true
+          named_parameters: true
