@@ -4,6 +4,7 @@ import '../app_database.dart';
 import '../tables/pedalboard_slots_table.dart';
 import '../tables/pedalboards_table.dart';
 import '../tables/pedals_table.dart';
+import '../tables/rig_snapshots_table.dart';
 
 part 'pedalboard_dao.g.dart';
 
@@ -15,7 +16,7 @@ typedef ChainSlot = ({PedalboardSlot slot, Pedal pedal});
 /// Timestamps, validation and error translation belong to
 /// `PedalboardRepository` and `RigChainRepository`; this class only reads and
 /// writes rows.
-@DriftAccessor(tables: [Pedalboards, PedalboardSlots, Pedals])
+@DriftAccessor(tables: [Pedalboards, PedalboardSlots, Pedals, RigSnapshots])
 class PedalboardDao extends DatabaseAccessor<AppDatabase>
     with _$PedalboardDaoMixin {
   PedalboardDao(super.attachedDatabase);
@@ -73,6 +74,21 @@ class PedalboardDao extends DatabaseAccessor<AppDatabase>
       pedalboards,
     )..where((row) => row.id.equals(pedalboardId))).go();
     return deletedRows > 0;
+  }
+
+  /// How many snapshots have been taken of this rig.
+  ///
+  /// `rig_snapshots` references a rig with RESTRICT, so this is what lets the
+  /// repository refuse a delete in words rather than leaving SQLite to raise a
+  /// constraint failure. Reading snapshots themselves is `RigSnapshotDao`'s job.
+  Future<int> countSnapshots(int pedalboardId) async {
+    final total = rigSnapshots.id.count();
+    final query = selectOnly(rigSnapshots)
+      ..addColumns([total])
+      ..where(rigSnapshots.pedalboardId.equals(pedalboardId));
+
+    final row = await query.getSingle();
+    return row.read(total) ?? 0;
   }
 
   /// One rig's chain, in signal order, with the pedal each slot holds.

@@ -13,6 +13,7 @@ import 'daos/pedal_control_dao.dart';
 import 'daos/pedal_dao.dart';
 import 'daos/pedal_replacement_dao.dart';
 import 'daos/pedalboard_dao.dart';
+import 'daos/rig_snapshot_dao.dart';
 import 'migrations.dart';
 import 'tables/change_logs_table.dart';
 import 'tables/configuration_values_table.dart';
@@ -22,6 +23,9 @@ import 'tables/pedal_replacements_table.dart';
 import 'tables/pedalboard_slots_table.dart';
 import 'tables/pedalboards_table.dart';
 import 'tables/pedals_table.dart';
+import 'tables/rig_snapshot_entries_table.dart';
+import 'tables/rig_snapshot_values_table.dart';
+import 'tables/rig_snapshots_table.dart';
 
 part 'app_database.g.dart';
 
@@ -35,6 +39,9 @@ part 'app_database.g.dart';
     PedalReplacements,
     Pedalboards,
     PedalboardSlots,
+    RigSnapshots,
+    RigSnapshotEntries,
+    RigSnapshotValues,
   ],
   daos: [
     PedalDao,
@@ -43,6 +50,7 @@ part 'app_database.g.dart';
     ChangeLogDao,
     PedalReplacementDao,
     PedalboardDao,
+    RigSnapshotDao,
   ],
 )
 class AppDatabase extends _$AppDatabase {

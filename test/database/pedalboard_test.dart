@@ -149,5 +149,27 @@ void main() {
         failsWith('That rig no longer exists.'),
       );
     });
+
+    test('refuses while snapshots of the rig are kept', () async {
+      final id = await addRig('Home Practice');
+      await database.rigSnapshotDao.insertSnapshot(
+        RigSnapshotsCompanion.insert(
+          pedalboardId: id,
+          name: 'Easter 2026',
+          capturedAt: moment,
+        ),
+      );
+
+      // Deleting the rig would take the snapshot with it, so it is refused in
+      // words rather than as a constraint failure.
+      await expectLater(
+        pedalboardRepository(database).deletePedalboard(id),
+        failsWith(
+          'This rig has 1 snapshot of how it was set up. Delete those first if '
+          'you no longer want the rig.',
+        ),
+      );
+      expect(await rig(id), isNotNull);
+    });
   });
 }

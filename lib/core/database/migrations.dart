@@ -9,7 +9,9 @@ import 'package:drift/drift.dart';
 /// - v3: change_logs.old_text and change_logs.new_text, so history can record a
 ///   rename or a status change as well as a knob that moved.
 /// - v4: pedalboard_slots, the ordered signal chain of each rig.
-const int currentSchemaVersion = 4;
+/// - v5: rig_snapshots, rig_snapshot_entries and rig_snapshot_values, a rig as
+///   it stood on one date with every reading frozen.
+const int currentSchemaVersion = 5;
 
 MigrationStrategy buildMigrationStrategy(GeneratedDatabase database) {
   return MigrationStrategy(
@@ -52,6 +54,53 @@ MigrationStrategy buildMigrationStrategy(GeneratedDatabase database) {
         await database.customStatement(
           'CREATE INDEX IF NOT EXISTS idx_pedalboard_slots_board_position '
           'ON pedalboard_slots (pedalboard_id, position)',
+        );
+      }
+
+      if (from < 5) {
+        // Again character for character what `createAll` writes, checked against
+        // a fresh database by migration_test.dart.
+        await database.customStatement(
+          'CREATE TABLE IF NOT EXISTS "rig_snapshots" ('
+          '"id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, '
+          '"pedalboard_id" INTEGER NOT NULL '
+          'REFERENCES pedalboards (id) ON DELETE RESTRICT, '
+          '"name" TEXT NOT NULL, '
+          '"notes" TEXT NULL, '
+          '"captured_at" TEXT NOT NULL)',
+        );
+        await database.customStatement(
+          'CREATE INDEX IF NOT EXISTS idx_rig_snapshots_board_captured '
+          'ON rig_snapshots (pedalboard_id, captured_at)',
+        );
+        await database.customStatement(
+          'CREATE TABLE IF NOT EXISTS "rig_snapshot_entries" ('
+          '"id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, '
+          '"snapshot_id" INTEGER NOT NULL '
+          'REFERENCES rig_snapshots (id) ON DELETE CASCADE, '
+          '"pedal_id" INTEGER NOT NULL '
+          'REFERENCES pedals (id) ON DELETE RESTRICT, '
+          '"position" INTEGER NOT NULL, '
+          '"configuration_name" TEXT NULL, '
+          'UNIQUE ("snapshot_id", "pedal_id"))',
+        );
+        await database.customStatement(
+          'CREATE INDEX IF NOT EXISTS '
+          'idx_rig_snapshot_entries_snapshot_position '
+          'ON rig_snapshot_entries (snapshot_id, position)',
+        );
+        await database.customStatement(
+          'CREATE TABLE IF NOT EXISTS "rig_snapshot_values" ('
+          '"id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, '
+          '"entry_id" INTEGER NOT NULL '
+          'REFERENCES rig_snapshot_entries (id) ON DELETE CASCADE, '
+          '"control_name" TEXT NOT NULL, '
+          '"control_type" TEXT NOT NULL, '
+          '"value" REAL NOT NULL, '
+          '"unit" TEXT NULL, '
+          '"options" TEXT NULL, '
+          '"display_order" INTEGER NOT NULL, '
+          'UNIQUE ("entry_id", "control_name"))',
         );
       }
 

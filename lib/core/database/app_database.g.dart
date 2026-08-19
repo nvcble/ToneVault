@@ -3984,6 +3984,1291 @@ class PedalboardSlotsCompanion extends UpdateCompanion<PedalboardSlot> {
   }
 }
 
+class $RigSnapshotsTable extends RigSnapshots
+    with TableInfo<$RigSnapshotsTable, RigSnapshot> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $RigSnapshotsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'PRIMARY KEY AUTOINCREMENT',
+    ),
+  );
+  static const VerificationMeta _pedalboardIdMeta = const VerificationMeta(
+    'pedalboardId',
+  );
+  @override
+  late final GeneratedColumn<int> pedalboardId = GeneratedColumn<int>(
+    'pedalboard_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES pedalboards (id) ON DELETE RESTRICT',
+    ),
+  );
+  static const VerificationMeta _nameMeta = const VerificationMeta('name');
+  @override
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+    'name',
+    aliasedName,
+    false,
+    additionalChecks: GeneratedColumn.checkTextLength(
+      minTextLength: 1,
+      maxTextLength: 80,
+    ),
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _notesMeta = const VerificationMeta('notes');
+  @override
+  late final GeneratedColumn<String> notes = GeneratedColumn<String>(
+    'notes',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _capturedAtMeta = const VerificationMeta(
+    'capturedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> capturedAt = GeneratedColumn<DateTime>(
+    'captured_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    pedalboardId,
+    name,
+    notes,
+    capturedAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'rig_snapshots';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<RigSnapshot> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('pedalboard_id')) {
+      context.handle(
+        _pedalboardIdMeta,
+        pedalboardId.isAcceptableOrUnknown(
+          data['pedalboard_id']!,
+          _pedalboardIdMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_pedalboardIdMeta);
+    }
+    if (data.containsKey('name')) {
+      context.handle(
+        _nameMeta,
+        name.isAcceptableOrUnknown(data['name']!, _nameMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_nameMeta);
+    }
+    if (data.containsKey('notes')) {
+      context.handle(
+        _notesMeta,
+        notes.isAcceptableOrUnknown(data['notes']!, _notesMeta),
+      );
+    }
+    if (data.containsKey('captured_at')) {
+      context.handle(
+        _capturedAtMeta,
+        capturedAt.isAcceptableOrUnknown(data['captured_at']!, _capturedAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_capturedAtMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  RigSnapshot map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return RigSnapshot(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      pedalboardId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}pedalboard_id'],
+      )!,
+      name: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}name'],
+      )!,
+      notes: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}notes'],
+      ),
+      capturedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}captured_at'],
+      )!,
+    );
+  }
+
+  @override
+  $RigSnapshotsTable createAlias(String alias) {
+    return $RigSnapshotsTable(attachedDatabase, alias);
+  }
+}
+
+class RigSnapshot extends DataClass implements Insertable<RigSnapshot> {
+  final int id;
+  final int pedalboardId;
+  final String name;
+  final String? notes;
+
+  /// When the rig looked like this, which is the snapshot's whole point and so
+  /// is never rewritten. The name and notes stay editable.
+  final DateTime capturedAt;
+  const RigSnapshot({
+    required this.id,
+    required this.pedalboardId,
+    required this.name,
+    this.notes,
+    required this.capturedAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['pedalboard_id'] = Variable<int>(pedalboardId);
+    map['name'] = Variable<String>(name);
+    if (!nullToAbsent || notes != null) {
+      map['notes'] = Variable<String>(notes);
+    }
+    map['captured_at'] = Variable<DateTime>(capturedAt);
+    return map;
+  }
+
+  RigSnapshotsCompanion toCompanion(bool nullToAbsent) {
+    return RigSnapshotsCompanion(
+      id: Value(id),
+      pedalboardId: Value(pedalboardId),
+      name: Value(name),
+      notes: notes == null && nullToAbsent
+          ? const Value.absent()
+          : Value(notes),
+      capturedAt: Value(capturedAt),
+    );
+  }
+
+  factory RigSnapshot.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return RigSnapshot(
+      id: serializer.fromJson<int>(json['id']),
+      pedalboardId: serializer.fromJson<int>(json['pedalboardId']),
+      name: serializer.fromJson<String>(json['name']),
+      notes: serializer.fromJson<String?>(json['notes']),
+      capturedAt: serializer.fromJson<DateTime>(json['capturedAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'pedalboardId': serializer.toJson<int>(pedalboardId),
+      'name': serializer.toJson<String>(name),
+      'notes': serializer.toJson<String?>(notes),
+      'capturedAt': serializer.toJson<DateTime>(capturedAt),
+    };
+  }
+
+  RigSnapshot copyWith({
+    int? id,
+    int? pedalboardId,
+    String? name,
+    Value<String?> notes = const Value.absent(),
+    DateTime? capturedAt,
+  }) => RigSnapshot(
+    id: id ?? this.id,
+    pedalboardId: pedalboardId ?? this.pedalboardId,
+    name: name ?? this.name,
+    notes: notes.present ? notes.value : this.notes,
+    capturedAt: capturedAt ?? this.capturedAt,
+  );
+  RigSnapshot copyWithCompanion(RigSnapshotsCompanion data) {
+    return RigSnapshot(
+      id: data.id.present ? data.id.value : this.id,
+      pedalboardId: data.pedalboardId.present
+          ? data.pedalboardId.value
+          : this.pedalboardId,
+      name: data.name.present ? data.name.value : this.name,
+      notes: data.notes.present ? data.notes.value : this.notes,
+      capturedAt: data.capturedAt.present
+          ? data.capturedAt.value
+          : this.capturedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('RigSnapshot(')
+          ..write('id: $id, ')
+          ..write('pedalboardId: $pedalboardId, ')
+          ..write('name: $name, ')
+          ..write('notes: $notes, ')
+          ..write('capturedAt: $capturedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, pedalboardId, name, notes, capturedAt);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is RigSnapshot &&
+          other.id == this.id &&
+          other.pedalboardId == this.pedalboardId &&
+          other.name == this.name &&
+          other.notes == this.notes &&
+          other.capturedAt == this.capturedAt);
+}
+
+class RigSnapshotsCompanion extends UpdateCompanion<RigSnapshot> {
+  final Value<int> id;
+  final Value<int> pedalboardId;
+  final Value<String> name;
+  final Value<String?> notes;
+  final Value<DateTime> capturedAt;
+  const RigSnapshotsCompanion({
+    this.id = const Value.absent(),
+    this.pedalboardId = const Value.absent(),
+    this.name = const Value.absent(),
+    this.notes = const Value.absent(),
+    this.capturedAt = const Value.absent(),
+  });
+  RigSnapshotsCompanion.insert({
+    this.id = const Value.absent(),
+    required int pedalboardId,
+    required String name,
+    this.notes = const Value.absent(),
+    required DateTime capturedAt,
+  }) : pedalboardId = Value(pedalboardId),
+       name = Value(name),
+       capturedAt = Value(capturedAt);
+  static Insertable<RigSnapshot> custom({
+    Expression<int>? id,
+    Expression<int>? pedalboardId,
+    Expression<String>? name,
+    Expression<String>? notes,
+    Expression<DateTime>? capturedAt,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (pedalboardId != null) 'pedalboard_id': pedalboardId,
+      if (name != null) 'name': name,
+      if (notes != null) 'notes': notes,
+      if (capturedAt != null) 'captured_at': capturedAt,
+    });
+  }
+
+  RigSnapshotsCompanion copyWith({
+    Value<int>? id,
+    Value<int>? pedalboardId,
+    Value<String>? name,
+    Value<String?>? notes,
+    Value<DateTime>? capturedAt,
+  }) {
+    return RigSnapshotsCompanion(
+      id: id ?? this.id,
+      pedalboardId: pedalboardId ?? this.pedalboardId,
+      name: name ?? this.name,
+      notes: notes ?? this.notes,
+      capturedAt: capturedAt ?? this.capturedAt,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (pedalboardId.present) {
+      map['pedalboard_id'] = Variable<int>(pedalboardId.value);
+    }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    if (notes.present) {
+      map['notes'] = Variable<String>(notes.value);
+    }
+    if (capturedAt.present) {
+      map['captured_at'] = Variable<DateTime>(capturedAt.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('RigSnapshotsCompanion(')
+          ..write('id: $id, ')
+          ..write('pedalboardId: $pedalboardId, ')
+          ..write('name: $name, ')
+          ..write('notes: $notes, ')
+          ..write('capturedAt: $capturedAt')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $RigSnapshotEntriesTable extends RigSnapshotEntries
+    with TableInfo<$RigSnapshotEntriesTable, RigSnapshotEntry> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $RigSnapshotEntriesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'PRIMARY KEY AUTOINCREMENT',
+    ),
+  );
+  static const VerificationMeta _snapshotIdMeta = const VerificationMeta(
+    'snapshotId',
+  );
+  @override
+  late final GeneratedColumn<int> snapshotId = GeneratedColumn<int>(
+    'snapshot_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES rig_snapshots (id) ON DELETE CASCADE',
+    ),
+  );
+  static const VerificationMeta _pedalIdMeta = const VerificationMeta(
+    'pedalId',
+  );
+  @override
+  late final GeneratedColumn<int> pedalId = GeneratedColumn<int>(
+    'pedal_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES pedals (id) ON DELETE RESTRICT',
+    ),
+  );
+  static const VerificationMeta _positionMeta = const VerificationMeta(
+    'position',
+  );
+  @override
+  late final GeneratedColumn<int> position = GeneratedColumn<int>(
+    'position',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _configurationNameMeta = const VerificationMeta(
+    'configurationName',
+  );
+  @override
+  late final GeneratedColumn<String> configurationName =
+      GeneratedColumn<String>(
+        'configuration_name',
+        aliasedName,
+        true,
+        additionalChecks: GeneratedColumn.checkTextLength(
+          minTextLength: 1,
+          maxTextLength: 80,
+        ),
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+      );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    snapshotId,
+    pedalId,
+    position,
+    configurationName,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'rig_snapshot_entries';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<RigSnapshotEntry> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('snapshot_id')) {
+      context.handle(
+        _snapshotIdMeta,
+        snapshotId.isAcceptableOrUnknown(data['snapshot_id']!, _snapshotIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_snapshotIdMeta);
+    }
+    if (data.containsKey('pedal_id')) {
+      context.handle(
+        _pedalIdMeta,
+        pedalId.isAcceptableOrUnknown(data['pedal_id']!, _pedalIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_pedalIdMeta);
+    }
+    if (data.containsKey('position')) {
+      context.handle(
+        _positionMeta,
+        position.isAcceptableOrUnknown(data['position']!, _positionMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_positionMeta);
+    }
+    if (data.containsKey('configuration_name')) {
+      context.handle(
+        _configurationNameMeta,
+        configurationName.isAcceptableOrUnknown(
+          data['configuration_name']!,
+          _configurationNameMeta,
+        ),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  List<Set<GeneratedColumn>> get uniqueKeys => [
+    {snapshotId, pedalId},
+  ];
+  @override
+  RigSnapshotEntry map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return RigSnapshotEntry(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      snapshotId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}snapshot_id'],
+      )!,
+      pedalId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}pedal_id'],
+      )!,
+      position: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}position'],
+      )!,
+      configurationName: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}configuration_name'],
+      ),
+    );
+  }
+
+  @override
+  $RigSnapshotEntriesTable createAlias(String alias) {
+    return $RigSnapshotEntriesTable(attachedDatabase, alias);
+  }
+}
+
+class RigSnapshotEntry extends DataClass
+    implements Insertable<RigSnapshotEntry> {
+  final int id;
+  final int snapshotId;
+  final int pedalId;
+
+  /// Zero-based, in the order signal reached it, exactly as the chain read.
+  final int position;
+  final String? configurationName;
+  const RigSnapshotEntry({
+    required this.id,
+    required this.snapshotId,
+    required this.pedalId,
+    required this.position,
+    this.configurationName,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['snapshot_id'] = Variable<int>(snapshotId);
+    map['pedal_id'] = Variable<int>(pedalId);
+    map['position'] = Variable<int>(position);
+    if (!nullToAbsent || configurationName != null) {
+      map['configuration_name'] = Variable<String>(configurationName);
+    }
+    return map;
+  }
+
+  RigSnapshotEntriesCompanion toCompanion(bool nullToAbsent) {
+    return RigSnapshotEntriesCompanion(
+      id: Value(id),
+      snapshotId: Value(snapshotId),
+      pedalId: Value(pedalId),
+      position: Value(position),
+      configurationName: configurationName == null && nullToAbsent
+          ? const Value.absent()
+          : Value(configurationName),
+    );
+  }
+
+  factory RigSnapshotEntry.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return RigSnapshotEntry(
+      id: serializer.fromJson<int>(json['id']),
+      snapshotId: serializer.fromJson<int>(json['snapshotId']),
+      pedalId: serializer.fromJson<int>(json['pedalId']),
+      position: serializer.fromJson<int>(json['position']),
+      configurationName: serializer.fromJson<String?>(
+        json['configurationName'],
+      ),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'snapshotId': serializer.toJson<int>(snapshotId),
+      'pedalId': serializer.toJson<int>(pedalId),
+      'position': serializer.toJson<int>(position),
+      'configurationName': serializer.toJson<String?>(configurationName),
+    };
+  }
+
+  RigSnapshotEntry copyWith({
+    int? id,
+    int? snapshotId,
+    int? pedalId,
+    int? position,
+    Value<String?> configurationName = const Value.absent(),
+  }) => RigSnapshotEntry(
+    id: id ?? this.id,
+    snapshotId: snapshotId ?? this.snapshotId,
+    pedalId: pedalId ?? this.pedalId,
+    position: position ?? this.position,
+    configurationName: configurationName.present
+        ? configurationName.value
+        : this.configurationName,
+  );
+  RigSnapshotEntry copyWithCompanion(RigSnapshotEntriesCompanion data) {
+    return RigSnapshotEntry(
+      id: data.id.present ? data.id.value : this.id,
+      snapshotId: data.snapshotId.present
+          ? data.snapshotId.value
+          : this.snapshotId,
+      pedalId: data.pedalId.present ? data.pedalId.value : this.pedalId,
+      position: data.position.present ? data.position.value : this.position,
+      configurationName: data.configurationName.present
+          ? data.configurationName.value
+          : this.configurationName,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('RigSnapshotEntry(')
+          ..write('id: $id, ')
+          ..write('snapshotId: $snapshotId, ')
+          ..write('pedalId: $pedalId, ')
+          ..write('position: $position, ')
+          ..write('configurationName: $configurationName')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode =>
+      Object.hash(id, snapshotId, pedalId, position, configurationName);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is RigSnapshotEntry &&
+          other.id == this.id &&
+          other.snapshotId == this.snapshotId &&
+          other.pedalId == this.pedalId &&
+          other.position == this.position &&
+          other.configurationName == this.configurationName);
+}
+
+class RigSnapshotEntriesCompanion extends UpdateCompanion<RigSnapshotEntry> {
+  final Value<int> id;
+  final Value<int> snapshotId;
+  final Value<int> pedalId;
+  final Value<int> position;
+  final Value<String?> configurationName;
+  const RigSnapshotEntriesCompanion({
+    this.id = const Value.absent(),
+    this.snapshotId = const Value.absent(),
+    this.pedalId = const Value.absent(),
+    this.position = const Value.absent(),
+    this.configurationName = const Value.absent(),
+  });
+  RigSnapshotEntriesCompanion.insert({
+    this.id = const Value.absent(),
+    required int snapshotId,
+    required int pedalId,
+    required int position,
+    this.configurationName = const Value.absent(),
+  }) : snapshotId = Value(snapshotId),
+       pedalId = Value(pedalId),
+       position = Value(position);
+  static Insertable<RigSnapshotEntry> custom({
+    Expression<int>? id,
+    Expression<int>? snapshotId,
+    Expression<int>? pedalId,
+    Expression<int>? position,
+    Expression<String>? configurationName,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (snapshotId != null) 'snapshot_id': snapshotId,
+      if (pedalId != null) 'pedal_id': pedalId,
+      if (position != null) 'position': position,
+      if (configurationName != null) 'configuration_name': configurationName,
+    });
+  }
+
+  RigSnapshotEntriesCompanion copyWith({
+    Value<int>? id,
+    Value<int>? snapshotId,
+    Value<int>? pedalId,
+    Value<int>? position,
+    Value<String?>? configurationName,
+  }) {
+    return RigSnapshotEntriesCompanion(
+      id: id ?? this.id,
+      snapshotId: snapshotId ?? this.snapshotId,
+      pedalId: pedalId ?? this.pedalId,
+      position: position ?? this.position,
+      configurationName: configurationName ?? this.configurationName,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (snapshotId.present) {
+      map['snapshot_id'] = Variable<int>(snapshotId.value);
+    }
+    if (pedalId.present) {
+      map['pedal_id'] = Variable<int>(pedalId.value);
+    }
+    if (position.present) {
+      map['position'] = Variable<int>(position.value);
+    }
+    if (configurationName.present) {
+      map['configuration_name'] = Variable<String>(configurationName.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('RigSnapshotEntriesCompanion(')
+          ..write('id: $id, ')
+          ..write('snapshotId: $snapshotId, ')
+          ..write('pedalId: $pedalId, ')
+          ..write('position: $position, ')
+          ..write('configurationName: $configurationName')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $RigSnapshotValuesTable extends RigSnapshotValues
+    with TableInfo<$RigSnapshotValuesTable, RigSnapshotValue> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $RigSnapshotValuesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'PRIMARY KEY AUTOINCREMENT',
+    ),
+  );
+  static const VerificationMeta _entryIdMeta = const VerificationMeta(
+    'entryId',
+  );
+  @override
+  late final GeneratedColumn<int> entryId = GeneratedColumn<int>(
+    'entry_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES rig_snapshot_entries (id) ON DELETE CASCADE',
+    ),
+  );
+  static const VerificationMeta _controlNameMeta = const VerificationMeta(
+    'controlName',
+  );
+  @override
+  late final GeneratedColumn<String> controlName = GeneratedColumn<String>(
+    'control_name',
+    aliasedName,
+    false,
+    additionalChecks: GeneratedColumn.checkTextLength(
+      minTextLength: 1,
+      maxTextLength: 60,
+    ),
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  @override
+  late final GeneratedColumnWithTypeConverter<ControlType, String> controlType =
+      GeneratedColumn<String>(
+        'control_type',
+        aliasedName,
+        false,
+        type: DriftSqlType.string,
+        requiredDuringInsert: true,
+      ).withConverter<ControlType>(
+        $RigSnapshotValuesTable.$convertercontrolType,
+      );
+  static const VerificationMeta _valueMeta = const VerificationMeta('value');
+  @override
+  late final GeneratedColumn<double> value = GeneratedColumn<double>(
+    'value',
+    aliasedName,
+    false,
+    type: DriftSqlType.double,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _unitMeta = const VerificationMeta('unit');
+  @override
+  late final GeneratedColumn<String> unit = GeneratedColumn<String>(
+    'unit',
+    aliasedName,
+    true,
+    additionalChecks: GeneratedColumn.checkTextLength(
+      minTextLength: 1,
+      maxTextLength: 12,
+    ),
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _optionsMeta = const VerificationMeta(
+    'options',
+  );
+  @override
+  late final GeneratedColumn<String> options = GeneratedColumn<String>(
+    'options',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _displayOrderMeta = const VerificationMeta(
+    'displayOrder',
+  );
+  @override
+  late final GeneratedColumn<int> displayOrder = GeneratedColumn<int>(
+    'display_order',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    entryId,
+    controlName,
+    controlType,
+    value,
+    unit,
+    options,
+    displayOrder,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'rig_snapshot_values';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<RigSnapshotValue> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('entry_id')) {
+      context.handle(
+        _entryIdMeta,
+        entryId.isAcceptableOrUnknown(data['entry_id']!, _entryIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_entryIdMeta);
+    }
+    if (data.containsKey('control_name')) {
+      context.handle(
+        _controlNameMeta,
+        controlName.isAcceptableOrUnknown(
+          data['control_name']!,
+          _controlNameMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_controlNameMeta);
+    }
+    if (data.containsKey('value')) {
+      context.handle(
+        _valueMeta,
+        value.isAcceptableOrUnknown(data['value']!, _valueMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_valueMeta);
+    }
+    if (data.containsKey('unit')) {
+      context.handle(
+        _unitMeta,
+        unit.isAcceptableOrUnknown(data['unit']!, _unitMeta),
+      );
+    }
+    if (data.containsKey('options')) {
+      context.handle(
+        _optionsMeta,
+        options.isAcceptableOrUnknown(data['options']!, _optionsMeta),
+      );
+    }
+    if (data.containsKey('display_order')) {
+      context.handle(
+        _displayOrderMeta,
+        displayOrder.isAcceptableOrUnknown(
+          data['display_order']!,
+          _displayOrderMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_displayOrderMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  List<Set<GeneratedColumn>> get uniqueKeys => [
+    {entryId, controlName},
+  ];
+  @override
+  RigSnapshotValue map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return RigSnapshotValue(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      entryId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}entry_id'],
+      )!,
+      controlName: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}control_name'],
+      )!,
+      controlType: $RigSnapshotValuesTable.$convertercontrolType.fromSql(
+        attachedDatabase.typeMapping.read(
+          DriftSqlType.string,
+          data['${effectivePrefix}control_type'],
+        )!,
+      ),
+      value: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}value'],
+      )!,
+      unit: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}unit'],
+      ),
+      options: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}options'],
+      ),
+      displayOrder: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}display_order'],
+      )!,
+    );
+  }
+
+  @override
+  $RigSnapshotValuesTable createAlias(String alias) {
+    return $RigSnapshotValuesTable(attachedDatabase, alias);
+  }
+
+  static JsonTypeConverter2<ControlType, String, String> $convertercontrolType =
+      const EnumNameConverter<ControlType>(ControlType.values);
+}
+
+class RigSnapshotValue extends DataClass
+    implements Insertable<RigSnapshotValue> {
+  final int id;
+  final int entryId;
+  final String controlName;
+  final ControlType controlType;
+  final double value;
+  final String? unit;
+
+  /// Position names of a selection control as they read that day, as a JSON
+  /// array of strings. Null for every other control type.
+  final String? options;
+  final int displayOrder;
+  const RigSnapshotValue({
+    required this.id,
+    required this.entryId,
+    required this.controlName,
+    required this.controlType,
+    required this.value,
+    this.unit,
+    this.options,
+    required this.displayOrder,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['entry_id'] = Variable<int>(entryId);
+    map['control_name'] = Variable<String>(controlName);
+    {
+      map['control_type'] = Variable<String>(
+        $RigSnapshotValuesTable.$convertercontrolType.toSql(controlType),
+      );
+    }
+    map['value'] = Variable<double>(value);
+    if (!nullToAbsent || unit != null) {
+      map['unit'] = Variable<String>(unit);
+    }
+    if (!nullToAbsent || options != null) {
+      map['options'] = Variable<String>(options);
+    }
+    map['display_order'] = Variable<int>(displayOrder);
+    return map;
+  }
+
+  RigSnapshotValuesCompanion toCompanion(bool nullToAbsent) {
+    return RigSnapshotValuesCompanion(
+      id: Value(id),
+      entryId: Value(entryId),
+      controlName: Value(controlName),
+      controlType: Value(controlType),
+      value: Value(value),
+      unit: unit == null && nullToAbsent ? const Value.absent() : Value(unit),
+      options: options == null && nullToAbsent
+          ? const Value.absent()
+          : Value(options),
+      displayOrder: Value(displayOrder),
+    );
+  }
+
+  factory RigSnapshotValue.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return RigSnapshotValue(
+      id: serializer.fromJson<int>(json['id']),
+      entryId: serializer.fromJson<int>(json['entryId']),
+      controlName: serializer.fromJson<String>(json['controlName']),
+      controlType: $RigSnapshotValuesTable.$convertercontrolType.fromJson(
+        serializer.fromJson<String>(json['controlType']),
+      ),
+      value: serializer.fromJson<double>(json['value']),
+      unit: serializer.fromJson<String?>(json['unit']),
+      options: serializer.fromJson<String?>(json['options']),
+      displayOrder: serializer.fromJson<int>(json['displayOrder']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'entryId': serializer.toJson<int>(entryId),
+      'controlName': serializer.toJson<String>(controlName),
+      'controlType': serializer.toJson<String>(
+        $RigSnapshotValuesTable.$convertercontrolType.toJson(controlType),
+      ),
+      'value': serializer.toJson<double>(value),
+      'unit': serializer.toJson<String?>(unit),
+      'options': serializer.toJson<String?>(options),
+      'displayOrder': serializer.toJson<int>(displayOrder),
+    };
+  }
+
+  RigSnapshotValue copyWith({
+    int? id,
+    int? entryId,
+    String? controlName,
+    ControlType? controlType,
+    double? value,
+    Value<String?> unit = const Value.absent(),
+    Value<String?> options = const Value.absent(),
+    int? displayOrder,
+  }) => RigSnapshotValue(
+    id: id ?? this.id,
+    entryId: entryId ?? this.entryId,
+    controlName: controlName ?? this.controlName,
+    controlType: controlType ?? this.controlType,
+    value: value ?? this.value,
+    unit: unit.present ? unit.value : this.unit,
+    options: options.present ? options.value : this.options,
+    displayOrder: displayOrder ?? this.displayOrder,
+  );
+  RigSnapshotValue copyWithCompanion(RigSnapshotValuesCompanion data) {
+    return RigSnapshotValue(
+      id: data.id.present ? data.id.value : this.id,
+      entryId: data.entryId.present ? data.entryId.value : this.entryId,
+      controlName: data.controlName.present
+          ? data.controlName.value
+          : this.controlName,
+      controlType: data.controlType.present
+          ? data.controlType.value
+          : this.controlType,
+      value: data.value.present ? data.value.value : this.value,
+      unit: data.unit.present ? data.unit.value : this.unit,
+      options: data.options.present ? data.options.value : this.options,
+      displayOrder: data.displayOrder.present
+          ? data.displayOrder.value
+          : this.displayOrder,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('RigSnapshotValue(')
+          ..write('id: $id, ')
+          ..write('entryId: $entryId, ')
+          ..write('controlName: $controlName, ')
+          ..write('controlType: $controlType, ')
+          ..write('value: $value, ')
+          ..write('unit: $unit, ')
+          ..write('options: $options, ')
+          ..write('displayOrder: $displayOrder')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    entryId,
+    controlName,
+    controlType,
+    value,
+    unit,
+    options,
+    displayOrder,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is RigSnapshotValue &&
+          other.id == this.id &&
+          other.entryId == this.entryId &&
+          other.controlName == this.controlName &&
+          other.controlType == this.controlType &&
+          other.value == this.value &&
+          other.unit == this.unit &&
+          other.options == this.options &&
+          other.displayOrder == this.displayOrder);
+}
+
+class RigSnapshotValuesCompanion extends UpdateCompanion<RigSnapshotValue> {
+  final Value<int> id;
+  final Value<int> entryId;
+  final Value<String> controlName;
+  final Value<ControlType> controlType;
+  final Value<double> value;
+  final Value<String?> unit;
+  final Value<String?> options;
+  final Value<int> displayOrder;
+  const RigSnapshotValuesCompanion({
+    this.id = const Value.absent(),
+    this.entryId = const Value.absent(),
+    this.controlName = const Value.absent(),
+    this.controlType = const Value.absent(),
+    this.value = const Value.absent(),
+    this.unit = const Value.absent(),
+    this.options = const Value.absent(),
+    this.displayOrder = const Value.absent(),
+  });
+  RigSnapshotValuesCompanion.insert({
+    this.id = const Value.absent(),
+    required int entryId,
+    required String controlName,
+    required ControlType controlType,
+    required double value,
+    this.unit = const Value.absent(),
+    this.options = const Value.absent(),
+    required int displayOrder,
+  }) : entryId = Value(entryId),
+       controlName = Value(controlName),
+       controlType = Value(controlType),
+       value = Value(value),
+       displayOrder = Value(displayOrder);
+  static Insertable<RigSnapshotValue> custom({
+    Expression<int>? id,
+    Expression<int>? entryId,
+    Expression<String>? controlName,
+    Expression<String>? controlType,
+    Expression<double>? value,
+    Expression<String>? unit,
+    Expression<String>? options,
+    Expression<int>? displayOrder,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (entryId != null) 'entry_id': entryId,
+      if (controlName != null) 'control_name': controlName,
+      if (controlType != null) 'control_type': controlType,
+      if (value != null) 'value': value,
+      if (unit != null) 'unit': unit,
+      if (options != null) 'options': options,
+      if (displayOrder != null) 'display_order': displayOrder,
+    });
+  }
+
+  RigSnapshotValuesCompanion copyWith({
+    Value<int>? id,
+    Value<int>? entryId,
+    Value<String>? controlName,
+    Value<ControlType>? controlType,
+    Value<double>? value,
+    Value<String?>? unit,
+    Value<String?>? options,
+    Value<int>? displayOrder,
+  }) {
+    return RigSnapshotValuesCompanion(
+      id: id ?? this.id,
+      entryId: entryId ?? this.entryId,
+      controlName: controlName ?? this.controlName,
+      controlType: controlType ?? this.controlType,
+      value: value ?? this.value,
+      unit: unit ?? this.unit,
+      options: options ?? this.options,
+      displayOrder: displayOrder ?? this.displayOrder,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (entryId.present) {
+      map['entry_id'] = Variable<int>(entryId.value);
+    }
+    if (controlName.present) {
+      map['control_name'] = Variable<String>(controlName.value);
+    }
+    if (controlType.present) {
+      map['control_type'] = Variable<String>(
+        $RigSnapshotValuesTable.$convertercontrolType.toSql(controlType.value),
+      );
+    }
+    if (value.present) {
+      map['value'] = Variable<double>(value.value);
+    }
+    if (unit.present) {
+      map['unit'] = Variable<String>(unit.value);
+    }
+    if (options.present) {
+      map['options'] = Variable<String>(options.value);
+    }
+    if (displayOrder.present) {
+      map['display_order'] = Variable<int>(displayOrder.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('RigSnapshotValuesCompanion(')
+          ..write('id: $id, ')
+          ..write('entryId: $entryId, ')
+          ..write('controlName: $controlName, ')
+          ..write('controlType: $controlType, ')
+          ..write('value: $value, ')
+          ..write('unit: $unit, ')
+          ..write('options: $options, ')
+          ..write('displayOrder: $displayOrder')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
@@ -3999,6 +5284,11 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final $PedalboardSlotsTable pedalboardSlots = $PedalboardSlotsTable(
     this,
   );
+  late final $RigSnapshotsTable rigSnapshots = $RigSnapshotsTable(this);
+  late final $RigSnapshotEntriesTable rigSnapshotEntries =
+      $RigSnapshotEntriesTable(this);
+  late final $RigSnapshotValuesTable rigSnapshotValues =
+      $RigSnapshotValuesTable(this);
   late final Index idxPedalsStatus = Index(
     'idx_pedals_status',
     'CREATE INDEX idx_pedals_status ON pedals (status)',
@@ -4035,6 +5325,14 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     'idx_pedalboard_slots_board_position',
     'CREATE INDEX idx_pedalboard_slots_board_position ON pedalboard_slots (pedalboard_id, position)',
   );
+  late final Index idxRigSnapshotsBoardCaptured = Index(
+    'idx_rig_snapshots_board_captured',
+    'CREATE INDEX idx_rig_snapshots_board_captured ON rig_snapshots (pedalboard_id, captured_at)',
+  );
+  late final Index idxRigSnapshotEntriesSnapshotPosition = Index(
+    'idx_rig_snapshot_entries_snapshot_position',
+    'CREATE INDEX idx_rig_snapshot_entries_snapshot_position ON rig_snapshot_entries (snapshot_id, position)',
+  );
   late final PedalDao pedalDao = PedalDao(this as AppDatabase);
   late final PedalControlDao pedalControlDao = PedalControlDao(
     this as AppDatabase,
@@ -4047,6 +5345,9 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     this as AppDatabase,
   );
   late final PedalboardDao pedalboardDao = PedalboardDao(this as AppDatabase);
+  late final RigSnapshotDao rigSnapshotDao = RigSnapshotDao(
+    this as AppDatabase,
+  );
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -4060,6 +5361,9 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     pedalReplacements,
     pedalboards,
     pedalboardSlots,
+    rigSnapshots,
+    rigSnapshotEntries,
+    rigSnapshotValues,
     idxPedalsStatus,
     idxPedalsName,
     idxPedalControlsPedalOrder,
@@ -4069,6 +5373,8 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     idxPedalReplacementsOld,
     idxPedalReplacementsNew,
     idxPedalboardSlotsBoardPosition,
+    idxRigSnapshotsBoardCaptured,
+    idxRigSnapshotEntriesSnapshotPosition,
   ];
   @override
   StreamQueryUpdateRules get streamUpdateRules => const StreamQueryUpdateRules([
@@ -4106,6 +5412,20 @@ abstract class _$AppDatabase extends GeneratedDatabase {
         limitUpdateKind: UpdateKind.delete,
       ),
       result: [TableUpdate('pedalboard_slots', kind: UpdateKind.delete)],
+    ),
+    WritePropagation(
+      on: TableUpdateQuery.onTableName(
+        'rig_snapshots',
+        limitUpdateKind: UpdateKind.delete,
+      ),
+      result: [TableUpdate('rig_snapshot_entries', kind: UpdateKind.delete)],
+    ),
+    WritePropagation(
+      on: TableUpdateQuery.onTableName(
+        'rig_snapshot_entries',
+        limitUpdateKind: UpdateKind.delete,
+      ),
+      result: [TableUpdate('rig_snapshot_values', kind: UpdateKind.delete)],
     ),
   ]);
   @override
@@ -4256,6 +5576,27 @@ final class $$PedalsTableReferences
 
     final cache = $_typedResult.readTableOrNull(
       _pedalboardSlotsRefsTable($_db),
+    );
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+
+  static MultiTypedResultKey<$RigSnapshotEntriesTable, List<RigSnapshotEntry>>
+  _rigSnapshotEntriesRefsTable(_$AppDatabase db) =>
+      MultiTypedResultKey.fromTable(
+        db.rigSnapshotEntries,
+        aliasName: 'pedals__id__rig_snapshot_entries__pedal_id',
+      );
+
+  $$RigSnapshotEntriesTableProcessedTableManager get rigSnapshotEntriesRefs {
+    final manager = $$RigSnapshotEntriesTableTableManager(
+      $_db,
+      $_db.rigSnapshotEntries,
+    ).filter((f) => f.pedalId.id.sqlEquals($_itemColumn<int>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(
+      _rigSnapshotEntriesRefsTable($_db),
     );
     return ProcessedTableManager(
       manager.$state.copyWith(prefetchedData: cache),
@@ -4471,6 +5812,31 @@ class $$PedalsTableFilterComposer
           }) => $$PedalboardSlotsTableFilterComposer(
             $db: $db,
             $table: $db.pedalboardSlots,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+
+  Expression<bool> rigSnapshotEntriesRefs(
+    Expression<bool> Function($$RigSnapshotEntriesTableFilterComposer f) f,
+  ) {
+    final $$RigSnapshotEntriesTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.rigSnapshotEntries,
+      getReferencedColumn: (t) => t.pedalId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$RigSnapshotEntriesTableFilterComposer(
+            $db: $db,
+            $table: $db.rigSnapshotEntries,
             $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
             joinBuilder: joinBuilder,
             $removeJoinBuilderFromRootComposer:
@@ -4741,6 +6107,32 @@ class $$PedalsTableAnnotationComposer
     );
     return f(composer);
   }
+
+  Expression<T> rigSnapshotEntriesRefs<T extends Object>(
+    Expression<T> Function($$RigSnapshotEntriesTableAnnotationComposer a) f,
+  ) {
+    final $$RigSnapshotEntriesTableAnnotationComposer composer =
+        $composerBuilder(
+          composer: this,
+          getCurrentColumn: (t) => t.id,
+          referencedTable: $db.rigSnapshotEntries,
+          getReferencedColumn: (t) => t.pedalId,
+          builder:
+              (
+                joinBuilder, {
+                $addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer,
+              }) => $$RigSnapshotEntriesTableAnnotationComposer(
+                $db: $db,
+                $table: $db.rigSnapshotEntries,
+                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                joinBuilder: joinBuilder,
+                $removeJoinBuilderFromRootComposer:
+                    $removeJoinBuilderFromRootComposer,
+              ),
+        );
+    return f(composer);
+  }
 }
 
 class $$PedalsTableTableManager
@@ -4763,6 +6155,7 @@ class $$PedalsTableTableManager
             bool replacementsWhereOutgoing,
             bool replacementsWhereIncoming,
             bool pedalboardSlotsRefs,
+            bool rigSnapshotEntriesRefs,
           })
         > {
   $$PedalsTableTableManager(_$AppDatabase db, $PedalsTable table)
@@ -4842,6 +6235,7 @@ class $$PedalsTableTableManager
                 replacementsWhereOutgoing = false,
                 replacementsWhereIncoming = false,
                 pedalboardSlotsRefs = false,
+                rigSnapshotEntriesRefs = false,
               }) {
                 return PrefetchHooks(
                   db: db,
@@ -4852,6 +6246,7 @@ class $$PedalsTableTableManager
                     if (replacementsWhereOutgoing) db.pedalReplacements,
                     if (replacementsWhereIncoming) db.pedalReplacements,
                     if (pedalboardSlotsRefs) db.pedalboardSlots,
+                    if (rigSnapshotEntriesRefs) db.rigSnapshotEntries,
                   ],
                   addJoins: null,
                   getPrefetchedDataCallback: (items) async {
@@ -4982,6 +6377,27 @@ class $$PedalsTableTableManager
                               ),
                           typedResults: items,
                         ),
+                      if (rigSnapshotEntriesRefs)
+                        await $_getPrefetchedData<
+                          Pedal,
+                          $PedalsTable,
+                          RigSnapshotEntry
+                        >(
+                          currentTable: table,
+                          referencedTable: $$PedalsTableReferences
+                              ._rigSnapshotEntriesRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$PedalsTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).rigSnapshotEntriesRefs,
+                          referencedItemsForCurrentItem:
+                              (item, referencedItems) => referencedItems.where(
+                                (e) => e.pedalId == item.id,
+                              ),
+                          typedResults: items,
+                        ),
                     ];
                   },
                 );
@@ -5009,6 +6425,7 @@ typedef $$PedalsTableProcessedTableManager =
         bool replacementsWhereOutgoing,
         bool replacementsWhereIncoming,
         bool pedalboardSlotsRefs,
+        bool rigSnapshotEntriesRefs,
       })
     >;
 typedef $$PedalControlsTableCreateCompanionBuilder =
@@ -7728,6 +9145,24 @@ final class $$PedalboardsTableReferences
       manager.$state.copyWith(prefetchedData: cache),
     );
   }
+
+  static MultiTypedResultKey<$RigSnapshotsTable, List<RigSnapshot>>
+  _rigSnapshotsRefsTable(_$AppDatabase db) => MultiTypedResultKey.fromTable(
+    db.rigSnapshots,
+    aliasName: 'pedalboards__id__rig_snapshots__pedalboard_id',
+  );
+
+  $$RigSnapshotsTableProcessedTableManager get rigSnapshotsRefs {
+    final manager = $$RigSnapshotsTableTableManager(
+      $_db,
+      $_db.rigSnapshots,
+    ).filter((f) => f.pedalboardId.id.sqlEquals($_itemColumn<int>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(_rigSnapshotsRefsTable($_db));
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
 }
 
 class $$PedalboardsTableFilterComposer
@@ -7780,6 +9215,31 @@ class $$PedalboardsTableFilterComposer
           }) => $$PedalboardSlotsTableFilterComposer(
             $db: $db,
             $table: $db.pedalboardSlots,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+
+  Expression<bool> rigSnapshotsRefs(
+    Expression<bool> Function($$RigSnapshotsTableFilterComposer f) f,
+  ) {
+    final $$RigSnapshotsTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.rigSnapshots,
+      getReferencedColumn: (t) => t.pedalboardId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$RigSnapshotsTableFilterComposer(
+            $db: $db,
+            $table: $db.rigSnapshots,
             $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
             joinBuilder: joinBuilder,
             $removeJoinBuilderFromRootComposer:
@@ -7875,6 +9335,31 @@ class $$PedalboardsTableAnnotationComposer
     );
     return f(composer);
   }
+
+  Expression<T> rigSnapshotsRefs<T extends Object>(
+    Expression<T> Function($$RigSnapshotsTableAnnotationComposer a) f,
+  ) {
+    final $$RigSnapshotsTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.rigSnapshots,
+      getReferencedColumn: (t) => t.pedalboardId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$RigSnapshotsTableAnnotationComposer(
+            $db: $db,
+            $table: $db.rigSnapshots,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
 }
 
 class $$PedalboardsTableTableManager
@@ -7890,7 +9375,10 @@ class $$PedalboardsTableTableManager
           $$PedalboardsTableUpdateCompanionBuilder,
           (Pedalboard, $$PedalboardsTableReferences),
           Pedalboard,
-          PrefetchHooks Function({bool pedalboardSlotsRefs})
+          PrefetchHooks Function({
+            bool pedalboardSlotsRefs,
+            bool rigSnapshotsRefs,
+          })
         > {
   $$PedalboardsTableTableManager(_$AppDatabase db, $PedalboardsTable table)
     : super(
@@ -7939,40 +9427,63 @@ class $$PedalboardsTableTableManager
                 ),
               )
               .toList(),
-          prefetchHooksCallback: ({pedalboardSlotsRefs = false}) {
-            return PrefetchHooks(
-              db: db,
-              explicitlyWatchedTables: [
-                if (pedalboardSlotsRefs) db.pedalboardSlots,
-              ],
-              addJoins: null,
-              getPrefetchedDataCallback: (items) async {
-                return [
-                  if (pedalboardSlotsRefs)
-                    await $_getPrefetchedData<
-                      Pedalboard,
-                      $PedalboardsTable,
-                      PedalboardSlot
-                    >(
-                      currentTable: table,
-                      referencedTable: $$PedalboardsTableReferences
-                          ._pedalboardSlotsRefsTable(db),
-                      managerFromTypedResult: (p0) =>
-                          $$PedalboardsTableReferences(
-                            db,
-                            table,
-                            p0,
-                          ).pedalboardSlotsRefs,
-                      referencedItemsForCurrentItem: (item, referencedItems) =>
-                          referencedItems.where(
-                            (e) => e.pedalboardId == item.id,
-                          ),
-                      typedResults: items,
-                    ),
-                ];
+          prefetchHooksCallback:
+              ({pedalboardSlotsRefs = false, rigSnapshotsRefs = false}) {
+                return PrefetchHooks(
+                  db: db,
+                  explicitlyWatchedTables: [
+                    if (pedalboardSlotsRefs) db.pedalboardSlots,
+                    if (rigSnapshotsRefs) db.rigSnapshots,
+                  ],
+                  addJoins: null,
+                  getPrefetchedDataCallback: (items) async {
+                    return [
+                      if (pedalboardSlotsRefs)
+                        await $_getPrefetchedData<
+                          Pedalboard,
+                          $PedalboardsTable,
+                          PedalboardSlot
+                        >(
+                          currentTable: table,
+                          referencedTable: $$PedalboardsTableReferences
+                              ._pedalboardSlotsRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$PedalboardsTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).pedalboardSlotsRefs,
+                          referencedItemsForCurrentItem:
+                              (item, referencedItems) => referencedItems.where(
+                                (e) => e.pedalboardId == item.id,
+                              ),
+                          typedResults: items,
+                        ),
+                      if (rigSnapshotsRefs)
+                        await $_getPrefetchedData<
+                          Pedalboard,
+                          $PedalboardsTable,
+                          RigSnapshot
+                        >(
+                          currentTable: table,
+                          referencedTable: $$PedalboardsTableReferences
+                              ._rigSnapshotsRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$PedalboardsTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).rigSnapshotsRefs,
+                          referencedItemsForCurrentItem:
+                              (item, referencedItems) => referencedItems.where(
+                                (e) => e.pedalboardId == item.id,
+                              ),
+                          typedResults: items,
+                        ),
+                    ];
+                  },
+                );
               },
-            );
-          },
         ),
       );
 }
@@ -7989,7 +9500,7 @@ typedef $$PedalboardsTableProcessedTableManager =
       $$PedalboardsTableUpdateCompanionBuilder,
       (Pedalboard, $$PedalboardsTableReferences),
       Pedalboard,
-      PrefetchHooks Function({bool pedalboardSlotsRefs})
+      PrefetchHooks Function({bool pedalboardSlotsRefs, bool rigSnapshotsRefs})
     >;
 typedef $$PedalboardSlotsTableCreateCompanionBuilder =
     PedalboardSlotsCompanion Function({
@@ -8381,6 +9892,1343 @@ typedef $$PedalboardSlotsTableProcessedTableManager =
       PedalboardSlot,
       PrefetchHooks Function({bool pedalboardId, bool pedalId})
     >;
+typedef $$RigSnapshotsTableCreateCompanionBuilder =
+    RigSnapshotsCompanion Function({
+      Value<int> id,
+      required int pedalboardId,
+      required String name,
+      Value<String?> notes,
+      required DateTime capturedAt,
+    });
+typedef $$RigSnapshotsTableUpdateCompanionBuilder =
+    RigSnapshotsCompanion Function({
+      Value<int> id,
+      Value<int> pedalboardId,
+      Value<String> name,
+      Value<String?> notes,
+      Value<DateTime> capturedAt,
+    });
+
+final class $$RigSnapshotsTableReferences
+    extends BaseReferences<_$AppDatabase, $RigSnapshotsTable, RigSnapshot> {
+  $$RigSnapshotsTableReferences(super.$_db, super.$_table, super.$_typedResult);
+
+  static $PedalboardsTable _pedalboardIdTable(_$AppDatabase db) => db
+      .pedalboards
+      .createAlias('rig_snapshots__pedalboard_id__pedalboards__id');
+
+  $$PedalboardsTableProcessedTableManager get pedalboardId {
+    final $_column = $_itemColumn<int>('pedalboard_id')!;
+
+    final manager = $$PedalboardsTableTableManager(
+      $_db,
+      $_db.pedalboards,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_pedalboardIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+
+  static MultiTypedResultKey<$RigSnapshotEntriesTable, List<RigSnapshotEntry>>
+  _rigSnapshotEntriesRefsTable(_$AppDatabase db) =>
+      MultiTypedResultKey.fromTable(
+        db.rigSnapshotEntries,
+        aliasName: 'rig_snapshots__id__rig_snapshot_entries__snapshot_id',
+      );
+
+  $$RigSnapshotEntriesTableProcessedTableManager get rigSnapshotEntriesRefs {
+    final manager = $$RigSnapshotEntriesTableTableManager(
+      $_db,
+      $_db.rigSnapshotEntries,
+    ).filter((f) => f.snapshotId.id.sqlEquals($_itemColumn<int>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(
+      _rigSnapshotEntriesRefsTable($_db),
+    );
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+}
+
+class $$RigSnapshotsTableFilterComposer
+    extends Composer<_$AppDatabase, $RigSnapshotsTable> {
+  $$RigSnapshotsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get notes => $composableBuilder(
+    column: $table.notes,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get capturedAt => $composableBuilder(
+    column: $table.capturedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  $$PedalboardsTableFilterComposer get pedalboardId {
+    final $$PedalboardsTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.pedalboardId,
+      referencedTable: $db.pedalboards,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$PedalboardsTableFilterComposer(
+            $db: $db,
+            $table: $db.pedalboards,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  Expression<bool> rigSnapshotEntriesRefs(
+    Expression<bool> Function($$RigSnapshotEntriesTableFilterComposer f) f,
+  ) {
+    final $$RigSnapshotEntriesTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.rigSnapshotEntries,
+      getReferencedColumn: (t) => t.snapshotId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$RigSnapshotEntriesTableFilterComposer(
+            $db: $db,
+            $table: $db.rigSnapshotEntries,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+}
+
+class $$RigSnapshotsTableOrderingComposer
+    extends Composer<_$AppDatabase, $RigSnapshotsTable> {
+  $$RigSnapshotsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get notes => $composableBuilder(
+    column: $table.notes,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get capturedAt => $composableBuilder(
+    column: $table.capturedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  $$PedalboardsTableOrderingComposer get pedalboardId {
+    final $$PedalboardsTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.pedalboardId,
+      referencedTable: $db.pedalboards,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$PedalboardsTableOrderingComposer(
+            $db: $db,
+            $table: $db.pedalboards,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$RigSnapshotsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $RigSnapshotsTable> {
+  $$RigSnapshotsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get name =>
+      $composableBuilder(column: $table.name, builder: (column) => column);
+
+  GeneratedColumn<String> get notes =>
+      $composableBuilder(column: $table.notes, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get capturedAt => $composableBuilder(
+    column: $table.capturedAt,
+    builder: (column) => column,
+  );
+
+  $$PedalboardsTableAnnotationComposer get pedalboardId {
+    final $$PedalboardsTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.pedalboardId,
+      referencedTable: $db.pedalboards,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$PedalboardsTableAnnotationComposer(
+            $db: $db,
+            $table: $db.pedalboards,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  Expression<T> rigSnapshotEntriesRefs<T extends Object>(
+    Expression<T> Function($$RigSnapshotEntriesTableAnnotationComposer a) f,
+  ) {
+    final $$RigSnapshotEntriesTableAnnotationComposer composer =
+        $composerBuilder(
+          composer: this,
+          getCurrentColumn: (t) => t.id,
+          referencedTable: $db.rigSnapshotEntries,
+          getReferencedColumn: (t) => t.snapshotId,
+          builder:
+              (
+                joinBuilder, {
+                $addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer,
+              }) => $$RigSnapshotEntriesTableAnnotationComposer(
+                $db: $db,
+                $table: $db.rigSnapshotEntries,
+                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                joinBuilder: joinBuilder,
+                $removeJoinBuilderFromRootComposer:
+                    $removeJoinBuilderFromRootComposer,
+              ),
+        );
+    return f(composer);
+  }
+}
+
+class $$RigSnapshotsTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $RigSnapshotsTable,
+          RigSnapshot,
+          $$RigSnapshotsTableFilterComposer,
+          $$RigSnapshotsTableOrderingComposer,
+          $$RigSnapshotsTableAnnotationComposer,
+          $$RigSnapshotsTableCreateCompanionBuilder,
+          $$RigSnapshotsTableUpdateCompanionBuilder,
+          (RigSnapshot, $$RigSnapshotsTableReferences),
+          RigSnapshot,
+          PrefetchHooks Function({
+            bool pedalboardId,
+            bool rigSnapshotEntriesRefs,
+          })
+        > {
+  $$RigSnapshotsTableTableManager(_$AppDatabase db, $RigSnapshotsTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$RigSnapshotsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$RigSnapshotsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$RigSnapshotsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<int> pedalboardId = const Value.absent(),
+                Value<String> name = const Value.absent(),
+                Value<String?> notes = const Value.absent(),
+                Value<DateTime> capturedAt = const Value.absent(),
+              }) => RigSnapshotsCompanion(
+                id: id,
+                pedalboardId: pedalboardId,
+                name: name,
+                notes: notes,
+                capturedAt: capturedAt,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                required int pedalboardId,
+                required String name,
+                Value<String?> notes = const Value.absent(),
+                required DateTime capturedAt,
+              }) => RigSnapshotsCompanion.insert(
+                id: id,
+                pedalboardId: pedalboardId,
+                name: name,
+                notes: notes,
+                capturedAt: capturedAt,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable(table),
+                  $$RigSnapshotsTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback:
+              ({pedalboardId = false, rigSnapshotEntriesRefs = false}) {
+                return PrefetchHooks(
+                  db: db,
+                  explicitlyWatchedTables: [
+                    if (rigSnapshotEntriesRefs) db.rigSnapshotEntries,
+                  ],
+                  addJoins:
+                      <
+                        T extends TableManagerState<
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic
+                        >
+                      >(state) {
+                        if (pedalboardId) {
+                          state =
+                              state.withJoin(
+                                    currentTable: table,
+                                    currentColumn: table.pedalboardId,
+                                    referencedTable:
+                                        $$RigSnapshotsTableReferences
+                                            ._pedalboardIdTable(db),
+                                    referencedColumn:
+                                        $$RigSnapshotsTableReferences
+                                            ._pedalboardIdTable(db)
+                                            .id,
+                                  )
+                                  as T;
+                        }
+
+                        return state;
+                      },
+                  getPrefetchedDataCallback: (items) async {
+                    return [
+                      if (rigSnapshotEntriesRefs)
+                        await $_getPrefetchedData<
+                          RigSnapshot,
+                          $RigSnapshotsTable,
+                          RigSnapshotEntry
+                        >(
+                          currentTable: table,
+                          referencedTable: $$RigSnapshotsTableReferences
+                              ._rigSnapshotEntriesRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$RigSnapshotsTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).rigSnapshotEntriesRefs,
+                          referencedItemsForCurrentItem:
+                              (item, referencedItems) => referencedItems.where(
+                                (e) => e.snapshotId == item.id,
+                              ),
+                          typedResults: items,
+                        ),
+                    ];
+                  },
+                );
+              },
+        ),
+      );
+}
+
+typedef $$RigSnapshotsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $RigSnapshotsTable,
+      RigSnapshot,
+      $$RigSnapshotsTableFilterComposer,
+      $$RigSnapshotsTableOrderingComposer,
+      $$RigSnapshotsTableAnnotationComposer,
+      $$RigSnapshotsTableCreateCompanionBuilder,
+      $$RigSnapshotsTableUpdateCompanionBuilder,
+      (RigSnapshot, $$RigSnapshotsTableReferences),
+      RigSnapshot,
+      PrefetchHooks Function({bool pedalboardId, bool rigSnapshotEntriesRefs})
+    >;
+typedef $$RigSnapshotEntriesTableCreateCompanionBuilder =
+    RigSnapshotEntriesCompanion Function({
+      Value<int> id,
+      required int snapshotId,
+      required int pedalId,
+      required int position,
+      Value<String?> configurationName,
+    });
+typedef $$RigSnapshotEntriesTableUpdateCompanionBuilder =
+    RigSnapshotEntriesCompanion Function({
+      Value<int> id,
+      Value<int> snapshotId,
+      Value<int> pedalId,
+      Value<int> position,
+      Value<String?> configurationName,
+    });
+
+final class $$RigSnapshotEntriesTableReferences
+    extends
+        BaseReferences<
+          _$AppDatabase,
+          $RigSnapshotEntriesTable,
+          RigSnapshotEntry
+        > {
+  $$RigSnapshotEntriesTableReferences(
+    super.$_db,
+    super.$_table,
+    super.$_typedResult,
+  );
+
+  static $RigSnapshotsTable _snapshotIdTable(_$AppDatabase db) => db
+      .rigSnapshots
+      .createAlias('rig_snapshot_entries__snapshot_id__rig_snapshots__id');
+
+  $$RigSnapshotsTableProcessedTableManager get snapshotId {
+    final $_column = $_itemColumn<int>('snapshot_id')!;
+
+    final manager = $$RigSnapshotsTableTableManager(
+      $_db,
+      $_db.rigSnapshots,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_snapshotIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+
+  static $PedalsTable _pedalIdTable(_$AppDatabase db) =>
+      db.pedals.createAlias('rig_snapshot_entries__pedal_id__pedals__id');
+
+  $$PedalsTableProcessedTableManager get pedalId {
+    final $_column = $_itemColumn<int>('pedal_id')!;
+
+    final manager = $$PedalsTableTableManager(
+      $_db,
+      $_db.pedals,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_pedalIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+
+  static MultiTypedResultKey<$RigSnapshotValuesTable, List<RigSnapshotValue>>
+  _rigSnapshotValuesRefsTable(_$AppDatabase db) =>
+      MultiTypedResultKey.fromTable(
+        db.rigSnapshotValues,
+        aliasName: 'rig_snapshot_entries__id__rig_snapshot_values__entry_id',
+      );
+
+  $$RigSnapshotValuesTableProcessedTableManager get rigSnapshotValuesRefs {
+    final manager = $$RigSnapshotValuesTableTableManager(
+      $_db,
+      $_db.rigSnapshotValues,
+    ).filter((f) => f.entryId.id.sqlEquals($_itemColumn<int>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(
+      _rigSnapshotValuesRefsTable($_db),
+    );
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+}
+
+class $$RigSnapshotEntriesTableFilterComposer
+    extends Composer<_$AppDatabase, $RigSnapshotEntriesTable> {
+  $$RigSnapshotEntriesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get position => $composableBuilder(
+    column: $table.position,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get configurationName => $composableBuilder(
+    column: $table.configurationName,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  $$RigSnapshotsTableFilterComposer get snapshotId {
+    final $$RigSnapshotsTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.snapshotId,
+      referencedTable: $db.rigSnapshots,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$RigSnapshotsTableFilterComposer(
+            $db: $db,
+            $table: $db.rigSnapshots,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  $$PedalsTableFilterComposer get pedalId {
+    final $$PedalsTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.pedalId,
+      referencedTable: $db.pedals,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$PedalsTableFilterComposer(
+            $db: $db,
+            $table: $db.pedals,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  Expression<bool> rigSnapshotValuesRefs(
+    Expression<bool> Function($$RigSnapshotValuesTableFilterComposer f) f,
+  ) {
+    final $$RigSnapshotValuesTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.rigSnapshotValues,
+      getReferencedColumn: (t) => t.entryId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$RigSnapshotValuesTableFilterComposer(
+            $db: $db,
+            $table: $db.rigSnapshotValues,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+}
+
+class $$RigSnapshotEntriesTableOrderingComposer
+    extends Composer<_$AppDatabase, $RigSnapshotEntriesTable> {
+  $$RigSnapshotEntriesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get position => $composableBuilder(
+    column: $table.position,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get configurationName => $composableBuilder(
+    column: $table.configurationName,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  $$RigSnapshotsTableOrderingComposer get snapshotId {
+    final $$RigSnapshotsTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.snapshotId,
+      referencedTable: $db.rigSnapshots,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$RigSnapshotsTableOrderingComposer(
+            $db: $db,
+            $table: $db.rigSnapshots,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  $$PedalsTableOrderingComposer get pedalId {
+    final $$PedalsTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.pedalId,
+      referencedTable: $db.pedals,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$PedalsTableOrderingComposer(
+            $db: $db,
+            $table: $db.pedals,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$RigSnapshotEntriesTableAnnotationComposer
+    extends Composer<_$AppDatabase, $RigSnapshotEntriesTable> {
+  $$RigSnapshotEntriesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<int> get position =>
+      $composableBuilder(column: $table.position, builder: (column) => column);
+
+  GeneratedColumn<String> get configurationName => $composableBuilder(
+    column: $table.configurationName,
+    builder: (column) => column,
+  );
+
+  $$RigSnapshotsTableAnnotationComposer get snapshotId {
+    final $$RigSnapshotsTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.snapshotId,
+      referencedTable: $db.rigSnapshots,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$RigSnapshotsTableAnnotationComposer(
+            $db: $db,
+            $table: $db.rigSnapshots,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  $$PedalsTableAnnotationComposer get pedalId {
+    final $$PedalsTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.pedalId,
+      referencedTable: $db.pedals,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$PedalsTableAnnotationComposer(
+            $db: $db,
+            $table: $db.pedals,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  Expression<T> rigSnapshotValuesRefs<T extends Object>(
+    Expression<T> Function($$RigSnapshotValuesTableAnnotationComposer a) f,
+  ) {
+    final $$RigSnapshotValuesTableAnnotationComposer composer =
+        $composerBuilder(
+          composer: this,
+          getCurrentColumn: (t) => t.id,
+          referencedTable: $db.rigSnapshotValues,
+          getReferencedColumn: (t) => t.entryId,
+          builder:
+              (
+                joinBuilder, {
+                $addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer,
+              }) => $$RigSnapshotValuesTableAnnotationComposer(
+                $db: $db,
+                $table: $db.rigSnapshotValues,
+                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                joinBuilder: joinBuilder,
+                $removeJoinBuilderFromRootComposer:
+                    $removeJoinBuilderFromRootComposer,
+              ),
+        );
+    return f(composer);
+  }
+}
+
+class $$RigSnapshotEntriesTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $RigSnapshotEntriesTable,
+          RigSnapshotEntry,
+          $$RigSnapshotEntriesTableFilterComposer,
+          $$RigSnapshotEntriesTableOrderingComposer,
+          $$RigSnapshotEntriesTableAnnotationComposer,
+          $$RigSnapshotEntriesTableCreateCompanionBuilder,
+          $$RigSnapshotEntriesTableUpdateCompanionBuilder,
+          (RigSnapshotEntry, $$RigSnapshotEntriesTableReferences),
+          RigSnapshotEntry,
+          PrefetchHooks Function({
+            bool snapshotId,
+            bool pedalId,
+            bool rigSnapshotValuesRefs,
+          })
+        > {
+  $$RigSnapshotEntriesTableTableManager(
+    _$AppDatabase db,
+    $RigSnapshotEntriesTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$RigSnapshotEntriesTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$RigSnapshotEntriesTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$RigSnapshotEntriesTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<int> snapshotId = const Value.absent(),
+                Value<int> pedalId = const Value.absent(),
+                Value<int> position = const Value.absent(),
+                Value<String?> configurationName = const Value.absent(),
+              }) => RigSnapshotEntriesCompanion(
+                id: id,
+                snapshotId: snapshotId,
+                pedalId: pedalId,
+                position: position,
+                configurationName: configurationName,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                required int snapshotId,
+                required int pedalId,
+                required int position,
+                Value<String?> configurationName = const Value.absent(),
+              }) => RigSnapshotEntriesCompanion.insert(
+                id: id,
+                snapshotId: snapshotId,
+                pedalId: pedalId,
+                position: position,
+                configurationName: configurationName,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable(table),
+                  $$RigSnapshotEntriesTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback:
+              ({
+                snapshotId = false,
+                pedalId = false,
+                rigSnapshotValuesRefs = false,
+              }) {
+                return PrefetchHooks(
+                  db: db,
+                  explicitlyWatchedTables: [
+                    if (rigSnapshotValuesRefs) db.rigSnapshotValues,
+                  ],
+                  addJoins:
+                      <
+                        T extends TableManagerState<
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic
+                        >
+                      >(state) {
+                        if (snapshotId) {
+                          state =
+                              state.withJoin(
+                                    currentTable: table,
+                                    currentColumn: table.snapshotId,
+                                    referencedTable:
+                                        $$RigSnapshotEntriesTableReferences
+                                            ._snapshotIdTable(db),
+                                    referencedColumn:
+                                        $$RigSnapshotEntriesTableReferences
+                                            ._snapshotIdTable(db)
+                                            .id,
+                                  )
+                                  as T;
+                        }
+                        if (pedalId) {
+                          state =
+                              state.withJoin(
+                                    currentTable: table,
+                                    currentColumn: table.pedalId,
+                                    referencedTable:
+                                        $$RigSnapshotEntriesTableReferences
+                                            ._pedalIdTable(db),
+                                    referencedColumn:
+                                        $$RigSnapshotEntriesTableReferences
+                                            ._pedalIdTable(db)
+                                            .id,
+                                  )
+                                  as T;
+                        }
+
+                        return state;
+                      },
+                  getPrefetchedDataCallback: (items) async {
+                    return [
+                      if (rigSnapshotValuesRefs)
+                        await $_getPrefetchedData<
+                          RigSnapshotEntry,
+                          $RigSnapshotEntriesTable,
+                          RigSnapshotValue
+                        >(
+                          currentTable: table,
+                          referencedTable: $$RigSnapshotEntriesTableReferences
+                              ._rigSnapshotValuesRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$RigSnapshotEntriesTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).rigSnapshotValuesRefs,
+                          referencedItemsForCurrentItem:
+                              (item, referencedItems) => referencedItems.where(
+                                (e) => e.entryId == item.id,
+                              ),
+                          typedResults: items,
+                        ),
+                    ];
+                  },
+                );
+              },
+        ),
+      );
+}
+
+typedef $$RigSnapshotEntriesTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $RigSnapshotEntriesTable,
+      RigSnapshotEntry,
+      $$RigSnapshotEntriesTableFilterComposer,
+      $$RigSnapshotEntriesTableOrderingComposer,
+      $$RigSnapshotEntriesTableAnnotationComposer,
+      $$RigSnapshotEntriesTableCreateCompanionBuilder,
+      $$RigSnapshotEntriesTableUpdateCompanionBuilder,
+      (RigSnapshotEntry, $$RigSnapshotEntriesTableReferences),
+      RigSnapshotEntry,
+      PrefetchHooks Function({
+        bool snapshotId,
+        bool pedalId,
+        bool rigSnapshotValuesRefs,
+      })
+    >;
+typedef $$RigSnapshotValuesTableCreateCompanionBuilder =
+    RigSnapshotValuesCompanion Function({
+      Value<int> id,
+      required int entryId,
+      required String controlName,
+      required ControlType controlType,
+      required double value,
+      Value<String?> unit,
+      Value<String?> options,
+      required int displayOrder,
+    });
+typedef $$RigSnapshotValuesTableUpdateCompanionBuilder =
+    RigSnapshotValuesCompanion Function({
+      Value<int> id,
+      Value<int> entryId,
+      Value<String> controlName,
+      Value<ControlType> controlType,
+      Value<double> value,
+      Value<String?> unit,
+      Value<String?> options,
+      Value<int> displayOrder,
+    });
+
+final class $$RigSnapshotValuesTableReferences
+    extends
+        BaseReferences<
+          _$AppDatabase,
+          $RigSnapshotValuesTable,
+          RigSnapshotValue
+        > {
+  $$RigSnapshotValuesTableReferences(
+    super.$_db,
+    super.$_table,
+    super.$_typedResult,
+  );
+
+  static $RigSnapshotEntriesTable _entryIdTable(_$AppDatabase db) => db
+      .rigSnapshotEntries
+      .createAlias('rig_snapshot_values__entry_id__rig_snapshot_entries__id');
+
+  $$RigSnapshotEntriesTableProcessedTableManager get entryId {
+    final $_column = $_itemColumn<int>('entry_id')!;
+
+    final manager = $$RigSnapshotEntriesTableTableManager(
+      $_db,
+      $_db.rigSnapshotEntries,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_entryIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+}
+
+class $$RigSnapshotValuesTableFilterComposer
+    extends Composer<_$AppDatabase, $RigSnapshotValuesTable> {
+  $$RigSnapshotValuesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get controlName => $composableBuilder(
+    column: $table.controlName,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnWithTypeConverterFilters<ControlType, ControlType, String>
+  get controlType => $composableBuilder(
+    column: $table.controlType,
+    builder: (column) => ColumnWithTypeConverterFilters(column),
+  );
+
+  ColumnFilters<double> get value => $composableBuilder(
+    column: $table.value,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get unit => $composableBuilder(
+    column: $table.unit,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get options => $composableBuilder(
+    column: $table.options,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get displayOrder => $composableBuilder(
+    column: $table.displayOrder,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  $$RigSnapshotEntriesTableFilterComposer get entryId {
+    final $$RigSnapshotEntriesTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.entryId,
+      referencedTable: $db.rigSnapshotEntries,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$RigSnapshotEntriesTableFilterComposer(
+            $db: $db,
+            $table: $db.rigSnapshotEntries,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$RigSnapshotValuesTableOrderingComposer
+    extends Composer<_$AppDatabase, $RigSnapshotValuesTable> {
+  $$RigSnapshotValuesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get controlName => $composableBuilder(
+    column: $table.controlName,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get controlType => $composableBuilder(
+    column: $table.controlType,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get value => $composableBuilder(
+    column: $table.value,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get unit => $composableBuilder(
+    column: $table.unit,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get options => $composableBuilder(
+    column: $table.options,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get displayOrder => $composableBuilder(
+    column: $table.displayOrder,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  $$RigSnapshotEntriesTableOrderingComposer get entryId {
+    final $$RigSnapshotEntriesTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.entryId,
+      referencedTable: $db.rigSnapshotEntries,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$RigSnapshotEntriesTableOrderingComposer(
+            $db: $db,
+            $table: $db.rigSnapshotEntries,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$RigSnapshotValuesTableAnnotationComposer
+    extends Composer<_$AppDatabase, $RigSnapshotValuesTable> {
+  $$RigSnapshotValuesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get controlName => $composableBuilder(
+    column: $table.controlName,
+    builder: (column) => column,
+  );
+
+  GeneratedColumnWithTypeConverter<ControlType, String> get controlType =>
+      $composableBuilder(
+        column: $table.controlType,
+        builder: (column) => column,
+      );
+
+  GeneratedColumn<double> get value =>
+      $composableBuilder(column: $table.value, builder: (column) => column);
+
+  GeneratedColumn<String> get unit =>
+      $composableBuilder(column: $table.unit, builder: (column) => column);
+
+  GeneratedColumn<String> get options =>
+      $composableBuilder(column: $table.options, builder: (column) => column);
+
+  GeneratedColumn<int> get displayOrder => $composableBuilder(
+    column: $table.displayOrder,
+    builder: (column) => column,
+  );
+
+  $$RigSnapshotEntriesTableAnnotationComposer get entryId {
+    final $$RigSnapshotEntriesTableAnnotationComposer composer =
+        $composerBuilder(
+          composer: this,
+          getCurrentColumn: (t) => t.entryId,
+          referencedTable: $db.rigSnapshotEntries,
+          getReferencedColumn: (t) => t.id,
+          builder:
+              (
+                joinBuilder, {
+                $addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer,
+              }) => $$RigSnapshotEntriesTableAnnotationComposer(
+                $db: $db,
+                $table: $db.rigSnapshotEntries,
+                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                joinBuilder: joinBuilder,
+                $removeJoinBuilderFromRootComposer:
+                    $removeJoinBuilderFromRootComposer,
+              ),
+        );
+    return composer;
+  }
+}
+
+class $$RigSnapshotValuesTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $RigSnapshotValuesTable,
+          RigSnapshotValue,
+          $$RigSnapshotValuesTableFilterComposer,
+          $$RigSnapshotValuesTableOrderingComposer,
+          $$RigSnapshotValuesTableAnnotationComposer,
+          $$RigSnapshotValuesTableCreateCompanionBuilder,
+          $$RigSnapshotValuesTableUpdateCompanionBuilder,
+          (RigSnapshotValue, $$RigSnapshotValuesTableReferences),
+          RigSnapshotValue,
+          PrefetchHooks Function({bool entryId})
+        > {
+  $$RigSnapshotValuesTableTableManager(
+    _$AppDatabase db,
+    $RigSnapshotValuesTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$RigSnapshotValuesTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$RigSnapshotValuesTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$RigSnapshotValuesTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<int> entryId = const Value.absent(),
+                Value<String> controlName = const Value.absent(),
+                Value<ControlType> controlType = const Value.absent(),
+                Value<double> value = const Value.absent(),
+                Value<String?> unit = const Value.absent(),
+                Value<String?> options = const Value.absent(),
+                Value<int> displayOrder = const Value.absent(),
+              }) => RigSnapshotValuesCompanion(
+                id: id,
+                entryId: entryId,
+                controlName: controlName,
+                controlType: controlType,
+                value: value,
+                unit: unit,
+                options: options,
+                displayOrder: displayOrder,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                required int entryId,
+                required String controlName,
+                required ControlType controlType,
+                required double value,
+                Value<String?> unit = const Value.absent(),
+                Value<String?> options = const Value.absent(),
+                required int displayOrder,
+              }) => RigSnapshotValuesCompanion.insert(
+                id: id,
+                entryId: entryId,
+                controlName: controlName,
+                controlType: controlType,
+                value: value,
+                unit: unit,
+                options: options,
+                displayOrder: displayOrder,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable(table),
+                  $$RigSnapshotValuesTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: ({entryId = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [],
+              addJoins:
+                  <
+                    T extends TableManagerState<
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic
+                    >
+                  >(state) {
+                    if (entryId) {
+                      state =
+                          state.withJoin(
+                                currentTable: table,
+                                currentColumn: table.entryId,
+                                referencedTable:
+                                    $$RigSnapshotValuesTableReferences
+                                        ._entryIdTable(db),
+                                referencedColumn:
+                                    $$RigSnapshotValuesTableReferences
+                                        ._entryIdTable(db)
+                                        .id,
+                              )
+                              as T;
+                    }
+
+                    return state;
+                  },
+              getPrefetchedDataCallback: (items) async {
+                return [];
+              },
+            );
+          },
+        ),
+      );
+}
+
+typedef $$RigSnapshotValuesTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $RigSnapshotValuesTable,
+      RigSnapshotValue,
+      $$RigSnapshotValuesTableFilterComposer,
+      $$RigSnapshotValuesTableOrderingComposer,
+      $$RigSnapshotValuesTableAnnotationComposer,
+      $$RigSnapshotValuesTableCreateCompanionBuilder,
+      $$RigSnapshotValuesTableUpdateCompanionBuilder,
+      (RigSnapshotValue, $$RigSnapshotValuesTableReferences),
+      RigSnapshotValue,
+      PrefetchHooks Function({bool entryId})
+    >;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -8401,4 +11249,10 @@ class $AppDatabaseManager {
       $$PedalboardsTableTableManager(_db, _db.pedalboards);
   $$PedalboardSlotsTableTableManager get pedalboardSlots =>
       $$PedalboardSlotsTableTableManager(_db, _db.pedalboardSlots);
+  $$RigSnapshotsTableTableManager get rigSnapshots =>
+      $$RigSnapshotsTableTableManager(_db, _db.rigSnapshots);
+  $$RigSnapshotEntriesTableTableManager get rigSnapshotEntries =>
+      $$RigSnapshotEntriesTableTableManager(_db, _db.rigSnapshotEntries);
+  $$RigSnapshotValuesTableTableManager get rigSnapshotValues =>
+      $$RigSnapshotValuesTableTableManager(_db, _db.rigSnapshotValues);
 }

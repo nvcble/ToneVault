@@ -18,7 +18,8 @@ import 'pedalboard_validator.dart';
 ///
 /// Deleting a rig is allowed, unlike deleting a pedal with anything recorded
 /// about it: a rig is a grouping of pedals the user still owns, so removing it
-/// takes nothing away from them.
+/// takes nothing away from them. Once snapshots have been taken of it, though,
+/// deleting the rig would take those with it, so it is refused until they go.
 class PedalboardRepository {
   PedalboardRepository(this._dao, {DateTime Function()? clock})
     : _clock = clock ?? DateTime.now;
@@ -78,6 +79,17 @@ class PedalboardRepository {
   }
 
   Future<void> deletePedalboard(int pedalboardId) async {
+    // `rig_snapshots` references the rig with RESTRICT, so without this the
+    // delete would surface as a constraint failure with nothing readable in it.
+    final snapshots = await _dao.countSnapshots(pedalboardId);
+    if (snapshots > 0) {
+      throw AppFailure(
+        'This rig has $snapshots '
+        '${snapshots == 1 ? 'snapshot' : 'snapshots'} of how it was set up. '
+        'Delete those first if you no longer want the rig.',
+      );
+    }
+
     final deleted = await _guard(
       () => _dao.deletePedalboard(pedalboardId),
       'Could not delete this rig.',

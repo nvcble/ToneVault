@@ -100,11 +100,13 @@ class PedalRepository {
       deleted = await _dao.deletePedal(pedalId);
     } catch (error) {
       // The only constraint a pedal delete can violate is a foreign key:
-      // configurations, change logs, replacement records and rig slots all
-      // reference pedals with ON DELETE RESTRICT. Retiring is the intended path.
+      // configurations, change logs, replacement records, rig slots and snapshot
+      // entries all reference pedals with ON DELETE RESTRICT. Retiring is the
+      // intended path.
       throw AppFailure(
-        'This pedal is on a rig, or has configurations or history attached. '
-        'Take it off the rig, or change its status rather than deleting it.',
+        'This pedal is on a rig, or has configurations, history or snapshots '
+        'attached. Take it off the rig, or change its status rather than '
+        'deleting it.',
         cause: error,
       );
     }

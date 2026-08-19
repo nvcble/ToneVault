@@ -7,6 +7,7 @@ mixin _$PedalboardDaoMixin on DatabaseAccessor<AppDatabase> {
   $PedalboardsTable get pedalboards => attachedDatabase.pedalboards;
   $PedalsTable get pedals => attachedDatabase.pedals;
   $PedalboardSlotsTable get pedalboardSlots => attachedDatabase.pedalboardSlots;
+  $RigSnapshotsTable get rigSnapshots => attachedDatabase.rigSnapshots;
   PedalboardDaoManager get managers => PedalboardDaoManager(this);
 }
 
@@ -22,4 +23,6 @@ class PedalboardDaoManager {
         _db.attachedDatabase,
         _db.pedalboardSlots,
       );
+  $$RigSnapshotsTableTableManager get rigSnapshots =>
+      $$RigSnapshotsTableTableManager(_db.attachedDatabase, _db.rigSnapshots);
 }
