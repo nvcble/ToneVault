@@ -3,8 +3,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../app/router/routes.dart';
+import '../../../app/theme/app_spacing.dart';
 import '../../../shared/widgets/empty_state.dart';
 import '../../../shared/widgets/failure_snack_bar.dart';
+import '../../configurations/widgets/configuration_list_view.dart';
 import '../../controls/widgets/control_list_view.dart';
 import '../providers/pedal_editor.dart';
 import '../providers/pedal_providers.dart';
@@ -12,8 +14,9 @@ import '../widgets/pedal_overview.dart';
 
 /// Everything recorded about one pedal.
 ///
-/// Overview is the pedal itself; Controls is what it can be set to.
-/// Configurations and history join them in later phases.
+/// Overview is the pedal itself; Controls is what it can be set to;
+/// Configurations are the settings worth keeping. History joins them in a later
+/// phase.
 class PedalDetailScreen extends ConsumerWidget {
   const PedalDetailScreen({required this.pedalId, super.key});
 
@@ -25,7 +28,7 @@ class PedalDetailScreen extends ConsumerWidget {
     final pedal = pedalValue.valueOrNull;
 
     return DefaultTabController(
-      length: 2,
+      length: 3,
       child: Scaffold(
         appBar: AppBar(
           title: Text(pedal?.name ?? 'Pedal'),
@@ -44,9 +47,13 @@ class PedalDetailScreen extends ConsumerWidget {
                   ),
                 ],
           bottom: const TabBar(
+            // 'Configurations' is the widest label the app has; the narrower
+            // padding keeps three tabs across a phone in portrait.
+            labelPadding: EdgeInsets.symmetric(horizontal: AppSpacing.xs),
             tabs: [
               Tab(text: 'Overview'),
               Tab(text: 'Controls'),
+              Tab(text: 'Configurations'),
             ],
           ),
         ),
@@ -67,6 +74,7 @@ class PedalDetailScreen extends ConsumerWidget {
                   children: [
                     PedalOverview(pedal: pedal),
                     ControlListView(pedalId: pedalId),
+                    ConfigurationListView(pedalId: pedalId),
                   ],
                 ),
         ),

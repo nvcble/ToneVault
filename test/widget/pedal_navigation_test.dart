@@ -7,6 +7,7 @@ import 'package:tone_vault/core/enums/control_type.dart';
 import 'package:tone_vault/core/enums/pedal_category.dart';
 import 'package:tone_vault/core/enums/pedal_status.dart';
 import 'package:tone_vault/core/enums/pedal_type.dart';
+import 'package:tone_vault/features/configurations/providers/configuration_providers.dart';
 import 'package:tone_vault/features/controls/providers/control_providers.dart';
 import 'package:tone_vault/features/pedals/providers/pedal_providers.dart';
 
@@ -33,6 +34,14 @@ void main() {
     displayOrder: 0,
   );
 
+  final configuration = Configuration(
+    id: 11,
+    pedalId: pedal.id,
+    name: 'Worship Lead',
+    createdAt: DateTime.utc(2026, 8, 19),
+    updatedAt: DateTime.utc(2026, 8, 19),
+  );
+
   /// Opens the app on the pedals tab with one pedal in it.
   Future<void> pumpPedalsTab(WidgetTester tester) async {
     // A tall window keeps the whole form on screen, so finders do not depend on
@@ -54,6 +63,16 @@ void main() {
           controlProvider(
             control.id,
           ).overrideWith((ref) => Stream.value(control)),
+          // As do its configurations and the positions they hold.
+          configurationListProvider(
+            pedal.id,
+          ).overrideWith((ref) => Stream.value([configuration])),
+          configurationProvider(
+            configuration.id,
+          ).overrideWith((ref) => Stream.value(configuration)),
+          configurationValuesProvider(
+            configuration.id,
+          ).overrideWith((ref) => Stream.value({control.id: 0.5})),
         ],
         child: const ToneVaultApp(),
       ),
@@ -135,6 +154,46 @@ void main() {
     expect(find.text('Add control'), findsExactly(2)); // title and button
     expect(find.text('That control no longer exists'), findsNothing);
     expect(find.text('Type'), findsOne);
+  });
+
+  testWidgets('the configurations tab opens one and lists its settings', (
+    tester,
+  ) async {
+    await pumpPedalsTab(tester);
+
+    await tester.tap(find.text('Caline PureSky'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Configurations'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Worship Lead'), findsOne);
+
+    await tester.tap(find.text('Worship Lead'));
+    await tester.pumpAndSettle();
+
+    // The configuration routes are nested under the pedal too, so its settings
+    // are reached without leaving the pedals branch.
+    expect(find.text('Volume'), findsOne);
+    expect(find.text('12:00'), findsOne);
+    expect(find.byType(NavigationBar), findsOne);
+  });
+
+  testWidgets('the configurations tab opens an empty form for a new one', (
+    tester,
+  ) async {
+    await pumpPedalsTab(tester);
+
+    await tester.tap(find.text('Caline PureSky'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Configurations'));
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.widgetWithText(FilledButton, 'Add configuration'));
+    await tester.pumpAndSettle();
+
+    // '/configurations/new' has to win over '/configurations/:configurationId'.
+    expect(find.text('Add configuration'), findsExactly(2)); // title and button
+    expect(find.text('That configuration no longer exists'), findsNothing);
   });
 
   testWidgets('the navigation bar stays put on a detail screen', (

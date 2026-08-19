@@ -1,6 +1,8 @@
 import 'package:go_router/go_router.dart';
 
 import '../../../app/router/routes.dart';
+import '../../configurations/screens/configuration_form_screen.dart';
+import '../../configurations/screens/configuration_screen.dart';
 import '../../controls/screens/control_form_screen.dart';
 import '../screens/pedal_detail_screen.dart';
 import '../screens/pedal_form_screen.dart';
@@ -45,6 +47,29 @@ List<RouteBase> pedalRoutes() {
                 controlId: _controlId(state),
               ),
             ),
+            // Declared ahead of ':configurationId' so
+            // '/configurations/new' is not matched as a configuration id.
+            GoRoute(
+              path: Routes.configurationNewSegment,
+              builder: (context, state) =>
+                  ConfigurationFormScreen(pedalId: _pedalId(state)),
+            ),
+            GoRoute(
+              path: Routes.configurationDetailSegment,
+              builder: (context, state) => ConfigurationScreen(
+                pedalId: _pedalId(state),
+                configurationId: _configurationId(state),
+              ),
+              routes: [
+                GoRoute(
+                  path: Routes.configurationEditSegment,
+                  builder: (context, state) => ConfigurationFormScreen(
+                    pedalId: _pedalId(state),
+                    configurationId: _configurationId(state),
+                  ),
+                ),
+              ],
+            ),
           ],
         ),
       ],
@@ -59,3 +84,6 @@ int _pedalId(GoRouterState state) =>
 
 int _controlId(GoRouterState state) =>
     int.tryParse(state.pathParameters['controlId'] ?? '') ?? -1;
+
+int _configurationId(GoRouterState state) =>
+    int.tryParse(state.pathParameters['configurationId'] ?? '') ?? -1;
