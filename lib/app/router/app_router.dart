@@ -4,7 +4,7 @@ import 'package:go_router/go_router.dart';
 import '../../features/dashboard/screens/dashboard_screen.dart';
 import '../../features/history/screens/history_screen.dart';
 import '../../features/pedalboards/screens/rigs_screen.dart';
-import '../../features/pedals/screens/pedals_screen.dart';
+import '../../features/pedals/routes/pedal_routes.dart';
 import '../../features/settings/screens/settings_screen.dart';
 import '../../shared/widgets/app_scaffold.dart';
 import 'routes.dart';
@@ -36,14 +36,7 @@ GoRouter createAppRouter() {
               ),
             ],
           ),
-          StatefulShellBranch(
-            routes: [
-              GoRoute(
-                path: Routes.pedals,
-                builder: (context, state) => const PedalsScreen(),
-              ),
-            ],
-          ),
+          StatefulShellBranch(routes: pedalRoutes()),
           StatefulShellBranch(
             routes: [
               GoRoute(

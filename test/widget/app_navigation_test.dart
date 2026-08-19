@@ -1,10 +1,29 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:tone_vault/app/app.dart';
+import 'package:tone_vault/core/database/app_database.dart';
+import 'package:tone_vault/features/pedals/providers/pedal_providers.dart';
 
 void main() {
+  /// Pumps the real app with one stand-in: the pedals tab would otherwise open
+  /// the database file on disk, which never resolves under the test binding and
+  /// has nothing to do with navigation.
+  Future<void> pumpApp(WidgetTester tester) async {
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          pedalListProvider.overrideWith(
+            (ref) => Stream<List<Pedal>>.value(const []),
+          ),
+        ],
+        child: const ToneVaultApp(),
+      ),
+    );
+    await tester.pumpAndSettle();
+  }
+
   testWidgets('bottom bar moves between all five tabs', (tester) async {
-    await tester.pumpWidget(const ProviderScope(child: ToneVaultApp()));
+    await pumpApp(tester);
 
     expect(find.text('Your rig at a glance'), findsOneWidget);
 
@@ -29,7 +48,7 @@ void main() {
   testWidgets('keeps the previous tab alive when switching away', (
     tester,
   ) async {
-    await tester.pumpWidget(const ProviderScope(child: ToneVaultApp()));
+    await pumpApp(tester);
 
     await tester.tap(find.text('History'));
     await tester.pumpAndSettle();
@@ -38,6 +57,9 @@ void main() {
 
     // An IndexedStack shell keeps inactive branches mounted, which is what lets
     // each tab hold its own scroll position and detail stack.
-    expect(find.text('Nothing logged yet', skipOffstage: false), findsOneWidget);
+    expect(
+      find.text('Nothing logged yet', skipOffstage: false),
+      findsOneWidget,
+    );
   });
 }
