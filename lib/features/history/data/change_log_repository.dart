@@ -1,4 +1,3 @@
-import '../../../core/database/app_database.dart';
 import '../../../core/database/daos/change_log_dao.dart';
 import '../../../core/errors/app_failure.dart';
 import 'change_entry.dart';
@@ -26,7 +25,7 @@ class ChangeLogRepository {
   Stream<List<PedalChange>> watchRecentChanges({int limit = historyPageSize}) =>
       _dao.watchRecentChanges(limit: limit);
 
-  Stream<List<ChangeLog>> watchPedalChanges(
+  Stream<List<PedalChange>> watchPedalChanges(
     int pedalId, {
     int limit = historyPageSize,
   }) => _dao.watchPedalChanges(pedalId, limit: limit);

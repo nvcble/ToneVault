@@ -1,6 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../core/database/app_database.dart';
 import '../../../core/database/daos/change_log_dao.dart';
 import '../../../core/database/database_provider.dart';
 import '../data/change_log_repository.dart';
@@ -22,8 +21,8 @@ final StreamProvider<List<PedalChange>> recentHistoryProvider =
     );
 
 /// One pedal's own history, newest first.
-final StreamProviderFamily<List<ChangeLog>, int> pedalHistoryProvider =
-    StreamProvider.family<List<ChangeLog>, int>(
+final StreamProviderFamily<List<PedalChange>, int> pedalHistoryProvider =
+    StreamProvider.family<List<PedalChange>, int>(
       (ref, pedalId) =>
           ref.watch(changeLogRepositoryProvider).watchPedalChanges(pedalId),
     );

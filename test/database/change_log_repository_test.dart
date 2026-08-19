@@ -1,10 +1,12 @@
 import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:tone_vault/core/database/app_database.dart';
+import 'package:tone_vault/core/enums/control_type.dart';
 import 'package:tone_vault/core/enums/pedal_category.dart';
 import 'package:tone_vault/core/enums/pedal_status.dart';
 import 'package:tone_vault/core/enums/pedal_type.dart';
 import 'package:tone_vault/core/errors/app_failure.dart';
+import 'package:tone_vault/features/controls/data/control_draft.dart';
 import 'package:tone_vault/features/history/data/change_entry.dart';
 import 'package:tone_vault/features/history/data/change_log_repository.dart';
 import 'package:tone_vault/features/pedals/data/pedal_draft.dart';
@@ -51,10 +53,10 @@ void main() {
     );
 
     final entries = await repository.watchPedalChanges(pedal.id).first;
-    expect(entries.single.oldText, 'Active');
-    expect(entries.single.newText, 'Backup');
-    expect(entries.single.reason, 'moved to the backup board');
-    expect(entries.single.createdAt, now);
+    expect(entries.single.entry.oldText, 'Active');
+    expect(entries.single.entry.newText, 'Backup');
+    expect(entries.single.entry.reason, 'moved to the backup board');
+    expect(entries.single.entry.createdAt, now);
   });
 
   test('keeps every entry rather than replacing the last one', () async {
@@ -75,7 +77,10 @@ void main() {
 
     // Append-only: the earlier entry is still there to be read.
     final entries = await repository.watchPedalChanges(pedal.id).first;
-    expect(entries.map((entry) => entry.newText), ['In storage', 'Backup']);
+    expect(entries.map((change) => change.entry.newText), [
+      'In storage',
+      'Backup',
+    ]);
   });
 
   test('orders same-instant entries by the order they were written', () async {
@@ -93,7 +98,7 @@ void main() {
     // Two changes saved in the same second still read in the order they
     // happened, which the timestamp alone cannot express.
     final entries = await repository.watchPedalChanges(pedal.id).first;
-    expect(entries.first.newText, 'In storage');
+    expect(entries.first.entry.newText, 'In storage');
   });
 
   test('reads the newest changes across pedals with their names', () async {
@@ -140,6 +145,29 @@ void main() {
       await repository.watchPedalChanges(pedal.id, limit: 3).first,
       hasLength(3),
     );
+  });
+
+  test('brings the control along until it is removed', () async {
+    final pedal = await addPedal('Caline PureSky');
+    final controls = controlRepository(database);
+    final volumeId = await controls.createControl(
+      pedal.id,
+      ControlDraft.ofType(ControlType.clock, name: 'Volume'),
+    );
+
+    // The definition is what says a stored 0.5 reads as 12:00, so it is read
+    // along with the entry for as long as it resolves.
+    final changes = await repository.watchPedalChanges(pedal.id).first;
+    expect(changes.single.control?.name, 'Volume');
+
+    await controls.deleteControl(volumeId);
+
+    // Two entries now, the control having been added and then removed. Neither
+    // can reach the control any more, and both still name it.
+    final afterRemoval = await repository.watchPedalChanges(pedal.id).first;
+    expect(afterRemoval, hasLength(2));
+    expect(afterRemoval.every((change) => change.control == null), isTrue);
+    expect(afterRemoval.first.entry.controlName, 'Volume');
   });
 
   test('holds a pedal in place once anything is recorded about it', () async {

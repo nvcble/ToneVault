@@ -3,12 +3,15 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:tone_vault/app/app.dart';
 import 'package:tone_vault/core/database/app_database.dart';
+import 'package:tone_vault/core/database/daos/change_log_dao.dart';
+import 'package:tone_vault/core/enums/change_type.dart';
 import 'package:tone_vault/core/enums/control_type.dart';
 import 'package:tone_vault/core/enums/pedal_category.dart';
 import 'package:tone_vault/core/enums/pedal_status.dart';
 import 'package:tone_vault/core/enums/pedal_type.dart';
 import 'package:tone_vault/features/configurations/providers/configuration_providers.dart';
 import 'package:tone_vault/features/controls/providers/control_providers.dart';
+import 'package:tone_vault/features/history/providers/history_providers.dart';
 import 'package:tone_vault/features/pedals/providers/pedal_providers.dart';
 
 void main() {
@@ -42,6 +45,18 @@ void main() {
     updatedAt: DateTime.utc(2026, 8, 19),
   );
 
+  final PedalChange change = (
+    entry: ChangeLog(
+      id: 1,
+      pedalId: pedal.id,
+      controlName: control.name,
+      changeType: ChangeType.controlAdded,
+      createdAt: DateTime(2026, 8, 19, 9),
+    ),
+    pedalName: pedal.name,
+    control: control,
+  );
+
   /// Opens the app on the pedals tab with one pedal in it.
   Future<void> pumpPedalsTab(WidgetTester tester) async {
     // A tall window keeps the whole form on screen, so finders do not depend on
@@ -73,6 +88,10 @@ void main() {
           configurationValuesProvider(
             configuration.id,
           ).overrideWith((ref) => Stream.value({control.id: 0.5})),
+          // And its history, which the detail screen shows on its own tab.
+          pedalHistoryProvider(
+            pedal.id,
+          ).overrideWith((ref) => Stream.value([change])),
         ],
         child: const ToneVaultApp(),
       ),
@@ -194,6 +213,23 @@ void main() {
     // '/configurations/new' has to win over '/configurations/:configurationId'.
     expect(find.text('Add configuration'), findsExactly(2)); // title and button
     expect(find.text('That configuration no longer exists'), findsNothing);
+  });
+
+  testWidgets('the history tab reads out what happened to this pedal', (
+    tester,
+  ) async {
+    await pumpPedalsTab(tester);
+
+    await tester.tap(find.text('Caline PureSky'));
+    await tester.pumpAndSettle();
+
+    // 'History' is also a bottom navigation destination, so the tab has to be
+    // picked out of the tab bar rather than by its text alone.
+    await tester.tap(find.widgetWithText(Tab, 'History'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Volume added'), findsOne);
+    expect(find.text('Nothing logged yet'), findsNothing);
   });
 
   testWidgets('the navigation bar stays put on a detail screen', (
