@@ -4,18 +4,22 @@ import 'package:tone_vault/app/app.dart';
 import 'package:tone_vault/core/database/app_database.dart';
 import 'package:tone_vault/core/database/daos/change_log_dao.dart';
 import 'package:tone_vault/features/history/providers/history_providers.dart';
+import 'package:tone_vault/features/pedalboards/providers/pedalboard_providers.dart';
 import 'package:tone_vault/features/pedals/providers/pedal_providers.dart';
 
 void main() {
-  /// Pumps the real app with stand-ins for the two tabs that read the database:
-  /// they would otherwise open the file on disk, which never resolves under the
-  /// test binding and has nothing to do with navigation.
+  /// Pumps the real app with stand-ins for the tabs that read the database: they
+  /// would otherwise open the file on disk, which never resolves under the test
+  /// binding and has nothing to do with navigation.
   Future<void> pumpApp(WidgetTester tester) async {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
           pedalListProvider.overrideWith(
             (ref) => Stream<List<Pedal>>.value(const []),
+          ),
+          pedalboardListProvider.overrideWith(
+            (ref) => Stream<List<Pedalboard>>.value(const []),
           ),
           recentHistoryProvider.overrideWith(
             (ref) => Stream<List<PedalChange>>.value(const []),
