@@ -2,6 +2,8 @@ import 'package:go_router/go_router.dart';
 
 import '../../../app/router/routes.dart';
 import '../../snapshots/screens/capture_snapshot_screen.dart';
+import '../../snapshots/screens/snapshot_edit_screen.dart';
+import '../../snapshots/screens/snapshot_screen.dart';
 import '../screens/rig_form_screen.dart';
 import '../screens/rig_screen.dart';
 import '../screens/rigs_screen.dart';
@@ -37,6 +39,24 @@ List<RouteBase> rigRoutes() {
               builder: (context, state) =>
                   CaptureSnapshotScreen(pedalboardId: _pedalboardId(state)),
             ),
+            // Declared after 'snapshots/new' so that path is not matched as a
+            // snapshot id.
+            GoRoute(
+              path: Routes.snapshotDetailSegment,
+              builder: (context, state) => SnapshotScreen(
+                pedalboardId: _pedalboardId(state),
+                snapshotId: _snapshotId(state),
+              ),
+              routes: [
+                GoRoute(
+                  path: Routes.snapshotEditSegment,
+                  builder: (context, state) => SnapshotEditScreen(
+                    pedalboardId: _pedalboardId(state),
+                    snapshotId: _snapshotId(state),
+                  ),
+                ),
+              ],
+            ),
           ],
         ),
       ],
@@ -48,3 +68,6 @@ List<RouteBase> rigRoutes() {
 /// exists" state instead of throwing.
 int _pedalboardId(GoRouterState state) =>
     int.tryParse(state.pathParameters['rigId'] ?? '') ?? -1;
+
+int _snapshotId(GoRouterState state) =>
+    int.tryParse(state.pathParameters['snapshotId'] ?? '') ?? -1;

@@ -49,8 +49,15 @@ class RigSnapshotsView extends ConsumerWidget {
                 : ListView.builder(
                     padding: const EdgeInsets.all(AppSpacing.md),
                     itemCount: snapshots.length,
-                    itemBuilder: (context, index) =>
-                        SnapshotCard(snapshot: snapshots[index]),
+                    itemBuilder: (context, index) {
+                      final snapshot = snapshots[index];
+                      return SnapshotCard(
+                        snapshot: snapshot,
+                        onTap: () => context.go(
+                          Routes.snapshotDetail(pedalboardId, snapshot.id),
+                        ),
+                      );
+                    },
                   ),
           ),
         ),

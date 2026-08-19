@@ -42,6 +42,12 @@ abstract final class Routes {
   static String snapshotNew(int pedalboardId) =>
       '${rigDetail(pedalboardId)}/snapshots/new';
 
+  static String snapshotDetail(int pedalboardId, int snapshotId) =>
+      '${rigDetail(pedalboardId)}/snapshots/$snapshotId';
+
+  static String snapshotEdit(int pedalboardId, int snapshotId) =>
+      '${snapshotDetail(pedalboardId, snapshotId)}/edit';
+
   /// Nested routes are declared relative to their parent, so the paths handed
   /// to `GoRoute` are not the same strings used to navigate.
   static const String pedalNewSegment = 'new';
@@ -58,4 +64,6 @@ abstract final class Routes {
   static const String rigDetailSegment = ':rigId';
   static const String rigEditSegment = 'edit';
   static const String snapshotNewSegment = 'snapshots/new';
+  static const String snapshotDetailSegment = 'snapshots/:snapshotId';
+  static const String snapshotEditSegment = 'edit';
 }

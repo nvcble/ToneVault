@@ -8,9 +8,10 @@ import '../../../shared/formatting/app_date_format.dart';
 /// The date carries the time of day, because two snapshots can share a name and
 /// a date - two services on one Sunday - and the time is what tells them apart.
 class SnapshotCard extends StatelessWidget {
-  const SnapshotCard({required this.snapshot, super.key});
+  const SnapshotCard({required this.snapshot, required this.onTap, super.key});
 
   final RigSnapshot snapshot;
+  final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -25,6 +26,7 @@ class SnapshotCard extends StatelessWidget {
               : '${formatDateTime(snapshot.capturedAt)}\n$notes',
         ),
         isThreeLine: notes != null,
+        onTap: onTap,
       ),
     );
   }
