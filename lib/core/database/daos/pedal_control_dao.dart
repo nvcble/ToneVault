@@ -35,6 +35,12 @@ class PedalControlDao extends DatabaseAccessor<AppDatabase>
         .get();
   }
 
+  Stream<PedalControl?> watchControl(int controlId) {
+    return (select(
+      pedalControls,
+    )..where((row) => row.id.equals(controlId))).watchSingleOrNull();
+  }
+
   Future<PedalControl?> findControl(int controlId) {
     return (select(
       pedalControls,

@@ -15,9 +15,18 @@ abstract final class Routes {
 
   static String pedalEdit(int pedalId) => '${pedalDetail(pedalId)}/edit';
 
+  /// Controls belong to one pedal, so they are reached through it.
+  static String controlNew(int pedalId) =>
+      '${pedalDetail(pedalId)}/controls/new';
+
+  static String controlEdit(int pedalId, int controlId) =>
+      '${pedalDetail(pedalId)}/controls/$controlId/edit';
+
   /// Nested routes are declared relative to their parent, so the paths handed
   /// to `GoRoute` are not the same strings used to navigate.
   static const String pedalNewSegment = 'new';
   static const String pedalDetailSegment = ':pedalId';
   static const String pedalEditSegment = 'edit';
+  static const String controlNewSegment = 'controls/new';
+  static const String controlEditSegment = 'controls/:controlId/edit';
 }

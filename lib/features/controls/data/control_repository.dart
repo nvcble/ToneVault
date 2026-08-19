@@ -20,6 +20,9 @@ class ControlRepository {
   Stream<List<PedalControl>> watchControls(int pedalId) =>
       _dao.watchControls(pedalId);
 
+  Stream<PedalControl?> watchControl(int controlId) =>
+      _dao.watchControl(controlId);
+
   /// Adds [draft] to the end of the pedal's control list.
   Future<int> createControl(int pedalId, ControlDraft draft) async {
     final control = _validated(draft);

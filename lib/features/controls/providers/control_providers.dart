@@ -22,3 +22,11 @@ final StreamProviderFamily<List<PedalControl>, int> controlListProvider =
       (ref, pedalId) =>
           ref.watch(controlRepositoryProvider).watchControls(pedalId),
     );
+
+/// One control, for the edit form. Watched rather than read once so a control
+/// deleted from the list behind the form is noticed.
+final StreamProviderFamily<PedalControl?, int> controlProvider =
+    StreamProvider.family<PedalControl?, int>(
+      (ref, controlId) =>
+          ref.watch(controlRepositoryProvider).watchControl(controlId),
+    );

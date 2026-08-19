@@ -3,9 +3,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:tone_vault/app/app.dart';
 import 'package:tone_vault/core/database/app_database.dart';
+import 'package:tone_vault/core/enums/control_type.dart';
 import 'package:tone_vault/core/enums/pedal_category.dart';
 import 'package:tone_vault/core/enums/pedal_status.dart';
 import 'package:tone_vault/core/enums/pedal_type.dart';
+import 'package:tone_vault/features/controls/providers/control_providers.dart';
 import 'package:tone_vault/features/pedals/providers/pedal_providers.dart';
 
 void main() {
@@ -21,6 +23,16 @@ void main() {
     updatedAt: DateTime.utc(2026, 8, 19),
   );
 
+  final control = PedalControl(
+    id: 3,
+    pedalId: pedal.id,
+    name: 'Volume',
+    controlType: ControlType.clock,
+    minValue: 0,
+    maxValue: 1,
+    displayOrder: 0,
+  );
+
   /// Opens the app on the pedals tab with one pedal in it.
   Future<void> pumpPedalsTab(WidgetTester tester) async {
     // A tall window keeps the whole form on screen, so finders do not depend on
@@ -34,6 +46,14 @@ void main() {
         overrides: [
           pedalListProvider.overrideWith((ref) => Stream.value([pedal])),
           pedalProvider(pedal.id).overrideWith((ref) => Stream.value(pedal)),
+          // The detail screen lists the pedal's controls, so the controls come
+          // from here rather than from a real database.
+          controlListProvider(
+            pedal.id,
+          ).overrideWith((ref) => Stream.value([control])),
+          controlProvider(
+            control.id,
+          ).overrideWith((ref) => Stream.value(control)),
         ],
         child: const ToneVaultApp(),
       ),
@@ -73,6 +93,48 @@ void main() {
     // detail screen for a pedal that cannot exist.
     expect(find.text('Add pedal'), findsExactly(2)); // title and button
     expect(find.text('That pedal no longer exists'), findsNothing);
+  });
+
+  testWidgets('the controls tab lists the pedal\'s controls and edits one', (
+    tester,
+  ) async {
+    await pumpPedalsTab(tester);
+
+    await tester.tap(find.text('Caline PureSky'));
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text('Controls'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Volume'), findsOne);
+    expect(find.text('Purchased'), findsNothing);
+
+    await tester.tap(find.text('Volume'));
+    await tester.pumpAndSettle();
+
+    // The control routes are nested under the pedal, so editing a control is
+    // reached without leaving the pedals branch.
+    expect(find.text('Edit control'), findsOne);
+    expect(find.widgetWithText(FilledButton, 'Save changes'), findsOne);
+    expect(find.byType(NavigationBar), findsOne);
+  });
+
+  testWidgets('the controls tab opens an empty form for a new control', (
+    tester,
+  ) async {
+    await pumpPedalsTab(tester);
+
+    await tester.tap(find.text('Caline PureSky'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Controls'));
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.widgetWithText(FilledButton, 'Add control'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Add control'), findsExactly(2)); // title and button
+    expect(find.text('That control no longer exists'), findsNothing);
+    expect(find.text('Type'), findsOne);
   });
 
   testWidgets('the navigation bar stays put on a detail screen', (

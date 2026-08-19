@@ -1,6 +1,7 @@
 import 'package:go_router/go_router.dart';
 
 import '../../../app/router/routes.dart';
+import '../../controls/screens/control_form_screen.dart';
 import '../screens/pedal_detail_screen.dart';
 import '../screens/pedal_form_screen.dart';
 import '../screens/pedals_screen.dart';
@@ -32,6 +33,18 @@ List<RouteBase> pedalRoutes() {
               builder: (context, state) =>
                   PedalFormScreen(pedalId: _pedalId(state)),
             ),
+            GoRoute(
+              path: Routes.controlNewSegment,
+              builder: (context, state) =>
+                  ControlFormScreen(pedalId: _pedalId(state)),
+            ),
+            GoRoute(
+              path: Routes.controlEditSegment,
+              builder: (context, state) => ControlFormScreen(
+                pedalId: _pedalId(state),
+                controlId: _controlId(state),
+              ),
+            ),
           ],
         ),
       ],
@@ -43,3 +56,6 @@ List<RouteBase> pedalRoutes() {
 /// exists" state instead of throwing.
 int _pedalId(GoRouterState state) =>
     int.tryParse(state.pathParameters['pedalId'] ?? '') ?? -1;
+
+int _controlId(GoRouterState state) =>
+    int.tryParse(state.pathParameters['controlId'] ?? '') ?? -1;
