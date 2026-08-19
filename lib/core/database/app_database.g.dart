@@ -3548,6 +3548,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     'idx_pedal_replacements_new',
     'CREATE INDEX idx_pedal_replacements_new ON pedal_replacements (new_pedal_id)',
   );
+  late final PedalDao pedalDao = PedalDao(this as AppDatabase);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
