@@ -3,11 +3,13 @@ import 'package:tone_vault/core/database/daos/change_log_dao.dart';
 import 'package:tone_vault/core/database/daos/configuration_dao.dart';
 import 'package:tone_vault/core/database/daos/pedal_control_dao.dart';
 import 'package:tone_vault/core/database/daos/pedal_dao.dart';
+import 'package:tone_vault/core/database/daos/pedal_replacement_dao.dart';
 import 'package:tone_vault/features/configurations/data/configuration_repository.dart';
 import 'package:tone_vault/features/configurations/data/configuration_value_repository.dart';
 import 'package:tone_vault/features/controls/data/control_repository.dart';
 import 'package:tone_vault/features/history/data/change_log_repository.dart';
 import 'package:tone_vault/features/pedals/data/pedal_repository.dart';
+import 'package:tone_vault/features/replacements/data/replacement_repository.dart';
 
 /// Repositories wired to one in-memory database, the way the providers wire them
 /// to the real one.
@@ -53,6 +55,19 @@ ConfigurationRepository configurationRepository(
   return ConfigurationRepository(
     ConfigurationDao(database),
     PedalControlDao(database),
+    changeLog ?? changeLogRepository(database, clock: clock),
+    clock: clock,
+  );
+}
+
+ReplacementRepository replacementRepository(
+  AppDatabase database, {
+  DateTime Function()? clock,
+  ChangeLogRepository? changeLog,
+}) {
+  return ReplacementRepository(
+    PedalReplacementDao(database),
+    PedalDao(database),
     changeLog ?? changeLogRepository(database, clock: clock),
     clock: clock,
   );

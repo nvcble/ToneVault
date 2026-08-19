@@ -11,6 +11,7 @@ import 'daos/change_log_dao.dart';
 import 'daos/configuration_dao.dart';
 import 'daos/pedal_control_dao.dart';
 import 'daos/pedal_dao.dart';
+import 'daos/pedal_replacement_dao.dart';
 import 'migrations.dart';
 import 'tables/change_logs_table.dart';
 import 'tables/configuration_values_table.dart';
@@ -32,7 +33,13 @@ part 'app_database.g.dart';
     PedalReplacements,
     Pedalboards,
   ],
-  daos: [PedalDao, PedalControlDao, ConfigurationDao, ChangeLogDao],
+  daos: [
+    PedalDao,
+    PedalControlDao,
+    ConfigurationDao,
+    ChangeLogDao,
+    PedalReplacementDao,
+  ],
 )
 class AppDatabase extends _$AppDatabase {
   AppDatabase(super.executor);

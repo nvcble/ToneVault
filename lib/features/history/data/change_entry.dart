@@ -113,6 +113,22 @@ class ChangeEntry {
          reason: reason,
        );
 
+  /// The entry is filed under [outgoing], the pedal leaving the rig, because
+  /// that is the pedal whose story this ends. The one taking over is named in
+  /// [newText] rather than referenced, so the entry still reads if it is later
+  /// retired in turn.
+  ChangeEntry.pedalReplaced({
+    required Pedal outgoing,
+    required Pedal incoming,
+    String? reason,
+  }) : this._(
+         pedalId: outgoing.id,
+         changeType: ChangeType.pedalReplaced,
+         oldText: outgoing.name,
+         newText: incoming.name,
+         reason: reason,
+       );
+
   final int pedalId;
   final ChangeType changeType;
   final int? configurationId;
