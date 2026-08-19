@@ -127,8 +127,9 @@ class PedalDetailScreen extends ConsumerWidget {
       builder: (dialogContext) => AlertDialog(
         title: const Text('Delete pedal?'),
         content: Text(
-          'This removes $name and everything recorded about it. To keep its '
-          'history, set its status to Sold or Replaced instead.',
+          '$name can only be deleted while nothing has been recorded about it. '
+          'Once it has controls, configurations or history, set its status to '
+          'Sold or Replaced instead, which keeps all of it.',
         ),
         actions: [
           TextButton(
