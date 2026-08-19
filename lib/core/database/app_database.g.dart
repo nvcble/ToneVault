@@ -3717,6 +3717,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final PedalReplacementDao pedalReplacementDao = PedalReplacementDao(
     this as AppDatabase,
   );
+  late final PedalboardDao pedalboardDao = PedalboardDao(this as AppDatabase);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();

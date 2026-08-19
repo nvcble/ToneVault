@@ -12,6 +12,7 @@ import 'daos/configuration_dao.dart';
 import 'daos/pedal_control_dao.dart';
 import 'daos/pedal_dao.dart';
 import 'daos/pedal_replacement_dao.dart';
+import 'daos/pedalboard_dao.dart';
 import 'migrations.dart';
 import 'tables/change_logs_table.dart';
 import 'tables/configuration_values_table.dart';
@@ -39,6 +40,7 @@ part 'app_database.g.dart';
     ConfigurationDao,
     ChangeLogDao,
     PedalReplacementDao,
+    PedalboardDao,
   ],
 )
 class AppDatabase extends _$AppDatabase {
