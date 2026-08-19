@@ -1,8 +1,6 @@
 import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:tone_vault/core/database/app_database.dart';
-import 'package:tone_vault/core/database/daos/pedal_control_dao.dart';
-import 'package:tone_vault/core/database/daos/pedal_dao.dart';
 import 'package:tone_vault/core/enums/control_type.dart';
 import 'package:tone_vault/core/enums/pedal_category.dart';
 import 'package:tone_vault/core/enums/pedal_type.dart';
@@ -11,7 +9,7 @@ import 'package:tone_vault/core/values/control_options.dart';
 import 'package:tone_vault/features/controls/data/control_draft.dart';
 import 'package:tone_vault/features/controls/data/control_repository.dart';
 import 'package:tone_vault/features/pedals/data/pedal_draft.dart';
-import 'package:tone_vault/features/pedals/data/pedal_repository.dart';
+import '../support/repositories.dart';
 
 void main() {
   late AppDatabase database;
@@ -20,8 +18,8 @@ void main() {
 
   setUp(() async {
     database = AppDatabase(NativeDatabase.memory());
-    repository = ControlRepository(PedalControlDao(database));
-    pedalId = await PedalRepository(PedalDao(database)).createPedal(
+    repository = controlRepository(database);
+    pedalId = await pedalRepository(database).createPedal(
       const PedalDraft(
         name: 'Caline PureSky',
         type: PedalType.analog,
@@ -83,14 +81,13 @@ void main() {
     });
 
     test('numbers the first control of a second pedal from zero', () async {
-      final otherPedalId = await PedalRepository(PedalDao(database))
-          .createPedal(
-            const PedalDraft(
-              name: 'Mooer Yellow Comp',
-              type: PedalType.analog,
-              category: PedalCategory.compressor,
-            ),
-          );
+      final otherPedalId = await pedalRepository(database).createPedal(
+        const PedalDraft(
+          name: 'Mooer Yellow Comp',
+          type: PedalType.analog,
+          category: PedalCategory.compressor,
+        ),
+      );
       await repository.createControl(pedalId, draft(name: 'Volume'));
 
       final controlId = await repository.createControl(
@@ -152,14 +149,13 @@ void main() {
     });
 
     test('allows the same control name on a different pedal', () async {
-      final otherPedalId = await PedalRepository(PedalDao(database))
-          .createPedal(
-            const PedalDraft(
-              name: 'Rowin Noise Gate',
-              type: PedalType.analog,
-              category: PedalCategory.noiseGate,
-            ),
-          );
+      final otherPedalId = await pedalRepository(database).createPedal(
+        const PedalDraft(
+          name: 'Rowin Noise Gate',
+          type: PedalType.analog,
+          category: PedalCategory.noiseGate,
+        ),
+      );
       await repository.createControl(pedalId, draft(name: 'Volume'));
 
       await expectLater(

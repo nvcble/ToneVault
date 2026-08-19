@@ -1,9 +1,6 @@
 import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:tone_vault/core/database/app_database.dart';
-import 'package:tone_vault/core/database/daos/configuration_dao.dart';
-import 'package:tone_vault/core/database/daos/pedal_control_dao.dart';
-import 'package:tone_vault/core/database/daos/pedal_dao.dart';
 import 'package:tone_vault/core/enums/control_type.dart';
 import 'package:tone_vault/core/enums/pedal_category.dart';
 import 'package:tone_vault/core/enums/pedal_type.dart';
@@ -11,9 +8,8 @@ import 'package:tone_vault/core/errors/app_failure.dart';
 import 'package:tone_vault/features/configurations/data/configuration_draft.dart';
 import 'package:tone_vault/features/configurations/data/configuration_repository.dart';
 import 'package:tone_vault/features/controls/data/control_draft.dart';
-import 'package:tone_vault/features/controls/data/control_repository.dart';
 import 'package:tone_vault/features/pedals/data/pedal_draft.dart';
-import 'package:tone_vault/features/pedals/data/pedal_repository.dart';
+import '../support/repositories.dart';
 
 /// Naming, renaming and deleting a configuration. Setting the positions it
 /// holds is covered by configuration_value_test.dart.
@@ -27,20 +23,16 @@ void main() {
   setUp(() async {
     now = DateTime.utc(2026, 8, 19, 10);
     database = AppDatabase(NativeDatabase.memory());
-    repository = ConfigurationRepository(
-      ConfigurationDao(database),
-      PedalControlDao(database),
-      clock: () => now,
-    );
+    repository = configurationRepository(database, clock: () => now);
 
-    pedalId = await PedalRepository(PedalDao(database)).createPedal(
+    pedalId = await pedalRepository(database).createPedal(
       const PedalDraft(
         name: 'Caline PureSky',
         type: PedalType.analog,
         category: PedalCategory.overdrive,
       ),
     );
-    volumeId = await ControlRepository(PedalControlDao(database)).createControl(
+    volumeId = await controlRepository(database).createControl(
       pedalId,
       ControlDraft.ofType(ControlType.clock, name: 'Volume'),
     );
@@ -129,18 +121,17 @@ void main() {
     });
 
     test('refuses a control that belongs to another pedal', () async {
-      final otherPedal = await PedalRepository(PedalDao(database)).createPedal(
+      final otherPedal = await pedalRepository(database).createPedal(
         const PedalDraft(
           name: 'NUX MG-30',
           type: PedalType.digital,
           category: PedalCategory.multiEffects,
         ),
       );
-      final otherControl = await ControlRepository(PedalControlDao(database))
-          .createControl(
-            otherPedal,
-            ControlDraft.ofType(ControlType.clock, name: 'Volume'),
-          );
+      final otherControl = await controlRepository(database).createControl(
+        otherPedal,
+        ControlDraft.ofType(ControlType.clock, name: 'Volume'),
+      );
 
       await expectLater(
         repository.createConfiguration(

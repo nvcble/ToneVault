@@ -4,7 +4,9 @@ import '../../../core/database/app_database.dart';
 import '../../../core/database/daos/configuration_dao.dart';
 import '../../../core/database/database_provider.dart';
 import '../../controls/providers/control_providers.dart';
+import '../../history/providers/history_providers.dart';
 import '../data/configuration_repository.dart';
+import '../data/configuration_value_repository.dart';
 
 final Provider<ConfigurationDao> configurationDaoProvider =
     Provider<ConfigurationDao>(
@@ -16,8 +18,18 @@ final Provider<ConfigurationRepository> configurationRepositoryProvider =
       (ref) => ConfigurationRepository(
         ref.watch(configurationDaoProvider),
         ref.watch(pedalControlDaoProvider),
+        ref.watch(changeLogRepositoryProvider),
       ),
     );
+
+final Provider<ConfigurationValueRepository>
+configurationValueRepositoryProvider = Provider<ConfigurationValueRepository>(
+  (ref) => ConfigurationValueRepository(
+    ref.watch(configurationDaoProvider),
+    ref.watch(pedalControlDaoProvider),
+    ref.watch(changeLogRepositoryProvider),
+  ),
+);
 
 /// One pedal's configurations by name. Drift pushes a new list whenever the
 /// table changes, so screens never refresh by hand.
@@ -45,7 +57,7 @@ final StreamProviderFamily<Configuration?, int> configurationProvider =
 final StreamProviderFamily<Map<int, double>, int> configurationValuesProvider =
     StreamProvider.family<Map<int, double>, int>(
       (ref, configurationId) => ref
-          .watch(configurationRepositoryProvider)
+          .watch(configurationValueRepositoryProvider)
           .watchValues(configurationId)
           .map(
             (values) => {

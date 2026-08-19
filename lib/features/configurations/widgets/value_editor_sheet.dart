@@ -35,8 +35,22 @@ class ValueEditorSheet extends ConsumerStatefulWidget {
 
 class _ValueEditorSheetState extends ConsumerState<ValueEditorSheet> {
   late double? _value = widget.storedValue ?? startingValueFor(widget.control);
+  final TextEditingController _reasonController = TextEditingController();
   String? _problem;
   bool _isSaving = false;
+
+  @override
+  void dispose() {
+    _reasonController.dispose();
+    super.dispose();
+  }
+
+  /// Blank means the user chose not to explain themselves, which the history
+  /// records as no reason rather than as an empty one.
+  String? get _reason {
+    final reason = _reasonController.text.trim();
+    return reason.isEmpty ? null : reason;
+  }
 
   Future<void> _save() async {
     final problem = ConfigurationValidator.value(
@@ -55,6 +69,7 @@ class _ValueEditorSheetState extends ConsumerState<ValueEditorSheet> {
             configurationId: widget.configurationId,
             controlId: widget.control.id,
             value: _value!,
+            reason: _reason,
           ),
     );
   }
@@ -66,6 +81,7 @@ class _ValueEditorSheetState extends ConsumerState<ValueEditorSheet> {
           .clearValue(
             configurationId: widget.configurationId,
             controlId: widget.control.id,
+            reason: _reason,
           ),
     );
   }
@@ -117,6 +133,17 @@ class _ValueEditorSheetState extends ConsumerState<ValueEditorSheet> {
                     _value = value;
                     _problem = null;
                   }),
+          ),
+          const SizedBox(height: AppSpacing.md),
+          TextField(
+            controller: _reasonController,
+            enabled: !_isSaving,
+            textCapitalization: TextCapitalization.sentences,
+            decoration: const InputDecoration(
+              labelText: 'Why the change?',
+              hintText: 'Needed more saturation for lead',
+              helperText: 'Optional, and kept in this pedal\'s history',
+            ),
           ),
           const SizedBox(height: AppSpacing.md),
           _buildActions(),

@@ -4,6 +4,8 @@ import '../../../core/database/app_database.dart';
 import '../../../core/database/daos/configuration_dao.dart';
 import '../../../core/database/daos/pedal_control_dao.dart';
 import '../../../core/errors/app_failure.dart';
+import '../../history/data/change_entry.dart';
+import '../../history/data/change_log_repository.dart';
 import 'configuration_draft.dart';
 import 'configuration_validator.dart';
 
@@ -11,7 +13,8 @@ import 'configuration_validator.dart';
 ///
 /// Owns what the database cannot express on its own: validation, createdAt and
 /// updatedAt bookkeeping, and turning driver exceptions into [AppFailure]s whose
-/// message can be shown to the user as-is.
+/// message can be shown to the user as-is. Where each control sits within a
+/// configuration belongs to `ConfigurationValueRepository`.
 ///
 /// Reads the control definitions too, because that is the only way to know what
 /// a value is allowed to be: every position is checked against its own control's
@@ -19,12 +22,14 @@ import 'configuration_validator.dart';
 class ConfigurationRepository {
   ConfigurationRepository(
     this._dao,
-    this._controlDao, {
+    this._controlDao,
+    this._changeLog, {
     DateTime Function()? clock,
   }) : _clock = clock ?? DateTime.now;
 
   final ConfigurationDao _dao;
   final PedalControlDao _controlDao;
+  final ChangeLogRepository _changeLog;
 
   /// Injectable so tests can assert on exact timestamps.
   final DateTime Function() _clock;
@@ -34,9 +39,6 @@ class ConfigurationRepository {
 
   Stream<Configuration?> watchConfiguration(int configurationId) =>
       _dao.watchConfiguration(configurationId);
-
-  Stream<List<ConfigurationValue>> watchValues(int configurationId) =>
-      _dao.watchValues(configurationId);
 
   /// Creates a configuration, along with the positions it starts out with.
   Future<int> createConfiguration(int pedalId, ConfigurationDraft draft) async {
@@ -48,22 +50,34 @@ class ConfigurationRepository {
     final now = _clock();
 
     return _guard(
-      () => _dao.insertConfiguration(
-        ConfigurationsCompanion.insert(
-          pedalId: pedalId,
-          name: configuration.name,
-          notes: Value(configuration.notes),
-          createdAt: now,
-          updatedAt: now,
-        ),
-        values: values,
-      ),
+      () => _dao.transaction(() async {
+        final configurationId = await _dao.insertConfiguration(
+          ConfigurationsCompanion.insert(
+            pedalId: pedalId,
+            name: configuration.name,
+            notes: Value(configuration.notes),
+            createdAt: now,
+            updatedAt: now,
+          ),
+          values: values,
+        );
+
+        // Read back rather than rebuilt from the draft, so the entry names the
+        // row that was actually written.
+        final inserted = await _dao.findConfiguration(configurationId);
+        await _changeLog.record(ChangeEntry.configurationCreated(inserted!));
+
+        return configurationId;
+      }),
       'Could not save this configuration.',
     );
   }
 
   /// Renames a configuration and rewrites its notes. Stored positions are
   /// untouched: those are saved one control at a time.
+  ///
+  /// Only the rename is history. Rewritten notes are the user correcting their
+  /// own description of a configuration, not the configuration changing.
   Future<void> updateConfiguration(
     int configurationId,
     ConfigurationDraft draft,
@@ -76,77 +90,46 @@ class ConfigurationRepository {
       exceptConfigurationId: configurationId,
     );
 
-    final matched = await _guard(
-      () => _dao.updateConfiguration(
-        configurationId,
-        ConfigurationsCompanion(
-          name: Value(configuration.name),
-          notes: Value(configuration.notes),
-          updatedAt: Value(_clock()),
-        ),
-      ),
+    await _guard(
+      () => _dao.transaction(() async {
+        await _dao.updateConfiguration(
+          configurationId,
+          ConfigurationsCompanion(
+            name: Value(configuration.name),
+            notes: Value(configuration.notes),
+            updatedAt: Value(_clock()),
+          ),
+        );
+
+        if (existing.name != configuration.name) {
+          await _changeLog.record(
+            ChangeEntry.configurationRenamed(
+              configuration: existing.copyWith(name: configuration.name),
+              previousName: existing.name,
+            ),
+          );
+        }
+      }),
       'Could not update this configuration.',
     );
-
-    if (!matched) {
-      throw const AppFailure('That configuration no longer exists.');
-    }
   }
 
   /// The stored positions go with it: `configuration_values` references
   /// configurations with ON DELETE CASCADE. Asking the user first is the UI's
   /// job, since it is the only place that knows they meant it.
-  Future<void> deleteConfiguration(int configurationId) async {
-    final deleted = await _guard(
-      () => _dao.deleteConfiguration(configurationId),
-      'Could not delete this configuration.',
-    );
-
-    if (!deleted) {
-      throw const AppFailure('That configuration no longer exists.');
-    }
-  }
-
-  /// Records where one control sits in this configuration.
-  Future<void> setValue({
-    required int configurationId,
-    required int controlId,
-    required double value,
-  }) async {
-    final control = await _controlFor(configurationId, controlId);
-    final problem = ConfigurationValidator.value(value, control: control);
-    if (problem != null) {
-      throw AppFailure(problem);
-    }
-
-    await _guard(
-      () => _dao.upsertValue(
-        configurationId: configurationId,
-        controlId: controlId,
-        value: value,
-        updatedAt: _clock(),
-      ),
-      'Could not save this setting.',
-    );
-  }
-
-  /// Forgets where one control sits, leaving it unset.
   ///
-  /// A control that had no stored value is already in that state, so this
-  /// succeeds either way rather than reporting a problem the user cannot act on.
-  Future<void> clearValue({
-    required int configurationId,
-    required int controlId,
-  }) async {
-    await _require(configurationId);
+  /// Past entries about this configuration survive it. `change_logs` references
+  /// configurations with ON DELETE SET NULL, and each entry kept a copy of the
+  /// name for exactly this moment.
+  Future<void> deleteConfiguration(int configurationId) async {
+    final existing = await _require(configurationId);
 
     await _guard(
-      () => _dao.deleteValue(
-        configurationId: configurationId,
-        controlId: controlId,
-        updatedAt: _clock(),
-      ),
-      'Could not clear this setting.',
+      () => _dao.transaction(() async {
+        await _dao.deleteConfiguration(configurationId);
+        await _changeLog.record(ChangeEntry.configurationDeleted(existing));
+      }),
+      'Could not delete this configuration.',
     );
   }
 
@@ -190,17 +173,6 @@ class ConfigurationRepository {
       throw const AppFailure('That configuration no longer exists.');
     }
     return configuration;
-  }
-
-  /// A control can only be set within a configuration of the pedal it is on.
-  Future<PedalControl> _controlFor(int configurationId, int controlId) async {
-    final configuration = await _require(configurationId);
-    final control = await _controlDao.findControl(controlId);
-
-    if (control == null || control.pedalId != configuration.pedalId) {
-      throw const AppFailure('That control is no longer on this pedal.');
-    }
-    return control;
   }
 
   /// The `{pedalId, name}` unique key would catch a repeat, but only exactly:

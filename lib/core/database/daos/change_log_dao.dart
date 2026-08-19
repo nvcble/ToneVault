@@ -67,15 +67,4 @@ class ChangeLogDao extends DatabaseAccessor<AppDatabase>
       changeLogs,
     )..where((row) => row.pedalId.equals(pedalId))).get();
   }
-
-  /// Removes a pedal's history, only for use when the pedal itself is going.
-  ///
-  /// `change_logs.pedal_id` restricts deletion on purpose, so history cannot be
-  /// lost by accident; a pedal being deleted outright has to clear it explicitly
-  /// in the same transaction or the foreign key blocks the delete.
-  Future<int> deleteForPedal(int pedalId) {
-    return (delete(
-      changeLogs,
-    )..where((row) => row.pedalId.equals(pedalId))).go();
-  }
 }

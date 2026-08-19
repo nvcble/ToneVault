@@ -1,13 +1,13 @@
 import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:tone_vault/core/database/app_database.dart';
-import 'package:tone_vault/core/database/daos/pedal_dao.dart';
 import 'package:tone_vault/core/enums/pedal_category.dart';
 import 'package:tone_vault/core/enums/pedal_status.dart';
 import 'package:tone_vault/core/enums/pedal_type.dart';
 import 'package:tone_vault/core/errors/app_failure.dart';
 import 'package:tone_vault/features/pedals/data/pedal_draft.dart';
 import 'package:tone_vault/features/pedals/data/pedal_repository.dart';
+import '../support/repositories.dart';
 
 void main() {
   late AppDatabase database;
@@ -17,7 +17,7 @@ void main() {
   setUp(() {
     now = DateTime.utc(2026, 8, 19, 10);
     database = AppDatabase(NativeDatabase.memory());
-    repository = PedalRepository(PedalDao(database), clock: () => now);
+    repository = pedalRepository(database, clock: () => now);
   });
 
   tearDown(() => database.close());

@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/database/app_database.dart';
 import '../../../core/database/daos/pedal_control_dao.dart';
 import '../../../core/database/database_provider.dart';
+import '../../history/providers/history_providers.dart';
 import '../data/control_repository.dart';
 
 final Provider<PedalControlDao> pedalControlDaoProvider =
@@ -12,7 +13,10 @@ final Provider<PedalControlDao> pedalControlDaoProvider =
 
 final Provider<ControlRepository> controlRepositoryProvider =
     Provider<ControlRepository>(
-      (ref) => ControlRepository(ref.watch(pedalControlDaoProvider)),
+      (ref) => ControlRepository(
+        ref.watch(pedalControlDaoProvider),
+        ref.watch(changeLogRepositoryProvider),
+      ),
     );
 
 /// One pedal's controls in display order. Drift pushes a new list whenever the

@@ -54,6 +54,21 @@ class ConfigurationDao extends DatabaseAccessor<AppDatabase>
     )..where((row) => row.configurationId.equals(configurationId))).watch();
   }
 
+  /// Where one control sits in one configuration, or null if it was never set.
+  Future<double?> findValue({
+    required int configurationId,
+    required int controlId,
+  }) async {
+    final row =
+        await (select(configurationValues)..where(
+              (row) =>
+                  row.configurationId.equals(configurationId) &
+                  row.controlId.equals(controlId),
+            ))
+            .getSingleOrNull();
+    return row?.value;
+  }
+
   Future<List<ConfigurationValue>> valuesOf(int configurationId) {
     return (select(
       configurationValues,

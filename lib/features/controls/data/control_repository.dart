@@ -4,6 +4,8 @@ import '../../../core/database/app_database.dart';
 import '../../../core/database/daos/pedal_control_dao.dart';
 import '../../../core/errors/app_failure.dart';
 import '../../../core/values/control_options.dart';
+import '../../history/data/change_entry.dart';
+import '../../history/data/change_log_repository.dart';
 import 'control_draft.dart';
 import 'control_validator.dart';
 
@@ -12,10 +14,14 @@ import 'control_validator.dart';
 /// Owns what the database cannot express on its own: validation, the display
 /// order a new control lands on, and turning driver exceptions into
 /// [AppFailure]s whose message can be shown to the user as-is.
+///
+/// Adding or removing a control is recorded in the same transaction as the change
+/// itself, so the history cannot end up claiming something that did not happen.
 class ControlRepository {
-  const ControlRepository(this._dao);
+  const ControlRepository(this._dao, this._changeLog);
 
   final PedalControlDao _dao;
+  final ChangeLogRepository _changeLog;
 
   Stream<List<PedalControl>> watchControls(int pedalId) =>
       _dao.watchControls(pedalId);
@@ -30,20 +36,29 @@ class ControlRepository {
     final displayOrder = await _dao.nextDisplayOrder(pedalId);
 
     return _guard(
-      () => _dao.insertControl(
-        PedalControlsCompanion.insert(
-          pedalId: pedalId,
-          name: control.name,
-          controlType: control.type,
-          minValue: control.minValue,
-          maxValue: control.maxValue,
-          step: Value(control.step),
-          defaultValue: Value(control.defaultValue),
-          unit: Value(control.unit),
-          options: Value(encodeControlOptions(control.options)),
-          displayOrder: displayOrder,
-        ),
-      ),
+      () => _dao.transaction(() async {
+        final controlId = await _dao.insertControl(
+          PedalControlsCompanion.insert(
+            pedalId: pedalId,
+            name: control.name,
+            controlType: control.type,
+            minValue: control.minValue,
+            maxValue: control.maxValue,
+            step: Value(control.step),
+            defaultValue: Value(control.defaultValue),
+            unit: Value(control.unit),
+            options: Value(encodeControlOptions(control.options)),
+            displayOrder: displayOrder,
+          ),
+        );
+
+        // Read back rather than rebuilt from the draft, so the entry names the
+        // row that was actually written. Inside the transaction it is there.
+        final inserted = await _dao.findControl(controlId);
+        await _changeLog.record(ChangeEntry.controlAdded(inserted!));
+
+        return controlId;
+      }),
       'Could not save this control.',
     );
   }
@@ -88,15 +103,22 @@ class ControlRepository {
   /// with ON DELETE CASCADE, so removing a control also removes whatever each
   /// configuration had stored for it. The confirmation for that belongs to the
   /// UI, which is the only place that knows the user asked.
+  ///
+  /// The control is read before it goes, because its name is the only thing that
+  /// will still make the history entry readable afterwards.
   Future<void> deleteControl(int controlId) async {
-    final deleted = await _guard(
-      () => _dao.deleteControl(controlId),
-      'Could not remove this control.',
-    );
-
-    if (!deleted) {
+    final existing = await _dao.findControl(controlId);
+    if (existing == null) {
       throw const AppFailure('That control no longer exists.');
     }
+
+    await _guard(
+      () => _dao.transaction(() async {
+        await _dao.deleteControl(controlId);
+        await _changeLog.record(ChangeEntry.controlRemoved(existing));
+      }),
+      'Could not remove this control.',
+    );
   }
 
   /// Renumbers a pedal's controls into the given order.

@@ -1,19 +1,15 @@
 import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:tone_vault/core/database/app_database.dart';
-import 'package:tone_vault/core/database/daos/configuration_dao.dart';
 import 'package:tone_vault/core/database/daos/pedal_control_dao.dart';
-import 'package:tone_vault/core/database/daos/pedal_dao.dart';
 import 'package:tone_vault/core/enums/control_type.dart';
 import 'package:tone_vault/core/enums/pedal_category.dart';
 import 'package:tone_vault/core/enums/pedal_type.dart';
 import 'package:tone_vault/features/configurations/data/configuration_draft.dart';
-import 'package:tone_vault/features/configurations/data/configuration_repository.dart';
 import 'package:tone_vault/features/configurations/providers/configuration_editor.dart';
 import 'package:tone_vault/features/controls/data/control_draft.dart';
-import 'package:tone_vault/features/controls/data/control_repository.dart';
 import 'package:tone_vault/features/pedals/data/pedal_draft.dart';
-import 'package:tone_vault/features/pedals/data/pedal_repository.dart';
+import '../support/repositories.dart';
 
 /// What the configuration screens do when a button is pressed. The repository
 /// rules themselves are covered by configuration_repository_test.dart.
@@ -27,14 +23,12 @@ void main() {
   setUp(() async {
     database = AppDatabase(NativeDatabase.memory());
     editor = ConfigurationEditor(
-      ConfigurationRepository(
-        ConfigurationDao(database),
-        PedalControlDao(database),
-      ),
+      configurationRepository(database),
+      configurationValueRepository(database),
       PedalControlDao(database),
     );
 
-    pedalId = await PedalRepository(PedalDao(database)).createPedal(
+    pedalId = await pedalRepository(database).createPedal(
       const PedalDraft(
         name: 'Caline PureSky',
         type: PedalType.analog,
@@ -42,7 +36,7 @@ void main() {
       ),
     );
 
-    final controls = ControlRepository(PedalControlDao(database));
+    final controls = controlRepository(database);
     volumeId = await controls.createControl(
       pedalId,
       const ControlDraft(

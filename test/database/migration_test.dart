@@ -6,7 +6,7 @@ import 'package:tone_vault/core/enums/change_type.dart';
 import 'package:tone_vault/core/enums/control_type.dart';
 import 'package:tone_vault/core/values/control_options.dart';
 import 'package:tone_vault/features/controls/data/control_draft.dart';
-import 'package:tone_vault/features/controls/data/control_repository.dart';
+import '../support/repositories.dart';
 
 /// The v1 schema and a row in it, spelled out rather than derived from the
 /// current table classes.
@@ -157,7 +157,7 @@ void main() {
     () async {
       final db = _openV1Database();
       addTearDown(db.close);
-      final repository = ControlRepository(db.pedalControlDao);
+      final repository = controlRepository(db);
 
       await repository.createControl(
         1,

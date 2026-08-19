@@ -5,6 +5,7 @@ import '../../controls/providers/control_providers.dart';
 import '../data/configuration_defaults.dart';
 import '../data/configuration_draft.dart';
 import '../data/configuration_repository.dart';
+import '../data/configuration_value_repository.dart';
 import 'configuration_providers.dart';
 
 /// What the configuration screens do, without any of them holding the logic.
@@ -12,9 +13,14 @@ import 'configuration_providers.dart';
 /// Widgets call these methods directly, so a button is `onPressed: editor.save`
 /// rather than a screen full of database calls.
 class ConfigurationEditor {
-  const ConfigurationEditor(this._repository, this._controlDao);
+  const ConfigurationEditor(
+    this._repository,
+    this._valueRepository,
+    this._controlDao,
+  );
 
   final ConfigurationRepository _repository;
+  final ConfigurationValueRepository _valueRepository;
   final PedalControlDao _controlDao;
 
   /// Creates a configuration, or renames an existing one, and reports which one
@@ -51,21 +57,25 @@ class ConfigurationEditor {
     required int configurationId,
     required int controlId,
     required double value,
+    String? reason,
   }) {
-    return _repository.setValue(
+    return _valueRepository.setValue(
       configurationId: configurationId,
       controlId: controlId,
       value: value,
+      reason: reason,
     );
   }
 
   Future<void> clearValue({
     required int configurationId,
     required int controlId,
+    String? reason,
   }) {
-    return _repository.clearValue(
+    return _valueRepository.clearValue(
       configurationId: configurationId,
       controlId: controlId,
+      reason: reason,
     );
   }
 }
@@ -74,6 +84,7 @@ final Provider<ConfigurationEditor> configurationEditorProvider =
     Provider<ConfigurationEditor>(
       (ref) => ConfigurationEditor(
         ref.watch(configurationRepositoryProvider),
+        ref.watch(configurationValueRepositoryProvider),
         ref.watch(pedalControlDaoProvider),
       ),
     );

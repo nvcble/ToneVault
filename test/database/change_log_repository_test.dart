@@ -1,8 +1,6 @@
 import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:tone_vault/core/database/app_database.dart';
-import 'package:tone_vault/core/database/daos/change_log_dao.dart';
-import 'package:tone_vault/core/database/daos/pedal_dao.dart';
 import 'package:tone_vault/core/enums/pedal_category.dart';
 import 'package:tone_vault/core/enums/pedal_status.dart';
 import 'package:tone_vault/core/enums/pedal_type.dart';
@@ -10,10 +8,11 @@ import 'package:tone_vault/core/errors/app_failure.dart';
 import 'package:tone_vault/features/history/data/change_entry.dart';
 import 'package:tone_vault/features/history/data/change_log_repository.dart';
 import 'package:tone_vault/features/pedals/data/pedal_draft.dart';
-import 'package:tone_vault/features/pedals/data/pedal_repository.dart';
+import '../support/repositories.dart';
 
 /// What the history layer guarantees: entries only ever accumulate, they come
-/// back newest first, and they hold a pedal in place until the pedal itself goes.
+/// back newest first, and they hold a pedal in place for as long as they exist.
+/// What each edit records is covered by change_history_test.dart.
 void main() {
   late AppDatabase database;
   late ChangeLogRepository repository;
@@ -21,7 +20,7 @@ void main() {
 
   /// A pedal to hang history on, since every entry belongs to one.
   Future<Pedal> addPedal(String name) async {
-    final pedals = PedalRepository(PedalDao(database));
+    final pedals = pedalRepository(database);
     final id = await pedals.createPedal(
       PedalDraft(
         name: name,
@@ -35,7 +34,7 @@ void main() {
   setUp(() {
     database = AppDatabase(NativeDatabase.memory());
     now = DateTime.utc(2026, 8, 19, 12);
-    repository = ChangeLogRepository(ChangeLogDao(database), clock: () => now);
+    repository = changeLogRepository(database, clock: () => now);
   });
 
   tearDown(() => database.close());
@@ -143,7 +142,7 @@ void main() {
     );
   });
 
-  test('holds a pedal in place until its history is cleared too', () async {
+  test('holds a pedal in place once anything is recorded about it', () async {
     final pedal = await addPedal('Caline PureSky');
     await repository.record(
       ChangeEntry.pedalStatusChanged(
@@ -152,15 +151,14 @@ void main() {
       ),
     );
 
-    // History cannot be orphaned by accident: the foreign key restricts the
-    // delete, so removing a pedal has to say so explicitly.
+    // History outlives the urge to tidy up: the foreign key restricts the
+    // delete, and PedalRepository turns that into an offer to retire the pedal
+    // instead. There is deliberately no way to drop a pedal's entries.
     await expectLater(
       database.pedalDao.deletePedal(pedal.id),
       throwsA(isNotNull),
     );
-
-    await database.changeLogDao.deleteForPedal(pedal.id);
-    expect(await database.pedalDao.deletePedal(pedal.id), isTrue);
+    expect(await database.changeLogDao.entriesOf(pedal.id), hasLength(1));
   });
 
   test('reports a change it could not record in words', () async {
