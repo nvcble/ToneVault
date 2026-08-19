@@ -1,0 +1,22 @@
+include: package:flutter_lints/flutter.yaml
+
+analyzer:
+  language:
+    strict-casts: true
+    strict-inference: true
+    strict-raw-types: true
+  # Drift's generated code is not hand-maintained, so keep `flutter analyze`
+  # output limited to code we actually own.
+  exclude:
+    - "**/*.g.dart"
+
+linter:
+  rules:
+    always_declare_return_types: true
+    avoid_redundant_argument_values: true
+    directives_ordering: true
+    prefer_single_quotes: true
+    # Silent unawaited futures are the most common source of lost database
+    # writes, so make them an analyzer failure rather than a review question.
+    unawaited_futures: true
+    use_super_parameters: true
