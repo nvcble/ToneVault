@@ -13,6 +13,7 @@ import 'package:tone_vault/features/configurations/providers/configuration_provi
 import 'package:tone_vault/features/controls/providers/control_providers.dart';
 import 'package:tone_vault/features/history/providers/history_providers.dart';
 import 'package:tone_vault/features/pedals/providers/pedal_providers.dart';
+import 'package:tone_vault/features/replacements/providers/replacement_providers.dart';
 
 void main() {
   final pedal = Pedal(
@@ -92,6 +93,11 @@ void main() {
           pedalHistoryProvider(
             pedal.id,
           ).overrideWith((ref) => Stream.value([change])),
+          // This pedal has never been swapped, which is what the overview and
+          // the Replace action both ask about.
+          pedalSwapsProvider(
+            pedal.id,
+          ).overrideWith((ref) => Stream.value(const [])),
         ],
         child: const ToneVaultApp(),
       ),

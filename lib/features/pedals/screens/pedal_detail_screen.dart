@@ -4,11 +4,15 @@ import 'package:go_router/go_router.dart';
 
 import '../../../app/router/routes.dart';
 import '../../../app/theme/app_spacing.dart';
+import '../../../core/database/app_database.dart';
 import '../../../shared/widgets/empty_state.dart';
 import '../../../shared/widgets/failure_snack_bar.dart';
 import '../../configurations/widgets/configuration_list_view.dart';
 import '../../controls/widgets/control_list_view.dart';
 import '../../history/widgets/pedal_history_view.dart';
+import '../../replacements/data/replacement_choices.dart';
+import '../../replacements/providers/replacement_providers.dart';
+import '../../replacements/widgets/replace_pedal_sheet.dart';
 import '../providers/pedal_editor.dart';
 import '../providers/pedal_providers.dart';
 import '../widgets/pedal_overview.dart';
@@ -28,6 +32,13 @@ class PedalDetailScreen extends ConsumerWidget {
     final pedalValue = ref.watch(pedalProvider(pedalId));
     final pedal = pedalValue.valueOrNull;
 
+    // A pedal leaves the rig once, so the action is gone as soon as it has: the
+    // repository refuses a second swap, and offering it anyway is an invitation
+    // to be refused.
+    final swaps =
+        ref.watch(pedalSwapsProvider(pedalId)).valueOrNull ?? const [];
+    final isReplaced = retirementOf(pedalId, swaps) != null;
+
     return DefaultTabController(
       length: 4,
       child: Scaffold(
@@ -41,6 +52,12 @@ class PedalDetailScreen extends ConsumerWidget {
                     tooltip: 'Edit',
                     onPressed: () => context.go(Routes.pedalEdit(pedalId)),
                   ),
+                  if (!isReplaced)
+                    IconButton(
+                      icon: const Icon(Icons.swap_horiz),
+                      tooltip: 'Replace',
+                      onPressed: () => _openReplaceSheet(context, pedal),
+                    ),
                   IconButton(
                     icon: const Icon(Icons.delete_outline),
                     tooltip: 'Delete',
@@ -77,7 +94,11 @@ class PedalDetailScreen extends ConsumerWidget {
                 )
               : TabBarView(
                   children: [
-                    PedalOverview(pedal: pedal),
+                    PedalOverview(
+                      pedal: pedal,
+                      onOpenPedal: (otherId) =>
+                          context.go(Routes.pedalDetail(otherId)),
+                    ),
                     ControlListView(pedalId: pedalId),
                     ConfigurationListView(pedalId: pedalId),
                     PedalHistoryView(pedalId: pedalId),
@@ -85,6 +106,14 @@ class PedalDetailScreen extends ConsumerWidget {
                 ),
         ),
       ),
+    );
+  }
+
+  Future<void> _openReplaceSheet(BuildContext context, Pedal pedal) {
+    return showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      builder: (sheetContext) => ReplacePedalSheet(pedal: pedal),
     );
   }
 

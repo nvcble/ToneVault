@@ -3,14 +3,19 @@ import 'package:flutter/material.dart';
 import '../../../app/theme/app_spacing.dart';
 import '../../../core/database/app_database.dart';
 import '../../../shared/formatting/app_date_format.dart';
+import '../../replacements/widgets/replacement_summary.dart';
 import 'pedal_type_badge.dart';
 
 /// What was recorded about the pedal itself, as opposed to what it can be set
 /// to.
 class PedalOverview extends StatelessWidget {
-  const PedalOverview({required this.pedal, super.key});
+  const PedalOverview({required this.pedal, this.onOpenPedal, super.key});
 
   final Pedal pedal;
+
+  /// Handed to the replacement summary, which is the one place this tab points
+  /// at another pedal.
+  final ValueChanged<int>? onOpenPedal;
 
   @override
   Widget build(BuildContext context) {
@@ -44,6 +49,7 @@ class PedalOverview extends StatelessWidget {
           const SizedBox(height: AppSpacing.xs),
           Text(notes, style: Theme.of(context).textTheme.bodyMedium),
         ],
+        ReplacementSummary(pedalId: pedal.id, onOpenPedal: onOpenPedal),
       ],
     );
   }
