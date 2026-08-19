@@ -38,6 +38,10 @@ abstract final class Routes {
 
   static String rigEdit(int pedalboardId) => '${rigDetail(pedalboardId)}/edit';
 
+  /// A snapshot is of one rig, so it is reached through it.
+  static String snapshotNew(int pedalboardId) =>
+      '${rigDetail(pedalboardId)}/snapshots/new';
+
   /// Nested routes are declared relative to their parent, so the paths handed
   /// to `GoRoute` are not the same strings used to navigate.
   static const String pedalNewSegment = 'new';
@@ -53,4 +57,5 @@ abstract final class Routes {
   static const String rigNewSegment = 'new';
   static const String rigDetailSegment = ':rigId';
   static const String rigEditSegment = 'edit';
+  static const String snapshotNewSegment = 'snapshots/new';
 }

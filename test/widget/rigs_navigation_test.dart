@@ -4,7 +4,12 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:tone_vault/app/app.dart';
 import 'package:tone_vault/core/database/app_database.dart';
 import 'package:tone_vault/core/database/daos/pedalboard_dao.dart';
+import 'package:tone_vault/core/enums/pedal_category.dart';
+import 'package:tone_vault/core/enums/pedal_status.dart';
+import 'package:tone_vault/core/enums/pedal_type.dart';
+import 'package:tone_vault/features/configurations/providers/configuration_providers.dart';
 import 'package:tone_vault/features/pedalboards/providers/pedalboard_providers.dart';
+import 'package:tone_vault/features/snapshots/providers/snapshot_providers.dart';
 
 /// Getting around the rigs tab: the list, one rig, and the forms either side of
 /// it. Every stream is a plain value, so no database is involved.
@@ -18,6 +23,29 @@ void main() {
     createdAt: moment,
     updatedAt: moment,
   );
+
+  final drive = Pedal(
+    id: 7,
+    name: 'Caline PureSky',
+    type: PedalType.analog,
+    category: PedalCategory.overdrive,
+    status: PedalStatus.active,
+    createdAt: moment,
+    updatedAt: moment,
+  );
+
+  /// Enough of a chain for a snapshot to be worth taking.
+  final chain = <ChainSlot>[
+    (
+      slot: PedalboardSlot(
+        id: 10,
+        pedalboardId: worship.id,
+        pedalId: drive.id,
+        position: 0,
+      ),
+      pedal: drive,
+    ),
+  ];
 
   /// Opens the app on the rigs tab with [pedalboards] in the list.
   Future<void> pumpRigsTab(
@@ -37,7 +65,14 @@ void main() {
           // database. What the chain looks like is rig_chain_test.dart's job.
           rigChainProvider(
             worship.id,
-          ).overrideWith((ref) => Stream.value(const <ChainSlot>[])),
+          ).overrideWith((ref) => Stream.value(chain)),
+          rigSnapshotsProvider(
+            worship.id,
+          ).overrideWith((ref) => Stream.value(const <RigSnapshot>[])),
+          // Reached once the capture screen asks where the pedal was set.
+          configurationListProvider(
+            drive.id,
+          ).overrideWith((ref) => Stream.value(const <Configuration>[])),
         ],
         child: const ToneVaultApp(),
       ),
@@ -86,6 +121,27 @@ void main() {
     // for a rig that cannot exist.
     expect(find.text('Add rig'), findsExactly(2)); // title and button
     expect(find.text('That rig no longer exists'), findsNothing);
+  });
+
+  testWidgets('the snapshots tab leads to taking one', (tester) async {
+    await pumpRigsTab(tester, pedalboards: [worship]);
+
+    await tester.tap(find.text('Hybrid Worship Rig'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Snapshots'));
+    await tester.pumpAndSettle();
+
+    // The rig's own details stay above both tabs.
+    expect(find.textContaining('Built 2026-08-19'), findsOne);
+    expect(find.text('No snapshots of this rig yet'), findsOne);
+
+    await tester.tap(find.widgetWithText(FilledButton, 'Take a snapshot'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Take snapshot'), findsExactly(2)); // title and button
+    // The rig is asked about pedal by pedal, in signal order.
+    expect(find.text('1. Caline PureSky'), findsOne);
+    expect(find.byType(NavigationBar), findsOne);
   });
 
   testWidgets('a rig that is gone says so rather than showing a blank', (

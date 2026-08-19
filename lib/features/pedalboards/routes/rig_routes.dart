@@ -1,6 +1,7 @@
 import 'package:go_router/go_router.dart';
 
 import '../../../app/router/routes.dart';
+import '../../snapshots/screens/capture_snapshot_screen.dart';
 import '../screens/rig_form_screen.dart';
 import '../screens/rig_screen.dart';
 import '../screens/rigs_screen.dart';
@@ -30,6 +31,11 @@ List<RouteBase> rigRoutes() {
               path: Routes.rigEditSegment,
               builder: (context, state) =>
                   RigFormScreen(pedalboardId: _pedalboardId(state)),
+            ),
+            GoRoute(
+              path: Routes.snapshotNewSegment,
+              builder: (context, state) =>
+                  CaptureSnapshotScreen(pedalboardId: _pedalboardId(state)),
             ),
           ],
         ),

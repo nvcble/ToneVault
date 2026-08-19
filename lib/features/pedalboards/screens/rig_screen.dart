@@ -5,12 +5,16 @@ import 'package:go_router/go_router.dart';
 import '../../../app/router/routes.dart';
 import '../../../shared/widgets/empty_state.dart';
 import '../../../shared/widgets/failure_snack_bar.dart';
+import '../../snapshots/widgets/rig_snapshots_view.dart';
 import '../providers/pedalboard_providers.dart';
 import '../providers/rig_editor.dart';
 import '../widgets/rig_chain_view.dart';
 import '../widgets/rig_overview.dart';
 
-/// One rig: what it is, and what is on it.
+/// One rig: what it is, what is on it, and how it stood on days gone by.
+///
+/// The description and dates sit above the tabs rather than in one of them,
+/// because they describe the rig itself either way.
 class RigScreen extends ConsumerWidget {
   const RigScreen({required this.pedalboardId, super.key});
 
@@ -21,45 +25,61 @@ class RigScreen extends ConsumerWidget {
     final pedalboardValue = ref.watch(pedalboardProvider(pedalboardId));
     final pedalboard = pedalboardValue.valueOrNull;
 
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(pedalboard?.name ?? 'Rig'),
-        actions: pedalboard == null
-            ? null
-            : [
-                IconButton(
-                  icon: const Icon(Icons.edit_outlined),
-                  tooltip: 'Edit',
-                  onPressed: () => context.go(Routes.rigEdit(pedalboardId)),
-                ),
-                IconButton(
-                  icon: const Icon(Icons.delete_outline),
-                  tooltip: 'Delete',
-                  onPressed: () =>
-                      _confirmDelete(context, ref, pedalboard.name),
-                ),
-              ],
-      ),
-      body: pedalboardValue.when(
-        loading: () => const Center(child: CircularProgressIndicator()),
-        error: (error, _) => EmptyState(
-          icon: Icons.error_outline,
-          title: 'Could not open this rig',
-          message: failureMessage(error),
-        ),
-        data: (pedalboard) => pedalboard == null
-            ? const EmptyState(
-                icon: Icons.help_outline,
-                title: 'That rig no longer exists',
-                message: 'It may have been deleted on another screen.',
-              )
-            : Column(
-                children: [
-                  RigOverview(pedalboard: pedalboard),
-                  const Divider(height: 1),
-                  Expanded(child: RigChainView(pedalboardId: pedalboardId)),
+    return DefaultTabController(
+      length: 2,
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text(pedalboard?.name ?? 'Rig'),
+          actions: pedalboard == null
+              ? null
+              : [
+                  IconButton(
+                    icon: const Icon(Icons.edit_outlined),
+                    tooltip: 'Edit',
+                    onPressed: () => context.go(Routes.rigEdit(pedalboardId)),
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.delete_outline),
+                    tooltip: 'Delete',
+                    onPressed: () =>
+                        _confirmDelete(context, ref, pedalboard.name),
+                  ),
                 ],
-              ),
+          bottom: const TabBar(
+            tabs: [
+              Tab(text: 'Chain'),
+              Tab(text: 'Snapshots'),
+            ],
+          ),
+        ),
+        body: pedalboardValue.when(
+          loading: () => const Center(child: CircularProgressIndicator()),
+          error: (error, _) => EmptyState(
+            icon: Icons.error_outline,
+            title: 'Could not open this rig',
+            message: failureMessage(error),
+          ),
+          data: (pedalboard) => pedalboard == null
+              ? const EmptyState(
+                  icon: Icons.help_outline,
+                  title: 'That rig no longer exists',
+                  message: 'It may have been deleted on another screen.',
+                )
+              : Column(
+                  children: [
+                    RigOverview(pedalboard: pedalboard),
+                    const Divider(height: 1),
+                    Expanded(
+                      child: TabBarView(
+                        children: [
+                          RigChainView(pedalboardId: pedalboardId),
+                          RigSnapshotsView(pedalboardId: pedalboardId),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+        ),
       ),
     );
   }
