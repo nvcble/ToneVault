@@ -10,6 +10,7 @@ import 'package:tone_vault/features/configurations/data/configuration_value_repo
 import 'package:tone_vault/features/controls/data/control_repository.dart';
 import 'package:tone_vault/features/history/data/change_log_repository.dart';
 import 'package:tone_vault/features/pedalboards/data/pedalboard_repository.dart';
+import 'package:tone_vault/features/pedalboards/data/rig_chain_repository.dart';
 import 'package:tone_vault/features/pedals/data/pedal_repository.dart';
 import 'package:tone_vault/features/replacements/data/replacement_repository.dart';
 
@@ -82,6 +83,17 @@ PedalboardRepository pedalboardRepository(
   DateTime Function()? clock,
 }) {
   return PedalboardRepository(PedalboardDao(database), clock: clock);
+}
+
+RigChainRepository rigChainRepository(
+  AppDatabase database, {
+  DateTime Function()? clock,
+}) {
+  return RigChainRepository(
+    PedalboardDao(database),
+    PedalDao(database),
+    clock: clock,
+  );
 }
 
 ConfigurationValueRepository configurationValueRepository(

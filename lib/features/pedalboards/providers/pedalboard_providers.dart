@@ -3,7 +3,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/database/app_database.dart';
 import '../../../core/database/daos/pedalboard_dao.dart';
 import '../../../core/database/database_provider.dart';
+import '../../pedals/providers/pedal_providers.dart';
 import '../data/pedalboard_repository.dart';
+import '../data/rig_chain_repository.dart';
 
 final Provider<PedalboardDao> pedalboardDaoProvider = Provider<PedalboardDao>(
   (ref) => PedalboardDao(ref.watch(appDatabaseProvider)),
@@ -12,6 +14,14 @@ final Provider<PedalboardDao> pedalboardDaoProvider = Provider<PedalboardDao>(
 final Provider<PedalboardRepository> pedalboardRepositoryProvider =
     Provider<PedalboardRepository>(
       (ref) => PedalboardRepository(ref.watch(pedalboardDaoProvider)),
+    );
+
+final Provider<RigChainRepository> rigChainRepositoryProvider =
+    Provider<RigChainRepository>(
+      (ref) => RigChainRepository(
+        ref.watch(pedalboardDaoProvider),
+        ref.watch(pedalDaoProvider),
+      ),
     );
 
 /// Every rig by name. Drift pushes a new list whenever the table changes, so the
@@ -27,4 +37,11 @@ final StreamProviderFamily<Pedalboard?, int> pedalboardProvider =
     StreamProvider.family<Pedalboard?, int>(
       (ref, pedalboardId) =>
           ref.watch(pedalboardRepositoryProvider).watchPedalboard(pedalboardId),
+    );
+
+/// One rig's chain in signal order, each slot with the pedal it holds.
+final StreamProviderFamily<List<ChainSlot>, int> rigChainProvider =
+    StreamProvider.family<List<ChainSlot>, int>(
+      (ref, pedalboardId) =>
+          ref.watch(rigChainRepositoryProvider).watchChain(pedalboardId),
     );

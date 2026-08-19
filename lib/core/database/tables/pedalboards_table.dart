@@ -2,8 +2,8 @@ import 'package:drift/drift.dart';
 
 /// A named rig, such as "Hybrid Worship Rig" or "Home Practice".
 ///
-/// The ordered signal chain that belongs to a pedalboard arrives with the
-/// pedalboard feature; this table only carries the rig's identity for now.
+/// This table carries the rig's identity only. The ordered signal chain that
+/// belongs to it is in `pedalboard_slots`, one row per pedal on the rig.
 class Pedalboards extends Table {
   IntColumn get id => integer().autoIncrement()();
 

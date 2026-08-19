@@ -19,6 +19,7 @@ import 'tables/configuration_values_table.dart';
 import 'tables/configurations_table.dart';
 import 'tables/pedal_controls_table.dart';
 import 'tables/pedal_replacements_table.dart';
+import 'tables/pedalboard_slots_table.dart';
 import 'tables/pedalboards_table.dart';
 import 'tables/pedals_table.dart';
 
@@ -33,6 +34,7 @@ part 'app_database.g.dart';
     ChangeLogs,
     PedalReplacements,
     Pedalboards,
+    PedalboardSlots,
   ],
   daos: [
     PedalDao,

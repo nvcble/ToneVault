@@ -3662,6 +3662,328 @@ class PedalboardsCompanion extends UpdateCompanion<Pedalboard> {
   }
 }
 
+class $PedalboardSlotsTable extends PedalboardSlots
+    with TableInfo<$PedalboardSlotsTable, PedalboardSlot> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $PedalboardSlotsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'PRIMARY KEY AUTOINCREMENT',
+    ),
+  );
+  static const VerificationMeta _pedalboardIdMeta = const VerificationMeta(
+    'pedalboardId',
+  );
+  @override
+  late final GeneratedColumn<int> pedalboardId = GeneratedColumn<int>(
+    'pedalboard_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES pedalboards (id) ON DELETE CASCADE',
+    ),
+  );
+  static const VerificationMeta _pedalIdMeta = const VerificationMeta(
+    'pedalId',
+  );
+  @override
+  late final GeneratedColumn<int> pedalId = GeneratedColumn<int>(
+    'pedal_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES pedals (id) ON DELETE RESTRICT',
+    ),
+  );
+  static const VerificationMeta _positionMeta = const VerificationMeta(
+    'position',
+  );
+  @override
+  late final GeneratedColumn<int> position = GeneratedColumn<int>(
+    'position',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [id, pedalboardId, pedalId, position];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'pedalboard_slots';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<PedalboardSlot> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('pedalboard_id')) {
+      context.handle(
+        _pedalboardIdMeta,
+        pedalboardId.isAcceptableOrUnknown(
+          data['pedalboard_id']!,
+          _pedalboardIdMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_pedalboardIdMeta);
+    }
+    if (data.containsKey('pedal_id')) {
+      context.handle(
+        _pedalIdMeta,
+        pedalId.isAcceptableOrUnknown(data['pedal_id']!, _pedalIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_pedalIdMeta);
+    }
+    if (data.containsKey('position')) {
+      context.handle(
+        _positionMeta,
+        position.isAcceptableOrUnknown(data['position']!, _positionMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_positionMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  List<Set<GeneratedColumn>> get uniqueKeys => [
+    {pedalboardId, pedalId},
+  ];
+  @override
+  PedalboardSlot map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return PedalboardSlot(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      pedalboardId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}pedalboard_id'],
+      )!,
+      pedalId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}pedal_id'],
+      )!,
+      position: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}position'],
+      )!,
+    );
+  }
+
+  @override
+  $PedalboardSlotsTable createAlias(String alias) {
+    return $PedalboardSlotsTable(attachedDatabase, alias);
+  }
+}
+
+class PedalboardSlot extends DataClass implements Insertable<PedalboardSlot> {
+  final int id;
+
+  /// Deleting a rig deletes its slots: a slot only says where a pedal sat on
+  /// that rig, so with the rig gone there is nothing left for it to mean. The
+  /// pedals themselves are untouched.
+  final int pedalboardId;
+
+  /// Restrict, like every other reference to a pedal: one that is on a rig has
+  /// to be taken off it before it can be deleted.
+  final int pedalId;
+  final int position;
+  const PedalboardSlot({
+    required this.id,
+    required this.pedalboardId,
+    required this.pedalId,
+    required this.position,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['pedalboard_id'] = Variable<int>(pedalboardId);
+    map['pedal_id'] = Variable<int>(pedalId);
+    map['position'] = Variable<int>(position);
+    return map;
+  }
+
+  PedalboardSlotsCompanion toCompanion(bool nullToAbsent) {
+    return PedalboardSlotsCompanion(
+      id: Value(id),
+      pedalboardId: Value(pedalboardId),
+      pedalId: Value(pedalId),
+      position: Value(position),
+    );
+  }
+
+  factory PedalboardSlot.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return PedalboardSlot(
+      id: serializer.fromJson<int>(json['id']),
+      pedalboardId: serializer.fromJson<int>(json['pedalboardId']),
+      pedalId: serializer.fromJson<int>(json['pedalId']),
+      position: serializer.fromJson<int>(json['position']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'pedalboardId': serializer.toJson<int>(pedalboardId),
+      'pedalId': serializer.toJson<int>(pedalId),
+      'position': serializer.toJson<int>(position),
+    };
+  }
+
+  PedalboardSlot copyWith({
+    int? id,
+    int? pedalboardId,
+    int? pedalId,
+    int? position,
+  }) => PedalboardSlot(
+    id: id ?? this.id,
+    pedalboardId: pedalboardId ?? this.pedalboardId,
+    pedalId: pedalId ?? this.pedalId,
+    position: position ?? this.position,
+  );
+  PedalboardSlot copyWithCompanion(PedalboardSlotsCompanion data) {
+    return PedalboardSlot(
+      id: data.id.present ? data.id.value : this.id,
+      pedalboardId: data.pedalboardId.present
+          ? data.pedalboardId.value
+          : this.pedalboardId,
+      pedalId: data.pedalId.present ? data.pedalId.value : this.pedalId,
+      position: data.position.present ? data.position.value : this.position,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('PedalboardSlot(')
+          ..write('id: $id, ')
+          ..write('pedalboardId: $pedalboardId, ')
+          ..write('pedalId: $pedalId, ')
+          ..write('position: $position')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, pedalboardId, pedalId, position);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is PedalboardSlot &&
+          other.id == this.id &&
+          other.pedalboardId == this.pedalboardId &&
+          other.pedalId == this.pedalId &&
+          other.position == this.position);
+}
+
+class PedalboardSlotsCompanion extends UpdateCompanion<PedalboardSlot> {
+  final Value<int> id;
+  final Value<int> pedalboardId;
+  final Value<int> pedalId;
+  final Value<int> position;
+  const PedalboardSlotsCompanion({
+    this.id = const Value.absent(),
+    this.pedalboardId = const Value.absent(),
+    this.pedalId = const Value.absent(),
+    this.position = const Value.absent(),
+  });
+  PedalboardSlotsCompanion.insert({
+    this.id = const Value.absent(),
+    required int pedalboardId,
+    required int pedalId,
+    required int position,
+  }) : pedalboardId = Value(pedalboardId),
+       pedalId = Value(pedalId),
+       position = Value(position);
+  static Insertable<PedalboardSlot> custom({
+    Expression<int>? id,
+    Expression<int>? pedalboardId,
+    Expression<int>? pedalId,
+    Expression<int>? position,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (pedalboardId != null) 'pedalboard_id': pedalboardId,
+      if (pedalId != null) 'pedal_id': pedalId,
+      if (position != null) 'position': position,
+    });
+  }
+
+  PedalboardSlotsCompanion copyWith({
+    Value<int>? id,
+    Value<int>? pedalboardId,
+    Value<int>? pedalId,
+    Value<int>? position,
+  }) {
+    return PedalboardSlotsCompanion(
+      id: id ?? this.id,
+      pedalboardId: pedalboardId ?? this.pedalboardId,
+      pedalId: pedalId ?? this.pedalId,
+      position: position ?? this.position,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (pedalboardId.present) {
+      map['pedalboard_id'] = Variable<int>(pedalboardId.value);
+    }
+    if (pedalId.present) {
+      map['pedal_id'] = Variable<int>(pedalId.value);
+    }
+    if (position.present) {
+      map['position'] = Variable<int>(position.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('PedalboardSlotsCompanion(')
+          ..write('id: $id, ')
+          ..write('pedalboardId: $pedalboardId, ')
+          ..write('pedalId: $pedalId, ')
+          ..write('position: $position')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
@@ -3674,6 +3996,9 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final $PedalReplacementsTable pedalReplacements =
       $PedalReplacementsTable(this);
   late final $PedalboardsTable pedalboards = $PedalboardsTable(this);
+  late final $PedalboardSlotsTable pedalboardSlots = $PedalboardSlotsTable(
+    this,
+  );
   late final Index idxPedalsStatus = Index(
     'idx_pedals_status',
     'CREATE INDEX idx_pedals_status ON pedals (status)',
@@ -3706,6 +4031,10 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     'idx_pedal_replacements_new',
     'CREATE INDEX idx_pedal_replacements_new ON pedal_replacements (new_pedal_id)',
   );
+  late final Index idxPedalboardSlotsBoardPosition = Index(
+    'idx_pedalboard_slots_board_position',
+    'CREATE INDEX idx_pedalboard_slots_board_position ON pedalboard_slots (pedalboard_id, position)',
+  );
   late final PedalDao pedalDao = PedalDao(this as AppDatabase);
   late final PedalControlDao pedalControlDao = PedalControlDao(
     this as AppDatabase,
@@ -3730,6 +4059,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     changeLogs,
     pedalReplacements,
     pedalboards,
+    pedalboardSlots,
     idxPedalsStatus,
     idxPedalsName,
     idxPedalControlsPedalOrder,
@@ -3738,6 +4068,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     idxChangeLogsConfiguration,
     idxPedalReplacementsOld,
     idxPedalReplacementsNew,
+    idxPedalboardSlotsBoardPosition,
   ];
   @override
   StreamQueryUpdateRules get streamUpdateRules => const StreamQueryUpdateRules([
@@ -3768,6 +4099,13 @@ abstract class _$AppDatabase extends GeneratedDatabase {
         limitUpdateKind: UpdateKind.delete,
       ),
       result: [TableUpdate('change_logs', kind: UpdateKind.update)],
+    ),
+    WritePropagation(
+      on: TableUpdateQuery.onTableName(
+        'pedalboards',
+        limitUpdateKind: UpdateKind.delete,
+      ),
+      result: [TableUpdate('pedalboard_slots', kind: UpdateKind.delete)],
     ),
   ]);
   @override
@@ -3898,6 +4236,26 @@ final class $$PedalsTableReferences
 
     final cache = $_typedResult.readTableOrNull(
       _replacementsWhereIncomingTable($_db),
+    );
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+
+  static MultiTypedResultKey<$PedalboardSlotsTable, List<PedalboardSlot>>
+  _pedalboardSlotsRefsTable(_$AppDatabase db) => MultiTypedResultKey.fromTable(
+    db.pedalboardSlots,
+    aliasName: 'pedals__id__pedalboard_slots__pedal_id',
+  );
+
+  $$PedalboardSlotsTableProcessedTableManager get pedalboardSlotsRefs {
+    final manager = $$PedalboardSlotsTableTableManager(
+      $_db,
+      $_db.pedalboardSlots,
+    ).filter((f) => f.pedalId.id.sqlEquals($_itemColumn<int>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(
+      _pedalboardSlotsRefsTable($_db),
     );
     return ProcessedTableManager(
       manager.$state.copyWith(prefetchedData: cache),
@@ -4088,6 +4446,31 @@ class $$PedalsTableFilterComposer
           }) => $$PedalReplacementsTableFilterComposer(
             $db: $db,
             $table: $db.pedalReplacements,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+
+  Expression<bool> pedalboardSlotsRefs(
+    Expression<bool> Function($$PedalboardSlotsTableFilterComposer f) f,
+  ) {
+    final $$PedalboardSlotsTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.pedalboardSlots,
+      getReferencedColumn: (t) => t.pedalId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$PedalboardSlotsTableFilterComposer(
+            $db: $db,
+            $table: $db.pedalboardSlots,
             $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
             joinBuilder: joinBuilder,
             $removeJoinBuilderFromRootComposer:
@@ -4333,6 +4716,31 @@ class $$PedalsTableAnnotationComposer
         );
     return f(composer);
   }
+
+  Expression<T> pedalboardSlotsRefs<T extends Object>(
+    Expression<T> Function($$PedalboardSlotsTableAnnotationComposer a) f,
+  ) {
+    final $$PedalboardSlotsTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.pedalboardSlots,
+      getReferencedColumn: (t) => t.pedalId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$PedalboardSlotsTableAnnotationComposer(
+            $db: $db,
+            $table: $db.pedalboardSlots,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
 }
 
 class $$PedalsTableTableManager
@@ -4354,6 +4762,7 @@ class $$PedalsTableTableManager
             bool changeLogsRefs,
             bool replacementsWhereOutgoing,
             bool replacementsWhereIncoming,
+            bool pedalboardSlotsRefs,
           })
         > {
   $$PedalsTableTableManager(_$AppDatabase db, $PedalsTable table)
@@ -4432,6 +4841,7 @@ class $$PedalsTableTableManager
                 changeLogsRefs = false,
                 replacementsWhereOutgoing = false,
                 replacementsWhereIncoming = false,
+                pedalboardSlotsRefs = false,
               }) {
                 return PrefetchHooks(
                   db: db,
@@ -4441,6 +4851,7 @@ class $$PedalsTableTableManager
                     if (changeLogsRefs) db.changeLogs,
                     if (replacementsWhereOutgoing) db.pedalReplacements,
                     if (replacementsWhereIncoming) db.pedalReplacements,
+                    if (pedalboardSlotsRefs) db.pedalboardSlots,
                   ],
                   addJoins: null,
                   getPrefetchedDataCallback: (items) async {
@@ -4550,6 +4961,27 @@ class $$PedalsTableTableManager
                               ),
                           typedResults: items,
                         ),
+                      if (pedalboardSlotsRefs)
+                        await $_getPrefetchedData<
+                          Pedal,
+                          $PedalsTable,
+                          PedalboardSlot
+                        >(
+                          currentTable: table,
+                          referencedTable: $$PedalsTableReferences
+                              ._pedalboardSlotsRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$PedalsTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).pedalboardSlotsRefs,
+                          referencedItemsForCurrentItem:
+                              (item, referencedItems) => referencedItems.where(
+                                (e) => e.pedalId == item.id,
+                              ),
+                          typedResults: items,
+                        ),
                     ];
                   },
                 );
@@ -4576,6 +5008,7 @@ typedef $$PedalsTableProcessedTableManager =
         bool changeLogsRefs,
         bool replacementsWhereOutgoing,
         bool replacementsWhereIncoming,
+        bool pedalboardSlotsRefs,
       })
     >;
 typedef $$PedalControlsTableCreateCompanionBuilder =
@@ -7272,6 +7705,31 @@ typedef $$PedalboardsTableUpdateCompanionBuilder =
       Value<DateTime> updatedAt,
     });
 
+final class $$PedalboardsTableReferences
+    extends BaseReferences<_$AppDatabase, $PedalboardsTable, Pedalboard> {
+  $$PedalboardsTableReferences(super.$_db, super.$_table, super.$_typedResult);
+
+  static MultiTypedResultKey<$PedalboardSlotsTable, List<PedalboardSlot>>
+  _pedalboardSlotsRefsTable(_$AppDatabase db) => MultiTypedResultKey.fromTable(
+    db.pedalboardSlots,
+    aliasName: 'pedalboards__id__pedalboard_slots__pedalboard_id',
+  );
+
+  $$PedalboardSlotsTableProcessedTableManager get pedalboardSlotsRefs {
+    final manager = $$PedalboardSlotsTableTableManager(
+      $_db,
+      $_db.pedalboardSlots,
+    ).filter((f) => f.pedalboardId.id.sqlEquals($_itemColumn<int>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(
+      _pedalboardSlotsRefsTable($_db),
+    );
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+}
+
 class $$PedalboardsTableFilterComposer
     extends Composer<_$AppDatabase, $PedalboardsTable> {
   $$PedalboardsTableFilterComposer({
@@ -7305,6 +7763,31 @@ class $$PedalboardsTableFilterComposer
     column: $table.updatedAt,
     builder: (column) => ColumnFilters(column),
   );
+
+  Expression<bool> pedalboardSlotsRefs(
+    Expression<bool> Function($$PedalboardSlotsTableFilterComposer f) f,
+  ) {
+    final $$PedalboardSlotsTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.pedalboardSlots,
+      getReferencedColumn: (t) => t.pedalboardId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$PedalboardSlotsTableFilterComposer(
+            $db: $db,
+            $table: $db.pedalboardSlots,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
 }
 
 class $$PedalboardsTableOrderingComposer
@@ -7367,6 +7850,31 @@ class $$PedalboardsTableAnnotationComposer
 
   GeneratedColumn<DateTime> get updatedAt =>
       $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+
+  Expression<T> pedalboardSlotsRefs<T extends Object>(
+    Expression<T> Function($$PedalboardSlotsTableAnnotationComposer a) f,
+  ) {
+    final $$PedalboardSlotsTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.pedalboardSlots,
+      getReferencedColumn: (t) => t.pedalboardId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$PedalboardSlotsTableAnnotationComposer(
+            $db: $db,
+            $table: $db.pedalboardSlots,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
 }
 
 class $$PedalboardsTableTableManager
@@ -7380,12 +7888,9 @@ class $$PedalboardsTableTableManager
           $$PedalboardsTableAnnotationComposer,
           $$PedalboardsTableCreateCompanionBuilder,
           $$PedalboardsTableUpdateCompanionBuilder,
-          (
-            Pedalboard,
-            BaseReferences<_$AppDatabase, $PedalboardsTable, Pedalboard>,
-          ),
+          (Pedalboard, $$PedalboardsTableReferences),
           Pedalboard,
-          PrefetchHooks Function()
+          PrefetchHooks Function({bool pedalboardSlotsRefs})
         > {
   $$PedalboardsTableTableManager(_$AppDatabase db, $PedalboardsTable table)
     : super(
@@ -7427,9 +7932,47 @@ class $$PedalboardsTableTableManager
                 updatedAt: updatedAt,
               ),
           withReferenceMapper: (p0) => p0
-              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .map(
+                (e) => (
+                  e.readTable(table),
+                  $$PedalboardsTableReferences(db, table, e),
+                ),
+              )
               .toList(),
-          prefetchHooksCallback: null,
+          prefetchHooksCallback: ({pedalboardSlotsRefs = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [
+                if (pedalboardSlotsRefs) db.pedalboardSlots,
+              ],
+              addJoins: null,
+              getPrefetchedDataCallback: (items) async {
+                return [
+                  if (pedalboardSlotsRefs)
+                    await $_getPrefetchedData<
+                      Pedalboard,
+                      $PedalboardsTable,
+                      PedalboardSlot
+                    >(
+                      currentTable: table,
+                      referencedTable: $$PedalboardsTableReferences
+                          ._pedalboardSlotsRefsTable(db),
+                      managerFromTypedResult: (p0) =>
+                          $$PedalboardsTableReferences(
+                            db,
+                            table,
+                            p0,
+                          ).pedalboardSlotsRefs,
+                      referencedItemsForCurrentItem: (item, referencedItems) =>
+                          referencedItems.where(
+                            (e) => e.pedalboardId == item.id,
+                          ),
+                      typedResults: items,
+                    ),
+                ];
+              },
+            );
+          },
         ),
       );
 }
@@ -7444,12 +7987,399 @@ typedef $$PedalboardsTableProcessedTableManager =
       $$PedalboardsTableAnnotationComposer,
       $$PedalboardsTableCreateCompanionBuilder,
       $$PedalboardsTableUpdateCompanionBuilder,
-      (
-        Pedalboard,
-        BaseReferences<_$AppDatabase, $PedalboardsTable, Pedalboard>,
-      ),
+      (Pedalboard, $$PedalboardsTableReferences),
       Pedalboard,
-      PrefetchHooks Function()
+      PrefetchHooks Function({bool pedalboardSlotsRefs})
+    >;
+typedef $$PedalboardSlotsTableCreateCompanionBuilder =
+    PedalboardSlotsCompanion Function({
+      Value<int> id,
+      required int pedalboardId,
+      required int pedalId,
+      required int position,
+    });
+typedef $$PedalboardSlotsTableUpdateCompanionBuilder =
+    PedalboardSlotsCompanion Function({
+      Value<int> id,
+      Value<int> pedalboardId,
+      Value<int> pedalId,
+      Value<int> position,
+    });
+
+final class $$PedalboardSlotsTableReferences
+    extends
+        BaseReferences<_$AppDatabase, $PedalboardSlotsTable, PedalboardSlot> {
+  $$PedalboardSlotsTableReferences(
+    super.$_db,
+    super.$_table,
+    super.$_typedResult,
+  );
+
+  static $PedalboardsTable _pedalboardIdTable(_$AppDatabase db) => db
+      .pedalboards
+      .createAlias('pedalboard_slots__pedalboard_id__pedalboards__id');
+
+  $$PedalboardsTableProcessedTableManager get pedalboardId {
+    final $_column = $_itemColumn<int>('pedalboard_id')!;
+
+    final manager = $$PedalboardsTableTableManager(
+      $_db,
+      $_db.pedalboards,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_pedalboardIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+
+  static $PedalsTable _pedalIdTable(_$AppDatabase db) =>
+      db.pedals.createAlias('pedalboard_slots__pedal_id__pedals__id');
+
+  $$PedalsTableProcessedTableManager get pedalId {
+    final $_column = $_itemColumn<int>('pedal_id')!;
+
+    final manager = $$PedalsTableTableManager(
+      $_db,
+      $_db.pedals,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_pedalIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+}
+
+class $$PedalboardSlotsTableFilterComposer
+    extends Composer<_$AppDatabase, $PedalboardSlotsTable> {
+  $$PedalboardSlotsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get position => $composableBuilder(
+    column: $table.position,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  $$PedalboardsTableFilterComposer get pedalboardId {
+    final $$PedalboardsTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.pedalboardId,
+      referencedTable: $db.pedalboards,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$PedalboardsTableFilterComposer(
+            $db: $db,
+            $table: $db.pedalboards,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  $$PedalsTableFilterComposer get pedalId {
+    final $$PedalsTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.pedalId,
+      referencedTable: $db.pedals,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$PedalsTableFilterComposer(
+            $db: $db,
+            $table: $db.pedals,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$PedalboardSlotsTableOrderingComposer
+    extends Composer<_$AppDatabase, $PedalboardSlotsTable> {
+  $$PedalboardSlotsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get position => $composableBuilder(
+    column: $table.position,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  $$PedalboardsTableOrderingComposer get pedalboardId {
+    final $$PedalboardsTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.pedalboardId,
+      referencedTable: $db.pedalboards,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$PedalboardsTableOrderingComposer(
+            $db: $db,
+            $table: $db.pedalboards,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  $$PedalsTableOrderingComposer get pedalId {
+    final $$PedalsTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.pedalId,
+      referencedTable: $db.pedals,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$PedalsTableOrderingComposer(
+            $db: $db,
+            $table: $db.pedals,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$PedalboardSlotsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $PedalboardSlotsTable> {
+  $$PedalboardSlotsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<int> get position =>
+      $composableBuilder(column: $table.position, builder: (column) => column);
+
+  $$PedalboardsTableAnnotationComposer get pedalboardId {
+    final $$PedalboardsTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.pedalboardId,
+      referencedTable: $db.pedalboards,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$PedalboardsTableAnnotationComposer(
+            $db: $db,
+            $table: $db.pedalboards,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  $$PedalsTableAnnotationComposer get pedalId {
+    final $$PedalsTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.pedalId,
+      referencedTable: $db.pedals,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$PedalsTableAnnotationComposer(
+            $db: $db,
+            $table: $db.pedals,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$PedalboardSlotsTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $PedalboardSlotsTable,
+          PedalboardSlot,
+          $$PedalboardSlotsTableFilterComposer,
+          $$PedalboardSlotsTableOrderingComposer,
+          $$PedalboardSlotsTableAnnotationComposer,
+          $$PedalboardSlotsTableCreateCompanionBuilder,
+          $$PedalboardSlotsTableUpdateCompanionBuilder,
+          (PedalboardSlot, $$PedalboardSlotsTableReferences),
+          PedalboardSlot,
+          PrefetchHooks Function({bool pedalboardId, bool pedalId})
+        > {
+  $$PedalboardSlotsTableTableManager(
+    _$AppDatabase db,
+    $PedalboardSlotsTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$PedalboardSlotsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$PedalboardSlotsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$PedalboardSlotsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<int> pedalboardId = const Value.absent(),
+                Value<int> pedalId = const Value.absent(),
+                Value<int> position = const Value.absent(),
+              }) => PedalboardSlotsCompanion(
+                id: id,
+                pedalboardId: pedalboardId,
+                pedalId: pedalId,
+                position: position,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                required int pedalboardId,
+                required int pedalId,
+                required int position,
+              }) => PedalboardSlotsCompanion.insert(
+                id: id,
+                pedalboardId: pedalboardId,
+                pedalId: pedalId,
+                position: position,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable(table),
+                  $$PedalboardSlotsTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: ({pedalboardId = false, pedalId = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [],
+              addJoins:
+                  <
+                    T extends TableManagerState<
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic
+                    >
+                  >(state) {
+                    if (pedalboardId) {
+                      state =
+                          state.withJoin(
+                                currentTable: table,
+                                currentColumn: table.pedalboardId,
+                                referencedTable:
+                                    $$PedalboardSlotsTableReferences
+                                        ._pedalboardIdTable(db),
+                                referencedColumn:
+                                    $$PedalboardSlotsTableReferences
+                                        ._pedalboardIdTable(db)
+                                        .id,
+                              )
+                              as T;
+                    }
+                    if (pedalId) {
+                      state =
+                          state.withJoin(
+                                currentTable: table,
+                                currentColumn: table.pedalId,
+                                referencedTable:
+                                    $$PedalboardSlotsTableReferences
+                                        ._pedalIdTable(db),
+                                referencedColumn:
+                                    $$PedalboardSlotsTableReferences
+                                        ._pedalIdTable(db)
+                                        .id,
+                              )
+                              as T;
+                    }
+
+                    return state;
+                  },
+              getPrefetchedDataCallback: (items) async {
+                return [];
+              },
+            );
+          },
+        ),
+      );
+}
+
+typedef $$PedalboardSlotsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $PedalboardSlotsTable,
+      PedalboardSlot,
+      $$PedalboardSlotsTableFilterComposer,
+      $$PedalboardSlotsTableOrderingComposer,
+      $$PedalboardSlotsTableAnnotationComposer,
+      $$PedalboardSlotsTableCreateCompanionBuilder,
+      $$PedalboardSlotsTableUpdateCompanionBuilder,
+      (PedalboardSlot, $$PedalboardSlotsTableReferences),
+      PedalboardSlot,
+      PrefetchHooks Function({bool pedalboardId, bool pedalId})
     >;
 
 class $AppDatabaseManager {
@@ -7469,4 +8399,6 @@ class $AppDatabaseManager {
       $$PedalReplacementsTableTableManager(_db, _db.pedalReplacements);
   $$PedalboardsTableTableManager get pedalboards =>
       $$PedalboardsTableTableManager(_db, _db.pedalboards);
+  $$PedalboardSlotsTableTableManager get pedalboardSlots =>
+      $$PedalboardSlotsTableTableManager(_db, _db.pedalboardSlots);
 }

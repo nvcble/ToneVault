@@ -1,3 +1,4 @@
+import 'package:drift/drift.dart' show Variable;
 import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:tone_vault/core/database/app_database.dart';
@@ -6,6 +7,7 @@ import 'package:tone_vault/core/enums/change_type.dart';
 import 'package:tone_vault/core/enums/control_type.dart';
 import 'package:tone_vault/core/values/control_options.dart';
 import 'package:tone_vault/features/controls/data/control_draft.dart';
+import 'package:tone_vault/features/pedalboards/data/pedalboard_draft.dart';
 import '../support/repositories.dart';
 
 /// The v1 schema and a row in it, spelled out rather than derived from the
@@ -65,6 +67,14 @@ const List<String> _v1Schema = [
       'new_value REAL NULL, '
       'reason TEXT NULL, '
       'created_at TEXT NOT NULL)',
+  // Named rigs shipped in v1 with nothing to hold their chain, which is what
+  // the v3 to v4 step adds.
+  'CREATE TABLE IF NOT EXISTS pedalboards ('
+      'id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, '
+      'name TEXT NOT NULL UNIQUE, '
+      'description TEXT NULL, '
+      'created_at TEXT NOT NULL, '
+      'updated_at TEXT NOT NULL)',
   'CREATE INDEX IF NOT EXISTS idx_pedals_status ON pedals (status)',
   'CREATE INDEX IF NOT EXISTS idx_pedals_name ON pedals (name)',
   'CREATE INDEX IF NOT EXISTS idx_pedal_controls_pedal_order '
@@ -98,6 +108,23 @@ AppDatabase _openV1Database() {
       },
     ),
   );
+}
+
+/// How SQLite itself describes one table and everything attached to it.
+///
+/// The statement is null for an index SQLite made up itself, such as the one
+/// behind a UNIQUE constraint, so those are compared by name alone.
+Future<List<String>> _schemaFor(AppDatabase db, String table) async {
+  final rows = await db
+      .customSelect(
+        'SELECT name, sql FROM sqlite_master WHERE tbl_name = ? ORDER BY name;',
+        variables: [Variable.withString(table)],
+      )
+      .get();
+  return [
+    for (final row in rows)
+      '${row.read<String>('name')}: ${row.readNullable<String>('sql')}',
+  ];
 }
 
 void main() {
@@ -150,6 +177,36 @@ void main() {
     final row = await db.customSelect('PRAGMA user_version;').getSingle();
 
     expect(row.data.values.single, currentSchemaVersion);
+  });
+
+  test('the rig chain table is created exactly as a fresh one is', () async {
+    // One at a time: two live databases at once only earn a drift warning.
+    final fresh = AppDatabase(NativeDatabase.memory());
+    final expected = await _schemaFor(fresh, 'pedalboard_slots');
+    await fresh.close();
+
+    final upgraded = _openV1Database();
+    addTearDown(upgraded.close);
+
+    // Hand-written migration SQL against what the current definition creates:
+    // an upgraded phone and a new install have to end up with the same table,
+    // constraints and index, not merely similar ones.
+    expect(await _schemaFor(upgraded, 'pedalboard_slots'), expected);
+  });
+
+  test('an upgraded database can hold a rig chain', () async {
+    final db = _openV1Database();
+    addTearDown(db.close);
+
+    final rigId = await pedalboardRepository(
+      db,
+    ).createPedalboard(const PedalboardDraft(name: 'Hybrid Worship Rig'));
+    // Pedal 1 is the one already stored in the v1 fixture.
+    await rigChainRepository(db).addPedal(pedalboardId: rigId, pedalId: 1);
+
+    final chain = await db.pedalboardDao.watchChain(rigId).first;
+    expect(chain.single.pedal.name, 'PureSky');
+    expect(chain.single.slot.position, 0);
   });
 
   test(
