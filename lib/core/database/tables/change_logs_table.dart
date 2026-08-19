@@ -20,13 +20,17 @@ class ChangeLogs extends Table {
   IntColumn get pedalId =>
       integer().references(Pedals, #id, onDelete: KeyAction.restrict)();
 
-  IntColumn get configurationId => integer()
-      .nullable()
-      .references(Configurations, #id, onDelete: KeyAction.setNull)();
+  IntColumn get configurationId => integer().nullable().references(
+    Configurations,
+    #id,
+    onDelete: KeyAction.setNull,
+  )();
 
-  IntColumn get controlId => integer()
-      .nullable()
-      .references(PedalControls, #id, onDelete: KeyAction.setNull)();
+  IntColumn get controlId => integer().nullable().references(
+    PedalControls,
+    #id,
+    onDelete: KeyAction.setNull,
+  )();
 
   TextColumn get configurationName =>
       text().withLength(min: 1, max: 80).nullable()();

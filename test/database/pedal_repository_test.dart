@@ -146,14 +146,16 @@ void main() {
 
     test('refuses to delete a pedal that has a configuration', () async {
       final pedalId = await repository.createPedal(draft);
-      await database.into(database.configurations).insert(
-        ConfigurationsCompanion.insert(
-          pedalId: pedalId,
-          name: 'Worship Lead',
-          createdAt: now,
-          updatedAt: now,
-        ),
-      );
+      await database
+          .into(database.configurations)
+          .insert(
+            ConfigurationsCompanion.insert(
+              pedalId: pedalId,
+              name: 'Worship Lead',
+              createdAt: now,
+              updatedAt: now,
+            ),
+          );
 
       await expectLater(
         repository.deletePedal(pedalId),
@@ -183,10 +185,11 @@ void main() {
       }
 
       final pedals = await repository.watchPedals().first;
-      expect(
-        pedals.map((pedal) => pedal.name),
-        ['Boss DS-1', 'joyo American Sound', 'Zoom MS-50G'],
-      );
+      expect(pedals.map((pedal) => pedal.name), [
+        'Boss DS-1',
+        'joyo American Sound',
+        'Zoom MS-50G',
+      ]);
     });
 
     test('emits again when a pedal is added', () async {

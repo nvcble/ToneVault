@@ -73,10 +73,7 @@ void main() {
 
     test('rejects the future', () {
       expect(
-        PedalValidator.purchaseDate(
-          now.add(const Duration(days: 1)),
-          now: now,
-        ),
+        PedalValidator.purchaseDate(now.add(const Duration(days: 1)), now: now),
         isNotNull,
       );
     });

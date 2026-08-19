@@ -16,15 +16,17 @@ void main() {
   final timestamp = DateTime.utc(2026, 8, 19, 10, 30);
 
   Future<int> insertPedal({String name = 'Caline PureSky'}) {
-    return database.into(database.pedals).insert(
-      PedalsCompanion.insert(
-        name: name,
-        type: PedalType.analog,
-        category: PedalCategory.overdrive,
-        createdAt: timestamp,
-        updatedAt: timestamp,
-      ),
-    );
+    return database
+        .into(database.pedals)
+        .insert(
+          PedalsCompanion.insert(
+            name: name,
+            type: PedalType.analog,
+            category: PedalCategory.overdrive,
+            createdAt: timestamp,
+            updatedAt: timestamp,
+          ),
+        );
   }
 
   Future<int> insertControl({
@@ -34,17 +36,19 @@ void main() {
     double maxValue = 1,
     double? step,
   }) {
-    return database.into(database.pedalControls).insert(
-      PedalControlsCompanion.insert(
-        pedalId: pedalId,
-        name: name,
-        controlType: ControlType.clock,
-        minValue: minValue,
-        maxValue: maxValue,
-        step: Value(step),
-        displayOrder: 0,
-      ),
-    );
+    return database
+        .into(database.pedalControls)
+        .insert(
+          PedalControlsCompanion.insert(
+            pedalId: pedalId,
+            name: name,
+            controlType: ControlType.clock,
+            minValue: minValue,
+            maxValue: maxValue,
+            step: Value(step),
+            displayOrder: 0,
+          ),
+        );
   }
 
   test('creates every v1 table', () async {
@@ -120,27 +124,31 @@ void main() {
     final pedalId = await insertPedal();
 
     await expectLater(
-      database.into(database.pedalReplacements).insert(
-        PedalReplacementsCompanion.insert(
-          oldPedalId: pedalId,
-          newPedalId: pedalId,
-          replacedAt: timestamp,
-        ),
-      ),
+      database
+          .into(database.pedalReplacements)
+          .insert(
+            PedalReplacementsCompanion.insert(
+              oldPedalId: pedalId,
+              newPedalId: pedalId,
+              replacedAt: timestamp,
+            ),
+          ),
       throwsA(isA<SqliteException>()),
     );
   });
 
-  test('defaults a new pedal to active and round-trips its timestamps',
-      () async {
-    final pedalId = await insertPedal();
-    final pedal = await (database.select(
-      database.pedals,
-    )..where((row) => row.id.equals(pedalId))).getSingle();
+  test(
+    'defaults a new pedal to active and round-trips its timestamps',
+    () async {
+      final pedalId = await insertPedal();
+      final pedal = await (database.select(
+        database.pedals,
+      )..where((row) => row.id.equals(pedalId))).getSingle();
 
-    expect(pedal.status, PedalStatus.active);
-    expect(pedal.createdAt, timestamp);
-  });
+      expect(pedal.status, PedalStatus.active);
+      expect(pedal.createdAt, timestamp);
+    },
+  );
 
   test('stores timestamps as ISO-8601 text rather than integers', () async {
     await insertPedal();

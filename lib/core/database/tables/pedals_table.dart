@@ -21,8 +21,8 @@ class Pedals extends Table {
 
   TextColumn get category => textEnum<PedalCategory>()();
 
-  TextColumn get status => textEnum<PedalStatus>()
-      .withDefault(Constant(PedalStatus.active.name))();
+  TextColumn get status =>
+      textEnum<PedalStatus>().withDefault(Constant(PedalStatus.active.name))();
 
   /// Path to an image file in the app's documents directory. Photos are kept
   /// outside the database so the file stays small and easy to back up.

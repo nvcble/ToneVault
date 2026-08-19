@@ -19,8 +19,9 @@ class PedalDao extends DatabaseAccessor<AppDatabase> with _$PedalDaoMixin {
   /// after "Zoom", so the ordering is explicitly case-insensitive.
   Stream<List<Pedal>> watchPedals() {
     return (select(pedals)..orderBy([
-      (row) => OrderingTerm.asc(row.name.collate(Collate.noCase)),
-    ])).watch();
+          (row) => OrderingTerm.asc(row.name.collate(Collate.noCase)),
+        ]))
+        .watch();
   }
 
   Stream<Pedal?> watchPedal(int pedalId) {
@@ -39,14 +40,16 @@ class PedalDao extends DatabaseAccessor<AppDatabase> with _$PedalDaoMixin {
 
   /// Returns whether a row matched [pedalId].
   Future<bool> updatePedal(int pedalId, PedalsCompanion changes) async {
-    final changedRows = await (update(pedals)
-      ..where((row) => row.id.equals(pedalId))).write(changes);
+    final changedRows = await (update(
+      pedals,
+    )..where((row) => row.id.equals(pedalId))).write(changes);
     return changedRows > 0;
   }
 
   Future<bool> deletePedal(int pedalId) async {
-    final deletedRows = await (delete(pedals)
-      ..where((row) => row.id.equals(pedalId))).go();
+    final deletedRows = await (delete(
+      pedals,
+    )..where((row) => row.id.equals(pedalId))).go();
     return deletedRows > 0;
   }
 }

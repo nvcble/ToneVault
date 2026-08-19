@@ -12,7 +12,8 @@ class DashboardScreen extends StatelessWidget {
       body: const EmptyState(
         icon: Icons.dashboard_outlined,
         title: 'Your rig at a glance',
-        message: 'Pedal counts, recent changes and quick actions appear here '
+        message:
+            'Pedal counts, recent changes and quick actions appear here '
             'once there is gear to show.',
       ),
     );

@@ -12,7 +12,8 @@ class HistoryScreen extends StatelessWidget {
       body: const EmptyState(
         icon: Icons.history,
         title: 'Nothing logged yet',
-        message: 'Every setting change you make is recorded here with the '
+        message:
+            'Every setting change you make is recorded here with the '
             'reason you gave for it.',
       ),
     );

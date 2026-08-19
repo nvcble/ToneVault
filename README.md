@@ -17,6 +17,7 @@ saved configurations, change history, replacements and pedalboards.
 ```bash
 flutter pub get
 dart run build_runner build --delete-conflicting-outputs   # after schema changes
+dart format lib test
 flutter analyze
 flutter test
 flutter run
