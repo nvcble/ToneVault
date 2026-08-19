@@ -2204,6 +2204,28 @@ class $ChangeLogsTable extends ChangeLogs
     type: DriftSqlType.double,
     requiredDuringInsert: false,
   );
+  static const VerificationMeta _oldTextMeta = const VerificationMeta(
+    'oldText',
+  );
+  @override
+  late final GeneratedColumn<String> oldText = GeneratedColumn<String>(
+    'old_text',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _newTextMeta = const VerificationMeta(
+    'newText',
+  );
+  @override
+  late final GeneratedColumn<String> newText = GeneratedColumn<String>(
+    'new_text',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
   static const VerificationMeta _reasonMeta = const VerificationMeta('reason');
   @override
   late final GeneratedColumn<String> reason = GeneratedColumn<String>(
@@ -2235,6 +2257,8 @@ class $ChangeLogsTable extends ChangeLogs
     changeType,
     oldValue,
     newValue,
+    oldText,
+    newText,
     reason,
     createdAt,
   ];
@@ -2306,6 +2330,18 @@ class $ChangeLogsTable extends ChangeLogs
         newValue.isAcceptableOrUnknown(data['new_value']!, _newValueMeta),
       );
     }
+    if (data.containsKey('old_text')) {
+      context.handle(
+        _oldTextMeta,
+        oldText.isAcceptableOrUnknown(data['old_text']!, _oldTextMeta),
+      );
+    }
+    if (data.containsKey('new_text')) {
+      context.handle(
+        _newTextMeta,
+        newText.isAcceptableOrUnknown(data['new_text']!, _newTextMeta),
+      );
+    }
     if (data.containsKey('reason')) {
       context.handle(
         _reasonMeta,
@@ -2367,6 +2403,14 @@ class $ChangeLogsTable extends ChangeLogs
         DriftSqlType.double,
         data['${effectivePrefix}new_value'],
       ),
+      oldText: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}old_text'],
+      ),
+      newText: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}new_text'],
+      ),
       reason: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}reason'],
@@ -2400,6 +2444,12 @@ class ChangeLog extends DataClass implements Insertable<ChangeLog> {
   final double? oldValue;
   final double? newValue;
 
+  /// The same transition for events that change text rather than a number: a
+  /// configuration's name, a pedal's status, or which pedal took over from
+  /// which. Kept separate from [reason] so the user can still explain a rename.
+  final String? oldText;
+  final String? newText;
+
   /// The user's own explanation, e.g. "needed more saturation for lead".
   final String? reason;
   final DateTime createdAt;
@@ -2413,6 +2463,8 @@ class ChangeLog extends DataClass implements Insertable<ChangeLog> {
     required this.changeType,
     this.oldValue,
     this.newValue,
+    this.oldText,
+    this.newText,
     this.reason,
     required this.createdAt,
   });
@@ -2444,6 +2496,12 @@ class ChangeLog extends DataClass implements Insertable<ChangeLog> {
     if (!nullToAbsent || newValue != null) {
       map['new_value'] = Variable<double>(newValue);
     }
+    if (!nullToAbsent || oldText != null) {
+      map['old_text'] = Variable<String>(oldText);
+    }
+    if (!nullToAbsent || newText != null) {
+      map['new_text'] = Variable<String>(newText);
+    }
     if (!nullToAbsent || reason != null) {
       map['reason'] = Variable<String>(reason);
     }
@@ -2474,6 +2532,12 @@ class ChangeLog extends DataClass implements Insertable<ChangeLog> {
       newValue: newValue == null && nullToAbsent
           ? const Value.absent()
           : Value(newValue),
+      oldText: oldText == null && nullToAbsent
+          ? const Value.absent()
+          : Value(oldText),
+      newText: newText == null && nullToAbsent
+          ? const Value.absent()
+          : Value(newText),
       reason: reason == null && nullToAbsent
           ? const Value.absent()
           : Value(reason),
@@ -2500,6 +2564,8 @@ class ChangeLog extends DataClass implements Insertable<ChangeLog> {
       ),
       oldValue: serializer.fromJson<double?>(json['oldValue']),
       newValue: serializer.fromJson<double?>(json['newValue']),
+      oldText: serializer.fromJson<String?>(json['oldText']),
+      newText: serializer.fromJson<String?>(json['newText']),
       reason: serializer.fromJson<String?>(json['reason']),
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
     );
@@ -2519,6 +2585,8 @@ class ChangeLog extends DataClass implements Insertable<ChangeLog> {
       ),
       'oldValue': serializer.toJson<double?>(oldValue),
       'newValue': serializer.toJson<double?>(newValue),
+      'oldText': serializer.toJson<String?>(oldText),
+      'newText': serializer.toJson<String?>(newText),
       'reason': serializer.toJson<String?>(reason),
       'createdAt': serializer.toJson<DateTime>(createdAt),
     };
@@ -2534,6 +2602,8 @@ class ChangeLog extends DataClass implements Insertable<ChangeLog> {
     ChangeType? changeType,
     Value<double?> oldValue = const Value.absent(),
     Value<double?> newValue = const Value.absent(),
+    Value<String?> oldText = const Value.absent(),
+    Value<String?> newText = const Value.absent(),
     Value<String?> reason = const Value.absent(),
     DateTime? createdAt,
   }) => ChangeLog(
@@ -2550,6 +2620,8 @@ class ChangeLog extends DataClass implements Insertable<ChangeLog> {
     changeType: changeType ?? this.changeType,
     oldValue: oldValue.present ? oldValue.value : this.oldValue,
     newValue: newValue.present ? newValue.value : this.newValue,
+    oldText: oldText.present ? oldText.value : this.oldText,
+    newText: newText.present ? newText.value : this.newText,
     reason: reason.present ? reason.value : this.reason,
     createdAt: createdAt ?? this.createdAt,
   );
@@ -2572,6 +2644,8 @@ class ChangeLog extends DataClass implements Insertable<ChangeLog> {
           : this.changeType,
       oldValue: data.oldValue.present ? data.oldValue.value : this.oldValue,
       newValue: data.newValue.present ? data.newValue.value : this.newValue,
+      oldText: data.oldText.present ? data.oldText.value : this.oldText,
+      newText: data.newText.present ? data.newText.value : this.newText,
       reason: data.reason.present ? data.reason.value : this.reason,
       createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
     );
@@ -2589,6 +2663,8 @@ class ChangeLog extends DataClass implements Insertable<ChangeLog> {
           ..write('changeType: $changeType, ')
           ..write('oldValue: $oldValue, ')
           ..write('newValue: $newValue, ')
+          ..write('oldText: $oldText, ')
+          ..write('newText: $newText, ')
           ..write('reason: $reason, ')
           ..write('createdAt: $createdAt')
           ..write(')'))
@@ -2606,6 +2682,8 @@ class ChangeLog extends DataClass implements Insertable<ChangeLog> {
     changeType,
     oldValue,
     newValue,
+    oldText,
+    newText,
     reason,
     createdAt,
   );
@@ -2622,6 +2700,8 @@ class ChangeLog extends DataClass implements Insertable<ChangeLog> {
           other.changeType == this.changeType &&
           other.oldValue == this.oldValue &&
           other.newValue == this.newValue &&
+          other.oldText == this.oldText &&
+          other.newText == this.newText &&
           other.reason == this.reason &&
           other.createdAt == this.createdAt);
 }
@@ -2636,6 +2716,8 @@ class ChangeLogsCompanion extends UpdateCompanion<ChangeLog> {
   final Value<ChangeType> changeType;
   final Value<double?> oldValue;
   final Value<double?> newValue;
+  final Value<String?> oldText;
+  final Value<String?> newText;
   final Value<String?> reason;
   final Value<DateTime> createdAt;
   const ChangeLogsCompanion({
@@ -2648,6 +2730,8 @@ class ChangeLogsCompanion extends UpdateCompanion<ChangeLog> {
     this.changeType = const Value.absent(),
     this.oldValue = const Value.absent(),
     this.newValue = const Value.absent(),
+    this.oldText = const Value.absent(),
+    this.newText = const Value.absent(),
     this.reason = const Value.absent(),
     this.createdAt = const Value.absent(),
   });
@@ -2661,6 +2745,8 @@ class ChangeLogsCompanion extends UpdateCompanion<ChangeLog> {
     required ChangeType changeType,
     this.oldValue = const Value.absent(),
     this.newValue = const Value.absent(),
+    this.oldText = const Value.absent(),
+    this.newText = const Value.absent(),
     this.reason = const Value.absent(),
     required DateTime createdAt,
   }) : pedalId = Value(pedalId),
@@ -2676,6 +2762,8 @@ class ChangeLogsCompanion extends UpdateCompanion<ChangeLog> {
     Expression<String>? changeType,
     Expression<double>? oldValue,
     Expression<double>? newValue,
+    Expression<String>? oldText,
+    Expression<String>? newText,
     Expression<String>? reason,
     Expression<DateTime>? createdAt,
   }) {
@@ -2689,6 +2777,8 @@ class ChangeLogsCompanion extends UpdateCompanion<ChangeLog> {
       if (changeType != null) 'change_type': changeType,
       if (oldValue != null) 'old_value': oldValue,
       if (newValue != null) 'new_value': newValue,
+      if (oldText != null) 'old_text': oldText,
+      if (newText != null) 'new_text': newText,
       if (reason != null) 'reason': reason,
       if (createdAt != null) 'created_at': createdAt,
     });
@@ -2704,6 +2794,8 @@ class ChangeLogsCompanion extends UpdateCompanion<ChangeLog> {
     Value<ChangeType>? changeType,
     Value<double?>? oldValue,
     Value<double?>? newValue,
+    Value<String?>? oldText,
+    Value<String?>? newText,
     Value<String?>? reason,
     Value<DateTime>? createdAt,
   }) {
@@ -2717,6 +2809,8 @@ class ChangeLogsCompanion extends UpdateCompanion<ChangeLog> {
       changeType: changeType ?? this.changeType,
       oldValue: oldValue ?? this.oldValue,
       newValue: newValue ?? this.newValue,
+      oldText: oldText ?? this.oldText,
+      newText: newText ?? this.newText,
       reason: reason ?? this.reason,
       createdAt: createdAt ?? this.createdAt,
     );
@@ -2754,6 +2848,12 @@ class ChangeLogsCompanion extends UpdateCompanion<ChangeLog> {
     if (newValue.present) {
       map['new_value'] = Variable<double>(newValue.value);
     }
+    if (oldText.present) {
+      map['old_text'] = Variable<String>(oldText.value);
+    }
+    if (newText.present) {
+      map['new_text'] = Variable<String>(newText.value);
+    }
     if (reason.present) {
       map['reason'] = Variable<String>(reason.value);
     }
@@ -2775,6 +2875,8 @@ class ChangeLogsCompanion extends UpdateCompanion<ChangeLog> {
           ..write('changeType: $changeType, ')
           ..write('oldValue: $oldValue, ')
           ..write('newValue: $newValue, ')
+          ..write('oldText: $oldText, ')
+          ..write('newText: $newText, ')
           ..write('reason: $reason, ')
           ..write('createdAt: $createdAt')
           ..write(')'))
@@ -3611,6 +3713,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final ConfigurationDao configurationDao = ConfigurationDao(
     this as AppDatabase,
   );
+  late final ChangeLogDao changeLogDao = ChangeLogDao(this as AppDatabase);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -6066,6 +6169,8 @@ typedef $$ChangeLogsTableCreateCompanionBuilder =
       required ChangeType changeType,
       Value<double?> oldValue,
       Value<double?> newValue,
+      Value<String?> oldText,
+      Value<String?> newText,
       Value<String?> reason,
       required DateTime createdAt,
     });
@@ -6080,6 +6185,8 @@ typedef $$ChangeLogsTableUpdateCompanionBuilder =
       Value<ChangeType> changeType,
       Value<double?> oldValue,
       Value<double?> newValue,
+      Value<String?> oldText,
+      Value<String?> newText,
       Value<String?> reason,
       Value<DateTime> createdAt,
     });
@@ -6179,6 +6286,16 @@ class $$ChangeLogsTableFilterComposer
 
   ColumnFilters<double> get newValue => $composableBuilder(
     column: $table.newValue,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get oldText => $composableBuilder(
+    column: $table.oldText,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get newText => $composableBuilder(
+    column: $table.newText,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -6301,6 +6418,16 @@ class $$ChangeLogsTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<String> get oldText => $composableBuilder(
+    column: $table.oldText,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get newText => $composableBuilder(
+    column: $table.newText,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<String> get reason => $composableBuilder(
     column: $table.reason,
     builder: (column) => ColumnOrderings(column),
@@ -6414,6 +6541,12 @@ class $$ChangeLogsTableAnnotationComposer
 
   GeneratedColumn<double> get newValue =>
       $composableBuilder(column: $table.newValue, builder: (column) => column);
+
+  GeneratedColumn<String> get oldText =>
+      $composableBuilder(column: $table.oldText, builder: (column) => column);
+
+  GeneratedColumn<String> get newText =>
+      $composableBuilder(column: $table.newText, builder: (column) => column);
 
   GeneratedColumn<String> get reason =>
       $composableBuilder(column: $table.reason, builder: (column) => column);
@@ -6532,6 +6665,8 @@ class $$ChangeLogsTableTableManager
                 Value<ChangeType> changeType = const Value.absent(),
                 Value<double?> oldValue = const Value.absent(),
                 Value<double?> newValue = const Value.absent(),
+                Value<String?> oldText = const Value.absent(),
+                Value<String?> newText = const Value.absent(),
                 Value<String?> reason = const Value.absent(),
                 Value<DateTime> createdAt = const Value.absent(),
               }) => ChangeLogsCompanion(
@@ -6544,6 +6679,8 @@ class $$ChangeLogsTableTableManager
                 changeType: changeType,
                 oldValue: oldValue,
                 newValue: newValue,
+                oldText: oldText,
+                newText: newText,
                 reason: reason,
                 createdAt: createdAt,
               ),
@@ -6558,6 +6695,8 @@ class $$ChangeLogsTableTableManager
                 required ChangeType changeType,
                 Value<double?> oldValue = const Value.absent(),
                 Value<double?> newValue = const Value.absent(),
+                Value<String?> oldText = const Value.absent(),
+                Value<String?> newText = const Value.absent(),
                 Value<String?> reason = const Value.absent(),
                 required DateTime createdAt,
               }) => ChangeLogsCompanion.insert(
@@ -6570,6 +6709,8 @@ class $$ChangeLogsTableTableManager
                 changeType: changeType,
                 oldValue: oldValue,
                 newValue: newValue,
+                oldText: oldText,
+                newText: newText,
                 reason: reason,
                 createdAt: createdAt,
               ),

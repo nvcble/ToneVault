@@ -44,6 +44,13 @@ class ChangeLogs extends Table {
 
   RealColumn get newValue => real().nullable()();
 
+  /// The same transition for events that change text rather than a number: a
+  /// configuration's name, a pedal's status, or which pedal took over from
+  /// which. Kept separate from [reason] so the user can still explain a rename.
+  TextColumn get oldText => text().nullable()();
+
+  TextColumn get newText => text().nullable()();
+
   /// The user's own explanation, e.g. "needed more saturation for lead".
   TextColumn get reason => text().nullable()();
 

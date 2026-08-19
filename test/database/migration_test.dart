@@ -2,6 +2,7 @@ import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:tone_vault/core/database/app_database.dart';
 import 'package:tone_vault/core/database/migrations.dart';
+import 'package:tone_vault/core/enums/change_type.dart';
 import 'package:tone_vault/core/enums/control_type.dart';
 import 'package:tone_vault/core/values/control_options.dart';
 import 'package:tone_vault/features/controls/data/control_draft.dart';
@@ -11,8 +12,9 @@ import 'package:tone_vault/features/controls/data/control_repository.dart';
 /// current table classes.
 ///
 /// This is a fixture of what is already on a user's phone, so it has to keep
-/// describing v1 after the Dart definitions have moved on. Only the two tables
-/// the v1 to v2 step involves are created; the rest are untouched by it.
+/// describing v1 after the Dart definitions have moved on. Only the tables the
+/// upgrade steps touch are created, plus `configurations`, which `change_logs`
+/// references; the rest, and every index, are untouched by the migrations.
 const List<String> _v1Schema = [
   'CREATE TABLE IF NOT EXISTS pedals ('
       'id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, '
@@ -40,6 +42,29 @@ const List<String> _v1Schema = [
       'UNIQUE (pedal_id, name), '
       'CHECK (max_value > min_value), '
       'CHECK (step IS NULL OR step > 0))',
+  'CREATE TABLE IF NOT EXISTS configurations ('
+      'id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, '
+      'pedal_id INTEGER NOT NULL REFERENCES pedals (id) ON DELETE RESTRICT, '
+      'name TEXT NOT NULL, '
+      'notes TEXT NULL, '
+      'created_at TEXT NOT NULL, '
+      'updated_at TEXT NOT NULL, '
+      'UNIQUE (pedal_id, name))',
+  // Without old_text and new_text, which is what the v2 to v3 step adds.
+  'CREATE TABLE IF NOT EXISTS change_logs ('
+      'id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, '
+      'pedal_id INTEGER NOT NULL REFERENCES pedals (id) ON DELETE RESTRICT, '
+      'configuration_id INTEGER NULL '
+      'REFERENCES configurations (id) ON DELETE SET NULL, '
+      'control_id INTEGER NULL '
+      'REFERENCES pedal_controls (id) ON DELETE SET NULL, '
+      'configuration_name TEXT NULL, '
+      'control_name TEXT NULL, '
+      'change_type TEXT NOT NULL, '
+      'old_value REAL NULL, '
+      'new_value REAL NULL, '
+      'reason TEXT NULL, '
+      'created_at TEXT NOT NULL)',
   'CREATE INDEX IF NOT EXISTS idx_pedals_status ON pedals (status)',
   'CREATE INDEX IF NOT EXISTS idx_pedals_name ON pedals (name)',
   'CREATE INDEX IF NOT EXISTS idx_pedal_controls_pedal_order '
@@ -55,6 +80,9 @@ const List<String> _v1Rows = [
       '(id, pedal_id, name, control_type, min_value, max_value, step, '
       'display_order) '
       "VALUES (1, 1, 'Volume', 'clock', 0.0, 1.0, 0.05, 0)",
+  'INSERT INTO change_logs '
+      '(id, pedal_id, control_id, control_name, change_type, created_at) '
+      "VALUES (1, 1, 1, 'Volume', 'controlAdded', '2024-05-01T10:00:00.000Z')",
 ];
 
 /// Opens a v1 database that already holds [_v1Rows] and lets drift upgrade it.
@@ -97,6 +125,20 @@ void main() {
 
     expect(control!.options, isNull);
     expect(decodeControlOptions(control.options), isEmpty);
+  });
+
+  test('history written before the text columns still reads', () async {
+    final db = _openV1Database();
+    addTearDown(db.close);
+
+    final entries = await db.changeLogDao.entriesOf(1);
+
+    // An entry that predates old_text and new_text keeps the meaning it was
+    // written with, rather than being dropped or backfilled with a guess.
+    expect(entries.single.changeType, ChangeType.controlAdded);
+    expect(entries.single.controlName, 'Volume');
+    expect(entries.single.oldText, isNull);
+    expect(entries.single.newText, isNull);
   });
 
   test('the upgraded database records the new schema version', () async {

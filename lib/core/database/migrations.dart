@@ -6,7 +6,9 @@ import 'package:drift/drift.dart';
 /// - v1: pedals, pedal_controls, configurations, configuration_values,
 ///   change_logs, pedal_replacements, pedalboards.
 /// - v2: pedal_controls.options, the position names of a selection control.
-const int currentSchemaVersion = 2;
+/// - v3: change_logs.old_text and change_logs.new_text, so history can record a
+///   rename or a status change as well as a knob that moved.
+const int currentSchemaVersion = 3;
 
 MigrationStrategy buildMigrationStrategy(GeneratedDatabase database) {
   return MigrationStrategy(
@@ -21,6 +23,15 @@ MigrationStrategy buildMigrationStrategy(GeneratedDatabase database) {
       if (from < 2) {
         await database.customStatement(
           'ALTER TABLE pedal_controls ADD COLUMN options TEXT NULL;',
+        );
+      }
+
+      if (from < 3) {
+        await database.customStatement(
+          'ALTER TABLE change_logs ADD COLUMN old_text TEXT NULL;',
+        );
+        await database.customStatement(
+          'ALTER TABLE change_logs ADD COLUMN new_text TEXT NULL;',
         );
       }
 
