@@ -7,6 +7,7 @@ import '../../../shared/widgets/empty_state.dart';
 import '../../../shared/widgets/failure_snack_bar.dart';
 import '../providers/pedalboard_providers.dart';
 import '../providers/rig_editor.dart';
+import '../widgets/rig_chain_view.dart';
 import '../widgets/rig_overview.dart';
 
 /// One rig: what it is, and what is on it.
@@ -52,7 +53,13 @@ class RigScreen extends ConsumerWidget {
                 title: 'That rig no longer exists',
                 message: 'It may have been deleted on another screen.',
               )
-            : RigOverview(pedalboard: pedalboard),
+            : Column(
+                children: [
+                  RigOverview(pedalboard: pedalboard),
+                  const Divider(height: 1),
+                  Expanded(child: RigChainView(pedalboardId: pedalboardId)),
+                ],
+              ),
       ),
     );
   }

@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:tone_vault/app/app.dart';
 import 'package:tone_vault/core/database/app_database.dart';
+import 'package:tone_vault/core/database/daos/pedalboard_dao.dart';
 import 'package:tone_vault/features/pedalboards/providers/pedalboard_providers.dart';
 
 /// Getting around the rigs tab: the list, one rig, and the forms either side of
@@ -32,6 +33,11 @@ void main() {
           pedalboardProvider(
             worship.id,
           ).overrideWith((ref) => Stream.value(worship)),
+          // The rig screen shows its chain, which would otherwise open the
+          // database. What the chain looks like is rig_chain_test.dart's job.
+          rigChainProvider(
+            worship.id,
+          ).overrideWith((ref) => Stream.value(const <ChainSlot>[])),
         ],
         child: const ToneVaultApp(),
       ),
