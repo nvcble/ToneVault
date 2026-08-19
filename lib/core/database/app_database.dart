@@ -7,6 +7,7 @@ import '../enums/control_type.dart';
 import '../enums/pedal_category.dart';
 import '../enums/pedal_status.dart';
 import '../enums/pedal_type.dart';
+import 'daos/pedal_control_dao.dart';
 import 'daos/pedal_dao.dart';
 import 'migrations.dart';
 import 'tables/change_logs_table.dart';
@@ -29,7 +30,7 @@ part 'app_database.g.dart';
     PedalReplacements,
     Pedalboards,
   ],
-  daos: [PedalDao],
+  daos: [PedalDao, PedalControlDao],
 )
 class AppDatabase extends _$AppDatabase {
   AppDatabase(super.executor);

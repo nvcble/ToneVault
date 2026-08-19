@@ -35,6 +35,14 @@ class PedalControls extends Table {
   /// Display-only suffix such as `dB`, `ms` or `Hz`.
   TextColumn get unit => text().withLength(min: 1, max: 12).nullable()();
 
+  /// Position names of a selection control, as a JSON array of strings.
+  ///
+  /// Null for every other control type. A handful of labels is never queried on
+  /// its own, so they stay on the control instead of earning a child table, and
+  /// the stored value remains a plain number: the position within this list.
+  /// Read and written through `decodeControlOptions` / `encodeControlOptions`.
+  TextColumn get options => text().nullable()();
+
   IntColumn get displayOrder => integer()();
 
   /// Two knobs on the same pedal sharing a name would make configurations

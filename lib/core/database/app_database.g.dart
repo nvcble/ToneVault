@@ -783,6 +783,17 @@ class $PedalControlsTable extends PedalControls
     type: DriftSqlType.string,
     requiredDuringInsert: false,
   );
+  static const VerificationMeta _optionsMeta = const VerificationMeta(
+    'options',
+  );
+  @override
+  late final GeneratedColumn<String> options = GeneratedColumn<String>(
+    'options',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
   static const VerificationMeta _displayOrderMeta = const VerificationMeta(
     'displayOrder',
   );
@@ -805,6 +816,7 @@ class $PedalControlsTable extends PedalControls
     step,
     defaultValue,
     unit,
+    options,
     displayOrder,
   ];
   @override
@@ -875,6 +887,12 @@ class $PedalControlsTable extends PedalControls
         unit.isAcceptableOrUnknown(data['unit']!, _unitMeta),
       );
     }
+    if (data.containsKey('options')) {
+      context.handle(
+        _optionsMeta,
+        options.isAcceptableOrUnknown(data['options']!, _optionsMeta),
+      );
+    }
     if (data.containsKey('display_order')) {
       context.handle(
         _displayOrderMeta,
@@ -937,6 +955,10 @@ class $PedalControlsTable extends PedalControls
         DriftSqlType.string,
         data['${effectivePrefix}unit'],
       ),
+      options: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}options'],
+      ),
       displayOrder: attachedDatabase.typeMapping.read(
         DriftSqlType.int,
         data['${effectivePrefix}display_order'],
@@ -970,6 +992,14 @@ class PedalControl extends DataClass implements Insertable<PedalControl> {
 
   /// Display-only suffix such as `dB`, `ms` or `Hz`.
   final String? unit;
+
+  /// Position names of a selection control, as a JSON array of strings.
+  ///
+  /// Null for every other control type. A handful of labels is never queried on
+  /// its own, so they stay on the control instead of earning a child table, and
+  /// the stored value remains a plain number: the position within this list.
+  /// Read and written through `decodeControlOptions` / `encodeControlOptions`.
+  final String? options;
   final int displayOrder;
   const PedalControl({
     required this.id,
@@ -981,6 +1011,7 @@ class PedalControl extends DataClass implements Insertable<PedalControl> {
     this.step,
     this.defaultValue,
     this.unit,
+    this.options,
     required this.displayOrder,
   });
   @override
@@ -1005,6 +1036,9 @@ class PedalControl extends DataClass implements Insertable<PedalControl> {
     if (!nullToAbsent || unit != null) {
       map['unit'] = Variable<String>(unit);
     }
+    if (!nullToAbsent || options != null) {
+      map['options'] = Variable<String>(options);
+    }
     map['display_order'] = Variable<int>(displayOrder);
     return map;
   }
@@ -1022,6 +1056,9 @@ class PedalControl extends DataClass implements Insertable<PedalControl> {
           ? const Value.absent()
           : Value(defaultValue),
       unit: unit == null && nullToAbsent ? const Value.absent() : Value(unit),
+      options: options == null && nullToAbsent
+          ? const Value.absent()
+          : Value(options),
       displayOrder: Value(displayOrder),
     );
   }
@@ -1043,6 +1080,7 @@ class PedalControl extends DataClass implements Insertable<PedalControl> {
       step: serializer.fromJson<double?>(json['step']),
       defaultValue: serializer.fromJson<double?>(json['defaultValue']),
       unit: serializer.fromJson<String?>(json['unit']),
+      options: serializer.fromJson<String?>(json['options']),
       displayOrder: serializer.fromJson<int>(json['displayOrder']),
     );
   }
@@ -1061,6 +1099,7 @@ class PedalControl extends DataClass implements Insertable<PedalControl> {
       'step': serializer.toJson<double?>(step),
       'defaultValue': serializer.toJson<double?>(defaultValue),
       'unit': serializer.toJson<String?>(unit),
+      'options': serializer.toJson<String?>(options),
       'displayOrder': serializer.toJson<int>(displayOrder),
     };
   }
@@ -1075,6 +1114,7 @@ class PedalControl extends DataClass implements Insertable<PedalControl> {
     Value<double?> step = const Value.absent(),
     Value<double?> defaultValue = const Value.absent(),
     Value<String?> unit = const Value.absent(),
+    Value<String?> options = const Value.absent(),
     int? displayOrder,
   }) => PedalControl(
     id: id ?? this.id,
@@ -1086,6 +1126,7 @@ class PedalControl extends DataClass implements Insertable<PedalControl> {
     step: step.present ? step.value : this.step,
     defaultValue: defaultValue.present ? defaultValue.value : this.defaultValue,
     unit: unit.present ? unit.value : this.unit,
+    options: options.present ? options.value : this.options,
     displayOrder: displayOrder ?? this.displayOrder,
   );
   PedalControl copyWithCompanion(PedalControlsCompanion data) {
@@ -1103,6 +1144,7 @@ class PedalControl extends DataClass implements Insertable<PedalControl> {
           ? data.defaultValue.value
           : this.defaultValue,
       unit: data.unit.present ? data.unit.value : this.unit,
+      options: data.options.present ? data.options.value : this.options,
       displayOrder: data.displayOrder.present
           ? data.displayOrder.value
           : this.displayOrder,
@@ -1121,6 +1163,7 @@ class PedalControl extends DataClass implements Insertable<PedalControl> {
           ..write('step: $step, ')
           ..write('defaultValue: $defaultValue, ')
           ..write('unit: $unit, ')
+          ..write('options: $options, ')
           ..write('displayOrder: $displayOrder')
           ..write(')'))
         .toString();
@@ -1137,6 +1180,7 @@ class PedalControl extends DataClass implements Insertable<PedalControl> {
     step,
     defaultValue,
     unit,
+    options,
     displayOrder,
   );
   @override
@@ -1152,6 +1196,7 @@ class PedalControl extends DataClass implements Insertable<PedalControl> {
           other.step == this.step &&
           other.defaultValue == this.defaultValue &&
           other.unit == this.unit &&
+          other.options == this.options &&
           other.displayOrder == this.displayOrder);
 }
 
@@ -1165,6 +1210,7 @@ class PedalControlsCompanion extends UpdateCompanion<PedalControl> {
   final Value<double?> step;
   final Value<double?> defaultValue;
   final Value<String?> unit;
+  final Value<String?> options;
   final Value<int> displayOrder;
   const PedalControlsCompanion({
     this.id = const Value.absent(),
@@ -1176,6 +1222,7 @@ class PedalControlsCompanion extends UpdateCompanion<PedalControl> {
     this.step = const Value.absent(),
     this.defaultValue = const Value.absent(),
     this.unit = const Value.absent(),
+    this.options = const Value.absent(),
     this.displayOrder = const Value.absent(),
   });
   PedalControlsCompanion.insert({
@@ -1188,6 +1235,7 @@ class PedalControlsCompanion extends UpdateCompanion<PedalControl> {
     this.step = const Value.absent(),
     this.defaultValue = const Value.absent(),
     this.unit = const Value.absent(),
+    this.options = const Value.absent(),
     required int displayOrder,
   }) : pedalId = Value(pedalId),
        name = Value(name),
@@ -1205,6 +1253,7 @@ class PedalControlsCompanion extends UpdateCompanion<PedalControl> {
     Expression<double>? step,
     Expression<double>? defaultValue,
     Expression<String>? unit,
+    Expression<String>? options,
     Expression<int>? displayOrder,
   }) {
     return RawValuesInsertable({
@@ -1217,6 +1266,7 @@ class PedalControlsCompanion extends UpdateCompanion<PedalControl> {
       if (step != null) 'step': step,
       if (defaultValue != null) 'default_value': defaultValue,
       if (unit != null) 'unit': unit,
+      if (options != null) 'options': options,
       if (displayOrder != null) 'display_order': displayOrder,
     });
   }
@@ -1231,6 +1281,7 @@ class PedalControlsCompanion extends UpdateCompanion<PedalControl> {
     Value<double?>? step,
     Value<double?>? defaultValue,
     Value<String?>? unit,
+    Value<String?>? options,
     Value<int>? displayOrder,
   }) {
     return PedalControlsCompanion(
@@ -1243,6 +1294,7 @@ class PedalControlsCompanion extends UpdateCompanion<PedalControl> {
       step: step ?? this.step,
       defaultValue: defaultValue ?? this.defaultValue,
       unit: unit ?? this.unit,
+      options: options ?? this.options,
       displayOrder: displayOrder ?? this.displayOrder,
     );
   }
@@ -1279,6 +1331,9 @@ class PedalControlsCompanion extends UpdateCompanion<PedalControl> {
     if (unit.present) {
       map['unit'] = Variable<String>(unit.value);
     }
+    if (options.present) {
+      map['options'] = Variable<String>(options.value);
+    }
     if (displayOrder.present) {
       map['display_order'] = Variable<int>(displayOrder.value);
     }
@@ -1297,6 +1352,7 @@ class PedalControlsCompanion extends UpdateCompanion<PedalControl> {
           ..write('step: $step, ')
           ..write('defaultValue: $defaultValue, ')
           ..write('unit: $unit, ')
+          ..write('options: $options, ')
           ..write('displayOrder: $displayOrder')
           ..write(')'))
         .toString();
@@ -3549,6 +3605,9 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     'CREATE INDEX idx_pedal_replacements_new ON pedal_replacements (new_pedal_id)',
   );
   late final PedalDao pedalDao = PedalDao(this as AppDatabase);
+  late final PedalControlDao pedalControlDao = PedalControlDao(
+    this as AppDatabase,
+  );
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -4420,6 +4479,7 @@ typedef $$PedalControlsTableCreateCompanionBuilder =
       Value<double?> step,
       Value<double?> defaultValue,
       Value<String?> unit,
+      Value<String?> options,
       required int displayOrder,
     });
 typedef $$PedalControlsTableUpdateCompanionBuilder =
@@ -4433,6 +4493,7 @@ typedef $$PedalControlsTableUpdateCompanionBuilder =
       Value<double?> step,
       Value<double?> defaultValue,
       Value<String?> unit,
+      Value<String?> options,
       Value<int> displayOrder,
     });
 
@@ -4551,6 +4612,11 @@ class $$PedalControlsTableFilterComposer
 
   ColumnFilters<String> get unit => $composableBuilder(
     column: $table.unit,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get options => $composableBuilder(
+    column: $table.options,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -4682,6 +4748,11 @@ class $$PedalControlsTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<String> get options => $composableBuilder(
+    column: $table.options,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<int> get displayOrder => $composableBuilder(
     column: $table.displayOrder,
     builder: (column) => ColumnOrderings(column),
@@ -4748,6 +4819,9 @@ class $$PedalControlsTableAnnotationComposer
 
   GeneratedColumn<String> get unit =>
       $composableBuilder(column: $table.unit, builder: (column) => column);
+
+  GeneratedColumn<String> get options =>
+      $composableBuilder(column: $table.options, builder: (column) => column);
 
   GeneratedColumn<int> get displayOrder => $composableBuilder(
     column: $table.displayOrder,
@@ -4870,6 +4944,7 @@ class $$PedalControlsTableTableManager
                 Value<double?> step = const Value.absent(),
                 Value<double?> defaultValue = const Value.absent(),
                 Value<String?> unit = const Value.absent(),
+                Value<String?> options = const Value.absent(),
                 Value<int> displayOrder = const Value.absent(),
               }) => PedalControlsCompanion(
                 id: id,
@@ -4881,6 +4956,7 @@ class $$PedalControlsTableTableManager
                 step: step,
                 defaultValue: defaultValue,
                 unit: unit,
+                options: options,
                 displayOrder: displayOrder,
               ),
           createCompanionCallback:
@@ -4894,6 +4970,7 @@ class $$PedalControlsTableTableManager
                 Value<double?> step = const Value.absent(),
                 Value<double?> defaultValue = const Value.absent(),
                 Value<String?> unit = const Value.absent(),
+                Value<String?> options = const Value.absent(),
                 required int displayOrder,
               }) => PedalControlsCompanion.insert(
                 id: id,
@@ -4905,6 +4982,7 @@ class $$PedalControlsTableTableManager
                 step: step,
                 defaultValue: defaultValue,
                 unit: unit,
+                options: options,
                 displayOrder: displayOrder,
               ),
           withReferenceMapper: (p0) => p0
