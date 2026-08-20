@@ -15,7 +15,11 @@ import '../../../shared/formatting/app_date_format.dart';
 /// control's own domain, and a reading such as "2:30" is rendered from the
 /// control each time it is shown.
 String changeHeadline(ChangeLog entry, {PedalControl? control}) {
-  final configurationName = entry.configurationName ?? 'A configuration';
+  // The named sound the entry is about. A configuration, or a patch or a scene of
+  // a multi-effects unit: all three keep their name in the same column, so what
+  // to call it when a row has lost it is decided per event below.
+  final sound = entry.configurationName;
+  final configurationName = sound ?? 'A configuration';
 
   // Said in the same breath as the control, because the two together are what
   // names it: a scene of a multi-effects unit moves the controls of the pedals on
@@ -30,9 +34,7 @@ String changeHeadline(ChangeLog entry, {PedalControl? control}) {
   return switch (entry.changeType) {
     ChangeType.controlValueChanged => _valueChange(entry, controlName, control),
     ChangeType.configurationCreated => '$configurationName created',
-    ChangeType.configurationRenamed =>
-      '${entry.oldText ?? configurationName} renamed to '
-          '${entry.newText ?? configurationName}',
+    ChangeType.configurationRenamed => _rename(entry, configurationName),
     ChangeType.configurationDeleted => '$configurationName deleted',
     ChangeType.controlAdded => '$controlName added',
     ChangeType.controlRemoved => '$controlName removed',
@@ -41,8 +43,21 @@ String changeHeadline(ChangeLog entry, {PedalControl? control}) {
           '${entry.newText ?? 'another status'}',
     ChangeType.pedalReplaced =>
       'Replaced by ${entry.newText ?? 'another pedal'}',
+    ChangeType.patchCreated => '${sound ?? 'A patch'} created',
+    ChangeType.patchRenamed => _rename(entry, sound ?? 'A patch'),
+    ChangeType.patchDeleted => '${sound ?? 'A patch'} deleted',
+    ChangeType.sceneCreated => '${sound ?? 'A scene'} created',
+    ChangeType.sceneRenamed => _rename(entry, sound ?? 'A scene'),
+    ChangeType.sceneDeleted => '${sound ?? 'A scene'} deleted',
   };
 }
+
+/// "Verse renamed to Chorus", for every event that is one name becoming another.
+///
+/// [name] stands in for whichever side a row has lost, so a half-filled entry
+/// still reads as a rename rather than as "null renamed to null".
+String _rename(ChangeLog entry, String name) =>
+    '${entry.oldText ?? name} renamed to ${entry.newText ?? name}';
 
 /// What the change was made to, and when.
 ///

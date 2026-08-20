@@ -163,12 +163,71 @@ void main() {
       );
     });
 
+    test('reads the patch and scene events by name', () {
+      // The columns a patch or scene event actually fills: the name it has now,
+      // and the one it had before if this was a rename.
+      String headline(ChangeType type, String name, {String? previous}) =>
+          changeHeadline(
+            entry(
+              changeType: type,
+              configurationName: name,
+              oldText: previous,
+              newText: previous == null ? null : name,
+            ),
+          );
+
+      expect(
+        headline(ChangeType.patchCreated, 'Worship Clean'),
+        'Worship Clean created',
+      );
+      expect(
+        headline(
+          ChangeType.patchRenamed,
+          'Sunday Clean',
+          previous: 'Worship Clean',
+        ),
+        'Worship Clean renamed to Sunday Clean',
+      );
+      expect(
+        headline(ChangeType.patchDeleted, 'Worship Clean'),
+        'Worship Clean deleted',
+      );
+      // A scene arrives already named by its patch, so the sentence reads the same
+      // way whichever patch's "Verse" it was.
+      expect(
+        headline(ChangeType.sceneCreated, 'Worship Clean · Verse'),
+        'Worship Clean · Verse created',
+      );
+      expect(
+        headline(
+          ChangeType.sceneRenamed,
+          'Worship Clean · Chorus',
+          previous: 'Worship Clean · Verse',
+        ),
+        'Worship Clean · Verse renamed to Worship Clean · Chorus',
+      );
+      expect(
+        headline(ChangeType.sceneDeleted, 'Worship Clean · Verse'),
+        'Worship Clean · Verse deleted',
+      );
+    });
+
     test('still says something about an entry that lost its name', () {
       // Every column but the type is nullable, and a row that reads as "null"
       // would be worse than useless on the timeline.
       expect(
         changeHeadline(entry(changeType: ChangeType.controlRemoved)),
         'A control removed',
+      );
+      // A patch and a scene keep their name in the same column, so each says which
+      // of the two it was rather than falling back on "A configuration".
+      expect(
+        changeHeadline(entry(changeType: ChangeType.patchDeleted)),
+        'A patch deleted',
+      );
+      expect(
+        changeHeadline(entry(changeType: ChangeType.sceneCreated)),
+        'A scene created',
       );
     });
   });

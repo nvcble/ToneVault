@@ -79,9 +79,16 @@ class ChangeLogDao extends DatabaseAccessor<AppDatabase>
     );
   }
 
+  /// Every entry filed under one pedal, oldest first.
+  ///
+  /// Ordered by id rather than by timestamp, because that is the order the
+  /// append-only log was written in: entries saved in one transaction share a
+  /// timestamp, and a test clock can hand out a stamp older than a real one. Left
+  /// unordered, SQLite is free to return whichever order suits its query plan.
   Future<List<ChangeLog>> entriesOf(int pedalId) {
-    return (select(
-      changeLogs,
-    )..where((row) => row.pedalId.equals(pedalId))).get();
+    return (select(changeLogs)
+          ..where((row) => row.pedalId.equals(pedalId))
+          ..orderBy([(row) => OrderingTerm.asc(row.id)]))
+        .get();
   }
 }

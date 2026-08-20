@@ -173,6 +173,80 @@ class ChangeEntry {
          reason: reason,
        );
 
+  /// A named sound of a multi-effects unit arrived, was renamed, or went.
+  ///
+  /// Filed under the unit, with the name kept in [configurationName] like every
+  /// other named sound - [ChangeEntry.sceneValueChanged] stores a scene's the
+  /// same way. `configurationId` stays null: neither a patch nor a scene has a
+  /// `configurations` row to point at.
+  ///
+  /// One constructor for all six events, so the columns cannot be filled in six
+  /// slightly different ways. [previousName] is given only for a rename, which is
+  /// the only one of them that is a transition.
+  ChangeEntry._sound({
+    required Patch patch,
+    required ChangeType changeType,
+    required String name,
+    String? previousName,
+  }) : this._(
+         pedalId: patch.pedalId,
+         changeType: changeType,
+         configurationName: name,
+         oldText: previousName,
+         newText: previousName == null ? null : name,
+       );
+
+  ChangeEntry.patchCreated(Patch patch)
+    : this._sound(
+        patch: patch,
+        changeType: ChangeType.patchCreated,
+        name: patch.name,
+      );
+
+  /// [patch] carries the name it has now.
+  ChangeEntry.patchRenamed({required Patch patch, required String previousName})
+    : this._sound(
+        patch: patch,
+        changeType: ChangeType.patchRenamed,
+        name: patch.name,
+        previousName: previousName,
+      );
+
+  ChangeEntry.patchDeleted(Patch patch)
+    : this._sound(
+        patch: patch,
+        changeType: ChangeType.patchDeleted,
+        name: patch.name,
+      );
+
+  /// A scene is named by its patch and itself together, because two patches may
+  /// each have a "Verse" and the timeline is read a unit at a time.
+  ChangeEntry.sceneCreated({required Patch patch, required Scene scene})
+    : this._sound(
+        patch: patch,
+        changeType: ChangeType.sceneCreated,
+        name: '${patch.name} · ${scene.name}',
+      );
+
+  /// [scene] carries the name it has now.
+  ChangeEntry.sceneRenamed({
+    required Patch patch,
+    required Scene scene,
+    required String previousName,
+  }) : this._sound(
+         patch: patch,
+         changeType: ChangeType.sceneRenamed,
+         name: '${patch.name} · ${scene.name}',
+         previousName: '${patch.name} · $previousName',
+       );
+
+  ChangeEntry.sceneDeleted({required Patch patch, required Scene scene})
+    : this._sound(
+        patch: patch,
+        changeType: ChangeType.sceneDeleted,
+        name: '${patch.name} · ${scene.name}',
+      );
+
   final int pedalId;
   final ChangeType changeType;
   final int? configurationId;

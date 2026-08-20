@@ -30,6 +30,25 @@ void main() {
     updatedAt: timestamp,
   );
 
+  /// A patch of a multi-effects unit, and one of the sounds in it. The unit is a
+  /// different pedal from the one above: what these events are filed under is the
+  /// unit, never the patch.
+  final patch = Patch(
+    id: 21,
+    pedalId: 40,
+    name: 'Worship Clean',
+    createdAt: timestamp,
+    updatedAt: timestamp,
+  );
+
+  final verse = Scene(
+    id: 31,
+    patchId: patch.id,
+    name: 'Verse',
+    createdAt: timestamp,
+    updatedAt: timestamp,
+  );
+
   final control = PedalControl(
     id: 3,
     pedalId: pedal.id,
@@ -170,6 +189,45 @@ void main() {
     expect(entry.pedalId, pedal.id);
     expect(entry.controlId, control.id);
     expect(entry.changeType, ChangeType.controlAdded);
+  });
+
+  test('a patch event is filed under the unit that holds it', () {
+    final entry = ChangeEntry.patchCreated(patch);
+
+    expect(entry.pedalId, patch.pedalId);
+    expect(entry.changeType, ChangeType.patchCreated);
+    expect(entry.configurationName, 'Worship Clean');
+    // There is no `configurations` row to point at, so the name is all the entry
+    // has - and all it needs, since the row it names may be gone by then.
+    expect(entry.configurationId, isNull);
+    expect(entry.oldText, isNull);
+    expect(entry.newText, isNull);
+  });
+
+  test('a renamed patch records both of its names', () {
+    final entry = ChangeEntry.patchRenamed(patch: patch, previousName: 'Clean');
+
+    expect(entry.oldText, 'Clean');
+    expect(entry.newText, 'Worship Clean');
+    expect(entry.configurationName, 'Worship Clean');
+  });
+
+  test('a scene is named by its patch and itself together', () {
+    final created = ChangeEntry.sceneCreated(patch: patch, scene: verse);
+    final renamed = ChangeEntry.sceneRenamed(
+      patch: patch,
+      scene: verse.copyWith(name: 'Chorus'),
+      previousName: 'Verse',
+    );
+    final deleted = ChangeEntry.sceneDeleted(patch: patch, scene: verse);
+
+    // Two patches may each have a "Verse", and the timeline is read a unit at a
+    // time - so both sides of the rename carry the patch as well.
+    expect(created.configurationName, 'Worship Clean · Verse');
+    expect(renamed.oldText, 'Worship Clean · Verse');
+    expect(renamed.newText, 'Worship Clean · Chorus');
+    expect(deleted.pedalId, patch.pedalId);
+    expect(deleted.configurationName, 'Worship Clean · Verse');
   });
 
   test('the companion carries the timestamp it is given', () {

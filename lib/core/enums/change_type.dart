@@ -11,7 +11,16 @@ enum ChangeType {
   controlAdded,
   controlRemoved,
   pedalStatusChanged,
-  pedalReplaced;
+  pedalReplaced,
+  // The patches of a multi-effects unit and the scenes inside them. Appended
+  // rather than filed next to the configuration events because the column stores
+  // the name of the value, so nothing depends on the order here.
+  patchCreated,
+  patchRenamed,
+  patchDeleted,
+  sceneCreated,
+  sceneRenamed,
+  sceneDeleted;
 
   String get label => switch (this) {
     ChangeType.controlValueChanged => 'Setting changed',
@@ -22,6 +31,12 @@ enum ChangeType {
     ChangeType.controlRemoved => 'Control removed',
     ChangeType.pedalStatusChanged => 'Status changed',
     ChangeType.pedalReplaced => 'Pedal replaced',
+    ChangeType.patchCreated => 'Patch created',
+    ChangeType.patchRenamed => 'Patch renamed',
+    ChangeType.patchDeleted => 'Patch deleted',
+    ChangeType.sceneCreated => 'Scene created',
+    ChangeType.sceneRenamed => 'Scene renamed',
+    ChangeType.sceneDeleted => 'Scene deleted',
   };
 
   /// Whether this event carries numeric old/new values worth rendering as a

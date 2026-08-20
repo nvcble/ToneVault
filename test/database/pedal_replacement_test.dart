@@ -7,20 +7,10 @@ import 'package:tone_vault/core/enums/pedal_category.dart';
 import 'package:tone_vault/core/enums/pedal_status.dart';
 import 'package:tone_vault/core/enums/pedal_type.dart';
 import 'package:tone_vault/core/errors/app_failure.dart';
-import 'package:tone_vault/features/history/data/change_entry.dart';
-import 'package:tone_vault/features/history/data/change_log_repository.dart';
 import 'package:tone_vault/features/pedals/data/pedal_draft.dart';
 import 'package:tone_vault/features/replacements/data/replacement_repository.dart';
+import '../support/broken_change_log.dart';
 import '../support/repositories.dart';
-
-/// A change log that cannot write, to prove a swap is only kept if it can also
-/// be recorded.
-class _BrokenChangeLog extends ChangeLogRepository {
-  _BrokenChangeLog(super.dao);
-
-  @override
-  Future<void> record(ChangeEntry entry) async => throw Exception('disk gone');
-}
 
 /// What replacing a pedal does: the outgoing one is retired rather than removed,
 /// and the swap is written once as a row and once to the history.
@@ -210,7 +200,7 @@ void main() {
   test('rolls the whole swap back if it cannot be recorded', () async {
     final unrecordable = replacementRepository(
       database,
-      changeLog: _BrokenChangeLog(ChangeLogDao(database)),
+      changeLog: BrokenChangeLog(ChangeLogDao(database)),
     );
 
     await expectLater(

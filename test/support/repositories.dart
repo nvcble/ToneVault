@@ -142,20 +142,31 @@ ConfigurationValueRepository configurationValueRepository(
   );
 }
 
-/// The patches of a multi-effects unit, and the scenes inside them. Neither
-/// records history: what a rig sounded like is in the positions a scene holds.
+/// The patches of a multi-effects unit, and the scenes inside them. Both record
+/// history: a named sound arriving, being renamed or going is part of the story of
+/// the unit.
 PatchRepository patchRepository(
   AppDatabase database, {
   DateTime Function()? clock,
+  ChangeLogRepository? changeLog,
 }) {
-  return PatchRepository(PatchDao(database), clock: clock);
+  return PatchRepository(
+    PatchDao(database),
+    changeLog ?? changeLogRepository(database, clock: clock),
+    clock: clock,
+  );
 }
 
 SceneRepository sceneRepository(
   AppDatabase database, {
   DateTime Function()? clock,
+  ChangeLogRepository? changeLog,
 }) {
-  return SceneRepository(PatchDao(database), clock: clock);
+  return SceneRepository(
+    PatchDao(database),
+    changeLog ?? changeLogRepository(database, clock: clock),
+    clock: clock,
+  );
 }
 
 /// Adding a pedal to a scene checks the unit holds it and seeds the defaults its

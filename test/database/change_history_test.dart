@@ -9,19 +9,9 @@ import 'package:tone_vault/core/enums/pedal_status.dart';
 import 'package:tone_vault/core/enums/pedal_type.dart';
 import 'package:tone_vault/features/configurations/data/configuration_draft.dart';
 import 'package:tone_vault/features/controls/data/control_draft.dart';
-import 'package:tone_vault/features/history/data/change_entry.dart';
-import 'package:tone_vault/features/history/data/change_log_repository.dart';
 import 'package:tone_vault/features/pedals/data/pedal_draft.dart';
+import '../support/broken_change_log.dart';
 import '../support/repositories.dart';
-
-/// A change log that refuses to write, to prove the change is rolled back with
-/// it rather than left behind with no record of itself.
-class _BrokenChangeLog extends ChangeLogRepository {
-  _BrokenChangeLog(super.dao);
-
-  @override
-  Future<void> record(ChangeEntry entry) async => throw Exception('disk gone');
-}
 
 /// What each edit leaves behind in the history.
 void main() {
@@ -211,7 +201,7 @@ void main() {
   test('leaves the change undone when it cannot be recorded', () async {
     final controls = controlRepository(
       database,
-      changeLog: _BrokenChangeLog(ChangeLogDao(database)),
+      changeLog: BrokenChangeLog(ChangeLogDao(database)),
     );
 
     await expectLater(

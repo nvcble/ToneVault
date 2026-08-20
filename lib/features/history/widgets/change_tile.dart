@@ -70,4 +70,10 @@ IconData _iconFor(ChangeType type) => switch (type) {
   ChangeType.controlRemoved => Icons.remove_circle_outline,
   ChangeType.pedalStatusChanged => Icons.flag_outlined,
   ChangeType.pedalReplaced => Icons.swap_horiz,
+  ChangeType.patchCreated => Icons.playlist_add,
+  ChangeType.patchRenamed => Icons.drive_file_rename_outline,
+  ChangeType.patchDeleted => Icons.playlist_remove,
+  ChangeType.sceneCreated => Icons.layers_outlined,
+  ChangeType.sceneRenamed => Icons.drive_file_rename_outline,
+  ChangeType.sceneDeleted => Icons.layers_clear_outlined,
 };

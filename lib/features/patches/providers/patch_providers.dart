@@ -23,12 +23,18 @@ final Provider<SceneDao> sceneDaoProvider = Provider<SceneDao>(
 
 final Provider<PatchRepository> patchRepositoryProvider =
     Provider<PatchRepository>(
-      (ref) => PatchRepository(ref.watch(patchDaoProvider)),
+      (ref) => PatchRepository(
+        ref.watch(patchDaoProvider),
+        ref.watch(changeLogRepositoryProvider),
+      ),
     );
 
 final Provider<SceneRepository> sceneRepositoryProvider =
     Provider<SceneRepository>(
-      (ref) => SceneRepository(ref.watch(patchDaoProvider)),
+      (ref) => SceneRepository(
+        ref.watch(patchDaoProvider),
+        ref.watch(changeLogRepositoryProvider),
+      ),
     );
 
 final Provider<ScenePedalRepository> scenePedalRepositoryProvider =
