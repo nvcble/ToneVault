@@ -9,6 +9,10 @@ mixin _$BackupDaoMixin on DatabaseAccessor<AppDatabase> {
   $ConfigurationsTable get configurations => attachedDatabase.configurations;
   $ConfigurationValuesTable get configurationValues =>
       attachedDatabase.configurationValues;
+  $PatchesTable get patches => attachedDatabase.patches;
+  $ScenesTable get scenes => attachedDatabase.scenes;
+  $ScenePedalsTable get scenePedals => attachedDatabase.scenePedals;
+  $SceneValuesTable get sceneValues => attachedDatabase.sceneValues;
   $ChangeLogsTable get changeLogs => attachedDatabase.changeLogs;
   $PedalReplacementsTable get pedalReplacements =>
       attachedDatabase.pedalReplacements;
@@ -39,6 +43,14 @@ class BackupDaoManager {
         _db.attachedDatabase,
         _db.configurationValues,
       );
+  $$PatchesTableTableManager get patches =>
+      $$PatchesTableTableManager(_db.attachedDatabase, _db.patches);
+  $$ScenesTableTableManager get scenes =>
+      $$ScenesTableTableManager(_db.attachedDatabase, _db.scenes);
+  $$ScenePedalsTableTableManager get scenePedals =>
+      $$ScenePedalsTableTableManager(_db.attachedDatabase, _db.scenePedals);
+  $$SceneValuesTableTableManager get sceneValues =>
+      $$SceneValuesTableTableManager(_db.attachedDatabase, _db.sceneValues);
   $$ChangeLogsTableTableManager get changeLogs =>
       $$ChangeLogsTableTableManager(_db.attachedDatabase, _db.changeLogs);
   $$PedalReplacementsTableTableManager get pedalReplacements =>

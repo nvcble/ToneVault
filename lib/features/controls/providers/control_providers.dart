@@ -30,7 +30,8 @@ final StreamProviderFamily<List<PedalControl>, int> controlListProvider =
 
 /// Every control a configuration of one pedal can set, grouped by the pedal each
 /// is on. The same list for an ordinary pedal as [controlListProvider]; for a
-/// multi-effects unit in scene mode, the controls of the pedals on its patch.
+/// multi-effects unit, the controls of the pedals inside it. A scene of a patch
+/// asks `sceneControlsProvider`, which is narrower.
 final StreamProviderFamily<List<ControlGroup>, int> settableControlsProvider =
     StreamProvider.family<List<ControlGroup>, int>(
       (ref, pedalId) => ref

@@ -2,16 +2,22 @@ import 'package:tone_vault/core/database/app_database.dart';
 import 'package:tone_vault/core/database/daos/backup_dao.dart';
 import 'package:tone_vault/core/database/daos/change_log_dao.dart';
 import 'package:tone_vault/core/database/daos/configuration_dao.dart';
+import 'package:tone_vault/core/database/daos/patch_dao.dart';
 import 'package:tone_vault/core/database/daos/pedal_control_dao.dart';
 import 'package:tone_vault/core/database/daos/pedal_dao.dart';
 import 'package:tone_vault/core/database/daos/pedal_replacement_dao.dart';
 import 'package:tone_vault/core/database/daos/pedalboard_dao.dart';
 import 'package:tone_vault/core/database/daos/rig_snapshot_dao.dart';
+import 'package:tone_vault/core/database/daos/scene_dao.dart';
 import 'package:tone_vault/features/backup/data/backup_repository.dart';
 import 'package:tone_vault/features/configurations/data/configuration_repository.dart';
 import 'package:tone_vault/features/configurations/data/configuration_value_repository.dart';
 import 'package:tone_vault/features/controls/data/control_repository.dart';
 import 'package:tone_vault/features/history/data/change_log_repository.dart';
+import 'package:tone_vault/features/patches/data/patch_repository.dart';
+import 'package:tone_vault/features/patches/data/scene_pedal_repository.dart';
+import 'package:tone_vault/features/patches/data/scene_repository.dart';
+import 'package:tone_vault/features/patches/data/scene_value_repository.dart';
 import 'package:tone_vault/features/pedalboards/data/pedalboard_repository.dart';
 import 'package:tone_vault/features/pedalboards/data/rig_chain_repository.dart';
 import 'package:tone_vault/features/pedals/data/pedal_repository.dart';
@@ -131,6 +137,50 @@ ConfigurationValueRepository configurationValueRepository(
   return ConfigurationValueRepository(
     ConfigurationDao(database),
     PedalControlDao(database),
+    changeLog ?? changeLogRepository(database, clock: clock),
+    clock: clock,
+  );
+}
+
+/// The patches of a multi-effects unit, and the scenes inside them. Neither
+/// records history: what a rig sounded like is in the positions a scene holds.
+PatchRepository patchRepository(
+  AppDatabase database, {
+  DateTime Function()? clock,
+}) {
+  return PatchRepository(PatchDao(database), clock: clock);
+}
+
+SceneRepository sceneRepository(
+  AppDatabase database, {
+  DateTime Function()? clock,
+}) {
+  return SceneRepository(PatchDao(database), clock: clock);
+}
+
+/// Adding a pedal to a scene checks the unit holds it and seeds the defaults its
+/// controls declare, which is why this one takes four accessors.
+ScenePedalRepository scenePedalRepository(
+  AppDatabase database, {
+  DateTime Function()? clock,
+}) {
+  return ScenePedalRepository(
+    SceneDao(database),
+    PatchDao(database),
+    PedalDao(database),
+    PedalControlDao(database),
+    clock: clock,
+  );
+}
+
+SceneValueRepository sceneValueRepository(
+  AppDatabase database, {
+  DateTime Function()? clock,
+  ChangeLogRepository? changeLog,
+}) {
+  return SceneValueRepository(
+    SceneDao(database),
+    PatchDao(database),
     changeLog ?? changeLogRepository(database, clock: clock),
     clock: clock,
   );

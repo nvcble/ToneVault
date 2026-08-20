@@ -23,9 +23,9 @@ typedef _ValueEntry = ({String? owner, PedalControl control});
 /// as its default, because a configuration that does not say where a knob goes
 /// has not been finished.
 ///
-/// For an ordinary pedal those are its own controls and the list is flat. For a
-/// multi-effects unit in scene mode they are the controls of the pedals on its
-/// patch, so each pedal is named above the controls that belong to it.
+/// For an ordinary pedal those are its own controls and the list is flat. Where
+/// they come from several pedals, each pedal is named above the controls that
+/// belong to it.
 class ConfigurationValueList extends ConsumerWidget {
   const ConfigurationValueList({
     required this.pedalId,

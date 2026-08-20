@@ -8,7 +8,7 @@ typedef ControlGroup = ({Pedal owner, List<PedalControl> controls});
 ///
 /// The query already put them in the order they should be read, so this only
 /// draws the lines between one pedal and the next: an ordinary pedal comes back
-/// as a single group, and a multi-effects patch as one group per pedal on it.
+/// as a single group, and a multi-effects unit as one group per pedal inside it.
 List<ControlGroup> groupByOwner(List<OwnedControl> rows) {
   final groups = <int, ControlGroup>{};
 

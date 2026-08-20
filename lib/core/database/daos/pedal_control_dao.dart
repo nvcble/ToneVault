@@ -8,9 +8,8 @@ part 'pedal_control_dao.g.dart';
 
 /// One control, with the pedal it is on.
 ///
-/// The owner is carried alongside because a configuration of a multi-effects
-/// unit can set controls that live on several pedals, and a bare control cannot
-/// say which.
+/// The owner is carried alongside because a scene of a multi-effects unit sets
+/// controls that live on several pedals, and a bare control cannot say which.
 typedef OwnedControl = ({Pedal owner, PedalControl control});
 
 /// Typed queries over the `pedal_controls` table.
@@ -47,9 +46,11 @@ class PedalControlDao extends DatabaseAccessor<AppDatabase>
   ///
   /// One query covers both shapes a configuration takes. An ordinary pedal holds
   /// no other pedals, so only its own controls match and this is exactly
-  /// [watchControls]. A multi-effects unit in scene mode has no controls of its
-  /// own, so what comes back is the controls of the pedals on its patch - which
-  /// is what a scene sets.
+  /// [watchControls]. A multi-effects unit has no controls of its own, so what
+  /// comes back is the controls of the pedals inside it.
+  ///
+  /// A scene of a patch is narrower still - only the pedals that scene actually
+  /// uses - and asks `SceneDao.watchSceneControls` instead.
   Stream<List<OwnedControl>> watchSettableControls(int pedalId) =>
       _settable(pedalId).watch().map(_owned);
 
@@ -66,8 +67,8 @@ class PedalControlDao extends DatabaseAccessor<AppDatabase>
   /// two, so they read the same.
   ///
   /// The pedal comes back with it because the join has it already, and the
-  /// history of a scene needs it: it names the pedal on the patch the control
-  /// belongs to.
+  /// history needs it: an entry names the pedal a control is on when that is not
+  /// the pedal the entry is filed under.
   Future<OwnedControl?> findSettableControl({
     required int controlId,
     required int pedalId,
@@ -78,8 +79,8 @@ class PedalControlDao extends DatabaseAccessor<AppDatabase>
   }
 
   /// The controls of [pedalId] and of the pedals inside it, the pedal's own
-  /// first and then the others by name, so a scene reads down the patch the same
-  /// way every time.
+  /// first and then the others by name, so the list reads down the same way every
+  /// time.
   JoinedSelectStatement<HasResultSet, dynamic> _settable(int pedalId) {
     return select(
         pedalControls,

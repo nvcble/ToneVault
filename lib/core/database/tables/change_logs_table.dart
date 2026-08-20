@@ -41,8 +41,8 @@ class ChangeLogs extends Table {
   /// filed under.
   ///
   /// Null on everything else, which is every entry about a pedal's own controls.
-  /// It is set for a scene of a multi-effects unit: the scene belongs to the
-  /// unit, but the control it moved lives on one of the pedals on its patch, and
+  /// It is set for a scene of a multi-effects unit: the entry is filed under the
+  /// unit, but the control it moved lives on one of the pedals inside it, and
   /// "Level moved to 2:30" says nothing when three of them have a Level.
   TextColumn get controlPedalName =>
       text().withLength(min: 1, max: 80).nullable()();

@@ -17,7 +17,10 @@ import 'package:drift/drift.dart';
 ///   on the patch the control it moved belongs to.
 /// - v8: no new column. The 'multiEffects' pedal type was dropped, so the rows
 ///   stored as one are refiled as digital pedals of the multi-effects category.
-const int currentSchemaVersion = 8;
+/// - v9: patches, scenes, scene_pedals and scene_values, the sounds of a
+///   multi-effects unit: a patch holds scenes, and a scene says which of the
+///   unit's pedals it uses and where their controls sit.
+const int currentSchemaVersion = 9;
 
 MigrationStrategy buildMigrationStrategy(GeneratedDatabase database) {
   return MigrationStrategy(
@@ -147,6 +150,60 @@ MigrationStrategy buildMigrationStrategy(GeneratedDatabase database) {
         );
         await database.customStatement(
           "UPDATE pedals SET type = 'digital' WHERE type = 'multiEffects';",
+        );
+      }
+
+      if (from < 9) {
+        // Character for character what `createAll` writes, checked against a
+        // fresh database by migration_test.dart. Parents before children, so
+        // each REFERENCES clause names a table that already exists.
+        await database.customStatement(
+          'CREATE TABLE IF NOT EXISTS "patches" ('
+          '"id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, '
+          '"pedal_id" INTEGER NOT NULL '
+          'REFERENCES pedals (id) ON DELETE RESTRICT, '
+          '"name" TEXT NOT NULL, '
+          '"notes" TEXT NULL, '
+          '"created_at" TEXT NOT NULL, '
+          '"updated_at" TEXT NOT NULL, '
+          'UNIQUE ("pedal_id", "name"))',
+        );
+        await database.customStatement(
+          'CREATE INDEX IF NOT EXISTS idx_patches_pedal '
+          'ON patches (pedal_id)',
+        );
+        await database.customStatement(
+          'CREATE TABLE IF NOT EXISTS "scenes" ('
+          '"id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, '
+          '"patch_id" INTEGER NOT NULL '
+          'REFERENCES patches (id) ON DELETE CASCADE, '
+          '"name" TEXT NOT NULL, '
+          '"notes" TEXT NULL, '
+          '"created_at" TEXT NOT NULL, '
+          '"updated_at" TEXT NOT NULL, '
+          'UNIQUE ("patch_id", "name"))',
+        );
+        await database.customStatement(
+          'CREATE INDEX IF NOT EXISTS idx_scenes_patch ON scenes (patch_id)',
+        );
+        await database.customStatement(
+          'CREATE TABLE IF NOT EXISTS "scene_pedals" ('
+          '"id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, '
+          '"scene_id" INTEGER NOT NULL '
+          'REFERENCES scenes (id) ON DELETE CASCADE, '
+          '"pedal_id" INTEGER NOT NULL '
+          'REFERENCES pedals (id) ON DELETE RESTRICT, '
+          'UNIQUE ("scene_id", "pedal_id"))',
+        );
+        await database.customStatement(
+          'CREATE TABLE IF NOT EXISTS "scene_values" ('
+          '"id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, '
+          '"scene_id" INTEGER NOT NULL '
+          'REFERENCES scenes (id) ON DELETE CASCADE, '
+          '"control_id" INTEGER NOT NULL '
+          'REFERENCES pedal_controls (id) ON DELETE CASCADE, '
+          '"value" REAL NOT NULL, '
+          'UNIQUE ("scene_id", "control_id"))',
         );
       }
 

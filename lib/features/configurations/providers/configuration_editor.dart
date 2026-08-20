@@ -28,9 +28,7 @@ class ConfigurationEditor {
   ///
   /// A new configuration starts out at whatever defaults the pedal's controls
   /// declare, which is the closest thing to "where this pedal usually sits"
-  /// that the app actually knows. For a multi-effects unit in scene mode those
-  /// are the controls of the pedals on its patch, because a scene is what sets
-  /// them. Renaming leaves the stored positions alone.
+  /// that the app actually knows. Renaming leaves the stored positions alone.
   Future<int> save(
     ConfigurationDraft draft, {
     required int pedalId,

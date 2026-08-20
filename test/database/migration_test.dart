@@ -11,6 +11,7 @@ import 'package:tone_vault/core/values/control_options.dart';
 import 'package:tone_vault/features/configurations/data/configuration_draft.dart';
 import 'package:tone_vault/features/controls/data/control_draft.dart';
 import 'package:tone_vault/features/history/data/change_entry.dart';
+import 'package:tone_vault/features/patches/data/patch_draft.dart';
 import 'package:tone_vault/features/pedalboards/data/pedalboard_draft.dart';
 import 'package:tone_vault/features/pedals/data/pedal_draft.dart';
 import '../support/repositories.dart';
@@ -112,6 +113,78 @@ void main() {
         reason: '$table differs between an upgraded phone and a new install',
       );
     }
+  });
+
+  test('the patch tables are created exactly as fresh ones are', () async {
+    const tables = ['patches', 'scenes', 'scene_pedals', 'scene_values'];
+
+    // One at a time: two live databases at once only earn a drift warning.
+    final fresh = AppDatabase(NativeDatabase.memory());
+    final expected = <String, List<String>>{
+      for (final table in tables) table: await schemaFor(fresh, table),
+    };
+    await fresh.close();
+
+    final upgraded = openV1Database();
+    addTearDown(upgraded.close);
+
+    for (final table in tables) {
+      expect(
+        await schemaFor(upgraded, table),
+        expected[table],
+        reason: '$table differs between an upgraded phone and a new install',
+      );
+    }
+  });
+
+  test('an upgraded database can hold a patch', () async {
+    final db = openV1Database();
+    addTearDown(db.close);
+
+    final unitId = await pedalRepository(db).createPedal(
+      const PedalDraft(
+        name: 'Valeton GP-200',
+        type: PedalType.digital,
+        category: PedalCategory.multiEffects,
+      ),
+    );
+    final screamerId = await pedalRepository(db).createPedal(
+      PedalDraft(
+        name: 'Tube Screamer',
+        type: PedalType.digital,
+        category: PedalCategory.overdrive,
+        hostPedalId: unitId,
+      ),
+    );
+    final controlId = await controlRepository(db).createControl(
+      screamerId,
+      ControlDraft.ofType(ControlType.clock, name: 'Drive'),
+    );
+
+    final patchId = await patchRepository(
+      db,
+    ).createPatch(unitId, const PatchDraft(name: 'Worship Clean'));
+    final sceneId = await sceneRepository(
+      db,
+    ).createScene(patchId, const SceneDraft(name: 'Verse'));
+    await scenePedalRepository(
+      db,
+    ).addPedal(sceneId: sceneId, pedalId: screamerId);
+    await sceneValueRepository(
+      db,
+    ).setValue(sceneId: sceneId, controlId: controlId, value: 0.75);
+
+    // All four tables at once, because a patch nobody can put a position into is
+    // an empty container: the upgrade has to land the whole shape.
+    expect(
+      (await patchRepository(db).watchPatches(unitId).first).single.name,
+      'Worship Clean',
+    );
+    final pedals = await scenePedalRepository(
+      db,
+    ).watchScenePedals(sceneId).first;
+    expect(pedals.single.name, 'Tube Screamer');
+    expect((await db.sceneDao.valuesOf(sceneId)).single.value, 0.75);
   });
 
   test('an upgraded database can hold a snapshot', () async {

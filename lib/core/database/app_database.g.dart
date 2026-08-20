@@ -2215,6 +2215,1391 @@ class ConfigurationValuesCompanion extends UpdateCompanion<ConfigurationValue> {
   }
 }
 
+class $PatchesTable extends Patches with TableInfo<$PatchesTable, Patch> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $PatchesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'PRIMARY KEY AUTOINCREMENT',
+    ),
+  );
+  static const VerificationMeta _pedalIdMeta = const VerificationMeta(
+    'pedalId',
+  );
+  @override
+  late final GeneratedColumn<int> pedalId = GeneratedColumn<int>(
+    'pedal_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES pedals (id) ON DELETE RESTRICT',
+    ),
+  );
+  static const VerificationMeta _nameMeta = const VerificationMeta('name');
+  @override
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+    'name',
+    aliasedName,
+    false,
+    additionalChecks: GeneratedColumn.checkTextLength(
+      minTextLength: 1,
+      maxTextLength: 80,
+    ),
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _notesMeta = const VerificationMeta('notes');
+  @override
+  late final GeneratedColumn<String> notes = GeneratedColumn<String>(
+    'notes',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _updatedAtMeta = const VerificationMeta(
+    'updatedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
+    'updated_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    pedalId,
+    name,
+    notes,
+    createdAt,
+    updatedAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'patches';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<Patch> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('pedal_id')) {
+      context.handle(
+        _pedalIdMeta,
+        pedalId.isAcceptableOrUnknown(data['pedal_id']!, _pedalIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_pedalIdMeta);
+    }
+    if (data.containsKey('name')) {
+      context.handle(
+        _nameMeta,
+        name.isAcceptableOrUnknown(data['name']!, _nameMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_nameMeta);
+    }
+    if (data.containsKey('notes')) {
+      context.handle(
+        _notesMeta,
+        notes.isAcceptableOrUnknown(data['notes']!, _notesMeta),
+      );
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(
+        _updatedAtMeta,
+        updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_updatedAtMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  List<Set<GeneratedColumn>> get uniqueKeys => [
+    {pedalId, name},
+  ];
+  @override
+  Patch map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return Patch(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      pedalId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}pedal_id'],
+      )!,
+      name: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}name'],
+      )!,
+      notes: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}notes'],
+      ),
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created_at'],
+      )!,
+      updatedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}updated_at'],
+      )!,
+    );
+  }
+
+  @override
+  $PatchesTable createAlias(String alias) {
+    return $PatchesTable(attachedDatabase, alias);
+  }
+}
+
+class Patch extends DataClass implements Insertable<Patch> {
+  final int id;
+
+  /// The unit this patch is on. Restricted rather than cascading, for the same
+  /// reason a pedal with configurations cannot be deleted: retiring gear is what
+  /// keeps its history.
+  final int pedalId;
+  final String name;
+  final String? notes;
+  final DateTime createdAt;
+  final DateTime updatedAt;
+  const Patch({
+    required this.id,
+    required this.pedalId,
+    required this.name,
+    this.notes,
+    required this.createdAt,
+    required this.updatedAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['pedal_id'] = Variable<int>(pedalId);
+    map['name'] = Variable<String>(name);
+    if (!nullToAbsent || notes != null) {
+      map['notes'] = Variable<String>(notes);
+    }
+    map['created_at'] = Variable<DateTime>(createdAt);
+    map['updated_at'] = Variable<DateTime>(updatedAt);
+    return map;
+  }
+
+  PatchesCompanion toCompanion(bool nullToAbsent) {
+    return PatchesCompanion(
+      id: Value(id),
+      pedalId: Value(pedalId),
+      name: Value(name),
+      notes: notes == null && nullToAbsent
+          ? const Value.absent()
+          : Value(notes),
+      createdAt: Value(createdAt),
+      updatedAt: Value(updatedAt),
+    );
+  }
+
+  factory Patch.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return Patch(
+      id: serializer.fromJson<int>(json['id']),
+      pedalId: serializer.fromJson<int>(json['pedalId']),
+      name: serializer.fromJson<String>(json['name']),
+      notes: serializer.fromJson<String?>(json['notes']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'pedalId': serializer.toJson<int>(pedalId),
+      'name': serializer.toJson<String>(name),
+      'notes': serializer.toJson<String?>(notes),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+      'updatedAt': serializer.toJson<DateTime>(updatedAt),
+    };
+  }
+
+  Patch copyWith({
+    int? id,
+    int? pedalId,
+    String? name,
+    Value<String?> notes = const Value.absent(),
+    DateTime? createdAt,
+    DateTime? updatedAt,
+  }) => Patch(
+    id: id ?? this.id,
+    pedalId: pedalId ?? this.pedalId,
+    name: name ?? this.name,
+    notes: notes.present ? notes.value : this.notes,
+    createdAt: createdAt ?? this.createdAt,
+    updatedAt: updatedAt ?? this.updatedAt,
+  );
+  Patch copyWithCompanion(PatchesCompanion data) {
+    return Patch(
+      id: data.id.present ? data.id.value : this.id,
+      pedalId: data.pedalId.present ? data.pedalId.value : this.pedalId,
+      name: data.name.present ? data.name.value : this.name,
+      notes: data.notes.present ? data.notes.value : this.notes,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('Patch(')
+          ..write('id: $id, ')
+          ..write('pedalId: $pedalId, ')
+          ..write('name: $name, ')
+          ..write('notes: $notes, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode =>
+      Object.hash(id, pedalId, name, notes, createdAt, updatedAt);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is Patch &&
+          other.id == this.id &&
+          other.pedalId == this.pedalId &&
+          other.name == this.name &&
+          other.notes == this.notes &&
+          other.createdAt == this.createdAt &&
+          other.updatedAt == this.updatedAt);
+}
+
+class PatchesCompanion extends UpdateCompanion<Patch> {
+  final Value<int> id;
+  final Value<int> pedalId;
+  final Value<String> name;
+  final Value<String?> notes;
+  final Value<DateTime> createdAt;
+  final Value<DateTime> updatedAt;
+  const PatchesCompanion({
+    this.id = const Value.absent(),
+    this.pedalId = const Value.absent(),
+    this.name = const Value.absent(),
+    this.notes = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+  });
+  PatchesCompanion.insert({
+    this.id = const Value.absent(),
+    required int pedalId,
+    required String name,
+    this.notes = const Value.absent(),
+    required DateTime createdAt,
+    required DateTime updatedAt,
+  }) : pedalId = Value(pedalId),
+       name = Value(name),
+       createdAt = Value(createdAt),
+       updatedAt = Value(updatedAt);
+  static Insertable<Patch> custom({
+    Expression<int>? id,
+    Expression<int>? pedalId,
+    Expression<String>? name,
+    Expression<String>? notes,
+    Expression<DateTime>? createdAt,
+    Expression<DateTime>? updatedAt,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (pedalId != null) 'pedal_id': pedalId,
+      if (name != null) 'name': name,
+      if (notes != null) 'notes': notes,
+      if (createdAt != null) 'created_at': createdAt,
+      if (updatedAt != null) 'updated_at': updatedAt,
+    });
+  }
+
+  PatchesCompanion copyWith({
+    Value<int>? id,
+    Value<int>? pedalId,
+    Value<String>? name,
+    Value<String?>? notes,
+    Value<DateTime>? createdAt,
+    Value<DateTime>? updatedAt,
+  }) {
+    return PatchesCompanion(
+      id: id ?? this.id,
+      pedalId: pedalId ?? this.pedalId,
+      name: name ?? this.name,
+      notes: notes ?? this.notes,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (pedalId.present) {
+      map['pedal_id'] = Variable<int>(pedalId.value);
+    }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    if (notes.present) {
+      map['notes'] = Variable<String>(notes.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<DateTime>(updatedAt.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('PatchesCompanion(')
+          ..write('id: $id, ')
+          ..write('pedalId: $pedalId, ')
+          ..write('name: $name, ')
+          ..write('notes: $notes, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $ScenesTable extends Scenes with TableInfo<$ScenesTable, Scene> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $ScenesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'PRIMARY KEY AUTOINCREMENT',
+    ),
+  );
+  static const VerificationMeta _patchIdMeta = const VerificationMeta(
+    'patchId',
+  );
+  @override
+  late final GeneratedColumn<int> patchId = GeneratedColumn<int>(
+    'patch_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES patches (id) ON DELETE CASCADE',
+    ),
+  );
+  static const VerificationMeta _nameMeta = const VerificationMeta('name');
+  @override
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+    'name',
+    aliasedName,
+    false,
+    additionalChecks: GeneratedColumn.checkTextLength(
+      minTextLength: 1,
+      maxTextLength: 80,
+    ),
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _notesMeta = const VerificationMeta('notes');
+  @override
+  late final GeneratedColumn<String> notes = GeneratedColumn<String>(
+    'notes',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _updatedAtMeta = const VerificationMeta(
+    'updatedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
+    'updated_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    patchId,
+    name,
+    notes,
+    createdAt,
+    updatedAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'scenes';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<Scene> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('patch_id')) {
+      context.handle(
+        _patchIdMeta,
+        patchId.isAcceptableOrUnknown(data['patch_id']!, _patchIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_patchIdMeta);
+    }
+    if (data.containsKey('name')) {
+      context.handle(
+        _nameMeta,
+        name.isAcceptableOrUnknown(data['name']!, _nameMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_nameMeta);
+    }
+    if (data.containsKey('notes')) {
+      context.handle(
+        _notesMeta,
+        notes.isAcceptableOrUnknown(data['notes']!, _notesMeta),
+      );
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(
+        _updatedAtMeta,
+        updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_updatedAtMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  List<Set<GeneratedColumn>> get uniqueKeys => [
+    {patchId, name},
+  ];
+  @override
+  Scene map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return Scene(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      patchId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}patch_id'],
+      )!,
+      name: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}name'],
+      )!,
+      notes: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}notes'],
+      ),
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created_at'],
+      )!,
+      updatedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}updated_at'],
+      )!,
+    );
+  }
+
+  @override
+  $ScenesTable createAlias(String alias) {
+    return $ScenesTable(attachedDatabase, alias);
+  }
+}
+
+class Scene extends DataClass implements Insertable<Scene> {
+  final int id;
+  final int patchId;
+  final String name;
+  final String? notes;
+  final DateTime createdAt;
+  final DateTime updatedAt;
+  const Scene({
+    required this.id,
+    required this.patchId,
+    required this.name,
+    this.notes,
+    required this.createdAt,
+    required this.updatedAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['patch_id'] = Variable<int>(patchId);
+    map['name'] = Variable<String>(name);
+    if (!nullToAbsent || notes != null) {
+      map['notes'] = Variable<String>(notes);
+    }
+    map['created_at'] = Variable<DateTime>(createdAt);
+    map['updated_at'] = Variable<DateTime>(updatedAt);
+    return map;
+  }
+
+  ScenesCompanion toCompanion(bool nullToAbsent) {
+    return ScenesCompanion(
+      id: Value(id),
+      patchId: Value(patchId),
+      name: Value(name),
+      notes: notes == null && nullToAbsent
+          ? const Value.absent()
+          : Value(notes),
+      createdAt: Value(createdAt),
+      updatedAt: Value(updatedAt),
+    );
+  }
+
+  factory Scene.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return Scene(
+      id: serializer.fromJson<int>(json['id']),
+      patchId: serializer.fromJson<int>(json['patchId']),
+      name: serializer.fromJson<String>(json['name']),
+      notes: serializer.fromJson<String?>(json['notes']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'patchId': serializer.toJson<int>(patchId),
+      'name': serializer.toJson<String>(name),
+      'notes': serializer.toJson<String?>(notes),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+      'updatedAt': serializer.toJson<DateTime>(updatedAt),
+    };
+  }
+
+  Scene copyWith({
+    int? id,
+    int? patchId,
+    String? name,
+    Value<String?> notes = const Value.absent(),
+    DateTime? createdAt,
+    DateTime? updatedAt,
+  }) => Scene(
+    id: id ?? this.id,
+    patchId: patchId ?? this.patchId,
+    name: name ?? this.name,
+    notes: notes.present ? notes.value : this.notes,
+    createdAt: createdAt ?? this.createdAt,
+    updatedAt: updatedAt ?? this.updatedAt,
+  );
+  Scene copyWithCompanion(ScenesCompanion data) {
+    return Scene(
+      id: data.id.present ? data.id.value : this.id,
+      patchId: data.patchId.present ? data.patchId.value : this.patchId,
+      name: data.name.present ? data.name.value : this.name,
+      notes: data.notes.present ? data.notes.value : this.notes,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('Scene(')
+          ..write('id: $id, ')
+          ..write('patchId: $patchId, ')
+          ..write('name: $name, ')
+          ..write('notes: $notes, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode =>
+      Object.hash(id, patchId, name, notes, createdAt, updatedAt);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is Scene &&
+          other.id == this.id &&
+          other.patchId == this.patchId &&
+          other.name == this.name &&
+          other.notes == this.notes &&
+          other.createdAt == this.createdAt &&
+          other.updatedAt == this.updatedAt);
+}
+
+class ScenesCompanion extends UpdateCompanion<Scene> {
+  final Value<int> id;
+  final Value<int> patchId;
+  final Value<String> name;
+  final Value<String?> notes;
+  final Value<DateTime> createdAt;
+  final Value<DateTime> updatedAt;
+  const ScenesCompanion({
+    this.id = const Value.absent(),
+    this.patchId = const Value.absent(),
+    this.name = const Value.absent(),
+    this.notes = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+  });
+  ScenesCompanion.insert({
+    this.id = const Value.absent(),
+    required int patchId,
+    required String name,
+    this.notes = const Value.absent(),
+    required DateTime createdAt,
+    required DateTime updatedAt,
+  }) : patchId = Value(patchId),
+       name = Value(name),
+       createdAt = Value(createdAt),
+       updatedAt = Value(updatedAt);
+  static Insertable<Scene> custom({
+    Expression<int>? id,
+    Expression<int>? patchId,
+    Expression<String>? name,
+    Expression<String>? notes,
+    Expression<DateTime>? createdAt,
+    Expression<DateTime>? updatedAt,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (patchId != null) 'patch_id': patchId,
+      if (name != null) 'name': name,
+      if (notes != null) 'notes': notes,
+      if (createdAt != null) 'created_at': createdAt,
+      if (updatedAt != null) 'updated_at': updatedAt,
+    });
+  }
+
+  ScenesCompanion copyWith({
+    Value<int>? id,
+    Value<int>? patchId,
+    Value<String>? name,
+    Value<String?>? notes,
+    Value<DateTime>? createdAt,
+    Value<DateTime>? updatedAt,
+  }) {
+    return ScenesCompanion(
+      id: id ?? this.id,
+      patchId: patchId ?? this.patchId,
+      name: name ?? this.name,
+      notes: notes ?? this.notes,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (patchId.present) {
+      map['patch_id'] = Variable<int>(patchId.value);
+    }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    if (notes.present) {
+      map['notes'] = Variable<String>(notes.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<DateTime>(updatedAt.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ScenesCompanion(')
+          ..write('id: $id, ')
+          ..write('patchId: $patchId, ')
+          ..write('name: $name, ')
+          ..write('notes: $notes, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $ScenePedalsTable extends ScenePedals
+    with TableInfo<$ScenePedalsTable, ScenePedal> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $ScenePedalsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'PRIMARY KEY AUTOINCREMENT',
+    ),
+  );
+  static const VerificationMeta _sceneIdMeta = const VerificationMeta(
+    'sceneId',
+  );
+  @override
+  late final GeneratedColumn<int> sceneId = GeneratedColumn<int>(
+    'scene_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES scenes (id) ON DELETE CASCADE',
+    ),
+  );
+  static const VerificationMeta _pedalIdMeta = const VerificationMeta(
+    'pedalId',
+  );
+  @override
+  late final GeneratedColumn<int> pedalId = GeneratedColumn<int>(
+    'pedal_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES pedals (id) ON DELETE RESTRICT',
+    ),
+  );
+  @override
+  List<GeneratedColumn> get $columns => [id, sceneId, pedalId];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'scene_pedals';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<ScenePedal> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('scene_id')) {
+      context.handle(
+        _sceneIdMeta,
+        sceneId.isAcceptableOrUnknown(data['scene_id']!, _sceneIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_sceneIdMeta);
+    }
+    if (data.containsKey('pedal_id')) {
+      context.handle(
+        _pedalIdMeta,
+        pedalId.isAcceptableOrUnknown(data['pedal_id']!, _pedalIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_pedalIdMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  List<Set<GeneratedColumn>> get uniqueKeys => [
+    {sceneId, pedalId},
+  ];
+  @override
+  ScenePedal map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return ScenePedal(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      sceneId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}scene_id'],
+      )!,
+      pedalId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}pedal_id'],
+      )!,
+    );
+  }
+
+  @override
+  $ScenePedalsTable createAlias(String alias) {
+    return $ScenePedalsTable(attachedDatabase, alias);
+  }
+}
+
+class ScenePedal extends DataClass implements Insertable<ScenePedal> {
+  final int id;
+  final int sceneId;
+
+  /// Restricted, as everywhere a pedal is pointed at: a pedal a scene uses is
+  /// retired rather than deleted.
+  final int pedalId;
+  const ScenePedal({
+    required this.id,
+    required this.sceneId,
+    required this.pedalId,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['scene_id'] = Variable<int>(sceneId);
+    map['pedal_id'] = Variable<int>(pedalId);
+    return map;
+  }
+
+  ScenePedalsCompanion toCompanion(bool nullToAbsent) {
+    return ScenePedalsCompanion(
+      id: Value(id),
+      sceneId: Value(sceneId),
+      pedalId: Value(pedalId),
+    );
+  }
+
+  factory ScenePedal.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return ScenePedal(
+      id: serializer.fromJson<int>(json['id']),
+      sceneId: serializer.fromJson<int>(json['sceneId']),
+      pedalId: serializer.fromJson<int>(json['pedalId']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'sceneId': serializer.toJson<int>(sceneId),
+      'pedalId': serializer.toJson<int>(pedalId),
+    };
+  }
+
+  ScenePedal copyWith({int? id, int? sceneId, int? pedalId}) => ScenePedal(
+    id: id ?? this.id,
+    sceneId: sceneId ?? this.sceneId,
+    pedalId: pedalId ?? this.pedalId,
+  );
+  ScenePedal copyWithCompanion(ScenePedalsCompanion data) {
+    return ScenePedal(
+      id: data.id.present ? data.id.value : this.id,
+      sceneId: data.sceneId.present ? data.sceneId.value : this.sceneId,
+      pedalId: data.pedalId.present ? data.pedalId.value : this.pedalId,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ScenePedal(')
+          ..write('id: $id, ')
+          ..write('sceneId: $sceneId, ')
+          ..write('pedalId: $pedalId')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, sceneId, pedalId);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is ScenePedal &&
+          other.id == this.id &&
+          other.sceneId == this.sceneId &&
+          other.pedalId == this.pedalId);
+}
+
+class ScenePedalsCompanion extends UpdateCompanion<ScenePedal> {
+  final Value<int> id;
+  final Value<int> sceneId;
+  final Value<int> pedalId;
+  const ScenePedalsCompanion({
+    this.id = const Value.absent(),
+    this.sceneId = const Value.absent(),
+    this.pedalId = const Value.absent(),
+  });
+  ScenePedalsCompanion.insert({
+    this.id = const Value.absent(),
+    required int sceneId,
+    required int pedalId,
+  }) : sceneId = Value(sceneId),
+       pedalId = Value(pedalId);
+  static Insertable<ScenePedal> custom({
+    Expression<int>? id,
+    Expression<int>? sceneId,
+    Expression<int>? pedalId,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (sceneId != null) 'scene_id': sceneId,
+      if (pedalId != null) 'pedal_id': pedalId,
+    });
+  }
+
+  ScenePedalsCompanion copyWith({
+    Value<int>? id,
+    Value<int>? sceneId,
+    Value<int>? pedalId,
+  }) {
+    return ScenePedalsCompanion(
+      id: id ?? this.id,
+      sceneId: sceneId ?? this.sceneId,
+      pedalId: pedalId ?? this.pedalId,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (sceneId.present) {
+      map['scene_id'] = Variable<int>(sceneId.value);
+    }
+    if (pedalId.present) {
+      map['pedal_id'] = Variable<int>(pedalId.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ScenePedalsCompanion(')
+          ..write('id: $id, ')
+          ..write('sceneId: $sceneId, ')
+          ..write('pedalId: $pedalId')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $SceneValuesTable extends SceneValues
+    with TableInfo<$SceneValuesTable, SceneValue> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $SceneValuesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'PRIMARY KEY AUTOINCREMENT',
+    ),
+  );
+  static const VerificationMeta _sceneIdMeta = const VerificationMeta(
+    'sceneId',
+  );
+  @override
+  late final GeneratedColumn<int> sceneId = GeneratedColumn<int>(
+    'scene_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES scenes (id) ON DELETE CASCADE',
+    ),
+  );
+  static const VerificationMeta _controlIdMeta = const VerificationMeta(
+    'controlId',
+  );
+  @override
+  late final GeneratedColumn<int> controlId = GeneratedColumn<int>(
+    'control_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES pedal_controls (id) ON DELETE CASCADE',
+    ),
+  );
+  static const VerificationMeta _valueMeta = const VerificationMeta('value');
+  @override
+  late final GeneratedColumn<double> value = GeneratedColumn<double>(
+    'value',
+    aliasedName,
+    false,
+    type: DriftSqlType.double,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [id, sceneId, controlId, value];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'scene_values';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<SceneValue> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('scene_id')) {
+      context.handle(
+        _sceneIdMeta,
+        sceneId.isAcceptableOrUnknown(data['scene_id']!, _sceneIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_sceneIdMeta);
+    }
+    if (data.containsKey('control_id')) {
+      context.handle(
+        _controlIdMeta,
+        controlId.isAcceptableOrUnknown(data['control_id']!, _controlIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_controlIdMeta);
+    }
+    if (data.containsKey('value')) {
+      context.handle(
+        _valueMeta,
+        value.isAcceptableOrUnknown(data['value']!, _valueMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_valueMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  List<Set<GeneratedColumn>> get uniqueKeys => [
+    {sceneId, controlId},
+  ];
+  @override
+  SceneValue map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return SceneValue(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      sceneId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}scene_id'],
+      )!,
+      controlId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}control_id'],
+      )!,
+      value: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}value'],
+      )!,
+    );
+  }
+
+  @override
+  $SceneValuesTable createAlias(String alias) {
+    return $SceneValuesTable(attachedDatabase, alias);
+  }
+}
+
+class SceneValue extends DataClass implements Insertable<SceneValue> {
+  final int id;
+  final int sceneId;
+  final int controlId;
+  final double value;
+  const SceneValue({
+    required this.id,
+    required this.sceneId,
+    required this.controlId,
+    required this.value,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['scene_id'] = Variable<int>(sceneId);
+    map['control_id'] = Variable<int>(controlId);
+    map['value'] = Variable<double>(value);
+    return map;
+  }
+
+  SceneValuesCompanion toCompanion(bool nullToAbsent) {
+    return SceneValuesCompanion(
+      id: Value(id),
+      sceneId: Value(sceneId),
+      controlId: Value(controlId),
+      value: Value(value),
+    );
+  }
+
+  factory SceneValue.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return SceneValue(
+      id: serializer.fromJson<int>(json['id']),
+      sceneId: serializer.fromJson<int>(json['sceneId']),
+      controlId: serializer.fromJson<int>(json['controlId']),
+      value: serializer.fromJson<double>(json['value']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'sceneId': serializer.toJson<int>(sceneId),
+      'controlId': serializer.toJson<int>(controlId),
+      'value': serializer.toJson<double>(value),
+    };
+  }
+
+  SceneValue copyWith({int? id, int? sceneId, int? controlId, double? value}) =>
+      SceneValue(
+        id: id ?? this.id,
+        sceneId: sceneId ?? this.sceneId,
+        controlId: controlId ?? this.controlId,
+        value: value ?? this.value,
+      );
+  SceneValue copyWithCompanion(SceneValuesCompanion data) {
+    return SceneValue(
+      id: data.id.present ? data.id.value : this.id,
+      sceneId: data.sceneId.present ? data.sceneId.value : this.sceneId,
+      controlId: data.controlId.present ? data.controlId.value : this.controlId,
+      value: data.value.present ? data.value.value : this.value,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('SceneValue(')
+          ..write('id: $id, ')
+          ..write('sceneId: $sceneId, ')
+          ..write('controlId: $controlId, ')
+          ..write('value: $value')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, sceneId, controlId, value);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is SceneValue &&
+          other.id == this.id &&
+          other.sceneId == this.sceneId &&
+          other.controlId == this.controlId &&
+          other.value == this.value);
+}
+
+class SceneValuesCompanion extends UpdateCompanion<SceneValue> {
+  final Value<int> id;
+  final Value<int> sceneId;
+  final Value<int> controlId;
+  final Value<double> value;
+  const SceneValuesCompanion({
+    this.id = const Value.absent(),
+    this.sceneId = const Value.absent(),
+    this.controlId = const Value.absent(),
+    this.value = const Value.absent(),
+  });
+  SceneValuesCompanion.insert({
+    this.id = const Value.absent(),
+    required int sceneId,
+    required int controlId,
+    required double value,
+  }) : sceneId = Value(sceneId),
+       controlId = Value(controlId),
+       value = Value(value);
+  static Insertable<SceneValue> custom({
+    Expression<int>? id,
+    Expression<int>? sceneId,
+    Expression<int>? controlId,
+    Expression<double>? value,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (sceneId != null) 'scene_id': sceneId,
+      if (controlId != null) 'control_id': controlId,
+      if (value != null) 'value': value,
+    });
+  }
+
+  SceneValuesCompanion copyWith({
+    Value<int>? id,
+    Value<int>? sceneId,
+    Value<int>? controlId,
+    Value<double>? value,
+  }) {
+    return SceneValuesCompanion(
+      id: id ?? this.id,
+      sceneId: sceneId ?? this.sceneId,
+      controlId: controlId ?? this.controlId,
+      value: value ?? this.value,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (sceneId.present) {
+      map['scene_id'] = Variable<int>(sceneId.value);
+    }
+    if (controlId.present) {
+      map['control_id'] = Variable<int>(controlId.value);
+    }
+    if (value.present) {
+      map['value'] = Variable<double>(value.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('SceneValuesCompanion(')
+          ..write('id: $id, ')
+          ..write('sceneId: $sceneId, ')
+          ..write('controlId: $controlId, ')
+          ..write('value: $value')
+          ..write(')'))
+        .toString();
+  }
+}
+
 class $ChangeLogsTable extends ChangeLogs
     with TableInfo<$ChangeLogsTable, ChangeLog> {
   @override
@@ -2606,8 +3991,8 @@ class ChangeLog extends DataClass implements Insertable<ChangeLog> {
   /// filed under.
   ///
   /// Null on everything else, which is every entry about a pedal's own controls.
-  /// It is set for a scene of a multi-effects unit: the scene belongs to the
-  /// unit, but the control it moved lives on one of the pedals on its patch, and
+  /// It is set for a scene of a multi-effects unit: the entry is filed under the
+  /// unit, but the control it moved lives on one of the pedals inside it, and
   /// "Level moved to 2:30" says nothing when three of them have a Level.
   final String? controlPedalName;
   final ChangeType changeType;
@@ -5479,6 +6864,10 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final $ConfigurationsTable configurations = $ConfigurationsTable(this);
   late final $ConfigurationValuesTable configurationValues =
       $ConfigurationValuesTable(this);
+  late final $PatchesTable patches = $PatchesTable(this);
+  late final $ScenesTable scenes = $ScenesTable(this);
+  late final $ScenePedalsTable scenePedals = $ScenePedalsTable(this);
+  late final $SceneValuesTable sceneValues = $SceneValuesTable(this);
   late final $ChangeLogsTable changeLogs = $ChangeLogsTable(this);
   late final $PedalReplacementsTable pedalReplacements =
       $PedalReplacementsTable(this);
@@ -5510,6 +6899,14 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final Index idxConfigurationsPedal = Index(
     'idx_configurations_pedal',
     'CREATE INDEX idx_configurations_pedal ON configurations (pedal_id)',
+  );
+  late final Index idxPatchesPedal = Index(
+    'idx_patches_pedal',
+    'CREATE INDEX idx_patches_pedal ON patches (pedal_id)',
+  );
+  late final Index idxScenesPatch = Index(
+    'idx_scenes_patch',
+    'CREATE INDEX idx_scenes_patch ON scenes (patch_id)',
   );
   late final Index idxChangeLogsPedalTime = Index(
     'idx_change_logs_pedal_time',
@@ -5546,6 +6943,8 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final ConfigurationDao configurationDao = ConfigurationDao(
     this as AppDatabase,
   );
+  late final PatchDao patchDao = PatchDao(this as AppDatabase);
+  late final SceneDao sceneDao = SceneDao(this as AppDatabase);
   late final ChangeLogDao changeLogDao = ChangeLogDao(this as AppDatabase);
   late final PedalReplacementDao pedalReplacementDao = PedalReplacementDao(
     this as AppDatabase,
@@ -5564,6 +6963,10 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     pedalControls,
     configurations,
     configurationValues,
+    patches,
+    scenes,
+    scenePedals,
+    sceneValues,
     changeLogs,
     pedalReplacements,
     pedalboards,
@@ -5576,6 +6979,8 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     idxPedalsHost,
     idxPedalControlsPedalOrder,
     idxConfigurationsPedal,
+    idxPatchesPedal,
+    idxScenesPatch,
     idxChangeLogsPedalTime,
     idxChangeLogsConfiguration,
     idxPedalReplacementsOld,
@@ -5599,6 +7004,34 @@ abstract class _$AppDatabase extends GeneratedDatabase {
         limitUpdateKind: UpdateKind.delete,
       ),
       result: [TableUpdate('configuration_values', kind: UpdateKind.delete)],
+    ),
+    WritePropagation(
+      on: TableUpdateQuery.onTableName(
+        'patches',
+        limitUpdateKind: UpdateKind.delete,
+      ),
+      result: [TableUpdate('scenes', kind: UpdateKind.delete)],
+    ),
+    WritePropagation(
+      on: TableUpdateQuery.onTableName(
+        'scenes',
+        limitUpdateKind: UpdateKind.delete,
+      ),
+      result: [TableUpdate('scene_pedals', kind: UpdateKind.delete)],
+    ),
+    WritePropagation(
+      on: TableUpdateQuery.onTableName(
+        'scenes',
+        limitUpdateKind: UpdateKind.delete,
+      ),
+      result: [TableUpdate('scene_values', kind: UpdateKind.delete)],
+    ),
+    WritePropagation(
+      on: TableUpdateQuery.onTableName(
+        'pedal_controls',
+        limitUpdateKind: UpdateKind.delete,
+      ),
+      result: [TableUpdate('scene_values', kind: UpdateKind.delete)],
     ),
     WritePropagation(
       on: TableUpdateQuery.onTableName(
@@ -5726,6 +7159,43 @@ final class $$PedalsTableReferences
     ).filter((f) => f.pedalId.id.sqlEquals($_itemColumn<int>('id')!));
 
     final cache = $_typedResult.readTableOrNull(_configurationsRefsTable($_db));
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+
+  static MultiTypedResultKey<$PatchesTable, List<Patch>> _patchesRefsTable(
+    _$AppDatabase db,
+  ) => MultiTypedResultKey.fromTable(
+    db.patches,
+    aliasName: 'pedals__id__patches__pedal_id',
+  );
+
+  $$PatchesTableProcessedTableManager get patchesRefs {
+    final manager = $$PatchesTableTableManager(
+      $_db,
+      $_db.patches,
+    ).filter((f) => f.pedalId.id.sqlEquals($_itemColumn<int>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(_patchesRefsTable($_db));
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+
+  static MultiTypedResultKey<$ScenePedalsTable, List<ScenePedal>>
+  _scenePedalsRefsTable(_$AppDatabase db) => MultiTypedResultKey.fromTable(
+    db.scenePedals,
+    aliasName: 'pedals__id__scene_pedals__pedal_id',
+  );
+
+  $$ScenePedalsTableProcessedTableManager get scenePedalsRefs {
+    final manager = $$ScenePedalsTableTableManager(
+      $_db,
+      $_db.scenePedals,
+    ).filter((f) => f.pedalId.id.sqlEquals($_itemColumn<int>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(_scenePedalsRefsTable($_db));
     return ProcessedTableManager(
       manager.$state.copyWith(prefetchedData: cache),
     );
@@ -5970,6 +7440,56 @@ class $$PedalsTableFilterComposer
           }) => $$ConfigurationsTableFilterComposer(
             $db: $db,
             $table: $db.configurations,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+
+  Expression<bool> patchesRefs(
+    Expression<bool> Function($$PatchesTableFilterComposer f) f,
+  ) {
+    final $$PatchesTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.patches,
+      getReferencedColumn: (t) => t.pedalId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$PatchesTableFilterComposer(
+            $db: $db,
+            $table: $db.patches,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+
+  Expression<bool> scenePedalsRefs(
+    Expression<bool> Function($$ScenePedalsTableFilterComposer f) f,
+  ) {
+    final $$ScenePedalsTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.scenePedals,
+      getReferencedColumn: (t) => t.pedalId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$ScenePedalsTableFilterComposer(
+            $db: $db,
+            $table: $db.scenePedals,
             $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
             joinBuilder: joinBuilder,
             $removeJoinBuilderFromRootComposer:
@@ -6321,6 +7841,56 @@ class $$PedalsTableAnnotationComposer
     return f(composer);
   }
 
+  Expression<T> patchesRefs<T extends Object>(
+    Expression<T> Function($$PatchesTableAnnotationComposer a) f,
+  ) {
+    final $$PatchesTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.patches,
+      getReferencedColumn: (t) => t.pedalId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$PatchesTableAnnotationComposer(
+            $db: $db,
+            $table: $db.patches,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+
+  Expression<T> scenePedalsRefs<T extends Object>(
+    Expression<T> Function($$ScenePedalsTableAnnotationComposer a) f,
+  ) {
+    final $$ScenePedalsTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.scenePedals,
+      getReferencedColumn: (t) => t.pedalId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$ScenePedalsTableAnnotationComposer(
+            $db: $db,
+            $table: $db.scenePedals,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+
   Expression<T> changeLogsRefs<T extends Object>(
     Expression<T> Function($$ChangeLogsTableAnnotationComposer a) f,
   ) {
@@ -6467,6 +8037,8 @@ class $$PedalsTableTableManager
             bool hostPedalId,
             bool pedalControlsRefs,
             bool configurationsRefs,
+            bool patchesRefs,
+            bool scenePedalsRefs,
             bool changeLogsRefs,
             bool replacementsWhereOutgoing,
             bool replacementsWhereIncoming,
@@ -6558,6 +8130,8 @@ class $$PedalsTableTableManager
                 hostPedalId = false,
                 pedalControlsRefs = false,
                 configurationsRefs = false,
+                patchesRefs = false,
+                scenePedalsRefs = false,
                 changeLogsRefs = false,
                 replacementsWhereOutgoing = false,
                 replacementsWhereIncoming = false,
@@ -6569,6 +8143,8 @@ class $$PedalsTableTableManager
                   explicitlyWatchedTables: [
                     if (pedalControlsRefs) db.pedalControls,
                     if (configurationsRefs) db.configurations,
+                    if (patchesRefs) db.patches,
+                    if (scenePedalsRefs) db.scenePedals,
                     if (changeLogsRefs) db.changeLogs,
                     if (replacementsWhereOutgoing) db.pedalReplacements,
                     if (replacementsWhereIncoming) db.pedalReplacements,
@@ -6645,6 +8221,44 @@ class $$PedalsTableTableManager
                                 table,
                                 p0,
                               ).configurationsRefs,
+                          referencedItemsForCurrentItem:
+                              (item, referencedItems) => referencedItems.where(
+                                (e) => e.pedalId == item.id,
+                              ),
+                          typedResults: items,
+                        ),
+                      if (patchesRefs)
+                        await $_getPrefetchedData<Pedal, $PedalsTable, Patch>(
+                          currentTable: table,
+                          referencedTable: $$PedalsTableReferences
+                              ._patchesRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$PedalsTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).patchesRefs,
+                          referencedItemsForCurrentItem:
+                              (item, referencedItems) => referencedItems.where(
+                                (e) => e.pedalId == item.id,
+                              ),
+                          typedResults: items,
+                        ),
+                      if (scenePedalsRefs)
+                        await $_getPrefetchedData<
+                          Pedal,
+                          $PedalsTable,
+                          ScenePedal
+                        >(
+                          currentTable: table,
+                          referencedTable: $$PedalsTableReferences
+                              ._scenePedalsRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$PedalsTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).scenePedalsRefs,
                           referencedItemsForCurrentItem:
                               (item, referencedItems) => referencedItems.where(
                                 (e) => e.pedalId == item.id,
@@ -6780,6 +8394,8 @@ typedef $$PedalsTableProcessedTableManager =
         bool hostPedalId,
         bool pedalControlsRefs,
         bool configurationsRefs,
+        bool patchesRefs,
+        bool scenePedalsRefs,
         bool changeLogsRefs,
         bool replacementsWhereOutgoing,
         bool replacementsWhereIncoming,
@@ -6860,6 +8476,24 @@ final class $$PedalControlsTableReferences
     final cache = $_typedResult.readTableOrNull(
       _configurationValuesRefsTable($_db),
     );
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+
+  static MultiTypedResultKey<$SceneValuesTable, List<SceneValue>>
+  _sceneValuesRefsTable(_$AppDatabase db) => MultiTypedResultKey.fromTable(
+    db.sceneValues,
+    aliasName: 'pedal_controls__id__scene_values__control_id',
+  );
+
+  $$SceneValuesTableProcessedTableManager get sceneValuesRefs {
+    final manager = $$SceneValuesTableTableManager(
+      $_db,
+      $_db.sceneValues,
+    ).filter((f) => f.controlId.id.sqlEquals($_itemColumn<int>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(_sceneValuesRefsTable($_db));
     return ProcessedTableManager(
       manager.$state.copyWith(prefetchedData: cache),
     );
@@ -6983,6 +8617,31 @@ class $$PedalControlsTableFilterComposer
           }) => $$ConfigurationValuesTableFilterComposer(
             $db: $db,
             $table: $db.configurationValues,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+
+  Expression<bool> sceneValuesRefs(
+    Expression<bool> Function($$SceneValuesTableFilterComposer f) f,
+  ) {
+    final $$SceneValuesTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.sceneValues,
+      getReferencedColumn: (t) => t.controlId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$SceneValuesTableFilterComposer(
+            $db: $db,
+            $table: $db.sceneValues,
             $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
             joinBuilder: joinBuilder,
             $removeJoinBuilderFromRootComposer:
@@ -7196,6 +8855,31 @@ class $$PedalControlsTableAnnotationComposer
     return f(composer);
   }
 
+  Expression<T> sceneValuesRefs<T extends Object>(
+    Expression<T> Function($$SceneValuesTableAnnotationComposer a) f,
+  ) {
+    final $$SceneValuesTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.sceneValues,
+      getReferencedColumn: (t) => t.controlId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$SceneValuesTableAnnotationComposer(
+            $db: $db,
+            $table: $db.sceneValues,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+
   Expression<T> changeLogsRefs<T extends Object>(
     Expression<T> Function($$ChangeLogsTableAnnotationComposer a) f,
   ) {
@@ -7238,6 +8922,7 @@ class $$PedalControlsTableTableManager
           PrefetchHooks Function({
             bool pedalId,
             bool configurationValuesRefs,
+            bool sceneValuesRefs,
             bool changeLogsRefs,
           })
         > {
@@ -7316,12 +9001,14 @@ class $$PedalControlsTableTableManager
               ({
                 pedalId = false,
                 configurationValuesRefs = false,
+                sceneValuesRefs = false,
                 changeLogsRefs = false,
               }) {
                 return PrefetchHooks(
                   db: db,
                   explicitlyWatchedTables: [
                     if (configurationValuesRefs) db.configurationValues,
+                    if (sceneValuesRefs) db.sceneValues,
                     if (changeLogsRefs) db.changeLogs,
                   ],
                   addJoins:
@@ -7381,6 +9068,27 @@ class $$PedalControlsTableTableManager
                               ),
                           typedResults: items,
                         ),
+                      if (sceneValuesRefs)
+                        await $_getPrefetchedData<
+                          PedalControl,
+                          $PedalControlsTable,
+                          SceneValue
+                        >(
+                          currentTable: table,
+                          referencedTable: $$PedalControlsTableReferences
+                              ._sceneValuesRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$PedalControlsTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).sceneValuesRefs,
+                          referencedItemsForCurrentItem:
+                              (item, referencedItems) => referencedItems.where(
+                                (e) => e.controlId == item.id,
+                              ),
+                          typedResults: items,
+                        ),
                       if (changeLogsRefs)
                         await $_getPrefetchedData<
                           PedalControl,
@@ -7425,6 +9133,7 @@ typedef $$PedalControlsTableProcessedTableManager =
       PrefetchHooks Function({
         bool pedalId,
         bool configurationValuesRefs,
+        bool sceneValuesRefs,
         bool changeLogsRefs,
       })
     >;
@@ -8370,6 +10079,1678 @@ typedef $$ConfigurationValuesTableProcessedTableManager =
       (ConfigurationValue, $$ConfigurationValuesTableReferences),
       ConfigurationValue,
       PrefetchHooks Function({bool configurationId, bool controlId})
+    >;
+typedef $$PatchesTableCreateCompanionBuilder =
+    PatchesCompanion Function({
+      Value<int> id,
+      required int pedalId,
+      required String name,
+      Value<String?> notes,
+      required DateTime createdAt,
+      required DateTime updatedAt,
+    });
+typedef $$PatchesTableUpdateCompanionBuilder =
+    PatchesCompanion Function({
+      Value<int> id,
+      Value<int> pedalId,
+      Value<String> name,
+      Value<String?> notes,
+      Value<DateTime> createdAt,
+      Value<DateTime> updatedAt,
+    });
+
+final class $$PatchesTableReferences
+    extends BaseReferences<_$AppDatabase, $PatchesTable, Patch> {
+  $$PatchesTableReferences(super.$_db, super.$_table, super.$_typedResult);
+
+  static $PedalsTable _pedalIdTable(_$AppDatabase db) =>
+      db.pedals.createAlias('patches__pedal_id__pedals__id');
+
+  $$PedalsTableProcessedTableManager get pedalId {
+    final $_column = $_itemColumn<int>('pedal_id')!;
+
+    final manager = $$PedalsTableTableManager(
+      $_db,
+      $_db.pedals,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_pedalIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+
+  static MultiTypedResultKey<$ScenesTable, List<Scene>> _scenesRefsTable(
+    _$AppDatabase db,
+  ) => MultiTypedResultKey.fromTable(
+    db.scenes,
+    aliasName: 'patches__id__scenes__patch_id',
+  );
+
+  $$ScenesTableProcessedTableManager get scenesRefs {
+    final manager = $$ScenesTableTableManager(
+      $_db,
+      $_db.scenes,
+    ).filter((f) => f.patchId.id.sqlEquals($_itemColumn<int>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(_scenesRefsTable($_db));
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+}
+
+class $$PatchesTableFilterComposer
+    extends Composer<_$AppDatabase, $PatchesTable> {
+  $$PatchesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get notes => $composableBuilder(
+    column: $table.notes,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  $$PedalsTableFilterComposer get pedalId {
+    final $$PedalsTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.pedalId,
+      referencedTable: $db.pedals,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$PedalsTableFilterComposer(
+            $db: $db,
+            $table: $db.pedals,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  Expression<bool> scenesRefs(
+    Expression<bool> Function($$ScenesTableFilterComposer f) f,
+  ) {
+    final $$ScenesTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.scenes,
+      getReferencedColumn: (t) => t.patchId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$ScenesTableFilterComposer(
+            $db: $db,
+            $table: $db.scenes,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+}
+
+class $$PatchesTableOrderingComposer
+    extends Composer<_$AppDatabase, $PatchesTable> {
+  $$PatchesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get notes => $composableBuilder(
+    column: $table.notes,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  $$PedalsTableOrderingComposer get pedalId {
+    final $$PedalsTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.pedalId,
+      referencedTable: $db.pedals,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$PedalsTableOrderingComposer(
+            $db: $db,
+            $table: $db.pedals,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$PatchesTableAnnotationComposer
+    extends Composer<_$AppDatabase, $PatchesTable> {
+  $$PatchesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get name =>
+      $composableBuilder(column: $table.name, builder: (column) => column);
+
+  GeneratedColumn<String> get notes =>
+      $composableBuilder(column: $table.notes, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+
+  $$PedalsTableAnnotationComposer get pedalId {
+    final $$PedalsTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.pedalId,
+      referencedTable: $db.pedals,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$PedalsTableAnnotationComposer(
+            $db: $db,
+            $table: $db.pedals,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  Expression<T> scenesRefs<T extends Object>(
+    Expression<T> Function($$ScenesTableAnnotationComposer a) f,
+  ) {
+    final $$ScenesTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.scenes,
+      getReferencedColumn: (t) => t.patchId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$ScenesTableAnnotationComposer(
+            $db: $db,
+            $table: $db.scenes,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+}
+
+class $$PatchesTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $PatchesTable,
+          Patch,
+          $$PatchesTableFilterComposer,
+          $$PatchesTableOrderingComposer,
+          $$PatchesTableAnnotationComposer,
+          $$PatchesTableCreateCompanionBuilder,
+          $$PatchesTableUpdateCompanionBuilder,
+          (Patch, $$PatchesTableReferences),
+          Patch,
+          PrefetchHooks Function({bool pedalId, bool scenesRefs})
+        > {
+  $$PatchesTableTableManager(_$AppDatabase db, $PatchesTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$PatchesTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$PatchesTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$PatchesTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<int> pedalId = const Value.absent(),
+                Value<String> name = const Value.absent(),
+                Value<String?> notes = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<DateTime> updatedAt = const Value.absent(),
+              }) => PatchesCompanion(
+                id: id,
+                pedalId: pedalId,
+                name: name,
+                notes: notes,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                required int pedalId,
+                required String name,
+                Value<String?> notes = const Value.absent(),
+                required DateTime createdAt,
+                required DateTime updatedAt,
+              }) => PatchesCompanion.insert(
+                id: id,
+                pedalId: pedalId,
+                name: name,
+                notes: notes,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable(table),
+                  $$PatchesTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: ({pedalId = false, scenesRefs = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [if (scenesRefs) db.scenes],
+              addJoins:
+                  <
+                    T extends TableManagerState<
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic
+                    >
+                  >(state) {
+                    if (pedalId) {
+                      state =
+                          state.withJoin(
+                                currentTable: table,
+                                currentColumn: table.pedalId,
+                                referencedTable: $$PatchesTableReferences
+                                    ._pedalIdTable(db),
+                                referencedColumn: $$PatchesTableReferences
+                                    ._pedalIdTable(db)
+                                    .id,
+                              )
+                              as T;
+                    }
+
+                    return state;
+                  },
+              getPrefetchedDataCallback: (items) async {
+                return [
+                  if (scenesRefs)
+                    await $_getPrefetchedData<Patch, $PatchesTable, Scene>(
+                      currentTable: table,
+                      referencedTable: $$PatchesTableReferences
+                          ._scenesRefsTable(db),
+                      managerFromTypedResult: (p0) =>
+                          $$PatchesTableReferences(db, table, p0).scenesRefs,
+                      referencedItemsForCurrentItem: (item, referencedItems) =>
+                          referencedItems.where((e) => e.patchId == item.id),
+                      typedResults: items,
+                    ),
+                ];
+              },
+            );
+          },
+        ),
+      );
+}
+
+typedef $$PatchesTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $PatchesTable,
+      Patch,
+      $$PatchesTableFilterComposer,
+      $$PatchesTableOrderingComposer,
+      $$PatchesTableAnnotationComposer,
+      $$PatchesTableCreateCompanionBuilder,
+      $$PatchesTableUpdateCompanionBuilder,
+      (Patch, $$PatchesTableReferences),
+      Patch,
+      PrefetchHooks Function({bool pedalId, bool scenesRefs})
+    >;
+typedef $$ScenesTableCreateCompanionBuilder =
+    ScenesCompanion Function({
+      Value<int> id,
+      required int patchId,
+      required String name,
+      Value<String?> notes,
+      required DateTime createdAt,
+      required DateTime updatedAt,
+    });
+typedef $$ScenesTableUpdateCompanionBuilder =
+    ScenesCompanion Function({
+      Value<int> id,
+      Value<int> patchId,
+      Value<String> name,
+      Value<String?> notes,
+      Value<DateTime> createdAt,
+      Value<DateTime> updatedAt,
+    });
+
+final class $$ScenesTableReferences
+    extends BaseReferences<_$AppDatabase, $ScenesTable, Scene> {
+  $$ScenesTableReferences(super.$_db, super.$_table, super.$_typedResult);
+
+  static $PatchesTable _patchIdTable(_$AppDatabase db) =>
+      db.patches.createAlias('scenes__patch_id__patches__id');
+
+  $$PatchesTableProcessedTableManager get patchId {
+    final $_column = $_itemColumn<int>('patch_id')!;
+
+    final manager = $$PatchesTableTableManager(
+      $_db,
+      $_db.patches,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_patchIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+
+  static MultiTypedResultKey<$ScenePedalsTable, List<ScenePedal>>
+  _scenePedalsRefsTable(_$AppDatabase db) => MultiTypedResultKey.fromTable(
+    db.scenePedals,
+    aliasName: 'scenes__id__scene_pedals__scene_id',
+  );
+
+  $$ScenePedalsTableProcessedTableManager get scenePedalsRefs {
+    final manager = $$ScenePedalsTableTableManager(
+      $_db,
+      $_db.scenePedals,
+    ).filter((f) => f.sceneId.id.sqlEquals($_itemColumn<int>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(_scenePedalsRefsTable($_db));
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+
+  static MultiTypedResultKey<$SceneValuesTable, List<SceneValue>>
+  _sceneValuesRefsTable(_$AppDatabase db) => MultiTypedResultKey.fromTable(
+    db.sceneValues,
+    aliasName: 'scenes__id__scene_values__scene_id',
+  );
+
+  $$SceneValuesTableProcessedTableManager get sceneValuesRefs {
+    final manager = $$SceneValuesTableTableManager(
+      $_db,
+      $_db.sceneValues,
+    ).filter((f) => f.sceneId.id.sqlEquals($_itemColumn<int>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(_sceneValuesRefsTable($_db));
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+}
+
+class $$ScenesTableFilterComposer
+    extends Composer<_$AppDatabase, $ScenesTable> {
+  $$ScenesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get notes => $composableBuilder(
+    column: $table.notes,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  $$PatchesTableFilterComposer get patchId {
+    final $$PatchesTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.patchId,
+      referencedTable: $db.patches,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$PatchesTableFilterComposer(
+            $db: $db,
+            $table: $db.patches,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  Expression<bool> scenePedalsRefs(
+    Expression<bool> Function($$ScenePedalsTableFilterComposer f) f,
+  ) {
+    final $$ScenePedalsTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.scenePedals,
+      getReferencedColumn: (t) => t.sceneId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$ScenePedalsTableFilterComposer(
+            $db: $db,
+            $table: $db.scenePedals,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+
+  Expression<bool> sceneValuesRefs(
+    Expression<bool> Function($$SceneValuesTableFilterComposer f) f,
+  ) {
+    final $$SceneValuesTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.sceneValues,
+      getReferencedColumn: (t) => t.sceneId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$SceneValuesTableFilterComposer(
+            $db: $db,
+            $table: $db.sceneValues,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+}
+
+class $$ScenesTableOrderingComposer
+    extends Composer<_$AppDatabase, $ScenesTable> {
+  $$ScenesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get notes => $composableBuilder(
+    column: $table.notes,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  $$PatchesTableOrderingComposer get patchId {
+    final $$PatchesTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.patchId,
+      referencedTable: $db.patches,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$PatchesTableOrderingComposer(
+            $db: $db,
+            $table: $db.patches,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$ScenesTableAnnotationComposer
+    extends Composer<_$AppDatabase, $ScenesTable> {
+  $$ScenesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get name =>
+      $composableBuilder(column: $table.name, builder: (column) => column);
+
+  GeneratedColumn<String> get notes =>
+      $composableBuilder(column: $table.notes, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+
+  $$PatchesTableAnnotationComposer get patchId {
+    final $$PatchesTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.patchId,
+      referencedTable: $db.patches,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$PatchesTableAnnotationComposer(
+            $db: $db,
+            $table: $db.patches,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  Expression<T> scenePedalsRefs<T extends Object>(
+    Expression<T> Function($$ScenePedalsTableAnnotationComposer a) f,
+  ) {
+    final $$ScenePedalsTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.scenePedals,
+      getReferencedColumn: (t) => t.sceneId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$ScenePedalsTableAnnotationComposer(
+            $db: $db,
+            $table: $db.scenePedals,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+
+  Expression<T> sceneValuesRefs<T extends Object>(
+    Expression<T> Function($$SceneValuesTableAnnotationComposer a) f,
+  ) {
+    final $$SceneValuesTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.sceneValues,
+      getReferencedColumn: (t) => t.sceneId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$SceneValuesTableAnnotationComposer(
+            $db: $db,
+            $table: $db.sceneValues,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+}
+
+class $$ScenesTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $ScenesTable,
+          Scene,
+          $$ScenesTableFilterComposer,
+          $$ScenesTableOrderingComposer,
+          $$ScenesTableAnnotationComposer,
+          $$ScenesTableCreateCompanionBuilder,
+          $$ScenesTableUpdateCompanionBuilder,
+          (Scene, $$ScenesTableReferences),
+          Scene,
+          PrefetchHooks Function({
+            bool patchId,
+            bool scenePedalsRefs,
+            bool sceneValuesRefs,
+          })
+        > {
+  $$ScenesTableTableManager(_$AppDatabase db, $ScenesTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$ScenesTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$ScenesTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$ScenesTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<int> patchId = const Value.absent(),
+                Value<String> name = const Value.absent(),
+                Value<String?> notes = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<DateTime> updatedAt = const Value.absent(),
+              }) => ScenesCompanion(
+                id: id,
+                patchId: patchId,
+                name: name,
+                notes: notes,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                required int patchId,
+                required String name,
+                Value<String?> notes = const Value.absent(),
+                required DateTime createdAt,
+                required DateTime updatedAt,
+              }) => ScenesCompanion.insert(
+                id: id,
+                patchId: patchId,
+                name: name,
+                notes: notes,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) =>
+                    (e.readTable(table), $$ScenesTableReferences(db, table, e)),
+              )
+              .toList(),
+          prefetchHooksCallback:
+              ({
+                patchId = false,
+                scenePedalsRefs = false,
+                sceneValuesRefs = false,
+              }) {
+                return PrefetchHooks(
+                  db: db,
+                  explicitlyWatchedTables: [
+                    if (scenePedalsRefs) db.scenePedals,
+                    if (sceneValuesRefs) db.sceneValues,
+                  ],
+                  addJoins:
+                      <
+                        T extends TableManagerState<
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic
+                        >
+                      >(state) {
+                        if (patchId) {
+                          state =
+                              state.withJoin(
+                                    currentTable: table,
+                                    currentColumn: table.patchId,
+                                    referencedTable: $$ScenesTableReferences
+                                        ._patchIdTable(db),
+                                    referencedColumn: $$ScenesTableReferences
+                                        ._patchIdTable(db)
+                                        .id,
+                                  )
+                                  as T;
+                        }
+
+                        return state;
+                      },
+                  getPrefetchedDataCallback: (items) async {
+                    return [
+                      if (scenePedalsRefs)
+                        await $_getPrefetchedData<
+                          Scene,
+                          $ScenesTable,
+                          ScenePedal
+                        >(
+                          currentTable: table,
+                          referencedTable: $$ScenesTableReferences
+                              ._scenePedalsRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$ScenesTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).scenePedalsRefs,
+                          referencedItemsForCurrentItem:
+                              (item, referencedItems) => referencedItems.where(
+                                (e) => e.sceneId == item.id,
+                              ),
+                          typedResults: items,
+                        ),
+                      if (sceneValuesRefs)
+                        await $_getPrefetchedData<
+                          Scene,
+                          $ScenesTable,
+                          SceneValue
+                        >(
+                          currentTable: table,
+                          referencedTable: $$ScenesTableReferences
+                              ._sceneValuesRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$ScenesTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).sceneValuesRefs,
+                          referencedItemsForCurrentItem:
+                              (item, referencedItems) => referencedItems.where(
+                                (e) => e.sceneId == item.id,
+                              ),
+                          typedResults: items,
+                        ),
+                    ];
+                  },
+                );
+              },
+        ),
+      );
+}
+
+typedef $$ScenesTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $ScenesTable,
+      Scene,
+      $$ScenesTableFilterComposer,
+      $$ScenesTableOrderingComposer,
+      $$ScenesTableAnnotationComposer,
+      $$ScenesTableCreateCompanionBuilder,
+      $$ScenesTableUpdateCompanionBuilder,
+      (Scene, $$ScenesTableReferences),
+      Scene,
+      PrefetchHooks Function({
+        bool patchId,
+        bool scenePedalsRefs,
+        bool sceneValuesRefs,
+      })
+    >;
+typedef $$ScenePedalsTableCreateCompanionBuilder =
+    ScenePedalsCompanion Function({
+      Value<int> id,
+      required int sceneId,
+      required int pedalId,
+    });
+typedef $$ScenePedalsTableUpdateCompanionBuilder =
+    ScenePedalsCompanion Function({
+      Value<int> id,
+      Value<int> sceneId,
+      Value<int> pedalId,
+    });
+
+final class $$ScenePedalsTableReferences
+    extends BaseReferences<_$AppDatabase, $ScenePedalsTable, ScenePedal> {
+  $$ScenePedalsTableReferences(super.$_db, super.$_table, super.$_typedResult);
+
+  static $ScenesTable _sceneIdTable(_$AppDatabase db) =>
+      db.scenes.createAlias('scene_pedals__scene_id__scenes__id');
+
+  $$ScenesTableProcessedTableManager get sceneId {
+    final $_column = $_itemColumn<int>('scene_id')!;
+
+    final manager = $$ScenesTableTableManager(
+      $_db,
+      $_db.scenes,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_sceneIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+
+  static $PedalsTable _pedalIdTable(_$AppDatabase db) =>
+      db.pedals.createAlias('scene_pedals__pedal_id__pedals__id');
+
+  $$PedalsTableProcessedTableManager get pedalId {
+    final $_column = $_itemColumn<int>('pedal_id')!;
+
+    final manager = $$PedalsTableTableManager(
+      $_db,
+      $_db.pedals,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_pedalIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+}
+
+class $$ScenePedalsTableFilterComposer
+    extends Composer<_$AppDatabase, $ScenePedalsTable> {
+  $$ScenePedalsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  $$ScenesTableFilterComposer get sceneId {
+    final $$ScenesTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.sceneId,
+      referencedTable: $db.scenes,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$ScenesTableFilterComposer(
+            $db: $db,
+            $table: $db.scenes,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  $$PedalsTableFilterComposer get pedalId {
+    final $$PedalsTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.pedalId,
+      referencedTable: $db.pedals,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$PedalsTableFilterComposer(
+            $db: $db,
+            $table: $db.pedals,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$ScenePedalsTableOrderingComposer
+    extends Composer<_$AppDatabase, $ScenePedalsTable> {
+  $$ScenePedalsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  $$ScenesTableOrderingComposer get sceneId {
+    final $$ScenesTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.sceneId,
+      referencedTable: $db.scenes,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$ScenesTableOrderingComposer(
+            $db: $db,
+            $table: $db.scenes,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  $$PedalsTableOrderingComposer get pedalId {
+    final $$PedalsTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.pedalId,
+      referencedTable: $db.pedals,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$PedalsTableOrderingComposer(
+            $db: $db,
+            $table: $db.pedals,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$ScenePedalsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $ScenePedalsTable> {
+  $$ScenePedalsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  $$ScenesTableAnnotationComposer get sceneId {
+    final $$ScenesTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.sceneId,
+      referencedTable: $db.scenes,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$ScenesTableAnnotationComposer(
+            $db: $db,
+            $table: $db.scenes,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  $$PedalsTableAnnotationComposer get pedalId {
+    final $$PedalsTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.pedalId,
+      referencedTable: $db.pedals,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$PedalsTableAnnotationComposer(
+            $db: $db,
+            $table: $db.pedals,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$ScenePedalsTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $ScenePedalsTable,
+          ScenePedal,
+          $$ScenePedalsTableFilterComposer,
+          $$ScenePedalsTableOrderingComposer,
+          $$ScenePedalsTableAnnotationComposer,
+          $$ScenePedalsTableCreateCompanionBuilder,
+          $$ScenePedalsTableUpdateCompanionBuilder,
+          (ScenePedal, $$ScenePedalsTableReferences),
+          ScenePedal,
+          PrefetchHooks Function({bool sceneId, bool pedalId})
+        > {
+  $$ScenePedalsTableTableManager(_$AppDatabase db, $ScenePedalsTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$ScenePedalsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$ScenePedalsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$ScenePedalsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<int> sceneId = const Value.absent(),
+                Value<int> pedalId = const Value.absent(),
+              }) => ScenePedalsCompanion(
+                id: id,
+                sceneId: sceneId,
+                pedalId: pedalId,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                required int sceneId,
+                required int pedalId,
+              }) => ScenePedalsCompanion.insert(
+                id: id,
+                sceneId: sceneId,
+                pedalId: pedalId,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable(table),
+                  $$ScenePedalsTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: ({sceneId = false, pedalId = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [],
+              addJoins:
+                  <
+                    T extends TableManagerState<
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic
+                    >
+                  >(state) {
+                    if (sceneId) {
+                      state =
+                          state.withJoin(
+                                currentTable: table,
+                                currentColumn: table.sceneId,
+                                referencedTable: $$ScenePedalsTableReferences
+                                    ._sceneIdTable(db),
+                                referencedColumn: $$ScenePedalsTableReferences
+                                    ._sceneIdTable(db)
+                                    .id,
+                              )
+                              as T;
+                    }
+                    if (pedalId) {
+                      state =
+                          state.withJoin(
+                                currentTable: table,
+                                currentColumn: table.pedalId,
+                                referencedTable: $$ScenePedalsTableReferences
+                                    ._pedalIdTable(db),
+                                referencedColumn: $$ScenePedalsTableReferences
+                                    ._pedalIdTable(db)
+                                    .id,
+                              )
+                              as T;
+                    }
+
+                    return state;
+                  },
+              getPrefetchedDataCallback: (items) async {
+                return [];
+              },
+            );
+          },
+        ),
+      );
+}
+
+typedef $$ScenePedalsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $ScenePedalsTable,
+      ScenePedal,
+      $$ScenePedalsTableFilterComposer,
+      $$ScenePedalsTableOrderingComposer,
+      $$ScenePedalsTableAnnotationComposer,
+      $$ScenePedalsTableCreateCompanionBuilder,
+      $$ScenePedalsTableUpdateCompanionBuilder,
+      (ScenePedal, $$ScenePedalsTableReferences),
+      ScenePedal,
+      PrefetchHooks Function({bool sceneId, bool pedalId})
+    >;
+typedef $$SceneValuesTableCreateCompanionBuilder =
+    SceneValuesCompanion Function({
+      Value<int> id,
+      required int sceneId,
+      required int controlId,
+      required double value,
+    });
+typedef $$SceneValuesTableUpdateCompanionBuilder =
+    SceneValuesCompanion Function({
+      Value<int> id,
+      Value<int> sceneId,
+      Value<int> controlId,
+      Value<double> value,
+    });
+
+final class $$SceneValuesTableReferences
+    extends BaseReferences<_$AppDatabase, $SceneValuesTable, SceneValue> {
+  $$SceneValuesTableReferences(super.$_db, super.$_table, super.$_typedResult);
+
+  static $ScenesTable _sceneIdTable(_$AppDatabase db) =>
+      db.scenes.createAlias('scene_values__scene_id__scenes__id');
+
+  $$ScenesTableProcessedTableManager get sceneId {
+    final $_column = $_itemColumn<int>('scene_id')!;
+
+    final manager = $$ScenesTableTableManager(
+      $_db,
+      $_db.scenes,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_sceneIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+
+  static $PedalControlsTable _controlIdTable(_$AppDatabase db) => db
+      .pedalControls
+      .createAlias('scene_values__control_id__pedal_controls__id');
+
+  $$PedalControlsTableProcessedTableManager get controlId {
+    final $_column = $_itemColumn<int>('control_id')!;
+
+    final manager = $$PedalControlsTableTableManager(
+      $_db,
+      $_db.pedalControls,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_controlIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+}
+
+class $$SceneValuesTableFilterComposer
+    extends Composer<_$AppDatabase, $SceneValuesTable> {
+  $$SceneValuesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get value => $composableBuilder(
+    column: $table.value,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  $$ScenesTableFilterComposer get sceneId {
+    final $$ScenesTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.sceneId,
+      referencedTable: $db.scenes,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$ScenesTableFilterComposer(
+            $db: $db,
+            $table: $db.scenes,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  $$PedalControlsTableFilterComposer get controlId {
+    final $$PedalControlsTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.controlId,
+      referencedTable: $db.pedalControls,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$PedalControlsTableFilterComposer(
+            $db: $db,
+            $table: $db.pedalControls,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$SceneValuesTableOrderingComposer
+    extends Composer<_$AppDatabase, $SceneValuesTable> {
+  $$SceneValuesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get value => $composableBuilder(
+    column: $table.value,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  $$ScenesTableOrderingComposer get sceneId {
+    final $$ScenesTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.sceneId,
+      referencedTable: $db.scenes,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$ScenesTableOrderingComposer(
+            $db: $db,
+            $table: $db.scenes,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  $$PedalControlsTableOrderingComposer get controlId {
+    final $$PedalControlsTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.controlId,
+      referencedTable: $db.pedalControls,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$PedalControlsTableOrderingComposer(
+            $db: $db,
+            $table: $db.pedalControls,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$SceneValuesTableAnnotationComposer
+    extends Composer<_$AppDatabase, $SceneValuesTable> {
+  $$SceneValuesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<double> get value =>
+      $composableBuilder(column: $table.value, builder: (column) => column);
+
+  $$ScenesTableAnnotationComposer get sceneId {
+    final $$ScenesTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.sceneId,
+      referencedTable: $db.scenes,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$ScenesTableAnnotationComposer(
+            $db: $db,
+            $table: $db.scenes,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  $$PedalControlsTableAnnotationComposer get controlId {
+    final $$PedalControlsTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.controlId,
+      referencedTable: $db.pedalControls,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$PedalControlsTableAnnotationComposer(
+            $db: $db,
+            $table: $db.pedalControls,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$SceneValuesTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $SceneValuesTable,
+          SceneValue,
+          $$SceneValuesTableFilterComposer,
+          $$SceneValuesTableOrderingComposer,
+          $$SceneValuesTableAnnotationComposer,
+          $$SceneValuesTableCreateCompanionBuilder,
+          $$SceneValuesTableUpdateCompanionBuilder,
+          (SceneValue, $$SceneValuesTableReferences),
+          SceneValue,
+          PrefetchHooks Function({bool sceneId, bool controlId})
+        > {
+  $$SceneValuesTableTableManager(_$AppDatabase db, $SceneValuesTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$SceneValuesTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$SceneValuesTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$SceneValuesTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<int> sceneId = const Value.absent(),
+                Value<int> controlId = const Value.absent(),
+                Value<double> value = const Value.absent(),
+              }) => SceneValuesCompanion(
+                id: id,
+                sceneId: sceneId,
+                controlId: controlId,
+                value: value,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                required int sceneId,
+                required int controlId,
+                required double value,
+              }) => SceneValuesCompanion.insert(
+                id: id,
+                sceneId: sceneId,
+                controlId: controlId,
+                value: value,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable(table),
+                  $$SceneValuesTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: ({sceneId = false, controlId = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [],
+              addJoins:
+                  <
+                    T extends TableManagerState<
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic
+                    >
+                  >(state) {
+                    if (sceneId) {
+                      state =
+                          state.withJoin(
+                                currentTable: table,
+                                currentColumn: table.sceneId,
+                                referencedTable: $$SceneValuesTableReferences
+                                    ._sceneIdTable(db),
+                                referencedColumn: $$SceneValuesTableReferences
+                                    ._sceneIdTable(db)
+                                    .id,
+                              )
+                              as T;
+                    }
+                    if (controlId) {
+                      state =
+                          state.withJoin(
+                                currentTable: table,
+                                currentColumn: table.controlId,
+                                referencedTable: $$SceneValuesTableReferences
+                                    ._controlIdTable(db),
+                                referencedColumn: $$SceneValuesTableReferences
+                                    ._controlIdTable(db)
+                                    .id,
+                              )
+                              as T;
+                    }
+
+                    return state;
+                  },
+              getPrefetchedDataCallback: (items) async {
+                return [];
+              },
+            );
+          },
+        ),
+      );
+}
+
+typedef $$SceneValuesTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $SceneValuesTable,
+      SceneValue,
+      $$SceneValuesTableFilterComposer,
+      $$SceneValuesTableOrderingComposer,
+      $$SceneValuesTableAnnotationComposer,
+      $$SceneValuesTableCreateCompanionBuilder,
+      $$SceneValuesTableUpdateCompanionBuilder,
+      (SceneValue, $$SceneValuesTableReferences),
+      SceneValue,
+      PrefetchHooks Function({bool sceneId, bool controlId})
     >;
 typedef $$ChangeLogsTableCreateCompanionBuilder =
     ChangeLogsCompanion Function({
@@ -11621,6 +15002,14 @@ class $AppDatabaseManager {
       $$ConfigurationsTableTableManager(_db, _db.configurations);
   $$ConfigurationValuesTableTableManager get configurationValues =>
       $$ConfigurationValuesTableTableManager(_db, _db.configurationValues);
+  $$PatchesTableTableManager get patches =>
+      $$PatchesTableTableManager(_db, _db.patches);
+  $$ScenesTableTableManager get scenes =>
+      $$ScenesTableTableManager(_db, _db.scenes);
+  $$ScenePedalsTableTableManager get scenePedals =>
+      $$ScenePedalsTableTableManager(_db, _db.scenePedals);
+  $$SceneValuesTableTableManager get sceneValues =>
+      $$SceneValuesTableTableManager(_db, _db.sceneValues);
   $$ChangeLogsTableTableManager get changeLogs =>
       $$ChangeLogsTableTableManager(_db, _db.changeLogs);
   $$PedalReplacementsTableTableManager get pedalReplacements =>

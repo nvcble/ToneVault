@@ -16,12 +16,14 @@ import 'package:tone_vault/features/pedals/data/pedal_repository.dart';
 import 'package:tone_vault/features/snapshots/data/snapshot_draft.dart';
 import '../support/repositories.dart';
 
-/// A scene of a multi-effects unit in scene mode.
+/// A configuration of a multi-effects unit, which reaches the controls of the
+/// pedals inside it and no further.
 ///
-/// The unit is the patch: it has no controls of its own, and its configurations
-/// set the controls of the pedals on it. So the thing being pinned down here is
-/// that a configuration reaches the controls of the pedals inside its pedal, and
-/// no further.
+/// The unit's own sounds are its patches now, and no screen offers a unit a
+/// configuration - so this is the data-layer rule rather than a user's path
+/// through the app. It stays because that rule is what `findSettableControl`
+/// enforces, and a scene of a patch is checked the same way one level down in
+/// `scene_setting_test.dart`.
 void main() {
   late AppDatabase database;
   late PedalRepository pedals;

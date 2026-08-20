@@ -127,9 +127,12 @@ class ConfigurationValueRepository {
   /// A control can only be set within a configuration of the pedal it is on, or
   /// of the multi-effects unit that pedal sits inside.
   ///
-  /// The second case is what a scene is: the unit is the patch, and its scenes
-  /// set the controls of the pedals on that patch. The check is left to the
-  /// query, so nothing here has to know which kind of pedal it is looking at.
+  /// The check is left to the query, so nothing here has to know which kind of
+  /// pedal it is looking at.
+  ///
+  /// The sounds of a unit are its patches, and a scene of one writes through
+  /// `SceneValueRepository` rather than here: it sets the controls of only the
+  /// pedals that scene uses, which is narrower than what a unit holds.
   ///
   /// All three rows come back together because all three are needed either way:
   /// the control to check the value against, the configuration to file the

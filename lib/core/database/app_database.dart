@@ -11,15 +11,18 @@ import '../enums/pedal_type.dart';
 import 'daos/backup_dao.dart';
 import 'daos/change_log_dao.dart';
 import 'daos/configuration_dao.dart';
+import 'daos/patch_dao.dart';
 import 'daos/pedal_control_dao.dart';
 import 'daos/pedal_dao.dart';
 import 'daos/pedal_replacement_dao.dart';
 import 'daos/pedalboard_dao.dart';
 import 'daos/rig_snapshot_dao.dart';
+import 'daos/scene_dao.dart';
 import 'migrations.dart';
 import 'tables/change_logs_table.dart';
 import 'tables/configuration_values_table.dart';
 import 'tables/configurations_table.dart';
+import 'tables/patches_table.dart';
 import 'tables/pedal_controls_table.dart';
 import 'tables/pedal_replacements_table.dart';
 import 'tables/pedalboard_slots_table.dart';
@@ -28,6 +31,9 @@ import 'tables/pedals_table.dart';
 import 'tables/rig_snapshot_entries_table.dart';
 import 'tables/rig_snapshot_values_table.dart';
 import 'tables/rig_snapshots_table.dart';
+import 'tables/scene_pedals_table.dart';
+import 'tables/scene_values_table.dart';
+import 'tables/scenes_table.dart';
 
 part 'app_database.g.dart';
 
@@ -37,6 +43,10 @@ part 'app_database.g.dart';
     PedalControls,
     Configurations,
     ConfigurationValues,
+    Patches,
+    Scenes,
+    ScenePedals,
+    SceneValues,
     ChangeLogs,
     PedalReplacements,
     Pedalboards,
@@ -49,6 +59,8 @@ part 'app_database.g.dart';
     PedalDao,
     PedalControlDao,
     ConfigurationDao,
+    PatchDao,
+    SceneDao,
     ChangeLogDao,
     PedalReplacementDao,
     PedalboardDao,

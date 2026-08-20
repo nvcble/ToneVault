@@ -80,6 +80,87 @@ Future<void> fillVault(AppDatabase database) async {
         ),
       );
 
+  // A multi-effects unit with a pedal inside it, so a patch has something its
+  // scenes can reach for.
+  final unitId = await database
+      .into(database.pedals)
+      .insert(
+        PedalsCompanion.insert(
+          name: 'Valeton GP-200',
+          type: PedalType.digital,
+          category: PedalCategory.multiEffects,
+          status: const Value(PedalStatus.active),
+          createdAt: moment,
+          updatedAt: moment,
+        ),
+      );
+
+  final insidePedalId = await database
+      .into(database.pedals)
+      .insert(
+        PedalsCompanion.insert(
+          name: 'Tube Screamer',
+          type: PedalType.digital,
+          category: PedalCategory.overdrive,
+          status: const Value(PedalStatus.active),
+          hostPedalId: Value(unitId),
+          createdAt: moment,
+          updatedAt: moment,
+        ),
+      );
+
+  final insideControlId = await database
+      .into(database.pedalControls)
+      .insert(
+        PedalControlsCompanion.insert(
+          pedalId: insidePedalId,
+          name: 'Drive',
+          controlType: ControlType.clock,
+          minValue: 0,
+          maxValue: 1,
+          displayOrder: 0,
+        ),
+      );
+
+  final patchId = await database
+      .into(database.patches)
+      .insert(
+        PatchesCompanion.insert(
+          pedalId: unitId,
+          name: 'Worship Clean',
+          notes: const Value('Second service'),
+          createdAt: moment,
+          updatedAt: moment,
+        ),
+      );
+
+  final sceneId = await database
+      .into(database.scenes)
+      .insert(
+        ScenesCompanion.insert(
+          patchId: patchId,
+          name: 'Verse',
+          createdAt: moment,
+          updatedAt: moment,
+        ),
+      );
+
+  await database
+      .into(database.scenePedals)
+      .insert(
+        ScenePedalsCompanion.insert(sceneId: sceneId, pedalId: insidePedalId),
+      );
+
+  await database
+      .into(database.sceneValues)
+      .insert(
+        SceneValuesCompanion.insert(
+          sceneId: sceneId,
+          controlId: insideControlId,
+          value: 0.4,
+        ),
+      );
+
   await database
       .into(database.changeLogs)
       .insert(

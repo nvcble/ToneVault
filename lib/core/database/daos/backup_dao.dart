@@ -4,6 +4,7 @@ import '../app_database.dart';
 import '../tables/change_logs_table.dart';
 import '../tables/configuration_values_table.dart';
 import '../tables/configurations_table.dart';
+import '../tables/patches_table.dart';
 import '../tables/pedal_controls_table.dart';
 import '../tables/pedal_replacements_table.dart';
 import '../tables/pedalboard_slots_table.dart';
@@ -12,6 +13,9 @@ import '../tables/pedals_table.dart';
 import '../tables/rig_snapshot_entries_table.dart';
 import '../tables/rig_snapshot_values_table.dart';
 import '../tables/rig_snapshots_table.dart';
+import '../tables/scene_pedals_table.dart';
+import '../tables/scene_values_table.dart';
+import '../tables/scenes_table.dart';
 
 part 'backup_dao.g.dart';
 
@@ -24,6 +28,10 @@ typedef VaultRows = ({
   List<PedalControl> controls,
   List<Configuration> configurations,
   List<ConfigurationValue> configurationValues,
+  List<Patch> patches,
+  List<Scene> scenes,
+  List<ScenePedal> scenePedals,
+  List<SceneValue> sceneValues,
   List<ChangeLog> changeLogs,
   List<PedalReplacement> replacements,
   List<Pedalboard> pedalboards,
@@ -45,6 +53,10 @@ typedef VaultRows = ({
     PedalControls,
     Configurations,
     ConfigurationValues,
+    Patches,
+    Scenes,
+    ScenePedals,
+    SceneValues,
     ChangeLogs,
     PedalReplacements,
     Pedalboards,
@@ -66,6 +78,10 @@ class BackupDao extends DatabaseAccessor<AppDatabase> with _$BackupDaoMixin {
         controls: await select(pedalControls).get(),
         configurations: await select(configurations).get(),
         configurationValues: await select(configurationValues).get(),
+        patches: await select(patches).get(),
+        scenes: await select(scenes).get(),
+        scenePedals: await select(scenePedals).get(),
+        sceneValues: await select(sceneValues).get(),
         changeLogs: await select(changeLogs).get(),
         replacements: await select(pedalReplacements).get(),
         pedalboards: await select(pedalboards).get(),
@@ -102,6 +118,10 @@ class BackupDao extends DatabaseAccessor<AppDatabase> with _$BackupDaoMixin {
         batch.insertAll(pedalControls, rows.controls);
         batch.insertAll(configurations, rows.configurations);
         batch.insertAll(configurationValues, rows.configurationValues);
+        batch.insertAll(patches, rows.patches);
+        batch.insertAll(scenes, rows.scenes);
+        batch.insertAll(scenePedals, rows.scenePedals);
+        batch.insertAll(sceneValues, rows.sceneValues);
         batch.insertAll(changeLogs, rows.changeLogs);
         batch.insertAll(pedalReplacements, rows.replacements);
         batch.insertAll(pedalboards, rows.pedalboards);
@@ -123,6 +143,10 @@ class BackupDao extends DatabaseAccessor<AppDatabase> with _$BackupDaoMixin {
     await delete(pedalboards).go();
     await delete(pedalReplacements).go();
     await delete(changeLogs).go();
+    await delete(sceneValues).go();
+    await delete(scenePedals).go();
+    await delete(scenes).go();
+    await delete(patches).go();
     await delete(configurationValues).go();
     await delete(configurations).go();
     await delete(pedalControls).go();

@@ -49,6 +49,10 @@ String encodeVaultBackup(VaultRows rows, {required DateTime exportedAt}) {
       'controls': _encode(rows.controls),
       'configurations': _encode(rows.configurations),
       'configurationValues': _encode(rows.configurationValues),
+      'patches': _encode(rows.patches),
+      'scenes': _encode(rows.scenes),
+      'scenePedals': _encode(rows.scenePedals),
+      'sceneValues': _encode(rows.sceneValues),
       'changeLogs': _encode(rows.changeLogs),
       'replacements': _encode(rows.replacements),
       'pedalboards': _encode(rows.pedalboards),
@@ -131,6 +135,10 @@ VaultRows _rows(Map<String, dynamic> tables) => (
     'configurationValues',
     ConfigurationValue.fromJson,
   ),
+  patches: _decode(tables, 'patches', Patch.fromJson),
+  scenes: _decode(tables, 'scenes', Scene.fromJson),
+  scenePedals: _decode(tables, 'scenePedals', ScenePedal.fromJson),
+  sceneValues: _decode(tables, 'sceneValues', SceneValue.fromJson),
   changeLogs: _decode(tables, 'changeLogs', ChangeLog.fromJson),
   replacements: _decode(tables, 'replacements', PedalReplacement.fromJson),
   pedalboards: _decode(tables, 'pedalboards', Pedalboard.fromJson),
@@ -147,7 +155,7 @@ VaultRows _rows(Map<String, dynamic> tables) => (
 /// One table's rows, read through the data class drift generated for it.
 ///
 /// A missing table is refused rather than read as empty: a file we wrote always
-/// carries all eleven, so one that does not is not a file to restore from.
+/// carries every table, so one that does not is not a file to restore from.
 List<T> _decode<T>(
   Map<String, dynamic> tables,
   String key,

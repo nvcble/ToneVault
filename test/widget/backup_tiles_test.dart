@@ -100,7 +100,7 @@ void main() {
     );
     // Everything, not just the pedals: this is the file they will restore from.
     final backup = decodeVaultBackup(sent!.contents);
-    expect(backup.rows.pedals, hasLength(2));
+    expect(backup.rows.pedals, hasLength(4));
     expect(backup.rows.snapshotValues, hasLength(1));
   });
 
@@ -129,7 +129,7 @@ void main() {
     // The particular file, so the user is agreeing to a known day of gear.
     expect(
       find.textContaining(
-        'Taken 2026-08-20 07:15, with 2 pedals, 1 rig and 1 snapshot in it.',
+        'Taken 2026-08-20 07:15, with 4 pedals, 1 rig and 1 snapshot in it.',
       ),
       findsOne,
     );
@@ -152,9 +152,16 @@ void main() {
     await tester.tap(find.widgetWithText(FilledButton, 'Replace everything'));
     await tester.pumpAndSettle();
 
-    expect(find.text('Restored 2 pedals, 1 rig and 1 snapshot.'), findsOne);
+    // Four, because a pedal inside a multi-effects unit is a pedal in the vault:
+    // it was bought, it can be replaced, and a restore has to bring it back.
+    expect(find.text('Restored 4 pedals, 1 rig and 1 snapshot.'), findsOne);
     // Replaced, not merged: the pedal bought since is gone with the rest.
-    expect(await pedalNames(), ['Caline PureSky', 'Boss SD-1']);
+    expect(await pedalNames(), [
+      'Caline PureSky',
+      'Boss SD-1',
+      'Valeton GP-200',
+      'Tube Screamer',
+    ]);
   });
 
   testWidgets('backing out of the picker changes nothing and says nothing', (

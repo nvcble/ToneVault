@@ -19,6 +19,10 @@ void main() {
     controls: controls,
     configurations: const [],
     configurationValues: const [],
+    patches: const [],
+    scenes: const [],
+    scenePedals: const [],
+    sceneValues: const [],
     changeLogs: const [],
     replacements: const [],
     pedalboards: const [],
@@ -41,10 +45,14 @@ void main() {
 
     // A backup that quietly skipped a table would still look like a backup, so
     // every list is checked rather than a sample of them.
-    expect(rows.pedals, hasLength(2));
-    expect(rows.controls, hasLength(1));
+    expect(rows.pedals, hasLength(4)); // two on the floor, a unit and its pedal
+    expect(rows.controls, hasLength(2));
     expect(rows.configurations, hasLength(1));
     expect(rows.configurationValues, hasLength(1));
+    expect(rows.patches, hasLength(1));
+    expect(rows.scenes, hasLength(1));
+    expect(rows.scenePedals, hasLength(1));
+    expect(rows.sceneValues, hasLength(1));
     expect(rows.changeLogs, hasLength(1));
     expect(rows.replacements, hasLength(1));
     expect(rows.pedalboards, hasLength(1));
@@ -78,6 +86,23 @@ void main() {
     expect(rows.snapshotValues, backed.snapshotValues);
   });
 
+  test('a vault holding a patch can be written back at all', () async {
+    // `patches` and `scene_pedals` reference `pedals` with ON DELETE RESTRICT,
+    // and a restore empties every table before writing. Deferring the foreign
+    // key checks to the commit is the only reason those deletes are allowed, so
+    // a unit with a patch on it is the case that would break every restore.
+    await fillVault(database);
+    final backed = await database.backupDao.readEverything();
+
+    await database.backupDao.writeEverything(backed);
+
+    final rows = await database.backupDao.readEverything();
+    expect(rows.patches, backed.patches);
+    expect(rows.scenes, backed.scenes);
+    expect(rows.scenePedals, backed.scenePedals);
+    expect(rows.sceneValues, backed.sceneValues);
+  });
+
   test('replaces whatever was in the vault before', () async {
     await fillVault(database);
     final backed = await database.backupDao.readEverything();
@@ -89,6 +114,8 @@ void main() {
     final rows = await database.backupDao.readEverything();
     expect(rows.pedals, backed.pedals);
     expect(rows.configurations, isEmpty);
+    expect(rows.patches, isEmpty);
+    expect(rows.scenes, isEmpty);
     expect(rows.changeLogs, isEmpty);
     expect(rows.pedalboards, isEmpty);
     expect(rows.snapshots, isEmpty);

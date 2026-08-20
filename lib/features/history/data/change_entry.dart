@@ -36,10 +36,13 @@ class ChangeEntry {
   /// null when the setting was cleared. Values are in the control's own domain,
   /// exactly as stored, so the reading is rendered later from the control.
   ///
-  /// [controlPedal] is the pedal [control] is on, which is the configuration's
-  /// own pedal in every case but one: a scene of a multi-effects unit sets the
-  /// controls of the pedals on its patch. Only then is it worth naming, so that
-  /// is the one case it is stored in.
+  /// [controlPedal] is the pedal [control] is on, which is the configuration's own
+  /// pedal in every case but one: a configuration of a multi-effects unit can set
+  /// controls on the pedals inside it. Only then is it worth naming, so that is
+  /// the one case it is stored in.
+  ///
+  /// A scene of a patch records the same move through
+  /// [ChangeEntry.sceneValueChanged].
   ChangeEntry.controlValueChanged({
     required Configuration configuration,
     required PedalControl control,
@@ -57,6 +60,37 @@ class ChangeEntry {
          controlPedalName: controlPedal.id == configuration.pedalId
              ? null
              : controlPedal.name,
+         oldValue: oldValue,
+         newValue: newValue,
+         reason: reason,
+       );
+
+  /// A control moved within a scene of a patch.
+  ///
+  /// The same kind of event as [ChangeEntry.controlValueChanged] - a knob on a
+  /// pedal moved, and it was some named sound that moved it - so it is filed
+  /// under the same change type rather than a second one that would read the same
+  /// in the timeline and have to be handled everywhere alongside it.
+  ///
+  /// It is filed under the unit, because that is the pedal the user goes looking
+  /// at. `configurationId` is left null: there is no `configurations` row here,
+  /// and the name the entry keeps says which sound it was - "Worship Clean ·
+  /// Verse", the patch and the scene, since a scene name alone would not.
+  ChangeEntry.sceneValueChanged({
+    required Patch patch,
+    required Scene scene,
+    required PedalControl control,
+    required Pedal controlPedal,
+    required double? oldValue,
+    required double? newValue,
+    String? reason,
+  }) : this._(
+         pedalId: patch.pedalId,
+         changeType: ChangeType.controlValueChanged,
+         controlId: control.id,
+         configurationName: '${patch.name} · ${scene.name}',
+         controlName: control.name,
+         controlPedalName: controlPedal.name,
          oldValue: oldValue,
          newValue: newValue,
          reason: reason,
