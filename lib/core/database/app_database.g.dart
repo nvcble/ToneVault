@@ -351,9 +351,12 @@ class Pedal extends DataClass implements Insertable<Pedal> {
   /// swept away with it.
   final int? hostPedalId;
 
-  /// How a multi-effects unit is organised, which the unit's own screen reads to
-  /// decide what to show. Null on everything else, which is every pedal that is
-  /// not a [PedalType.multiEffects].
+  /// Dormant. It held how a unit was organised while a unit had to be declared
+  /// as stomp mode or scene mode; nothing writes it now and no screen reads it.
+  ///
+  /// Kept rather than dropped: the rows written before still hold a mode, and
+  /// removing a column in SQLite means rebuilding the table, which is not worth
+  /// doing to reclaim one nullable field. See [MultiEffectsMode].
   final MultiEffectsMode? multiEffectsMode;
 
   /// Path to an image file in the app's documents directory. Photos are kept

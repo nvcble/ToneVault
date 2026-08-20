@@ -164,9 +164,8 @@ void main() {
     final unitId = await repository.createPedal(
       const PedalDraft(
         name: 'Valeton GP-200',
-        type: PedalType.multiEffects,
+        type: PedalType.digital,
         category: PedalCategory.multiEffects,
-        multiEffectsMode: MultiEffectsMode.stomp,
       ),
     );
     await repository.createPedal(
@@ -196,9 +195,8 @@ void main() {
     final unitId = await pedalRepository(db).createPedal(
       const PedalDraft(
         name: 'Valeton GP-200',
-        type: PedalType.multiEffects,
+        type: PedalType.digital,
         category: PedalCategory.multiEffects,
-        multiEffectsMode: MultiEffectsMode.scene,
       ),
     );
     final screamerId = await pedalRepository(db).createPedal(
@@ -242,6 +240,24 @@ void main() {
       (await db.changeLogDao.entriesOf(1)).single.controlPedalName,
       isNull,
     );
+  });
+
+  test('a unit stored as a multi-effects type is refiled, not lost', () async {
+    // The type it was saved under no longer exists, so reading the row at all is
+    // what the upgrade has to make possible again.
+    final db = openV7MultiEffectsDatabase();
+    addTearDown(db.close);
+
+    final unit = await db.pedalDao.findPedal(1);
+
+    expect(unit!.name, 'Valeton GP-200');
+    expect(unit.type, PedalType.digital);
+    expect(unit.category, PedalCategory.multiEffects);
+    // What it was used in is dormant rather than cleared: nothing writes it now,
+    // and the answer the user gave is still there to read.
+    expect(unit.multiEffectsMode, MultiEffectsMode.scene);
+    // And being a unit is what it is asked about from here on.
+    expect(unit.category.hasOwnControls, isFalse);
   });
 
   test(

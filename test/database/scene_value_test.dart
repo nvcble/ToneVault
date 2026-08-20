@@ -3,7 +3,6 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:tone_vault/core/database/app_database.dart';
 import 'package:tone_vault/core/database/daos/pedal_control_dao.dart';
 import 'package:tone_vault/core/enums/control_type.dart';
-import 'package:tone_vault/core/enums/multi_effects_mode.dart';
 import 'package:tone_vault/core/enums/pedal_category.dart';
 import 'package:tone_vault/core/enums/pedal_type.dart';
 import 'package:tone_vault/core/errors/app_failure.dart';
@@ -58,9 +57,8 @@ void main() {
     unitId = await pedals.createPedal(
       const PedalDraft(
         name: 'Valeton GP-200',
-        type: PedalType.multiEffects,
+        type: PedalType.digital,
         category: PedalCategory.multiEffects,
-        multiEffectsMode: MultiEffectsMode.scene,
       ),
     );
     // Added out of alphabetical order, so the ordering under test is the query's

@@ -62,13 +62,13 @@ void main() {
 
   /// Opens the app on the pedals tab with one pedal in it.
   ///
-  /// [type] is the one thing a caller varies: it decides which tabs the detail
-  /// screen offers, and nothing else here depends on it.
+  /// [category] is the one thing a caller varies: it decides which tabs the
+  /// detail screen offers, and nothing else here depends on it.
   Future<void> pumpPedalsTab(
     WidgetTester tester, {
-    PedalType type = PedalType.analog,
+    PedalCategory category = PedalCategory.overdrive,
   }) async {
-    final shown = pedal.copyWith(type: type);
+    final shown = pedal.copyWith(category: category);
 
     // A tall window keeps the whole form on screen, so finders do not depend on
     // scroll position.
@@ -83,6 +83,11 @@ void main() {
           // the timeline before the pedals tab is ever tapped.
           ...homeStreamOverrides(pedals: [shown], changes: [change]),
           pedalProvider(pedal.id).overrideWith((ref) => Stream.value(shown)),
+          // Read only when the pedal is a multi-effects unit, whose Patch tab
+          // lists the pedals inside it; empty is enough for the tabs under test.
+          componentPedalListProvider(
+            pedal.id,
+          ).overrideWith((ref) => Stream.value(const [])),
           // The detail screen lists the pedal's controls, so the controls come
           // from here rather than from a real database.
           controlListProvider(
@@ -202,21 +207,22 @@ void main() {
   testWidgets('a multi-effects unit is offered no controls tab', (
     tester,
   ) async {
-    await pumpPedalsTab(tester, type: PedalType.multiEffects);
+    await pumpPedalsTab(tester, category: PedalCategory.multiEffects);
 
     await tester.tap(find.text('Caline PureSky'));
     await tester.pumpAndSettle();
 
-    // Its sounds live in patches and stomps inside the unit, so there is no
-    // row of knobs on the outside for a Controls tab to list.
+    // Its sounds live in the patches of the unit, so there is no row of knobs on
+    // the outside for a Controls tab to list.
     expect(find.widgetWithText(Tab, 'Controls'), findsNothing);
     expect(find.text('Volume'), findsNothing);
 
-    // The other three stay, and the badge says what it is.
+    // Three tabs are left, with Patch where the configurations of an ordinary
+    // pedal would be.
     expect(find.widgetWithText(Tab, 'Overview'), findsOne);
-    expect(find.widgetWithText(Tab, 'Configurations'), findsOne);
+    expect(find.widgetWithText(Tab, 'Patch'), findsOne);
+    expect(find.widgetWithText(Tab, 'Configurations'), findsNothing);
     expect(find.widgetWithText(Tab, 'History'), findsOne);
-    expect(find.text('Multi-effects'), findsOne);
   });
 
   testWidgets('the configurations tab opens one and lists its settings', (

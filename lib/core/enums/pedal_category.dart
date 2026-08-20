@@ -46,4 +46,13 @@ enum PedalCategory {
     PedalCategory.utility => 'Utility',
     PedalCategory.other => 'Other',
   };
+
+  /// Whether a pedal of this category is dialled in on controls of its own.
+  ///
+  /// A multi-effects unit is not: its sounds live in patches, each with scenes
+  /// of the pedals inside it, not on knobs across its face, so a list of its own
+  /// controls has nothing to hold. Everything that offers control editing asks
+  /// this rather than naming the category, so a second such category only has to
+  /// be added here.
+  bool get hasOwnControls => this != PedalCategory.multiEffects;
 }

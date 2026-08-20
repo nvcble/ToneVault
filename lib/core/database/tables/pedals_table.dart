@@ -8,11 +8,11 @@ import '../../enums/pedal_type.dart';
 /// An owned piece of gear: a stompbox, a multi-effects unit, or anything else
 /// that sits in the signal chain.
 ///
-/// Also the stomps and blocks inside a multi-effects unit, through
-/// [hostPedalId]. One of those is a pedal in every respect that matters here -
-/// it has controls, configurations and history of its own - so it is a row in
-/// this table rather than a shape of its own, and every screen written for a
-/// pedal works on it unchanged.
+/// Also the pedals inside a multi-effects unit, through [hostPedalId]. One of
+/// those is a pedal in every respect that matters here - it has controls,
+/// configurations and history of its own - so it is a row in this table rather
+/// than a shape of its own, and every screen written for a pedal works on it
+/// unchanged. A scene of one of the unit's patches then picks from them.
 ///
 /// Rows are never deleted once history references them; see [PedalStatus].
 @TableIndex(name: 'idx_pedals_status', columns: {#status})
@@ -44,9 +44,12 @@ class Pedals extends Table {
     onDelete: KeyAction.restrict,
   )();
 
-  /// How a multi-effects unit is organised, which the unit's own screen reads to
-  /// decide what to show. Null on everything else, which is every pedal that is
-  /// not a [PedalType.multiEffects].
+  /// Dormant. It held how a unit was organised while a unit had to be declared
+  /// as stomp mode or scene mode; nothing writes it now and no screen reads it.
+  ///
+  /// Kept rather than dropped: the rows written before still hold a mode, and
+  /// removing a column in SQLite means rebuilding the table, which is not worth
+  /// doing to reclaim one nullable field. See [MultiEffectsMode].
   TextColumn get multiEffectsMode => textEnum<MultiEffectsMode>().nullable()();
 
   /// Path to an image file in the app's documents directory. Photos are kept

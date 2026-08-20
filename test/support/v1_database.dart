@@ -103,6 +103,49 @@ AppDatabase openV1Database() {
   );
 }
 
+/// The `pedals` table as it stood at v7, holding a unit filed under the
+/// 'multiEffects' pedal type that v8 dropped.
+///
+/// Only `pedals` is created: the v8 step is the only one that runs from here, and
+/// it touches nothing else. The unit's category is deliberately something other
+/// than multi-effects, so the upgrade has to set it rather than find it already
+/// right.
+const List<String> _v7Pedals = [
+  'CREATE TABLE IF NOT EXISTS pedals ('
+      'id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, '
+      'name TEXT NOT NULL, '
+      'brand TEXT NULL, '
+      'type TEXT NOT NULL, '
+      'category TEXT NOT NULL, '
+      "status TEXT NOT NULL DEFAULT 'active', "
+      'photo_path TEXT NULL, '
+      'purchase_date TEXT NULL, '
+      'notes TEXT NULL, '
+      'host_pedal_id INTEGER NULL REFERENCES pedals (id) ON DELETE RESTRICT, '
+      'multi_effects_mode TEXT NULL, '
+      'created_at TEXT NOT NULL, '
+      'updated_at TEXT NOT NULL)',
+  'INSERT INTO pedals '
+      '(id, name, type, category, status, multi_effects_mode, '
+      'created_at, updated_at) '
+      "VALUES (1, 'Valeton GP-200', 'multiEffects', 'other', 'active', "
+      "'scene', '2026-08-01T10:00:00.000Z', '2026-08-01T10:00:00.000Z')",
+];
+
+/// Opens a v7 database holding [_v7Pedals] and lets drift upgrade it.
+AppDatabase openV7MultiEffectsDatabase() {
+  return AppDatabase(
+    NativeDatabase.memory(
+      setup: (rawDb) {
+        for (final statement in _v7Pedals) {
+          rawDb.execute(statement);
+        }
+        rawDb.userVersion = 7;
+      },
+    ),
+  );
+}
+
 /// How SQLite itself describes one table and everything attached to it.
 ///
 /// The statement is null for an index SQLite made up itself, such as the one

@@ -41,19 +41,18 @@ class PedalDetailScreen extends ConsumerWidget {
     final isReplaced = retirementOf(pedalId, swaps) != null;
 
     // A multi-effects unit has no controls of its own, so it has no Controls tab
-    // either; PedalType.hasOwnControls is the single place that decides. Until
-    // the pedal has loaded the full set is shown, which is what every pedal but
-    // a multi-effects ends up with.
-    final hasControls = pedal?.type.hasOwnControls ?? true;
+    // either; PedalCategory.hasOwnControls is the single place that decides.
+    // Until the pedal has loaded the full set is shown, which is what every
+    // pedal but a multi-effects ends up with.
+    final hasControls = pedal?.category.hasOwnControls ?? true;
 
-    // A multi-effects unit keeps stomps or a patch of scenes where an ordinary
-    // pedal keeps configurations, so the third tab is named for what is behind
-    // it. A unit with no mode chosen yet still says 'Configurations', which is
-    // what the view behind it offers to fix.
+    // Where an ordinary pedal keeps configurations, a unit keeps patches: a patch
+    // has a scene for each sound, and a scene has the pedals inside it. That is
+    // the same slot in the bar, named for what is behind it.
     final tabs = <String>[
       'Overview',
       if (hasControls) 'Controls',
-      pedal?.multiEffectsMode?.tabLabel ?? 'Configurations',
+      hasControls ? 'Configurations' : 'Patch',
       'History',
     ];
 
@@ -118,10 +117,7 @@ class PedalDetailScreen extends ConsumerWidget {
                     if (hasControls)
                       ConfigurationListView(pedalId: pedalId)
                     else
-                      MultiEffectsView(
-                        pedalId: pedalId,
-                        mode: pedal.multiEffectsMode,
-                      ),
+                      MultiEffectsView(pedalId: pedalId),
                     PedalHistoryView(pedalId: pedalId),
                   ],
                 ),

@@ -51,7 +51,6 @@ class PedalRepository {
           purchaseDate: Value(pedal.purchaseDate),
           notes: Value(pedal.notes),
           hostPedalId: Value(pedal.hostPedalId),
-          multiEffectsMode: Value(pedal.multiEffectsMode),
           createdAt: now,
           updatedAt: now,
         ),
@@ -84,7 +83,8 @@ class PedalRepository {
             purchaseDate: Value(pedal.purchaseDate),
             notes: Value(pedal.notes),
             hostPedalId: Value(pedal.hostPedalId),
-            multiEffectsMode: Value(pedal.multiEffectsMode),
+            // multi_effects_mode is left out on purpose: the column is dormant,
+            // and writing it would clear what the rows before it still hold.
             updatedAt: Value(_clock()),
           ),
         );

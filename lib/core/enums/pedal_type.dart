@@ -2,26 +2,32 @@
 /// presented: analog pedals lean on clock-face knobs, digital devices on
 /// numeric values.
 ///
+/// Deliberately says nothing about what a pedal *is*: a multi-effects unit is a
+/// digital pedal of category [PedalCategory.multiEffects], and it is the
+/// category that decides what its screen holds. See
+/// `PedalCategory.hasOwnControls`.
+///
 /// Stored by name rather than by position, so a new type can be added anywhere
 /// in this list without a migration and without moving any existing pedal.
 enum PedalType {
   analog,
   digital,
-  hybrid,
-  multiEffects;
+  hybrid;
 
   String get label => switch (this) {
     PedalType.analog => 'Analog',
     PedalType.digital => 'Digital',
     PedalType.hybrid => 'Hybrid',
-    PedalType.multiEffects => 'Multi-effects',
   };
-
-  /// Whether a pedal of this type is dialled in on controls of its own.
-  ///
-  /// A multi-effects unit is not: its sounds live in patches and stomps inside
-  /// the unit, not on knobs across its face, so a list of its own controls has
-  /// nothing to hold. Everything that offers control editing asks this rather
-  /// than naming the type, so a second such type only has to be added here.
-  bool get hasOwnControls => this != PedalType.multiEffects;
 }
+
+// Kept for tracking: `multiEffects` used to be a fourth type, and
+// `hasOwnControls` used to be answered here. Filing a unit as a type meant a
+// digital multi-effects unit could not also be called digital, and every screen
+// had to read the type to learn what a pedal does - which is the category's job.
+// The rule now lives on `PedalCategory.hasOwnControls`, and the v8 migration
+// rewrites the rows that were stored as this type.
+//
+//   multiEffects;
+//   PedalType.multiEffects => 'Multi-effects',
+//   bool get hasOwnControls => this != PedalType.multiEffects;

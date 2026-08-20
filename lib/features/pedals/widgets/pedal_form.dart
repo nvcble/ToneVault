@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 import '../../../app/theme/app_spacing.dart';
-import '../../../core/enums/multi_effects_mode.dart';
 import '../../../core/enums/pedal_category.dart';
 import '../../../core/enums/pedal_status.dart';
 import '../../../core/enums/pedal_type.dart';
@@ -53,11 +52,6 @@ class _PedalFormState extends State<PedalForm> {
   PedalStatus _status = PedalStatus.active;
   DateTime? _purchaseDate;
 
-  /// Only asked for, and only kept, while the type is multi-effects.
-  MultiEffectsMode? _multiEffectsMode;
-
-  bool get _isMultiEffects => _type == PedalType.multiEffects;
-
   @override
   void initState() {
     super.initState();
@@ -69,7 +63,6 @@ class _PedalFormState extends State<PedalForm> {
     _category = draft?.category;
     _status = draft?.status ?? PedalStatus.active;
     _purchaseDate = draft?.purchaseDate;
-    _multiEffectsMode = draft?.multiEffectsMode;
   }
 
   @override
@@ -100,7 +93,6 @@ class _PedalFormState extends State<PedalForm> {
         notes: _notesController.text,
         photoPath: widget.initialDraft?.photoPath,
         hostPedalId: widget.hostPedalId,
-        multiEffectsMode: _isMultiEffects ? _multiEffectsMode : null,
       ),
     );
   }
@@ -157,22 +149,9 @@ class _PedalFormState extends State<PedalForm> {
             emptyMessage: 'Pick how this pedal makes its sound.',
             onChanged: (type) => setState(() => _type = type),
           ),
-          // Only a multi-effects unit has a mode, and it has to have one: it is
-          // what decides whether the unit's own screen shows a floor of stomps
-          // or a patch with scenes.
-          if (_isMultiEffects) ...[
-            const SizedBox(height: AppSpacing.md),
-            _enumField<MultiEffectsMode>(
-              label: 'Mode',
-              value: _multiEffectsMode,
-              values: MultiEffectsMode.values,
-              labelOf: (mode) => mode.label,
-              emptyMessage: 'Pick stomp mode or scene mode.',
-              helperText: _multiEffectsMode?.description,
-              onChanged: (mode) => setState(() => _multiEffectsMode = mode),
-            ),
-          ],
           const SizedBox(height: AppSpacing.md),
+          // Category is what makes a pedal a multi-effects unit, and with it what
+          // its own screen holds: patches instead of controls.
           _enumField<PedalCategory>(
             label: 'Category',
             value: _category,

@@ -15,7 +15,9 @@ import 'package:drift/drift.dart';
 ///   blocks inside a multi-effects unit and how that unit is organised.
 /// - v7: change_logs.control_pedal_name, so a scene's history says which pedal
 ///   on the patch the control it moved belongs to.
-const int currentSchemaVersion = 7;
+/// - v8: no new column. The 'multiEffects' pedal type was dropped, so the rows
+///   stored as one are refiled as digital pedals of the multi-effects category.
+const int currentSchemaVersion = 8;
 
 MigrationStrategy buildMigrationStrategy(GeneratedDatabase database) {
   return MigrationStrategy(
@@ -131,6 +133,20 @@ MigrationStrategy buildMigrationStrategy(GeneratedDatabase database) {
         // is filed under, which is what every one of them recorded.
         await database.customStatement(
           'ALTER TABLE change_logs ADD COLUMN control_pedal_name TEXT NULL;',
+        );
+      }
+
+      if (from < 8) {
+        // A type the enum no longer has would make every read of the row throw,
+        // so the rows are refiled rather than left to be parsed. Category first:
+        // it is what marks a unit now, and the second statement is what makes
+        // the first unable to find anything.
+        await database.customStatement(
+          "UPDATE pedals SET category = 'multiEffects' "
+          "WHERE type = 'multiEffects';",
+        );
+        await database.customStatement(
+          "UPDATE pedals SET type = 'digital' WHERE type = 'multiEffects';",
         );
       }
 

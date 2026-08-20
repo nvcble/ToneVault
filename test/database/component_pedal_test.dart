@@ -2,7 +2,6 @@ import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:tone_vault/core/database/app_database.dart';
 import 'package:tone_vault/core/enums/control_type.dart';
-import 'package:tone_vault/core/enums/multi_effects_mode.dart';
 import 'package:tone_vault/core/enums/pedal_category.dart';
 import 'package:tone_vault/core/enums/pedal_type.dart';
 import 'package:tone_vault/core/errors/app_failure.dart';
@@ -35,13 +34,12 @@ void main() {
     isA<AppFailure>().having((failure) => failure.message, 'message', message),
   );
 
-  Future<int> addUnit({MultiEffectsMode mode = MultiEffectsMode.stomp}) {
+  Future<int> addUnit() {
     return repository.createPedal(
-      PedalDraft(
+      const PedalDraft(
         name: 'Valeton GP-200',
-        type: PedalType.multiEffects,
+        type: PedalType.digital,
         category: PedalCategory.multiEffects,
-        multiEffectsMode: mode,
       ),
     );
   }
@@ -57,11 +55,13 @@ void main() {
     );
   }
 
-  test('a unit stores the mode it is used in', () async {
-    final unitId = await addUnit(mode: MultiEffectsMode.scene);
+  test('a unit is a pedal of its own, standing inside nothing', () async {
+    final unitId = await addUnit();
     final unit = await database.pedalDao.findPedal(unitId);
 
-    expect(unit!.multiEffectsMode, MultiEffectsMode.scene);
+    // Its category is the whole of what makes it a unit, and it is the pedal the
+    // ones inside it point at rather than one of them.
+    expect(unit!.category, PedalCategory.multiEffects);
     expect(unit.hostPedalId, isNull);
   });
 
