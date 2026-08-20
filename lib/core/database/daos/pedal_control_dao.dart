@@ -58,18 +58,23 @@ class PedalControlDao extends DatabaseAccessor<AppDatabase>
     return [for (final row in _owned(rows)) row.control];
   }
 
-  /// [controlId], but only when a configuration of [pedalId] may set it.
+  /// [controlId] with the pedal it is on, but only when a configuration of
+  /// [pedalId] may set it.
   ///
   /// Null covers both a control that is gone and one that belongs to neither
   /// this pedal nor a pedal inside it; the caller cannot act differently on the
   /// two, so they read the same.
-  Future<PedalControl?> findSettableControl({
+  ///
+  /// The pedal comes back with it because the join has it already, and the
+  /// history of a scene needs it: it names the pedal on the patch the control
+  /// belongs to.
+  Future<OwnedControl?> findSettableControl({
     required int controlId,
     required int pedalId,
   }) async {
     final query = _settable(pedalId)..where(pedalControls.id.equals(controlId));
     final row = await query.getSingleOrNull();
-    return row?.readTable(pedalControls);
+    return row == null ? null : _owned([row]).single;
   }
 
   /// The controls of [pedalId] and of the pedals inside it, the pedal's own

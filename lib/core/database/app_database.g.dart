@@ -2304,6 +2304,21 @@ class $ChangeLogsTable extends ChangeLogs
     type: DriftSqlType.string,
     requiredDuringInsert: false,
   );
+  static const VerificationMeta _controlPedalNameMeta = const VerificationMeta(
+    'controlPedalName',
+  );
+  @override
+  late final GeneratedColumn<String> controlPedalName = GeneratedColumn<String>(
+    'control_pedal_name',
+    aliasedName,
+    true,
+    additionalChecks: GeneratedColumn.checkTextLength(
+      minTextLength: 1,
+      maxTextLength: 80,
+    ),
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
   @override
   late final GeneratedColumnWithTypeConverter<ChangeType, String> changeType =
       GeneratedColumn<String>(
@@ -2385,6 +2400,7 @@ class $ChangeLogsTable extends ChangeLogs
     controlId,
     configurationName,
     controlName,
+    controlPedalName,
     changeType,
     oldValue,
     newValue,
@@ -2446,6 +2462,15 @@ class $ChangeLogsTable extends ChangeLogs
         controlName.isAcceptableOrUnknown(
           data['control_name']!,
           _controlNameMeta,
+        ),
+      );
+    }
+    if (data.containsKey('control_pedal_name')) {
+      context.handle(
+        _controlPedalNameMeta,
+        controlPedalName.isAcceptableOrUnknown(
+          data['control_pedal_name']!,
+          _controlPedalNameMeta,
         ),
       );
     }
@@ -2520,6 +2545,10 @@ class $ChangeLogsTable extends ChangeLogs
         DriftSqlType.string,
         data['${effectivePrefix}control_name'],
       ),
+      controlPedalName: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}control_pedal_name'],
+      ),
       changeType: $ChangeLogsTable.$converterchangeType.fromSql(
         attachedDatabase.typeMapping.read(
           DriftSqlType.string,
@@ -2569,6 +2598,15 @@ class ChangeLog extends DataClass implements Insertable<ChangeLog> {
   final int? controlId;
   final String? configurationName;
   final String? controlName;
+
+  /// The pedal [controlName] is on, when that is not the pedal this entry is
+  /// filed under.
+  ///
+  /// Null on everything else, which is every entry about a pedal's own controls.
+  /// It is set for a scene of a multi-effects unit: the scene belongs to the
+  /// unit, but the control it moved lives on one of the pedals on its patch, and
+  /// "Level moved to 2:30" says nothing when three of them have a Level.
+  final String? controlPedalName;
   final ChangeType changeType;
 
   /// Set only for events that move a control, in that control's own domain.
@@ -2591,6 +2629,7 @@ class ChangeLog extends DataClass implements Insertable<ChangeLog> {
     this.controlId,
     this.configurationName,
     this.controlName,
+    this.controlPedalName,
     required this.changeType,
     this.oldValue,
     this.newValue,
@@ -2615,6 +2654,9 @@ class ChangeLog extends DataClass implements Insertable<ChangeLog> {
     }
     if (!nullToAbsent || controlName != null) {
       map['control_name'] = Variable<String>(controlName);
+    }
+    if (!nullToAbsent || controlPedalName != null) {
+      map['control_pedal_name'] = Variable<String>(controlPedalName);
     }
     {
       map['change_type'] = Variable<String>(
@@ -2656,6 +2698,9 @@ class ChangeLog extends DataClass implements Insertable<ChangeLog> {
       controlName: controlName == null && nullToAbsent
           ? const Value.absent()
           : Value(controlName),
+      controlPedalName: controlPedalName == null && nullToAbsent
+          ? const Value.absent()
+          : Value(controlPedalName),
       changeType: Value(changeType),
       oldValue: oldValue == null && nullToAbsent
           ? const Value.absent()
@@ -2690,6 +2735,7 @@ class ChangeLog extends DataClass implements Insertable<ChangeLog> {
         json['configurationName'],
       ),
       controlName: serializer.fromJson<String?>(json['controlName']),
+      controlPedalName: serializer.fromJson<String?>(json['controlPedalName']),
       changeType: $ChangeLogsTable.$converterchangeType.fromJson(
         serializer.fromJson<String>(json['changeType']),
       ),
@@ -2711,6 +2757,7 @@ class ChangeLog extends DataClass implements Insertable<ChangeLog> {
       'controlId': serializer.toJson<int?>(controlId),
       'configurationName': serializer.toJson<String?>(configurationName),
       'controlName': serializer.toJson<String?>(controlName),
+      'controlPedalName': serializer.toJson<String?>(controlPedalName),
       'changeType': serializer.toJson<String>(
         $ChangeLogsTable.$converterchangeType.toJson(changeType),
       ),
@@ -2730,6 +2777,7 @@ class ChangeLog extends DataClass implements Insertable<ChangeLog> {
     Value<int?> controlId = const Value.absent(),
     Value<String?> configurationName = const Value.absent(),
     Value<String?> controlName = const Value.absent(),
+    Value<String?> controlPedalName = const Value.absent(),
     ChangeType? changeType,
     Value<double?> oldValue = const Value.absent(),
     Value<double?> newValue = const Value.absent(),
@@ -2748,6 +2796,9 @@ class ChangeLog extends DataClass implements Insertable<ChangeLog> {
         ? configurationName.value
         : this.configurationName,
     controlName: controlName.present ? controlName.value : this.controlName,
+    controlPedalName: controlPedalName.present
+        ? controlPedalName.value
+        : this.controlPedalName,
     changeType: changeType ?? this.changeType,
     oldValue: oldValue.present ? oldValue.value : this.oldValue,
     newValue: newValue.present ? newValue.value : this.newValue,
@@ -2770,6 +2821,9 @@ class ChangeLog extends DataClass implements Insertable<ChangeLog> {
       controlName: data.controlName.present
           ? data.controlName.value
           : this.controlName,
+      controlPedalName: data.controlPedalName.present
+          ? data.controlPedalName.value
+          : this.controlPedalName,
       changeType: data.changeType.present
           ? data.changeType.value
           : this.changeType,
@@ -2791,6 +2845,7 @@ class ChangeLog extends DataClass implements Insertable<ChangeLog> {
           ..write('controlId: $controlId, ')
           ..write('configurationName: $configurationName, ')
           ..write('controlName: $controlName, ')
+          ..write('controlPedalName: $controlPedalName, ')
           ..write('changeType: $changeType, ')
           ..write('oldValue: $oldValue, ')
           ..write('newValue: $newValue, ')
@@ -2810,6 +2865,7 @@ class ChangeLog extends DataClass implements Insertable<ChangeLog> {
     controlId,
     configurationName,
     controlName,
+    controlPedalName,
     changeType,
     oldValue,
     newValue,
@@ -2828,6 +2884,7 @@ class ChangeLog extends DataClass implements Insertable<ChangeLog> {
           other.controlId == this.controlId &&
           other.configurationName == this.configurationName &&
           other.controlName == this.controlName &&
+          other.controlPedalName == this.controlPedalName &&
           other.changeType == this.changeType &&
           other.oldValue == this.oldValue &&
           other.newValue == this.newValue &&
@@ -2844,6 +2901,7 @@ class ChangeLogsCompanion extends UpdateCompanion<ChangeLog> {
   final Value<int?> controlId;
   final Value<String?> configurationName;
   final Value<String?> controlName;
+  final Value<String?> controlPedalName;
   final Value<ChangeType> changeType;
   final Value<double?> oldValue;
   final Value<double?> newValue;
@@ -2858,6 +2916,7 @@ class ChangeLogsCompanion extends UpdateCompanion<ChangeLog> {
     this.controlId = const Value.absent(),
     this.configurationName = const Value.absent(),
     this.controlName = const Value.absent(),
+    this.controlPedalName = const Value.absent(),
     this.changeType = const Value.absent(),
     this.oldValue = const Value.absent(),
     this.newValue = const Value.absent(),
@@ -2873,6 +2932,7 @@ class ChangeLogsCompanion extends UpdateCompanion<ChangeLog> {
     this.controlId = const Value.absent(),
     this.configurationName = const Value.absent(),
     this.controlName = const Value.absent(),
+    this.controlPedalName = const Value.absent(),
     required ChangeType changeType,
     this.oldValue = const Value.absent(),
     this.newValue = const Value.absent(),
@@ -2890,6 +2950,7 @@ class ChangeLogsCompanion extends UpdateCompanion<ChangeLog> {
     Expression<int>? controlId,
     Expression<String>? configurationName,
     Expression<String>? controlName,
+    Expression<String>? controlPedalName,
     Expression<String>? changeType,
     Expression<double>? oldValue,
     Expression<double>? newValue,
@@ -2905,6 +2966,7 @@ class ChangeLogsCompanion extends UpdateCompanion<ChangeLog> {
       if (controlId != null) 'control_id': controlId,
       if (configurationName != null) 'configuration_name': configurationName,
       if (controlName != null) 'control_name': controlName,
+      if (controlPedalName != null) 'control_pedal_name': controlPedalName,
       if (changeType != null) 'change_type': changeType,
       if (oldValue != null) 'old_value': oldValue,
       if (newValue != null) 'new_value': newValue,
@@ -2922,6 +2984,7 @@ class ChangeLogsCompanion extends UpdateCompanion<ChangeLog> {
     Value<int?>? controlId,
     Value<String?>? configurationName,
     Value<String?>? controlName,
+    Value<String?>? controlPedalName,
     Value<ChangeType>? changeType,
     Value<double?>? oldValue,
     Value<double?>? newValue,
@@ -2937,6 +3000,7 @@ class ChangeLogsCompanion extends UpdateCompanion<ChangeLog> {
       controlId: controlId ?? this.controlId,
       configurationName: configurationName ?? this.configurationName,
       controlName: controlName ?? this.controlName,
+      controlPedalName: controlPedalName ?? this.controlPedalName,
       changeType: changeType ?? this.changeType,
       oldValue: oldValue ?? this.oldValue,
       newValue: newValue ?? this.newValue,
@@ -2967,6 +3031,9 @@ class ChangeLogsCompanion extends UpdateCompanion<ChangeLog> {
     }
     if (controlName.present) {
       map['control_name'] = Variable<String>(controlName.value);
+    }
+    if (controlPedalName.present) {
+      map['control_pedal_name'] = Variable<String>(controlPedalName.value);
     }
     if (changeType.present) {
       map['change_type'] = Variable<String>(
@@ -3003,6 +3070,7 @@ class ChangeLogsCompanion extends UpdateCompanion<ChangeLog> {
           ..write('controlId: $controlId, ')
           ..write('configurationName: $configurationName, ')
           ..write('controlName: $controlName, ')
+          ..write('controlPedalName: $controlPedalName, ')
           ..write('changeType: $changeType, ')
           ..write('oldValue: $oldValue, ')
           ..write('newValue: $newValue, ')
@@ -8308,6 +8376,7 @@ typedef $$ChangeLogsTableCreateCompanionBuilder =
       Value<int?> controlId,
       Value<String?> configurationName,
       Value<String?> controlName,
+      Value<String?> controlPedalName,
       required ChangeType changeType,
       Value<double?> oldValue,
       Value<double?> newValue,
@@ -8324,6 +8393,7 @@ typedef $$ChangeLogsTableUpdateCompanionBuilder =
       Value<int?> controlId,
       Value<String?> configurationName,
       Value<String?> controlName,
+      Value<String?> controlPedalName,
       Value<ChangeType> changeType,
       Value<double?> oldValue,
       Value<double?> newValue,
@@ -8412,6 +8482,11 @@ class $$ChangeLogsTableFilterComposer
 
   ColumnFilters<String> get controlName => $composableBuilder(
     column: $table.controlName,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get controlPedalName => $composableBuilder(
+    column: $table.controlPedalName,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -8545,6 +8620,11 @@ class $$ChangeLogsTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<String> get controlPedalName => $composableBuilder(
+    column: $table.controlPedalName,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<String> get changeType => $composableBuilder(
     column: $table.changeType,
     builder: (column) => ColumnOrderings(column),
@@ -8669,6 +8749,11 @@ class $$ChangeLogsTableAnnotationComposer
 
   GeneratedColumn<String> get controlName => $composableBuilder(
     column: $table.controlName,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get controlPedalName => $composableBuilder(
+    column: $table.controlPedalName,
     builder: (column) => column,
   );
 
@@ -8804,6 +8889,7 @@ class $$ChangeLogsTableTableManager
                 Value<int?> controlId = const Value.absent(),
                 Value<String?> configurationName = const Value.absent(),
                 Value<String?> controlName = const Value.absent(),
+                Value<String?> controlPedalName = const Value.absent(),
                 Value<ChangeType> changeType = const Value.absent(),
                 Value<double?> oldValue = const Value.absent(),
                 Value<double?> newValue = const Value.absent(),
@@ -8818,6 +8904,7 @@ class $$ChangeLogsTableTableManager
                 controlId: controlId,
                 configurationName: configurationName,
                 controlName: controlName,
+                controlPedalName: controlPedalName,
                 changeType: changeType,
                 oldValue: oldValue,
                 newValue: newValue,
@@ -8834,6 +8921,7 @@ class $$ChangeLogsTableTableManager
                 Value<int?> controlId = const Value.absent(),
                 Value<String?> configurationName = const Value.absent(),
                 Value<String?> controlName = const Value.absent(),
+                Value<String?> controlPedalName = const Value.absent(),
                 required ChangeType changeType,
                 Value<double?> oldValue = const Value.absent(),
                 Value<double?> newValue = const Value.absent(),
@@ -8848,6 +8936,7 @@ class $$ChangeLogsTableTableManager
                 controlId: controlId,
                 configurationName: configurationName,
                 controlName: controlName,
+                controlPedalName: controlPedalName,
                 changeType: changeType,
                 oldValue: oldValue,
                 newValue: newValue,

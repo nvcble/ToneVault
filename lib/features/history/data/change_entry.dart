@@ -22,6 +22,7 @@ class ChangeEntry {
     this.controlId,
     this.configurationName,
     this.controlName,
+    this.controlPedalName,
     this.oldValue,
     this.newValue,
     this.oldText,
@@ -34,9 +35,15 @@ class ChangeEntry {
   /// [oldValue] is null when the control had never been set, and [newValue] is
   /// null when the setting was cleared. Values are in the control's own domain,
   /// exactly as stored, so the reading is rendered later from the control.
+  ///
+  /// [controlPedal] is the pedal [control] is on, which is the configuration's
+  /// own pedal in every case but one: a scene of a multi-effects unit sets the
+  /// controls of the pedals on its patch. Only then is it worth naming, so that
+  /// is the one case it is stored in.
   ChangeEntry.controlValueChanged({
     required Configuration configuration,
     required PedalControl control,
+    required Pedal controlPedal,
     required double? oldValue,
     required double? newValue,
     String? reason,
@@ -47,6 +54,9 @@ class ChangeEntry {
          controlId: control.id,
          configurationName: configuration.name,
          controlName: control.name,
+         controlPedalName: controlPedal.id == configuration.pedalId
+             ? null
+             : controlPedal.name,
          oldValue: oldValue,
          newValue: newValue,
          reason: reason,
@@ -135,6 +145,7 @@ class ChangeEntry {
   final int? controlId;
   final String? configurationName;
   final String? controlName;
+  final String? controlPedalName;
   final double? oldValue;
   final double? newValue;
   final String? oldText;
@@ -151,6 +162,7 @@ class ChangeEntry {
       controlId: Value(controlId),
       configurationName: Value(configurationName),
       controlName: Value(controlName),
+      controlPedalName: Value(controlPedalName),
       oldValue: Value(oldValue),
       newValue: Value(newValue),
       oldText: Value(oldText),

@@ -44,6 +44,7 @@ void main() {
     final entry = ChangeEntry.controlValueChanged(
       configuration: configuration,
       control: control,
+      controlPedal: pedal,
       oldValue: 0.5,
       newValue: 0.75,
       reason: 'needed more saturation for lead',
@@ -67,6 +68,7 @@ void main() {
     final entry = ChangeEntry.controlValueChanged(
       configuration: configuration,
       control: control,
+      controlPedal: pedal,
       oldValue: null,
       newValue: 0.25,
     );
@@ -79,12 +81,47 @@ void main() {
     final entry = ChangeEntry.controlValueChanged(
       configuration: configuration,
       control: control,
+      controlPedal: pedal,
       oldValue: 0.25,
       newValue: null,
     );
 
     expect(entry.oldValue, 0.25);
     expect(entry.newValue, isNull);
+  });
+
+  test('a control on the pedal being configured needs no naming', () {
+    final entry = ChangeEntry.controlValueChanged(
+      configuration: configuration,
+      control: control,
+      controlPedal: pedal,
+      oldValue: null,
+      newValue: 0.5,
+    );
+
+    // The pedal is already the one whose history this lands in, so saying it
+    // again would only take up the width of the row.
+    expect(entry.controlPedalName, isNull);
+  });
+
+  test('a control on a pedal inside the unit is named', () {
+    // A scene of a multi-effects unit in scene mode: the configuration is the
+    // unit's, and the control it moved is on one of the pedals on its patch.
+    final scene = configuration.copyWith(pedalId: 40, name: 'Chorus scene');
+    final patchPedal = pedal.copyWith(id: 8, name: 'Tube Screamer');
+
+    final entry = ChangeEntry.controlValueChanged(
+      configuration: scene,
+      control: control,
+      controlPedal: patchPedal,
+      oldValue: null,
+      newValue: 0.5,
+    );
+
+    // Filed under the unit, because the unit is what changed sound, and the
+    // pedal named because it is the only thing that says which Volume moved.
+    expect(entry.pedalId, 40);
+    expect(entry.controlPedalName, 'Tube Screamer');
   });
 
   test('a rename records both names', () {

@@ -150,6 +150,19 @@ void main() {
     expect(entries.map((entry) => entry.controlName), contains('Drive'));
   });
 
+  test('the entry names the pedal on the patch the control is on', () async {
+    await configurationValueRepository(
+      database,
+      clock: () => now,
+    ).setValue(configurationId: sceneId, controlId: driveId, value: 0.75);
+
+    // Several pedals on one patch, and nothing stops two of them having a knob
+    // of the same name: the pedal is what tells the two rows apart.
+    final entries = await database.changeLogDao.entriesOf(unitId);
+    final moved = entries.firstWhere((entry) => entry.controlName == 'Drive');
+    expect(moved.controlPedalName, 'Tube Screamer');
+  });
+
   test('a control on a pedal outside the unit is still refused', () async {
     final strayPedalId = await pedals.createPedal(
       const PedalDraft(

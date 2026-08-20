@@ -13,7 +13,9 @@ import 'package:drift/drift.dart';
 ///   it stood on one date with every reading frozen.
 /// - v6: pedals.host_pedal_id and pedals.multi_effects_mode, the stomps and
 ///   blocks inside a multi-effects unit and how that unit is organised.
-const int currentSchemaVersion = 6;
+/// - v7: change_logs.control_pedal_name, so a scene's history says which pedal
+///   on the patch the control it moved belongs to.
+const int currentSchemaVersion = 7;
 
 MigrationStrategy buildMigrationStrategy(GeneratedDatabase database) {
   return MigrationStrategy(
@@ -120,6 +122,15 @@ MigrationStrategy buildMigrationStrategy(GeneratedDatabase database) {
         await database.customStatement(
           'CREATE INDEX IF NOT EXISTS idx_pedals_host '
           'ON pedals (host_pedal_id)',
+        );
+      }
+
+      if (from < 7) {
+        // Nullable with no default, so the entries already written keep reading
+        // exactly as they did: null means the control is on the pedal the entry
+        // is filed under, which is what every one of them recorded.
+        await database.customStatement(
+          'ALTER TABLE change_logs ADD COLUMN control_pedal_name TEXT NULL;',
         );
       }
 

@@ -8,7 +8,9 @@ import 'package:tone_vault/core/enums/multi_effects_mode.dart';
 import 'package:tone_vault/core/enums/pedal_category.dart';
 import 'package:tone_vault/core/enums/pedal_type.dart';
 import 'package:tone_vault/core/values/control_options.dart';
+import 'package:tone_vault/features/configurations/data/configuration_draft.dart';
 import 'package:tone_vault/features/controls/data/control_draft.dart';
+import 'package:tone_vault/features/history/data/change_entry.dart';
 import 'package:tone_vault/features/pedalboards/data/pedalboard_draft.dart';
 import 'package:tone_vault/features/pedals/data/pedal_draft.dart';
 import '../support/repositories.dart';
@@ -185,6 +187,61 @@ void main() {
 
     final inside = await repository.watchComponentPedals(unitId).first;
     expect(inside.single.name, 'Tube Screamer');
+  });
+
+  test('an upgraded database can name the pedal a control is on', () async {
+    final db = openV1Database();
+    addTearDown(db.close);
+
+    final unitId = await pedalRepository(db).createPedal(
+      const PedalDraft(
+        name: 'Valeton GP-200',
+        type: PedalType.multiEffects,
+        category: PedalCategory.multiEffects,
+        multiEffectsMode: MultiEffectsMode.scene,
+      ),
+    );
+    final screamerId = await pedalRepository(db).createPedal(
+      PedalDraft(
+        name: 'Tube Screamer',
+        type: PedalType.digital,
+        category: PedalCategory.overdrive,
+        hostPedalId: unitId,
+      ),
+    );
+    final controlId = await controlRepository(db).createControl(
+      screamerId,
+      ControlDraft.ofType(ControlType.clock, name: 'Drive'),
+    );
+    final sceneId = await configurationRepository(
+      db,
+    ).createConfiguration(unitId, const ConfigurationDraft(name: 'Chorus'));
+
+    final owned = await db.pedalControlDao.findSettableControl(
+      controlId: controlId,
+      pedalId: unitId,
+    );
+    await changeLogRepository(db).record(
+      ChangeEntry.controlValueChanged(
+        configuration: (await db.configurationDao.findConfiguration(sceneId))!,
+        control: owned!.control,
+        controlPedal: owned.owner,
+        oldValue: null,
+        newValue: 0.75,
+      ),
+    );
+
+    // The column the upgrade added holds what a fresh install would hold, and
+    // the entry the fixture came with still reads without it.
+    final entries = await db.changeLogDao.entriesOf(unitId);
+    final moved = entries.firstWhere(
+      (entry) => entry.changeType == ChangeType.controlValueChanged,
+    );
+    expect(moved.controlPedalName, 'Tube Screamer');
+    expect(
+      (await db.changeLogDao.entriesOf(1)).single.controlPedalName,
+      isNull,
+    );
   });
 
   test(

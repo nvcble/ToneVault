@@ -37,6 +37,16 @@ class ChangeLogs extends Table {
 
   TextColumn get controlName => text().withLength(min: 1, max: 60).nullable()();
 
+  /// The pedal [controlName] is on, when that is not the pedal this entry is
+  /// filed under.
+  ///
+  /// Null on everything else, which is every entry about a pedal's own controls.
+  /// It is set for a scene of a multi-effects unit: the scene belongs to the
+  /// unit, but the control it moved lives on one of the pedals on its patch, and
+  /// "Level moved to 2:30" says nothing when three of them have a Level.
+  TextColumn get controlPedalName =>
+      text().withLength(min: 1, max: 80).nullable()();
+
   TextColumn get changeType => textEnum<ChangeType>()();
 
   /// Set only for events that move a control, in that control's own domain.

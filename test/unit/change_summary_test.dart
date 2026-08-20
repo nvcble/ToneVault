@@ -20,6 +20,7 @@ void main() {
     required ChangeType changeType,
     String? configurationName,
     String? controlName,
+    String? controlPedalName,
     double? oldValue,
     double? newValue,
     String? oldText,
@@ -31,6 +32,7 @@ void main() {
       pedalId: 7,
       configurationName: configurationName,
       controlName: controlName,
+      controlPedalName: controlPedalName,
       changeType: changeType,
       oldValue: oldValue,
       newValue: newValue,
@@ -41,10 +43,15 @@ void main() {
     );
   }
 
-  ChangeLog move({double? oldValue, double? newValue}) => entry(
+  ChangeLog move({
+    double? oldValue,
+    double? newValue,
+    String? controlPedalName,
+  }) => entry(
     changeType: ChangeType.controlValueChanged,
     configurationName: 'Worship Lead',
     controlName: 'Volume',
+    controlPedalName: controlPedalName,
     oldValue: oldValue,
     newValue: newValue,
   );
@@ -66,6 +73,17 @@ void main() {
         changeHeadline(move(oldValue: 0.25, newValue: 0.75)),
         'Volume moved from 0.25 to 0.75',
       );
+    });
+
+    test('says which pedal on a patch the control belongs to', () {
+      // A scene of a multi-effects unit: the entry is the unit's, so without the
+      // pedal there is no telling which of the patch's Volumes moved.
+      final headline = changeHeadline(
+        move(oldValue: 0.25, newValue: 0.75, controlPedalName: 'Tube Screamer'),
+        control: volume,
+      );
+
+      expect(headline, 'Volume on Tube Screamer moved from 9:30 to 2:30');
     });
 
     test('reads a first position as being set', () {

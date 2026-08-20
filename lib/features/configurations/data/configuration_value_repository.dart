@@ -71,6 +71,7 @@ class ConfigurationValueRepository {
             ChangeEntry.controlValueChanged(
               configuration: target.configuration,
               control: target.control,
+              controlPedal: target.controlPedal,
               oldValue: previous,
               newValue: value,
               reason: reason,
@@ -111,6 +112,7 @@ class ConfigurationValueRepository {
             ChangeEntry.controlValueChanged(
               configuration: target.configuration,
               control: target.control,
+              controlPedal: target.controlPedal,
               oldValue: previous,
               newValue: null,
               reason: reason,
@@ -129,27 +131,32 @@ class ConfigurationValueRepository {
   /// set the controls of the pedals on that patch. The check is left to the
   /// query, so nothing here has to know which kind of pedal it is looking at.
   ///
-  /// Both rows come back together because both are needed either way: the
-  /// control to check the value against, and the configuration to file the
-  /// history entry under the right pedal.
-  Future<({Configuration configuration, PedalControl control})> _targetFor(
-    int configurationId,
-    int controlId,
-  ) async {
+  /// All three rows come back together because all three are needed either way:
+  /// the control to check the value against, the configuration to file the
+  /// history entry under the right pedal, and the pedal the control is on for the
+  /// entry to name when it is not that same pedal.
+  Future<
+    ({Configuration configuration, PedalControl control, Pedal controlPedal})
+  >
+  _targetFor(int configurationId, int controlId) async {
     final configuration = await _dao.findConfiguration(configurationId);
     if (configuration == null) {
       throw const AppFailure('That configuration no longer exists.');
     }
 
-    final control = await _controlDao.findSettableControl(
+    final owned = await _controlDao.findSettableControl(
       controlId: controlId,
       pedalId: configuration.pedalId,
     );
-    if (control == null) {
+    if (owned == null) {
       throw const AppFailure('That control is no longer on this pedal.');
     }
 
-    return (configuration: configuration, control: control);
+    return (
+      configuration: configuration,
+      control: owned.control,
+      controlPedal: owned.owner,
+    );
   }
 
   Future<T> _guard<T>(Future<T> Function() operation, String message) async {

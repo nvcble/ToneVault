@@ -15,8 +15,17 @@ import '../../../shared/formatting/app_date_format.dart';
 /// control's own domain, and a reading such as "2:30" is rendered from the
 /// control each time it is shown.
 String changeHeadline(ChangeLog entry, {PedalControl? control}) {
-  final controlName = entry.controlName ?? 'A control';
   final configurationName = entry.configurationName ?? 'A configuration';
+
+  // Said in the same breath as the control, because the two together are what
+  // names it: a scene of a multi-effects unit moves the controls of the pedals on
+  // its patch, and several of them may well have a knob called Level. Null for
+  // everything else, where the control is on the pedal whose history this is.
+  final controlName = switch (entry.controlPedalName) {
+    final String pedalName =>
+      '${entry.controlName ?? 'A control'} on $pedalName',
+    null => entry.controlName ?? 'A control',
+  };
 
   return switch (entry.changeType) {
     ChangeType.controlValueChanged => _valueChange(entry, controlName, control),
