@@ -12,9 +12,14 @@ import '../widgets/pedal_form.dart';
 
 /// Adds a pedal, or edits [pedalId] when one is given.
 class PedalFormScreen extends ConsumerStatefulWidget {
-  const PedalFormScreen({this.pedalId, super.key});
+  const PedalFormScreen({this.pedalId, this.hostPedalId, super.key});
 
   final int? pedalId;
+
+  /// The multi-effects unit the new pedal belongs inside, when it is a stomp or
+  /// a block rather than a pedal of its own. Ignored on an edit, where the pedal
+  /// already knows where it sits.
+  final int? hostPedalId;
 
   @override
   ConsumerState<PedalFormScreen> createState() => _PedalFormScreenState();
@@ -41,24 +46,42 @@ class _PedalFormScreenState extends ConsumerState<PedalFormScreen> {
     }
   }
 
-  /// Goes to wherever the pedal now lives: its own screen after an edit, the
-  /// list after adding one.
+  /// Goes to wherever the pedal now lives: its own screen after an edit, and
+  /// after adding one either the list it joined or the unit it went inside.
   void _leave() {
     final pedalId = widget.pedalId;
-    context.go(pedalId == null ? Routes.pedals : Routes.pedalDetail(pedalId));
+    if (pedalId != null) {
+      context.go(Routes.pedalDetail(pedalId));
+      return;
+    }
+
+    final hostPedalId = widget.hostPedalId;
+    context.go(
+      hostPedalId == null ? Routes.pedals : Routes.pedalDetail(hostPedalId),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(_isEditing ? 'Edit pedal' : 'Add pedal')),
+      appBar: AppBar(title: Text(_title)),
       body: _isEditing ? _buildEditBody(widget.pedalId!) : _buildAddBody(),
     );
+  }
+
+  String get _title {
+    if (_isEditing) {
+      return 'Edit pedal';
+    }
+    // Says which unit it is going into, so the form does not look like it is
+    // about to add another pedal to the inventory.
+    return widget.hostPedalId == null ? 'Add pedal' : 'Add to this unit';
   }
 
   Widget _buildAddBody() {
     return PedalForm(
       submitLabel: 'Add pedal',
+      hostPedalId: widget.hostPedalId,
       isSaving: _isSaving,
       onSubmit: _save,
     );
@@ -87,6 +110,8 @@ class _PedalFormScreenState extends ConsumerState<PedalFormScreen> {
               // same pedal keeps whatever is half-typed.
               key: ValueKey<int>(pedal.id),
               initialDraft: PedalDraft.fromPedal(pedal),
+              // Kept as it is: an edit never moves a stomp to another unit.
+              hostPedalId: pedal.hostPedalId,
               submitLabel: 'Save changes',
               isSaving: _isSaving,
               onSubmit: _save,

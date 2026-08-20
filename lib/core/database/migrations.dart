@@ -11,7 +11,9 @@ import 'package:drift/drift.dart';
 /// - v4: pedalboard_slots, the ordered signal chain of each rig.
 /// - v5: rig_snapshots, rig_snapshot_entries and rig_snapshot_values, a rig as
 ///   it stood on one date with every reading frozen.
-const int currentSchemaVersion = 5;
+/// - v6: pedals.host_pedal_id and pedals.multi_effects_mode, the stomps and
+///   blocks inside a multi-effects unit and how that unit is organised.
+const int currentSchemaVersion = 6;
 
 MigrationStrategy buildMigrationStrategy(GeneratedDatabase database) {
   return MigrationStrategy(
@@ -101,6 +103,23 @@ MigrationStrategy buildMigrationStrategy(GeneratedDatabase database) {
           '"options" TEXT NULL, '
           '"display_order" INTEGER NOT NULL, '
           'UNIQUE ("entry_id", "control_name"))',
+        );
+      }
+
+      if (from < 6) {
+        // Both columns are nullable with no default, which is what lets SQLite
+        // add them - a REFERENCES clause included - to a table that already has
+        // rows in it. Every pedal already stored keeps standing on its own floor.
+        await database.customStatement(
+          'ALTER TABLE pedals ADD COLUMN host_pedal_id INTEGER NULL '
+          'REFERENCES pedals (id) ON DELETE RESTRICT;',
+        );
+        await database.customStatement(
+          'ALTER TABLE pedals ADD COLUMN multi_effects_mode TEXT NULL;',
+        );
+        await database.customStatement(
+          'CREATE INDEX IF NOT EXISTS idx_pedals_host '
+          'ON pedals (host_pedal_id)',
         );
       }
 

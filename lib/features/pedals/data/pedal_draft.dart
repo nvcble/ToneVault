@@ -1,4 +1,5 @@
 import '../../../core/database/app_database.dart';
+import '../../../core/enums/multi_effects_mode.dart';
 import '../../../core/enums/pedal_category.dart';
 import '../../../core/enums/pedal_status.dart';
 import '../../../core/enums/pedal_type.dart';
@@ -17,6 +18,8 @@ class PedalDraft {
     this.purchaseDate,
     this.notes,
     this.photoPath,
+    this.hostPedalId,
+    this.multiEffectsMode,
   });
 
   factory PedalDraft.fromPedal(Pedal pedal) {
@@ -29,6 +32,8 @@ class PedalDraft {
       purchaseDate: pedal.purchaseDate,
       notes: pedal.notes,
       photoPath: pedal.photoPath,
+      hostPedalId: pedal.hostPedalId,
+      multiEffectsMode: pedal.multiEffectsMode,
     );
   }
 
@@ -41,11 +46,24 @@ class PedalDraft {
   final String? notes;
   final String? photoPath;
 
+  /// The multi-effects unit this pedal sits inside, if any. Set by whichever
+  /// screen opened the form rather than entered, so a stomp cannot be moved to
+  /// another unit by mistyping.
+  final int? hostPedalId;
+
+  /// Only meaningful on a [PedalType.multiEffects]; [normalized] drops it from
+  /// anything else.
+  final MultiEffectsMode? multiEffectsMode;
+
   /// Trims text and turns blank optional fields into null.
   ///
   /// A cleared text field hands back an empty string, which would be stored as
   /// a present-but-empty brand rather than "not set" - and `brand` has a
   /// minimum length of one character, so the column would reject it outright.
+  ///
+  /// A mode left over from a pedal that used to be a multi-effects unit goes the
+  /// same way: it would otherwise sit in the row saying something about a pedal
+  /// it no longer describes.
   PedalDraft normalized() {
     return PedalDraft(
       name: name.trim(),
@@ -56,6 +74,10 @@ class PedalDraft {
       purchaseDate: purchaseDate,
       notes: _blankToNull(notes),
       photoPath: _blankToNull(photoPath),
+      hostPedalId: hostPedalId,
+      multiEffectsMode: type == PedalType.multiEffects
+          ? multiEffectsMode
+          : null,
     );
   }
 }

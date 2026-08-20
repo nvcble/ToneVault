@@ -4,9 +4,13 @@ import 'package:tone_vault/core/database/app_database.dart';
 import 'package:tone_vault/core/database/migrations.dart';
 import 'package:tone_vault/core/enums/change_type.dart';
 import 'package:tone_vault/core/enums/control_type.dart';
+import 'package:tone_vault/core/enums/multi_effects_mode.dart';
+import 'package:tone_vault/core/enums/pedal_category.dart';
+import 'package:tone_vault/core/enums/pedal_type.dart';
 import 'package:tone_vault/core/values/control_options.dart';
 import 'package:tone_vault/features/controls/data/control_draft.dart';
 import 'package:tone_vault/features/pedalboards/data/pedalboard_draft.dart';
+import 'package:tone_vault/features/pedals/data/pedal_draft.dart';
 import '../support/repositories.dart';
 import '../support/v1_database.dart';
 
@@ -148,6 +152,39 @@ void main() {
     final chain = await db.pedalboardDao.watchChain(rigId).first;
     expect(chain.single.pedal.name, 'PureSky');
     expect(chain.single.slot.position, 0);
+  });
+
+  test('an upgraded database can hold a pedal inside a unit', () async {
+    final db = openV1Database();
+    addTearDown(db.close);
+    final repository = pedalRepository(db);
+
+    final unitId = await repository.createPedal(
+      const PedalDraft(
+        name: 'Valeton GP-200',
+        type: PedalType.multiEffects,
+        category: PedalCategory.multiEffects,
+        multiEffectsMode: MultiEffectsMode.stomp,
+      ),
+    );
+    await repository.createPedal(
+      PedalDraft(
+        name: 'Tube Screamer',
+        type: PedalType.digital,
+        category: PedalCategory.overdrive,
+        hostPedalId: unitId,
+      ),
+    );
+
+    // Pedal 1 is the one already in the v1 fixture, and it keeps standing on its
+    // own floor: the columns the upgrade added are null on every row it found.
+    final owned = await repository.watchPedals().first;
+    expect(owned.map((pedal) => pedal.name), ['PureSky', 'Valeton GP-200']);
+    expect(owned.first.hostPedalId, isNull);
+    expect(owned.first.multiEffectsMode, isNull);
+
+    final inside = await repository.watchComponentPedals(unitId).first;
+    expect(inside.single.name, 'Tube Screamer');
   });
 
   test(

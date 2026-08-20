@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../app/theme/app_spacing.dart';
+import '../../../core/enums/multi_effects_mode.dart';
 import '../../../core/enums/pedal_category.dart';
 import '../../../core/enums/pedal_status.dart';
 import '../../../core/enums/pedal_type.dart';
@@ -17,12 +18,18 @@ class PedalForm extends StatefulWidget {
     required this.submitLabel,
     required this.onSubmit,
     this.initialDraft,
+    this.hostPedalId,
     this.isSaving = false,
     super.key,
   });
 
   final PedalDraft? initialDraft;
   final String submitLabel;
+
+  /// The multi-effects unit this pedal sits inside, when it is a stomp or a
+  /// block. Handed in by the screen that opened the form rather than entered:
+  /// where a stomp lives is not a field anyone should be able to mistype.
+  final int? hostPedalId;
 
   /// Disables the form while a save is in flight, so one tap cannot become two
   /// pedals.
@@ -46,6 +53,11 @@ class _PedalFormState extends State<PedalForm> {
   PedalStatus _status = PedalStatus.active;
   DateTime? _purchaseDate;
 
+  /// Only asked for, and only kept, while the type is multi-effects.
+  MultiEffectsMode? _multiEffectsMode;
+
+  bool get _isMultiEffects => _type == PedalType.multiEffects;
+
   @override
   void initState() {
     super.initState();
@@ -57,6 +69,7 @@ class _PedalFormState extends State<PedalForm> {
     _category = draft?.category;
     _status = draft?.status ?? PedalStatus.active;
     _purchaseDate = draft?.purchaseDate;
+    _multiEffectsMode = draft?.multiEffectsMode;
   }
 
   @override
@@ -86,6 +99,8 @@ class _PedalFormState extends State<PedalForm> {
         purchaseDate: _purchaseDate,
         notes: _notesController.text,
         photoPath: widget.initialDraft?.photoPath,
+        hostPedalId: widget.hostPedalId,
+        multiEffectsMode: _isMultiEffects ? _multiEffectsMode : null,
       ),
     );
   }
@@ -142,6 +157,21 @@ class _PedalFormState extends State<PedalForm> {
             emptyMessage: 'Pick how this pedal makes its sound.',
             onChanged: (type) => setState(() => _type = type),
           ),
+          // Only a multi-effects unit has a mode, and it has to have one: it is
+          // what decides whether the unit's own screen shows a floor of stomps
+          // or a patch with scenes.
+          if (_isMultiEffects) ...[
+            const SizedBox(height: AppSpacing.md),
+            _enumField<MultiEffectsMode>(
+              label: 'Mode',
+              value: _multiEffectsMode,
+              values: MultiEffectsMode.values,
+              labelOf: (mode) => mode.label,
+              emptyMessage: 'Pick stomp mode or scene mode.',
+              helperText: _multiEffectsMode?.description,
+              onChanged: (mode) => setState(() => _multiEffectsMode = mode),
+            ),
+          ],
           const SizedBox(height: AppSpacing.md),
           _enumField<PedalCategory>(
             label: 'Category',
@@ -209,8 +239,8 @@ class _PedalFormState extends State<PedalForm> {
 
   /// One dropdown per enum-backed field.
   ///
-  /// The three fields differ only in their options, so they share a builder
-  /// rather than three near-identical blocks.
+  /// The fields differ only in their options, so they share a builder rather
+  /// than four near-identical blocks.
   Widget _enumField<T extends Enum>({
     required String label,
     required T? value,
@@ -218,10 +248,11 @@ class _PedalFormState extends State<PedalForm> {
     required String Function(T) labelOf,
     required String emptyMessage,
     required ValueChanged<T> onChanged,
+    String? helperText,
   }) {
     return DropdownButtonFormField<T>(
       initialValue: value,
-      decoration: InputDecoration(labelText: label),
+      decoration: InputDecoration(labelText: label, helperText: helperText),
       items: [
         for (final option in values)
           DropdownMenuItem<T>(value: option, child: Text(labelOf(option))),

@@ -10,6 +10,7 @@ import '../../../shared/widgets/failure_snack_bar.dart';
 import '../../configurations/widgets/configuration_list_view.dart';
 import '../../controls/widgets/control_list_view.dart';
 import '../../history/widgets/pedal_history_view.dart';
+import '../../multi_effects/widgets/multi_effects_view.dart';
 import '../../replacements/data/replacement_choices.dart';
 import '../../replacements/providers/replacement_providers.dart';
 import '../../replacements/widgets/replace_pedal_sheet.dart';
@@ -44,10 +45,15 @@ class PedalDetailScreen extends ConsumerWidget {
     // the pedal has loaded the full set is shown, which is what every pedal but
     // a multi-effects ends up with.
     final hasControls = pedal?.type.hasOwnControls ?? true;
+
+    // A multi-effects unit keeps stomps or a patch of scenes where an ordinary
+    // pedal keeps configurations, so the third tab is named for what is behind
+    // it. A unit with no mode chosen yet still says 'Configurations', which is
+    // what the view behind it offers to fix.
     final tabs = <String>[
       'Overview',
       if (hasControls) 'Controls',
-      'Configurations',
+      pedal?.multiEffectsMode?.tabLabel ?? 'Configurations',
       'History',
     ];
 
@@ -109,7 +115,13 @@ class PedalDetailScreen extends ConsumerWidget {
                           context.go(Routes.pedalDetail(otherId)),
                     ),
                     if (hasControls) ControlListView(pedalId: pedalId),
-                    ConfigurationListView(pedalId: pedalId),
+                    if (hasControls)
+                      ConfigurationListView(pedalId: pedalId)
+                    else
+                      MultiEffectsView(
+                        pedalId: pedalId,
+                        mode: pedal.multiEffectsMode,
+                      ),
                     PedalHistoryView(pedalId: pedalId),
                   ],
                 ),

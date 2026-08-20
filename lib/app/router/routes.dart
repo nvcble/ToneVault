@@ -15,6 +15,12 @@ abstract final class Routes {
 
   static String pedalEdit(int pedalId) => '${pedalDetail(pedalId)}/edit';
 
+  /// A stomp or block is added through the multi-effects unit that will hold it,
+  /// which is where its host comes from. It is an ordinary pedal once saved, so
+  /// it is read and edited through [pedalDetail] like any other.
+  static String componentNew(int hostPedalId) =>
+      '${pedalDetail(hostPedalId)}/components/new';
+
   /// Controls belong to one pedal, so they are reached through it.
   static String controlNew(int pedalId) =>
       '${pedalDetail(pedalId)}/controls/new';
@@ -53,6 +59,7 @@ abstract final class Routes {
   static const String pedalNewSegment = 'new';
   static const String pedalDetailSegment = ':pedalId';
   static const String pedalEditSegment = 'edit';
+  static const String componentNewSegment = 'components/new';
   static const String controlNewSegment = 'controls/new';
   static const String controlEditSegment = 'controls/:controlId/edit';
   static const String configurationNewSegment = 'configurations/new';

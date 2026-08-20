@@ -26,6 +26,14 @@ final StreamProvider<List<Pedal>> pedalListProvider =
       (ref) => ref.watch(pedalRepositoryProvider).watchPedals(),
     );
 
+/// The stomps or blocks inside one multi-effects unit, keyed by the unit's id.
+/// Kept out of [pedalListProvider] on purpose; see `PedalDao.watchPedals`.
+final StreamProviderFamily<List<Pedal>, int> componentPedalListProvider =
+    StreamProvider.family<List<Pedal>, int>(
+      (ref, hostPedalId) =>
+          ref.watch(pedalRepositoryProvider).watchComponentPedals(hostPedalId),
+    );
+
 /// Only used by the debug-only seed action in settings.
 final Provider<PedalSeeder> pedalSeederProvider = Provider<PedalSeeder>(
   (ref) => PedalSeeder(ref.watch(pedalRepositoryProvider)),

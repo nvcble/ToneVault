@@ -199,9 +199,11 @@ void main() {
       await expectLater(
         pedalRepository(database).deletePedal(pedalId),
         failsWith(
-          'This pedal is on a rig, or has configurations, history or snapshots '
-          'attached. Take it off the rig, or change its status rather than '
-          'deleting it.',
+          // One message covers every reference a pedal can be held by, the
+          // pedals inside a multi-effects unit included.
+          'This pedal is on a rig, holds other pedals, or has configurations, '
+          'history or snapshots attached. Take it off the rig, or change its '
+          'status rather than deleting it.',
         ),
       );
 

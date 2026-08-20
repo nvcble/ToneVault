@@ -4,6 +4,7 @@ import 'package:drift/drift.dart';
 // a part file can only see imports declared by its parent library.
 import '../enums/change_type.dart';
 import '../enums/control_type.dart';
+import '../enums/multi_effects_mode.dart';
 import '../enums/pedal_category.dart';
 import '../enums/pedal_status.dart';
 import '../enums/pedal_type.dart';

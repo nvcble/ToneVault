@@ -35,6 +35,13 @@ List<RouteBase> pedalRoutes() {
               builder: (context, state) =>
                   PedalFormScreen(pedalId: _pedalId(state)),
             ),
+            // A pedal added here belongs to the pedal in the path, which is the
+            // multi-effects unit that will hold it.
+            GoRoute(
+              path: Routes.componentNewSegment,
+              builder: (context, state) =>
+                  PedalFormScreen(hostPedalId: _pedalId(state)),
+            ),
             GoRoute(
               path: Routes.controlNewSegment,
               builder: (context, state) =>

@@ -83,6 +83,16 @@ class BackupDao extends DatabaseAccessor<AppDatabase> with _$BackupDaoMixin {
   /// in it leaves the vault exactly as it was rather than half replaced.
   Future<void> writeEverything(VaultRows rows) {
     return transaction(() async {
+      // Holds every foreign key check until the transaction commits, rather than
+      // testing each row as it lands. `pedals` references itself now - a stomp
+      // points at the unit it sits in - and one list of rows cannot be ordered
+      // parent before child within a single table. Checking at the commit is the
+      // guarantee that matters anyway: a file whose references do not all resolve
+      // is refused as a whole, and the vault is left exactly as it was.
+      //
+      // SQLite resets this at the end of the transaction, so it applies to this
+      // restore alone.
+      await customStatement('PRAGMA defer_foreign_keys = ON;');
       await _deleteEverything();
 
       // Parent before child, so every reference has something to point at by

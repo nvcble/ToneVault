@@ -1,3 +1,5 @@
+import '../../../core/enums/multi_effects_mode.dart';
+import '../../../core/enums/pedal_type.dart';
 import 'pedal_draft.dart';
 
 /// Validation rules for pedal input.
@@ -37,10 +39,25 @@ abstract final class PedalValidator {
     return null;
   }
 
+  /// A multi-effects unit has to say how it is organised, because that is what
+  /// decides which screen its own pedals and sounds are kept on. Nothing else
+  /// may carry a mode, which would be a claim about a pedal that has no patches.
+  static String? multiEffectsMode(MultiEffectsMode? value, PedalType type) {
+    final isUnit = type == PedalType.multiEffects;
+    if (isUnit && value == null) {
+      return 'Pick whether this unit is used in stomp mode or scene mode.';
+    }
+    if (!isUnit && value != null) {
+      return 'Only a multi-effects unit has a stomp or scene mode.';
+    }
+    return null;
+  }
+
   /// First problem with [draft], or null when every field is acceptable.
   static String? draft(PedalDraft draft, {required DateTime now}) {
     return name(draft.name) ??
         brand(draft.brand) ??
-        purchaseDate(draft.purchaseDate, now: now);
+        purchaseDate(draft.purchaseDate, now: now) ??
+        multiEffectsMode(draft.multiEffectsMode, draft.type);
   }
 }

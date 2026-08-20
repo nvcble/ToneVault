@@ -75,6 +75,29 @@ class $PedalsTable extends Pedals with TableInfo<$PedalsTable, Pedal> {
         requiredDuringInsert: false,
         defaultValue: Constant(PedalStatus.active.name),
       ).withConverter<PedalStatus>($PedalsTable.$converterstatus);
+  static const VerificationMeta _hostPedalIdMeta = const VerificationMeta(
+    'hostPedalId',
+  );
+  @override
+  late final GeneratedColumn<int> hostPedalId = GeneratedColumn<int>(
+    'host_pedal_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES pedals (id) ON DELETE RESTRICT',
+    ),
+  );
+  @override
+  late final GeneratedColumnWithTypeConverter<MultiEffectsMode?, String>
+  multiEffectsMode = GeneratedColumn<String>(
+    'multi_effects_mode',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  ).withConverter<MultiEffectsMode?>($PedalsTable.$convertermultiEffectsModen);
   static const VerificationMeta _photoPathMeta = const VerificationMeta(
     'photoPath',
   );
@@ -136,6 +159,8 @@ class $PedalsTable extends Pedals with TableInfo<$PedalsTable, Pedal> {
     type,
     category,
     status,
+    hostPedalId,
+    multiEffectsMode,
     photoPath,
     purchaseDate,
     notes,
@@ -169,6 +194,15 @@ class $PedalsTable extends Pedals with TableInfo<$PedalsTable, Pedal> {
       context.handle(
         _brandMeta,
         brand.isAcceptableOrUnknown(data['brand']!, _brandMeta),
+      );
+    }
+    if (data.containsKey('host_pedal_id')) {
+      context.handle(
+        _hostPedalIdMeta,
+        hostPedalId.isAcceptableOrUnknown(
+          data['host_pedal_id']!,
+          _hostPedalIdMeta,
+        ),
       );
     }
     if (data.containsKey('photo_path')) {
@@ -247,6 +281,16 @@ class $PedalsTable extends Pedals with TableInfo<$PedalsTable, Pedal> {
           data['${effectivePrefix}status'],
         )!,
       ),
+      hostPedalId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}host_pedal_id'],
+      ),
+      multiEffectsMode: $PedalsTable.$convertermultiEffectsModen.fromSql(
+        attachedDatabase.typeMapping.read(
+          DriftSqlType.string,
+          data['${effectivePrefix}multi_effects_mode'],
+        ),
+      ),
       photoPath: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}photo_path'],
@@ -281,6 +325,14 @@ class $PedalsTable extends Pedals with TableInfo<$PedalsTable, Pedal> {
       const EnumNameConverter<PedalCategory>(PedalCategory.values);
   static JsonTypeConverter2<PedalStatus, String, String> $converterstatus =
       const EnumNameConverter<PedalStatus>(PedalStatus.values);
+  static JsonTypeConverter2<MultiEffectsMode, String, String>
+  $convertermultiEffectsMode = const EnumNameConverter<MultiEffectsMode>(
+    MultiEffectsMode.values,
+  );
+  static JsonTypeConverter2<MultiEffectsMode?, String?, String?>
+  $convertermultiEffectsModen = JsonTypeConverter2.asNullable(
+    $convertermultiEffectsMode,
+  );
 }
 
 class Pedal extends DataClass implements Insertable<Pedal> {
@@ -290,6 +342,19 @@ class Pedal extends DataClass implements Insertable<Pedal> {
   final PedalType type;
   final PedalCategory category;
   final PedalStatus status;
+
+  /// The multi-effects unit this pedal is part of, or null when it stands on
+  /// its own floor.
+  ///
+  /// RESTRICT for the same reason every other reference to a pedal is: a unit
+  /// with stomps still attached is retired, not deleted, so nothing it holds is
+  /// swept away with it.
+  final int? hostPedalId;
+
+  /// How a multi-effects unit is organised, which the unit's own screen reads to
+  /// decide what to show. Null on everything else, which is every pedal that is
+  /// not a [PedalType.multiEffects].
+  final MultiEffectsMode? multiEffectsMode;
 
   /// Path to an image file in the app's documents directory. Photos are kept
   /// outside the database so the file stays small and easy to back up.
@@ -305,6 +370,8 @@ class Pedal extends DataClass implements Insertable<Pedal> {
     required this.type,
     required this.category,
     required this.status,
+    this.hostPedalId,
+    this.multiEffectsMode,
     this.photoPath,
     this.purchaseDate,
     this.notes,
@@ -332,6 +399,14 @@ class Pedal extends DataClass implements Insertable<Pedal> {
         $PedalsTable.$converterstatus.toSql(status),
       );
     }
+    if (!nullToAbsent || hostPedalId != null) {
+      map['host_pedal_id'] = Variable<int>(hostPedalId);
+    }
+    if (!nullToAbsent || multiEffectsMode != null) {
+      map['multi_effects_mode'] = Variable<String>(
+        $PedalsTable.$convertermultiEffectsModen.toSql(multiEffectsMode),
+      );
+    }
     if (!nullToAbsent || photoPath != null) {
       map['photo_path'] = Variable<String>(photoPath);
     }
@@ -356,6 +431,12 @@ class Pedal extends DataClass implements Insertable<Pedal> {
       type: Value(type),
       category: Value(category),
       status: Value(status),
+      hostPedalId: hostPedalId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(hostPedalId),
+      multiEffectsMode: multiEffectsMode == null && nullToAbsent
+          ? const Value.absent()
+          : Value(multiEffectsMode),
       photoPath: photoPath == null && nullToAbsent
           ? const Value.absent()
           : Value(photoPath),
@@ -388,6 +469,10 @@ class Pedal extends DataClass implements Insertable<Pedal> {
       status: $PedalsTable.$converterstatus.fromJson(
         serializer.fromJson<String>(json['status']),
       ),
+      hostPedalId: serializer.fromJson<int?>(json['hostPedalId']),
+      multiEffectsMode: $PedalsTable.$convertermultiEffectsModen.fromJson(
+        serializer.fromJson<String?>(json['multiEffectsMode']),
+      ),
       photoPath: serializer.fromJson<String?>(json['photoPath']),
       purchaseDate: serializer.fromJson<DateTime?>(json['purchaseDate']),
       notes: serializer.fromJson<String?>(json['notes']),
@@ -411,6 +496,10 @@ class Pedal extends DataClass implements Insertable<Pedal> {
       'status': serializer.toJson<String>(
         $PedalsTable.$converterstatus.toJson(status),
       ),
+      'hostPedalId': serializer.toJson<int?>(hostPedalId),
+      'multiEffectsMode': serializer.toJson<String?>(
+        $PedalsTable.$convertermultiEffectsModen.toJson(multiEffectsMode),
+      ),
       'photoPath': serializer.toJson<String?>(photoPath),
       'purchaseDate': serializer.toJson<DateTime?>(purchaseDate),
       'notes': serializer.toJson<String?>(notes),
@@ -426,6 +515,8 @@ class Pedal extends DataClass implements Insertable<Pedal> {
     PedalType? type,
     PedalCategory? category,
     PedalStatus? status,
+    Value<int?> hostPedalId = const Value.absent(),
+    Value<MultiEffectsMode?> multiEffectsMode = const Value.absent(),
     Value<String?> photoPath = const Value.absent(),
     Value<DateTime?> purchaseDate = const Value.absent(),
     Value<String?> notes = const Value.absent(),
@@ -438,6 +529,10 @@ class Pedal extends DataClass implements Insertable<Pedal> {
     type: type ?? this.type,
     category: category ?? this.category,
     status: status ?? this.status,
+    hostPedalId: hostPedalId.present ? hostPedalId.value : this.hostPedalId,
+    multiEffectsMode: multiEffectsMode.present
+        ? multiEffectsMode.value
+        : this.multiEffectsMode,
     photoPath: photoPath.present ? photoPath.value : this.photoPath,
     purchaseDate: purchaseDate.present ? purchaseDate.value : this.purchaseDate,
     notes: notes.present ? notes.value : this.notes,
@@ -452,6 +547,12 @@ class Pedal extends DataClass implements Insertable<Pedal> {
       type: data.type.present ? data.type.value : this.type,
       category: data.category.present ? data.category.value : this.category,
       status: data.status.present ? data.status.value : this.status,
+      hostPedalId: data.hostPedalId.present
+          ? data.hostPedalId.value
+          : this.hostPedalId,
+      multiEffectsMode: data.multiEffectsMode.present
+          ? data.multiEffectsMode.value
+          : this.multiEffectsMode,
       photoPath: data.photoPath.present ? data.photoPath.value : this.photoPath,
       purchaseDate: data.purchaseDate.present
           ? data.purchaseDate.value
@@ -471,6 +572,8 @@ class Pedal extends DataClass implements Insertable<Pedal> {
           ..write('type: $type, ')
           ..write('category: $category, ')
           ..write('status: $status, ')
+          ..write('hostPedalId: $hostPedalId, ')
+          ..write('multiEffectsMode: $multiEffectsMode, ')
           ..write('photoPath: $photoPath, ')
           ..write('purchaseDate: $purchaseDate, ')
           ..write('notes: $notes, ')
@@ -488,6 +591,8 @@ class Pedal extends DataClass implements Insertable<Pedal> {
     type,
     category,
     status,
+    hostPedalId,
+    multiEffectsMode,
     photoPath,
     purchaseDate,
     notes,
@@ -504,6 +609,8 @@ class Pedal extends DataClass implements Insertable<Pedal> {
           other.type == this.type &&
           other.category == this.category &&
           other.status == this.status &&
+          other.hostPedalId == this.hostPedalId &&
+          other.multiEffectsMode == this.multiEffectsMode &&
           other.photoPath == this.photoPath &&
           other.purchaseDate == this.purchaseDate &&
           other.notes == this.notes &&
@@ -518,6 +625,8 @@ class PedalsCompanion extends UpdateCompanion<Pedal> {
   final Value<PedalType> type;
   final Value<PedalCategory> category;
   final Value<PedalStatus> status;
+  final Value<int?> hostPedalId;
+  final Value<MultiEffectsMode?> multiEffectsMode;
   final Value<String?> photoPath;
   final Value<DateTime?> purchaseDate;
   final Value<String?> notes;
@@ -530,6 +639,8 @@ class PedalsCompanion extends UpdateCompanion<Pedal> {
     this.type = const Value.absent(),
     this.category = const Value.absent(),
     this.status = const Value.absent(),
+    this.hostPedalId = const Value.absent(),
+    this.multiEffectsMode = const Value.absent(),
     this.photoPath = const Value.absent(),
     this.purchaseDate = const Value.absent(),
     this.notes = const Value.absent(),
@@ -543,6 +654,8 @@ class PedalsCompanion extends UpdateCompanion<Pedal> {
     required PedalType type,
     required PedalCategory category,
     this.status = const Value.absent(),
+    this.hostPedalId = const Value.absent(),
+    this.multiEffectsMode = const Value.absent(),
     this.photoPath = const Value.absent(),
     this.purchaseDate = const Value.absent(),
     this.notes = const Value.absent(),
@@ -560,6 +673,8 @@ class PedalsCompanion extends UpdateCompanion<Pedal> {
     Expression<String>? type,
     Expression<String>? category,
     Expression<String>? status,
+    Expression<int>? hostPedalId,
+    Expression<String>? multiEffectsMode,
     Expression<String>? photoPath,
     Expression<DateTime>? purchaseDate,
     Expression<String>? notes,
@@ -573,6 +688,8 @@ class PedalsCompanion extends UpdateCompanion<Pedal> {
       if (type != null) 'type': type,
       if (category != null) 'category': category,
       if (status != null) 'status': status,
+      if (hostPedalId != null) 'host_pedal_id': hostPedalId,
+      if (multiEffectsMode != null) 'multi_effects_mode': multiEffectsMode,
       if (photoPath != null) 'photo_path': photoPath,
       if (purchaseDate != null) 'purchase_date': purchaseDate,
       if (notes != null) 'notes': notes,
@@ -588,6 +705,8 @@ class PedalsCompanion extends UpdateCompanion<Pedal> {
     Value<PedalType>? type,
     Value<PedalCategory>? category,
     Value<PedalStatus>? status,
+    Value<int?>? hostPedalId,
+    Value<MultiEffectsMode?>? multiEffectsMode,
     Value<String?>? photoPath,
     Value<DateTime?>? purchaseDate,
     Value<String?>? notes,
@@ -601,6 +720,8 @@ class PedalsCompanion extends UpdateCompanion<Pedal> {
       type: type ?? this.type,
       category: category ?? this.category,
       status: status ?? this.status,
+      hostPedalId: hostPedalId ?? this.hostPedalId,
+      multiEffectsMode: multiEffectsMode ?? this.multiEffectsMode,
       photoPath: photoPath ?? this.photoPath,
       purchaseDate: purchaseDate ?? this.purchaseDate,
       notes: notes ?? this.notes,
@@ -636,6 +757,14 @@ class PedalsCompanion extends UpdateCompanion<Pedal> {
         $PedalsTable.$converterstatus.toSql(status.value),
       );
     }
+    if (hostPedalId.present) {
+      map['host_pedal_id'] = Variable<int>(hostPedalId.value);
+    }
+    if (multiEffectsMode.present) {
+      map['multi_effects_mode'] = Variable<String>(
+        $PedalsTable.$convertermultiEffectsModen.toSql(multiEffectsMode.value),
+      );
+    }
     if (photoPath.present) {
       map['photo_path'] = Variable<String>(photoPath.value);
     }
@@ -663,6 +792,8 @@ class PedalsCompanion extends UpdateCompanion<Pedal> {
           ..write('type: $type, ')
           ..write('category: $category, ')
           ..write('status: $status, ')
+          ..write('hostPedalId: $hostPedalId, ')
+          ..write('multiEffectsMode: $multiEffectsMode, ')
           ..write('photoPath: $photoPath, ')
           ..write('purchaseDate: $purchaseDate, ')
           ..write('notes: $notes, ')
@@ -5297,6 +5428,10 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     'idx_pedals_name',
     'CREATE INDEX idx_pedals_name ON pedals (name)',
   );
+  late final Index idxPedalsHost = Index(
+    'idx_pedals_host',
+    'CREATE INDEX idx_pedals_host ON pedals (host_pedal_id)',
+  );
   late final Index idxPedalControlsPedalOrder = Index(
     'idx_pedal_controls_pedal_order',
     'CREATE INDEX idx_pedal_controls_pedal_order ON pedal_controls (pedal_id, display_order)',
@@ -5367,6 +5502,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     rigSnapshotValues,
     idxPedalsStatus,
     idxPedalsName,
+    idxPedalsHost,
     idxPedalControlsPedalOrder,
     idxConfigurationsPedal,
     idxChangeLogsPedalTime,
@@ -5442,6 +5578,8 @@ typedef $$PedalsTableCreateCompanionBuilder =
       required PedalType type,
       required PedalCategory category,
       Value<PedalStatus> status,
+      Value<int?> hostPedalId,
+      Value<MultiEffectsMode?> multiEffectsMode,
       Value<String?> photoPath,
       Value<DateTime?> purchaseDate,
       Value<String?> notes,
@@ -5456,6 +5594,8 @@ typedef $$PedalsTableUpdateCompanionBuilder =
       Value<PedalType> type,
       Value<PedalCategory> category,
       Value<PedalStatus> status,
+      Value<int?> hostPedalId,
+      Value<MultiEffectsMode?> multiEffectsMode,
       Value<String?> photoPath,
       Value<DateTime?> purchaseDate,
       Value<String?> notes,
@@ -5466,6 +5606,23 @@ typedef $$PedalsTableUpdateCompanionBuilder =
 final class $$PedalsTableReferences
     extends BaseReferences<_$AppDatabase, $PedalsTable, Pedal> {
   $$PedalsTableReferences(super.$_db, super.$_table, super.$_typedResult);
+
+  static $PedalsTable _hostPedalIdTable(_$AppDatabase db) =>
+      db.pedals.createAlias('pedals__host_pedal_id__pedals__id');
+
+  $$PedalsTableProcessedTableManager? get hostPedalId {
+    final $_column = $_itemColumn<int>('host_pedal_id');
+    if ($_column == null) return null;
+    final manager = $$PedalsTableTableManager(
+      $_db,
+      $_db.pedals,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_hostPedalIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
 
   static MultiTypedResultKey<$PedalControlsTable, List<PedalControl>>
   _pedalControlsRefsTable(_$AppDatabase db) => MultiTypedResultKey.fromTable(
@@ -5647,6 +5804,12 @@ class $$PedalsTableFilterComposer
         builder: (column) => ColumnWithTypeConverterFilters(column),
       );
 
+  ColumnWithTypeConverterFilters<MultiEffectsMode?, MultiEffectsMode, String>
+  get multiEffectsMode => $composableBuilder(
+    column: $table.multiEffectsMode,
+    builder: (column) => ColumnWithTypeConverterFilters(column),
+  );
+
   ColumnFilters<String> get photoPath => $composableBuilder(
     column: $table.photoPath,
     builder: (column) => ColumnFilters(column),
@@ -5671,6 +5834,29 @@ class $$PedalsTableFilterComposer
     column: $table.updatedAt,
     builder: (column) => ColumnFilters(column),
   );
+
+  $$PedalsTableFilterComposer get hostPedalId {
+    final $$PedalsTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.hostPedalId,
+      referencedTable: $db.pedals,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$PedalsTableFilterComposer(
+            $db: $db,
+            $table: $db.pedals,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
 
   Expression<bool> pedalControlsRefs(
     Expression<bool> Function($$PedalControlsTableFilterComposer f) f,
@@ -5887,6 +6073,11 @@ class $$PedalsTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<String> get multiEffectsMode => $composableBuilder(
+    column: $table.multiEffectsMode,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<String> get photoPath => $composableBuilder(
     column: $table.photoPath,
     builder: (column) => ColumnOrderings(column),
@@ -5911,6 +6102,29 @@ class $$PedalsTableOrderingComposer
     column: $table.updatedAt,
     builder: (column) => ColumnOrderings(column),
   );
+
+  $$PedalsTableOrderingComposer get hostPedalId {
+    final $$PedalsTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.hostPedalId,
+      referencedTable: $db.pedals,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$PedalsTableOrderingComposer(
+            $db: $db,
+            $table: $db.pedals,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
 }
 
 class $$PedalsTableAnnotationComposer
@@ -5940,6 +6154,12 @@ class $$PedalsTableAnnotationComposer
   GeneratedColumnWithTypeConverter<PedalStatus, String> get status =>
       $composableBuilder(column: $table.status, builder: (column) => column);
 
+  GeneratedColumnWithTypeConverter<MultiEffectsMode?, String>
+  get multiEffectsMode => $composableBuilder(
+    column: $table.multiEffectsMode,
+    builder: (column) => column,
+  );
+
   GeneratedColumn<String> get photoPath =>
       $composableBuilder(column: $table.photoPath, builder: (column) => column);
 
@@ -5956,6 +6176,29 @@ class $$PedalsTableAnnotationComposer
 
   GeneratedColumn<DateTime> get updatedAt =>
       $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+
+  $$PedalsTableAnnotationComposer get hostPedalId {
+    final $$PedalsTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.hostPedalId,
+      referencedTable: $db.pedals,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$PedalsTableAnnotationComposer(
+            $db: $db,
+            $table: $db.pedals,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
 
   Expression<T> pedalControlsRefs<T extends Object>(
     Expression<T> Function($$PedalControlsTableAnnotationComposer a) f,
@@ -6150,6 +6393,7 @@ class $$PedalsTableTableManager
           (Pedal, $$PedalsTableReferences),
           Pedal,
           PrefetchHooks Function({
+            bool hostPedalId,
             bool pedalControlsRefs,
             bool configurationsRefs,
             bool changeLogsRefs,
@@ -6178,6 +6422,9 @@ class $$PedalsTableTableManager
                 Value<PedalType> type = const Value.absent(),
                 Value<PedalCategory> category = const Value.absent(),
                 Value<PedalStatus> status = const Value.absent(),
+                Value<int?> hostPedalId = const Value.absent(),
+                Value<MultiEffectsMode?> multiEffectsMode =
+                    const Value.absent(),
                 Value<String?> photoPath = const Value.absent(),
                 Value<DateTime?> purchaseDate = const Value.absent(),
                 Value<String?> notes = const Value.absent(),
@@ -6190,6 +6437,8 @@ class $$PedalsTableTableManager
                 type: type,
                 category: category,
                 status: status,
+                hostPedalId: hostPedalId,
+                multiEffectsMode: multiEffectsMode,
                 photoPath: photoPath,
                 purchaseDate: purchaseDate,
                 notes: notes,
@@ -6204,6 +6453,9 @@ class $$PedalsTableTableManager
                 required PedalType type,
                 required PedalCategory category,
                 Value<PedalStatus> status = const Value.absent(),
+                Value<int?> hostPedalId = const Value.absent(),
+                Value<MultiEffectsMode?> multiEffectsMode =
+                    const Value.absent(),
                 Value<String?> photoPath = const Value.absent(),
                 Value<DateTime?> purchaseDate = const Value.absent(),
                 Value<String?> notes = const Value.absent(),
@@ -6216,6 +6468,8 @@ class $$PedalsTableTableManager
                 type: type,
                 category: category,
                 status: status,
+                hostPedalId: hostPedalId,
+                multiEffectsMode: multiEffectsMode,
                 photoPath: photoPath,
                 purchaseDate: purchaseDate,
                 notes: notes,
@@ -6230,6 +6484,7 @@ class $$PedalsTableTableManager
               .toList(),
           prefetchHooksCallback:
               ({
+                hostPedalId = false,
                 pedalControlsRefs = false,
                 configurationsRefs = false,
                 changeLogsRefs = false,
@@ -6249,7 +6504,38 @@ class $$PedalsTableTableManager
                     if (pedalboardSlotsRefs) db.pedalboardSlots,
                     if (rigSnapshotEntriesRefs) db.rigSnapshotEntries,
                   ],
-                  addJoins: null,
+                  addJoins:
+                      <
+                        T extends TableManagerState<
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic
+                        >
+                      >(state) {
+                        if (hostPedalId) {
+                          state =
+                              state.withJoin(
+                                    currentTable: table,
+                                    currentColumn: table.hostPedalId,
+                                    referencedTable: $$PedalsTableReferences
+                                        ._hostPedalIdTable(db),
+                                    referencedColumn: $$PedalsTableReferences
+                                        ._hostPedalIdTable(db)
+                                        .id,
+                                  )
+                                  as T;
+                        }
+
+                        return state;
+                      },
                   getPrefetchedDataCallback: (items) async {
                     return [
                       if (pedalControlsRefs)
@@ -6420,6 +6706,7 @@ typedef $$PedalsTableProcessedTableManager =
       (Pedal, $$PedalsTableReferences),
       Pedal,
       PrefetchHooks Function({
+        bool hostPedalId,
         bool pedalControlsRefs,
         bool configurationsRefs,
         bool changeLogsRefs,

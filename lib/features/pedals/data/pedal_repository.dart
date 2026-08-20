@@ -29,6 +29,10 @@ class PedalRepository {
 
   Stream<List<Pedal>> watchPedals() => _dao.watchPedals();
 
+  /// The stomps or blocks inside one multi-effects unit.
+  Stream<List<Pedal>> watchComponentPedals(int hostPedalId) =>
+      _dao.watchComponentPedals(hostPedalId);
+
   Stream<Pedal?> watchPedal(int pedalId) => _dao.watchPedal(pedalId);
 
   Future<int> createPedal(PedalDraft draft) async {
@@ -46,6 +50,8 @@ class PedalRepository {
           photoPath: Value(pedal.photoPath),
           purchaseDate: Value(pedal.purchaseDate),
           notes: Value(pedal.notes),
+          hostPedalId: Value(pedal.hostPedalId),
+          multiEffectsMode: Value(pedal.multiEffectsMode),
           createdAt: now,
           updatedAt: now,
         ),
@@ -77,6 +83,8 @@ class PedalRepository {
             photoPath: Value(pedal.photoPath),
             purchaseDate: Value(pedal.purchaseDate),
             notes: Value(pedal.notes),
+            hostPedalId: Value(pedal.hostPedalId),
+            multiEffectsMode: Value(pedal.multiEffectsMode),
             updatedAt: Value(_clock()),
           ),
         );
@@ -100,13 +108,13 @@ class PedalRepository {
       deleted = await _dao.deletePedal(pedalId);
     } catch (error) {
       // The only constraint a pedal delete can violate is a foreign key:
-      // configurations, change logs, replacement records, rig slots and snapshot
-      // entries all reference pedals with ON DELETE RESTRICT. Retiring is the
-      // intended path.
+      // configurations, change logs, replacement records, rig slots, snapshot
+      // entries and the pedals inside a multi-effects unit all reference pedals
+      // with ON DELETE RESTRICT. Retiring is the intended path.
       throw AppFailure(
-        'This pedal is on a rig, or has configurations, history or snapshots '
-        'attached. Take it off the rig, or change its status rather than '
-        'deleting it.',
+        'This pedal is on a rig, holds other pedals, or has configurations, '
+        'history or snapshots attached. Take it off the rig, or change its '
+        'status rather than deleting it.',
         cause: error,
       );
     }

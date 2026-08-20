@@ -13,14 +13,33 @@ part 'pedal_dao.g.dart';
 class PedalDao extends DatabaseAccessor<AppDatabase> with _$PedalDaoMixin {
   PedalDao(super.attachedDatabase);
 
-  /// All pedals, ordered by name.
+  /// The pedals a player owns as separate pieces of gear, ordered by name.
+  ///
+  /// A stomp or block inside a multi-effects unit is deliberately not one of
+  /// them: it is reached through its unit, and counting it here would put it in
+  /// the inventory list, the dashboard tallies, the rig chain picker and the
+  /// replacement list, none of which it belongs in. This is the only query the
+  /// whole app lists pedals through, so excluding them once excludes them
+  /// everywhere.
   ///
   /// SQLite's default collation is case-sensitive, which would sort "joyo"
   /// after "Zoom", so the ordering is explicitly case-insensitive.
   Stream<List<Pedal>> watchPedals() {
-    return (select(pedals)..orderBy([
-          (row) => OrderingTerm.asc(row.name.collate(Collate.noCase)),
-        ]))
+    return (select(pedals)
+          ..where((row) => row.hostPedalId.isNull())
+          ..orderBy([
+            (row) => OrderingTerm.asc(row.name.collate(Collate.noCase)),
+          ]))
+        .watch();
+  }
+
+  /// The pedals inside [hostPedalId], in the order they are named.
+  Stream<List<Pedal>> watchComponentPedals(int hostPedalId) {
+    return (select(pedals)
+          ..where((row) => row.hostPedalId.equals(hostPedalId))
+          ..orderBy([
+            (row) => OrderingTerm.asc(row.name.collate(Collate.noCase)),
+          ]))
         .watch();
   }
 
