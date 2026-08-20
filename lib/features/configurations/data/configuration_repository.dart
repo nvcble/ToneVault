@@ -45,7 +45,9 @@ class ConfigurationRepository {
     final configuration = _validated(draft);
     await _ensureNameIsFree(pedalId, configuration.name);
 
-    final controls = await _controlDao.controlsOf(pedalId);
+    // The pedals inside a multi-effects unit included: a scene of that unit
+    // starts out setting the controls on its patch, which are not the unit's own.
+    final controls = await _controlDao.settableControlsOf(pedalId);
     final values = _validatedValues(configuration.values, controls);
     final now = _clock();
 

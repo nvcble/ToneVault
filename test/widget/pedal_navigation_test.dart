@@ -91,6 +91,13 @@ void main() {
           controlProvider(
             control.id,
           ).overrideWith((ref) => Stream.value(control)),
+          // A configuration reads the same controls under the pedal each is on,
+          // which for a pedal that holds no others is this pedal alone.
+          settableControlsProvider(pedal.id).overrideWith(
+            (ref) => Stream.value([
+              (owner: shown, controls: [control]),
+            ]),
+          ),
           // As do its configurations and the positions they hold.
           configurationListProvider(
             pedal.id,

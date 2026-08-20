@@ -170,7 +170,9 @@ class RigSnapshotRepository {
     await _dao.insertValues(
       frozenReadings(
         entryId: entryId,
-        controls: await _controlDao.controlsOf(pedalId),
+        // Every control the chosen configuration could have set, so a scene of a
+        // multi-effects unit is frozen as fully as an ordinary pedal's setting.
+        controls: await _controlDao.settableControlsOf(pedalId),
         values: await _configurationDao.valuesOf(configuration.id),
       ),
     );

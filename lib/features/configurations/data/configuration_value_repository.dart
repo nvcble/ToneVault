@@ -122,7 +122,12 @@ class ConfigurationValueRepository {
     );
   }
 
-  /// A control can only be set within a configuration of the pedal it is on.
+  /// A control can only be set within a configuration of the pedal it is on, or
+  /// of the multi-effects unit that pedal sits inside.
+  ///
+  /// The second case is what a scene is: the unit is the patch, and its scenes
+  /// set the controls of the pedals on that patch. The check is left to the
+  /// query, so nothing here has to know which kind of pedal it is looking at.
   ///
   /// Both rows come back together because both are needed either way: the
   /// control to check the value against, and the configuration to file the
@@ -136,8 +141,11 @@ class ConfigurationValueRepository {
       throw const AppFailure('That configuration no longer exists.');
     }
 
-    final control = await _controlDao.findControl(controlId);
-    if (control == null || control.pedalId != configuration.pedalId) {
+    final control = await _controlDao.findSettableControl(
+      controlId: controlId,
+      pedalId: configuration.pedalId,
+    );
+    if (control == null) {
       throw const AppFailure('That control is no longer on this pedal.');
     }
 

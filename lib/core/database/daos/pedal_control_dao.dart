@@ -2,14 +2,22 @@ import 'package:drift/drift.dart';
 
 import '../app_database.dart';
 import '../tables/pedal_controls_table.dart';
+import '../tables/pedals_table.dart';
 
 part 'pedal_control_dao.g.dart';
+
+/// One control, with the pedal it is on.
+///
+/// The owner is carried alongside because a configuration of a multi-effects
+/// unit can set controls that live on several pedals, and a bare control cannot
+/// say which.
+typedef OwnedControl = ({Pedal owner, PedalControl control});
 
 /// Typed queries over the `pedal_controls` table.
 ///
 /// Validation, domain rules and error translation belong to
 /// `ControlRepository`; this class only reads and writes rows.
-@DriftAccessor(tables: [PedalControls])
+@DriftAccessor(tables: [PedalControls, Pedals])
 class PedalControlDao extends DatabaseAccessor<AppDatabase>
     with _$PedalControlDaoMixin {
   PedalControlDao(super.attachedDatabase);
@@ -34,6 +42,56 @@ class PedalControlDao extends DatabaseAccessor<AppDatabase>
           ..orderBy([(row) => OrderingTerm.asc(row.displayOrder)]))
         .get();
   }
+
+  /// Every control a configuration of [pedalId] can set, each with its pedal.
+  ///
+  /// One query covers both shapes a configuration takes. An ordinary pedal holds
+  /// no other pedals, so only its own controls match and this is exactly
+  /// [watchControls]. A multi-effects unit in scene mode has no controls of its
+  /// own, so what comes back is the controls of the pedals on its patch - which
+  /// is what a scene sets.
+  Stream<List<OwnedControl>> watchSettableControls(int pedalId) =>
+      _settable(pedalId).watch().map(_owned);
+
+  Future<List<PedalControl>> settableControlsOf(int pedalId) async {
+    final rows = await _settable(pedalId).get();
+    return [for (final row in _owned(rows)) row.control];
+  }
+
+  /// [controlId], but only when a configuration of [pedalId] may set it.
+  ///
+  /// Null covers both a control that is gone and one that belongs to neither
+  /// this pedal nor a pedal inside it; the caller cannot act differently on the
+  /// two, so they read the same.
+  Future<PedalControl?> findSettableControl({
+    required int controlId,
+    required int pedalId,
+  }) async {
+    final query = _settable(pedalId)..where(pedalControls.id.equals(controlId));
+    final row = await query.getSingleOrNull();
+    return row?.readTable(pedalControls);
+  }
+
+  /// The controls of [pedalId] and of the pedals inside it, the pedal's own
+  /// first and then the others by name, so a scene reads down the patch the same
+  /// way every time.
+  JoinedSelectStatement<HasResultSet, dynamic> _settable(int pedalId) {
+    return select(
+        pedalControls,
+      ).join([innerJoin(pedals, pedals.id.equalsExp(pedalControls.pedalId))])
+      ..where(pedals.id.equals(pedalId) | pedals.hostPedalId.equals(pedalId))
+      ..orderBy([
+        OrderingTerm.desc(pedals.id.equals(pedalId)),
+        OrderingTerm.asc(pedals.name.collate(Collate.noCase)),
+        OrderingTerm.asc(pedalControls.displayOrder),
+        OrderingTerm.asc(pedalControls.name.collate(Collate.noCase)),
+      ]);
+  }
+
+  List<OwnedControl> _owned(List<TypedResult> rows) => [
+    for (final row in rows)
+      (owner: row.readTable(pedals), control: row.readTable(pedalControls)),
+  ];
 
   Stream<PedalControl?> watchControl(int controlId) {
     return (select(
