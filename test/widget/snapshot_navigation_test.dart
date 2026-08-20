@@ -10,7 +10,9 @@ import 'package:tone_vault/core/enums/pedal_category.dart';
 import 'package:tone_vault/core/enums/pedal_status.dart';
 import 'package:tone_vault/core/enums/pedal_type.dart';
 import 'package:tone_vault/features/pedalboards/providers/pedalboard_providers.dart';
+import 'package:tone_vault/features/pedals/providers/pedal_providers.dart';
 import 'package:tone_vault/features/snapshots/providers/snapshot_providers.dart';
+import '../support/app_tabs.dart';
 
 /// Getting to a snapshot and back out of it: the rig's list, the snapshot
 /// itself, and renaming or removing one. Every stream is a plain value, so no
@@ -86,6 +88,8 @@ void main() {
       ProviderScope(
         overrides: [
           pedalboardListProvider.overrideWith((ref) => Stream.value([worship])),
+          // The app opens on the home tab, which counts the pedals too.
+          pedalListProvider.overrideWith((ref) => Stream.value(<Pedal>[drive])),
           pedalboardProvider(
             worship.id,
           ).overrideWith((ref) => Stream.value(worship)),
@@ -107,8 +111,7 @@ void main() {
     );
     await tester.pumpAndSettle();
 
-    await tester.tap(find.text('Rigs'));
-    await tester.pumpAndSettle();
+    await openTab(tester, 'Rigs');
     await tester.tap(find.text('Hybrid Worship Rig'));
     await tester.pumpAndSettle();
     await tester.tap(find.text('Snapshots'));

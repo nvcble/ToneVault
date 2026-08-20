@@ -6,6 +6,7 @@ import 'package:tone_vault/core/database/daos/change_log_dao.dart';
 import 'package:tone_vault/features/history/providers/history_providers.dart';
 import 'package:tone_vault/features/pedalboards/providers/pedalboard_providers.dart';
 import 'package:tone_vault/features/pedals/providers/pedal_providers.dart';
+import '../support/app_tabs.dart';
 
 void main() {
   /// Pumps the real app with stand-ins for the tabs that read the database: they
@@ -34,17 +35,16 @@ void main() {
   testWidgets('bottom bar moves between all five tabs', (tester) async {
     await pumpApp(tester);
 
-    expect(find.text('Your rig at a glance'), findsOneWidget);
+    expect(find.text('Your collection'), findsOneWidget);
 
     for (final (label, expectedBody) in const [
       ('Pedals', 'No pedals yet'),
       ('Rigs', 'No rigs yet'),
       ('History', 'Nothing logged yet'),
       ('Settings', 'Your gear, kept safe'),
-      ('Home', 'Your rig at a glance'),
+      ('Home', 'Your collection'),
     ]) {
-      await tester.tap(find.text(label));
-      await tester.pumpAndSettle();
+      await openTab(tester, label);
 
       expect(
         find.text(expectedBody),
@@ -59,10 +59,8 @@ void main() {
   ) async {
     await pumpApp(tester);
 
-    await tester.tap(find.text('History'));
-    await tester.pumpAndSettle();
-    await tester.tap(find.text('Home'));
-    await tester.pumpAndSettle();
+    await openTab(tester, 'History');
+    await openTab(tester, 'Home');
 
     // An IndexedStack shell keeps inactive branches mounted, which is what lets
     // each tab hold its own scroll position and detail stack.
