@@ -12,6 +12,7 @@ import 'package:tone_vault/core/enums/pedal_type.dart';
 import 'package:tone_vault/features/configurations/providers/configuration_providers.dart';
 import 'package:tone_vault/features/controls/providers/control_providers.dart';
 import 'package:tone_vault/features/history/providers/history_providers.dart';
+import 'package:tone_vault/features/patches/providers/patch_providers.dart';
 import 'package:tone_vault/features/pedals/providers/pedal_providers.dart';
 import 'package:tone_vault/features/replacements/providers/replacement_providers.dart';
 import '../support/app_tabs.dart';
@@ -84,8 +85,13 @@ void main() {
           ...homeStreamOverrides(pedals: [shown], changes: [change]),
           pedalProvider(pedal.id).overrideWith((ref) => Stream.value(shown)),
           // Read only when the pedal is a multi-effects unit, whose Patch tab
-          // lists the pedals inside it; empty is enough for the tabs under test.
+          // holds its patches and the pedals inside it; empty is enough for the
+          // tabs under test, and the patches themselves are
+          // `patch_navigation_test.dart`.
           componentPedalListProvider(
+            pedal.id,
+          ).overrideWith((ref) => Stream.value(const [])),
+          patchListProvider(
             pedal.id,
           ).overrideWith((ref) => Stream.value(const [])),
           // The detail screen lists the pedal's controls, so the controls come

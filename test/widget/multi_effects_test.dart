@@ -7,6 +7,7 @@ import 'package:tone_vault/core/enums/pedal_status.dart';
 import 'package:tone_vault/core/enums/pedal_type.dart';
 import 'package:tone_vault/features/configurations/providers/configuration_providers.dart';
 import 'package:tone_vault/features/history/providers/history_providers.dart';
+import 'package:tone_vault/features/patches/providers/patch_providers.dart';
 import 'package:tone_vault/features/pedals/providers/pedal_providers.dart';
 import 'package:tone_vault/features/pedals/screens/pedal_detail_screen.dart';
 import 'package:tone_vault/features/replacements/providers/replacement_providers.dart';
@@ -49,6 +50,15 @@ void main() {
     updatedAt: DateTime.utc(2026, 8, 19),
   );
 
+  /// A sound of the unit, which is what its Patch tab opens on.
+  final patch = Patch(
+    id: 12,
+    pedalId: unit.id,
+    name: 'Worship Clean',
+    createdAt: DateTime.utc(2026, 8, 19),
+    updatedAt: DateTime.utc(2026, 8, 19),
+  );
+
   /// Opens the unit's own screen with one pedal inside it.
   Future<void> pumpUnit(WidgetTester tester) async {
     tester.view.physicalSize = const Size(1000, 2400);
@@ -62,6 +72,9 @@ void main() {
           componentPedalListProvider(
             unit.id,
           ).overrideWith((ref) => Stream.value([inside])),
+          patchListProvider(
+            unit.id,
+          ).overrideWith((ref) => Stream.value([patch])),
           configurationListProvider(
             unit.id,
           ).overrideWith((ref) => Stream.value([configuration])),
@@ -90,17 +103,29 @@ void main() {
     expect(find.widgetWithText(Tab, 'History'), findsOne);
   });
 
-  testWidgets('the patch tab lists the pedals the unit holds', (tester) async {
+  testWidgets('the patch tab opens on the unit\'s patches', (tester) async {
     await pumpUnit(tester);
     await tester.tap(find.widgetWithText(Tab, 'Patch'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Worship Clean'), findsOne);
+    expect(find.widgetWithText(FilledButton, 'Add patch'), findsOne);
+
+    // The unit's own configurations are not its scenes, so they are not here.
+    expect(find.text('Chorus scene'), findsNothing);
+  });
+
+  testWidgets('and behind a switch, the pedals the unit holds', (tester) async {
+    await pumpUnit(tester);
+    await tester.tap(find.widgetWithText(Tab, 'Patch'));
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text('Pedals'));
     await tester.pumpAndSettle();
 
     // Each is an ordinary pedal, so it reads as one: the same card the inventory
     // list uses. A scene then picks from them.
     expect(find.text('Tube Screamer'), findsOne);
     expect(find.widgetWithText(FilledButton, 'Add pedal'), findsOne);
-
-    // The unit's own configurations are not its scenes, so they are not here.
-    expect(find.text('Chorus scene'), findsNothing);
   });
 }

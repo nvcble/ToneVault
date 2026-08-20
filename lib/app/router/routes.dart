@@ -38,6 +38,27 @@ abstract final class Routes {
   static String configurationEdit(int pedalId, int configurationId) =>
       '${configurationDetail(pedalId, configurationId)}/edit';
 
+  /// A multi-effects unit keeps patches where an ordinary pedal keeps
+  /// configurations, so they hang off the unit in the same way.
+  static String patchNew(int pedalId) => '${pedalDetail(pedalId)}/patches/new';
+
+  static String patchDetail(int pedalId, int patchId) =>
+      '${pedalDetail(pedalId)}/patches/$patchId';
+
+  static String patchEdit(int pedalId, int patchId) =>
+      '${patchDetail(pedalId, patchId)}/edit';
+
+  /// A scene is one sound within a patch, so it is reached through it. Two
+  /// patches may each have a "Verse", which is why the patch stays in the path.
+  static String sceneNew(int pedalId, int patchId) =>
+      '${patchDetail(pedalId, patchId)}/scenes/new';
+
+  static String sceneDetail(int pedalId, int patchId, int sceneId) =>
+      '${patchDetail(pedalId, patchId)}/scenes/$sceneId';
+
+  static String sceneEdit(int pedalId, int patchId, int sceneId) =>
+      '${sceneDetail(pedalId, patchId, sceneId)}/edit';
+
   static const String rigNew = '$rigs/new';
 
   static String rigDetail(int pedalboardId) => '$rigs/$pedalboardId';
@@ -66,6 +87,12 @@ abstract final class Routes {
   static const String configurationDetailSegment =
       'configurations/:configurationId';
   static const String configurationEditSegment = 'edit';
+  static const String patchNewSegment = 'patches/new';
+  static const String patchDetailSegment = 'patches/:patchId';
+  static const String patchEditSegment = 'edit';
+  static const String sceneNewSegment = 'scenes/new';
+  static const String sceneDetailSegment = 'scenes/:sceneId';
+  static const String sceneEditSegment = 'edit';
 
   static const String rigNewSegment = 'new';
   static const String rigDetailSegment = ':rigId';

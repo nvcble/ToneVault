@@ -4,6 +4,10 @@ import '../../../app/router/routes.dart';
 import '../../configurations/screens/configuration_form_screen.dart';
 import '../../configurations/screens/configuration_screen.dart';
 import '../../controls/screens/control_form_screen.dart';
+import '../../patches/screens/patch_form_screen.dart';
+import '../../patches/screens/patch_screen.dart';
+import '../../patches/screens/scene_form_screen.dart';
+import '../../patches/screens/scene_screen.dart';
 import '../screens/pedal_detail_screen.dart';
 import '../screens/pedal_form_screen.dart';
 import '../screens/pedals_screen.dart';
@@ -77,6 +81,55 @@ List<RouteBase> pedalRoutes() {
                 ),
               ],
             ),
+            // Declared ahead of ':patchId' so '/patches/new' is not matched as
+            // a patch id.
+            GoRoute(
+              path: Routes.patchNewSegment,
+              builder: (context, state) =>
+                  PatchFormScreen(pedalId: _pedalId(state)),
+            ),
+            GoRoute(
+              path: Routes.patchDetailSegment,
+              builder: (context, state) => PatchScreen(
+                pedalId: _pedalId(state),
+                patchId: _patchId(state),
+              ),
+              routes: [
+                GoRoute(
+                  path: Routes.patchEditSegment,
+                  builder: (context, state) => PatchFormScreen(
+                    pedalId: _pedalId(state),
+                    patchId: _patchId(state),
+                  ),
+                ),
+                // And ahead of ':sceneId', for the same reason.
+                GoRoute(
+                  path: Routes.sceneNewSegment,
+                  builder: (context, state) => SceneFormScreen(
+                    pedalId: _pedalId(state),
+                    patchId: _patchId(state),
+                  ),
+                ),
+                GoRoute(
+                  path: Routes.sceneDetailSegment,
+                  builder: (context, state) => SceneScreen(
+                    pedalId: _pedalId(state),
+                    patchId: _patchId(state),
+                    sceneId: _sceneId(state),
+                  ),
+                  routes: [
+                    GoRoute(
+                      path: Routes.sceneEditSegment,
+                      builder: (context, state) => SceneFormScreen(
+                        pedalId: _pedalId(state),
+                        patchId: _patchId(state),
+                        sceneId: _sceneId(state),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ],
         ),
       ],
@@ -94,3 +147,9 @@ int _controlId(GoRouterState state) =>
 
 int _configurationId(GoRouterState state) =>
     int.tryParse(state.pathParameters['configurationId'] ?? '') ?? -1;
+
+int _patchId(GoRouterState state) =>
+    int.tryParse(state.pathParameters['patchId'] ?? '') ?? -1;
+
+int _sceneId(GoRouterState state) =>
+    int.tryParse(state.pathParameters['sceneId'] ?? '') ?? -1;
