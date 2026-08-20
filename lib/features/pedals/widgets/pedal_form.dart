@@ -73,19 +73,22 @@ class _PedalFormState extends State<PedalForm> {
     super.dispose();
   }
 
-  /// A multi-effects unit is described by its name and its category alone.
+  /// A multi-effects unit, and each pedal inside one, is described by its name
+  /// and its category alone.
   ///
-  /// What it sounds like is in its patches, and the pedals inside it carry their
-  /// own brand, dates and status - asking for those on the outside as well only
-  /// invites two answers that disagree.
-  bool get _isUnit => _category == PedalCategory.multiEffects;
+  /// What a unit sounds like is in its patches. A pedal inside one has no brand,
+  /// purchase date or status of its own either: the unit is the box that was
+  /// bought and that sits on the board, so asking again per pedal inside it only
+  /// invites answers that disagree with it.
+  bool get _isNameAndCategoryOnly =>
+      _category == PedalCategory.multiEffects || widget.hostPedalId != null;
 
   void _submit() {
     final category = _category;
-    // The type field is not on screen for a unit, so it is not asked for: every
-    // multi-effects unit is digital, which is the same fact the v8 migration
-    // asserted when the multi-effects pedal type was dropped.
-    final type = _isUnit ? PedalType.digital : _type;
+    // The type field is not on screen for either, so it is not asked for: a unit
+    // is digital, which is the same fact the v8 migration asserted when the
+    // multi-effects pedal type was dropped, and so is anything inside one.
+    final type = _isNameAndCategoryOnly ? PedalType.digital : _type;
 
     if (!(_formKey.currentState?.validate() ?? false) ||
         type == null ||
@@ -96,7 +99,8 @@ class _PedalFormState extends State<PedalForm> {
     // The hidden fields hand back whatever they were holding rather than null:
     // a pedal that was filled in and then made a unit keeps its brand and its
     // purchase date, which are facts about it either way. Only the type is
-    // decided here.
+    // decided here. A pedal added inside a unit was never asked, so its fields
+    // are empty and stay that way.
     widget.onSubmit(
       PedalDraft(
         name: _nameController.text,
@@ -144,9 +148,9 @@ class _PedalFormState extends State<PedalForm> {
             textInputAction: TextInputAction.next,
             validator: PedalValidator.name,
           ),
-          // Everything but the name and the category belongs to a pedal that
-          // makes one sound; see [_isUnit].
-          if (!_isUnit) ...[
+          // Everything but the name and the category belongs to a pedal that is
+          // a box of its own; see [_isNameAndCategoryOnly].
+          if (!_isNameAndCategoryOnly) ...[
             const SizedBox(height: AppSpacing.md),
             TextFormField(
               controller: _brandController,
@@ -180,7 +184,7 @@ class _PedalFormState extends State<PedalForm> {
             emptyMessage: 'Pick what this pedal does.',
             onChanged: (category) => setState(() => _category = category),
           ),
-          if (!_isUnit) ...[
+          if (!_isNameAndCategoryOnly) ...[
             const SizedBox(height: AppSpacing.md),
             _enumField<PedalStatus>(
               label: 'Status',

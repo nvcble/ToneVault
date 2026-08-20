@@ -11,7 +11,11 @@ void main() {
 
   setUp(() => submitted = null);
 
-  Future<void> pumpForm(WidgetTester tester, {PedalDraft? initialDraft}) async {
+  Future<void> pumpForm(
+    WidgetTester tester, {
+    PedalDraft? initialDraft,
+    int? hostPedalId,
+  }) async {
     // The form is taller than the default 800x600 test surface. A tall window
     // keeps every field on screen, so taps do not depend on scroll position.
     tester.view.physicalSize = const Size(1000, 2400);
@@ -24,6 +28,7 @@ void main() {
           body: PedalForm(
             submitLabel: 'Add pedal',
             initialDraft: initialDraft,
+            hostPedalId: hostPedalId,
             onSubmit: (draft) => submitted = draft,
           ),
         ),
@@ -137,6 +142,46 @@ void main() {
     expect(submitted?.category, PedalCategory.multiEffects);
     expect(submitted?.type, PedalType.digital);
     expect(submitted?.status, PedalStatus.active);
+  });
+
+  testWidgets('a pedal added inside a unit is asked as little as the unit', (
+    tester,
+  ) async {
+    await pumpForm(tester, hostPedalId: 4);
+
+    // The unit is the box that was bought and that sits on the board, so the
+    // pedals inside it are named and filed, nothing more.
+    expect(find.widgetWithText(TextFormField, 'Name'), findsOne);
+    expect(find.byType(DropdownButtonFormField<PedalCategory>), findsOne);
+    expect(find.widgetWithText(TextFormField, 'Brand'), findsNothing);
+    expect(find.widgetWithText(TextFormField, 'Notes'), findsNothing);
+    expect(find.byType(DropdownButtonFormField<PedalType>), findsNothing);
+    expect(find.byType(DropdownButtonFormField<PedalStatus>), findsNothing);
+    expect(find.text('Purchase date'), findsNothing);
+  });
+
+  testWidgets('a pedal added inside a unit saves against that unit', (
+    tester,
+  ) async {
+    await pumpForm(tester, hostPedalId: 4);
+
+    await tester.enterText(
+      find.widgetWithText(TextFormField, 'Name'),
+      'Rotary',
+    );
+    await pick<PedalCategory>(tester, 'Modulation');
+    await submit(tester);
+
+    expect(submitted?.name, 'Rotary');
+    expect(submitted?.category, PedalCategory.modulation);
+    expect(submitted?.hostPedalId, 4);
+    // Anything inside a digital unit is digital, so the field that is not on
+    // screen is not a missing answer either.
+    expect(submitted?.type, PedalType.digital);
+    // Nothing was entered for the fields that never appeared, and the repository
+    // stores a blank as "not set".
+    expect(submitted?.normalized().brand, isNull);
+    expect(submitted?.normalized().notes, isNull);
   });
 
   testWidgets('making a pedal a unit keeps what it was already told', (
