@@ -12,6 +12,7 @@ import 'package:tone_vault/features/pedals/providers/pedal_providers.dart';
 import 'package:tone_vault/features/replacements/providers/replacement_providers.dart';
 import 'package:tone_vault/features/replacements/widgets/replace_pedal_sheet.dart';
 import '../support/repositories.dart';
+import '../support/themed_app.dart';
 
 /// The replace flow: what the sheet offers, and what the swap leaves behind. The
 /// write is the real one, over an in-memory database.
@@ -50,9 +51,9 @@ void main() {
             replacementRepository(database),
           ),
         ],
-        child: MaterialApp(
-          home: Scaffold(body: ReplacePedalSheet(pedal: pedal)),
-        ),
+        // The app's own theme: its full-width FilledButton is what a row of
+        // sheet actions has to cope with.
+        child: themedApp(ReplacePedalSheet(pedal: pedal)),
       ),
     );
     await tester.pumpAndSettle();

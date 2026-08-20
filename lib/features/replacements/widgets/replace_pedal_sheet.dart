@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../app/theme/app_spacing.dart';
 import '../../../core/database/app_database.dart';
+import '../../../shared/widgets/action_row.dart';
 import '../../../shared/widgets/failure_snack_bar.dart';
 import '../../pedals/providers/pedal_providers.dart';
 import '../data/replacement_choices.dart';
@@ -149,15 +150,15 @@ class _ReplacePedalSheetState extends ConsumerState<ReplacePedalSheet> {
     );
   }
 
+  // The plain Row this replaced could not lay out: the app theme's
+  // FilledButton has an infinite minimum width. See ActionRow.
   Widget _buildActions(bool nothingToPick) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.end,
+    return ActionRow(
       children: [
         TextButton(
           onPressed: _isSaving ? null : () => Navigator.pop(context),
           child: const Text('Cancel'),
         ),
-        const SizedBox(width: AppSpacing.sm),
         FilledButton(
           onPressed: _isSaving || nothingToPick ? null : _save,
           child: const Text('Replace'),

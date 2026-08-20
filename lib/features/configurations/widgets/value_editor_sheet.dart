@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../app/theme/app_spacing.dart';
 import '../../../core/database/app_database.dart';
+import '../../../shared/widgets/action_row.dart';
 import '../../../shared/widgets/failure_snack_bar.dart';
 import '../data/configuration_validator.dart';
 import '../data/control_value_range.dart';
@@ -153,19 +154,18 @@ class _ValueEditorSheetState extends ConsumerState<ValueEditorSheet> {
   }
 
   Widget _buildActions() {
-    return Row(
+    return ActionRow(
+      leading: widget.storedValue == null
+          ? null
+          : TextButton(
+              onPressed: _isSaving ? null : _clear,
+              child: const Text('Clear'),
+            ),
       children: [
-        if (widget.storedValue != null)
-          TextButton(
-            onPressed: _isSaving ? null : _clear,
-            child: const Text('Clear'),
-          ),
-        const Spacer(),
         TextButton(
           onPressed: _isSaving ? null : () => Navigator.pop(context),
           child: const Text('Cancel'),
         ),
-        const SizedBox(width: AppSpacing.sm),
         FilledButton(
           onPressed: _isSaving ? null : _save,
           child: const Text('Save'),
@@ -173,4 +173,31 @@ class _ValueEditorSheetState extends ConsumerState<ValueEditorSheet> {
       ],
     );
   }
+
+  // Kept for tracking: this is the row that made the sheet look dead. The app
+  // theme gives FilledButton an infinite minimum width, which a Row cannot
+  // satisfy, so opening the sheet threw during layout instead of drawing. Any
+  // action bar built this way has the same fault; ActionRow above is the fix.
+  //
+  // Widget _buildActions() {
+  //   return Row(
+  //     children: [
+  //       if (widget.storedValue != null)
+  //         TextButton(
+  //           onPressed: _isSaving ? null : _clear,
+  //           child: const Text('Clear'),
+  //         ),
+  //       const Spacer(),
+  //       TextButton(
+  //         onPressed: _isSaving ? null : () => Navigator.pop(context),
+  //         child: const Text('Cancel'),
+  //       ),
+  //       const SizedBox(width: AppSpacing.sm),
+  //       FilledButton(
+  //         onPressed: _isSaving ? null : _save,
+  //         child: const Text('Save'),
+  //       ),
+  //     ],
+  //   );
+  // }
 }

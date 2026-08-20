@@ -33,6 +33,10 @@ abstract final class AppTheme {
         border: OutlineInputBorder(),
         filled: true,
       ),
+      // Size.fromHeight leaves the minimum width infinite, which is what makes
+      // a form's primary button span its column. A Row offers its children
+      // unbounded width and cannot satisfy that, so a FilledButton in a row of
+      // actions belongs in an ActionRow, which puts a finite minimum back.
       filledButtonTheme: FilledButtonThemeData(
         style: FilledButton.styleFrom(
           minimumSize: const Size.fromHeight(AppSpacing.minTouchTarget),
