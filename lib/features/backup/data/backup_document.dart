@@ -7,6 +7,7 @@ import '../../../core/database/daos/backup_dao.dart';
 import '../../../core/database/migrations.dart';
 import '../../../core/errors/app_failure.dart';
 import '../../../shared/formatting/app_date_format.dart';
+import 'backup_upgrades.dart';
 import 'vault_value_serializer.dart';
 
 /// The version of the backup file's own layout - the header keys and the shape
@@ -72,10 +73,11 @@ String encodeVaultBackup(VaultRows rows, {required DateTime exportedAt}) {
 /// turns out to be a photo or a half-downloaded document is found out before the
 /// vault is touched.
 ///
-/// A file from a newer app is refused rather than guessed at, and so is one from
-/// an older schema: filling in columns that version never had would invent
-/// settings the user never dialled in. Restoring those becomes possible when
-/// there is a second schema version to convert from.
+/// A file from a newer app is refused rather than guessed at. An older one is
+/// brought forward first by [upgradeBackupTables], which leaves the tables that
+/// version never had empty rather than inventing settings the user never dialled
+/// in. Older than [oldestReadableSchemaVersion] is refused: no released version
+/// wrote one.
 VaultBackup decodeVaultBackup(String source) {
   final document = _document(source);
   final formatVersion = document['formatVersion'];
@@ -94,10 +96,9 @@ VaultBackup decodeVaultBackup(String source) {
   if (formatVersion < backupFormatVersion) {
     throw _notABackup();
   }
-  if (schemaVersion < currentSchemaVersion) {
+  if (schemaVersion < oldestReadableSchemaVersion) {
     throw const AppFailure(
-      'That backup was made by an older version of ToneVault and cannot be '
-      'restored into this one.',
+      'That backup was made by a version of ToneVault too old to restore from.',
     );
   }
 
@@ -111,7 +112,7 @@ VaultBackup decodeVaultBackup(String source) {
       formatVersion: formatVersion,
       schemaVersion: schemaVersion,
       exportedAt: _serializer.fromJson<DateTime>(document['exportedAt']),
-      rows: _rows(tables),
+      rows: _rows(upgradeBackupTables(tables, from: schemaVersion)),
     );
   } on AppFailure {
     rethrow;

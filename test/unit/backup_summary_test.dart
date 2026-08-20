@@ -46,9 +46,9 @@ void main() {
     snapshotValues: const [],
   );
 
-  VaultBackup backupOf(VaultRows rows) => (
+  VaultBackup backupOf(VaultRows rows, {int? schemaVersion}) => (
     formatVersion: backupFormatVersion,
-    schemaVersion: currentSchemaVersion,
+    schemaVersion: schemaVersion ?? currentSchemaVersion,
     // A local time, since the user reads it on their own clock.
     exportedAt: DateTime(2026, 8, 20, 7, 15),
     rows: rows,
@@ -87,6 +87,24 @@ void main() {
     expect(
       describeBackup(backupOf(vaultOf())),
       'Taken 2026-08-20 07:15, with no pedals, no rigs and no snapshots in it.',
+    );
+  });
+
+  test('says when a file was made by an older version', () async {
+    final described = describeBackup(
+      backupOf(
+        vaultOf(pedals: 12, rigs: 3, snapshots: 5),
+        schemaVersion: currentSchemaVersion - 1,
+      ),
+    );
+
+    // It will restore, but the parts of the app that came after it come back
+    // empty, and finding that out after the vault is replaced is too late.
+    expect(
+      described,
+      'Taken 2026-08-20 07:15, with 12 pedals, 3 rigs and 5 snapshots in it. '
+      'It was made by an older version of ToneVault, so parts of the app added '
+      'since then come back empty.',
     );
   });
 

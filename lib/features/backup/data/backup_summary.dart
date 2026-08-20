@@ -1,4 +1,5 @@
 import '../../../core/database/daos/backup_dao.dart';
+import '../../../core/database/migrations.dart';
 import '../../../shared/formatting/app_date_format.dart';
 import 'backup_document.dart';
 
@@ -21,13 +22,22 @@ VaultTally tallyVault(VaultRows rows) => (
 /// A restore cannot be undone, so the question has to be answerable: the date it
 /// was taken and how much is in it are what tell the user whether this is the
 /// file they meant.
+///
+/// A file from an older version says so as well. It restores, but the parts of
+/// the app that came after it come back empty, and finding that out afterwards is
+/// finding it out too late.
 String describeBackup(VaultBackup backup) {
   final tally = tallyVault(backup.rows);
 
   return 'Taken ${formatDateTime(backup.exportedAt)}, with '
       '${_count(tally.pedals, 'pedal')}, ${_count(tally.rigs, 'rig')} and '
-      '${_count(tally.snapshots, 'snapshot')} in it.';
+      '${_count(tally.snapshots, 'snapshot')} in it.'
+      '${backup.schemaVersion < currentSchemaVersion ? _madeByAnOlderApp : ''}';
 }
+
+const String _madeByAnOlderApp =
+    ' It was made by an older version of ToneVault, so parts of the app added '
+    'since then come back empty.';
 
 /// What a finished restore put in place, for the report afterwards.
 String describeRestored(VaultRows rows) {

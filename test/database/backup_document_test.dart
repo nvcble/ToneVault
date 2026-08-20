@@ -7,6 +7,7 @@ import 'package:tone_vault/core/database/daos/backup_dao.dart';
 import 'package:tone_vault/core/database/migrations.dart';
 import 'package:tone_vault/core/errors/app_failure.dart';
 import 'package:tone_vault/features/backup/data/backup_document.dart';
+import 'package:tone_vault/features/backup/data/backup_upgrades.dart';
 import '../support/vault_fixture.dart';
 
 /// The backup file itself: what it says, what comes back out of it, and what it
@@ -30,6 +31,21 @@ void main() {
     change(document);
     return json.encode(document);
   }
+
+  /// The same vault as the file an app at [oldestReadableSchemaVersion] wrote:
+  /// the tables added since then were not there to be written.
+  String asOldestSchema() => edited((document) {
+    document['schemaVersion'] = oldestReadableSchemaVersion;
+    final tables = document['tables'] as Map<String, dynamic>;
+    for (final table in const [
+      'patches',
+      'scenes',
+      'scenePedals',
+      'sceneValues',
+    ]) {
+      tables.remove(table);
+    }
+  });
 
   Map<String, dynamic> tablesOf(String source) =>
       (json.decode(source) as Map<String, dynamic>)['tables']
@@ -159,18 +175,49 @@ void main() {
     expect(() => decodeVaultBackup(newerSchema), failsWith(refusal));
   });
 
-  test('refuses a backup from a schema this app has moved past', () async {
-    final older = edited(
-      (document) => document['schemaVersion'] = currentSchemaVersion - 1,
+  test('reads the oldest file any released version wrote', () async {
+    final backup = decodeVaultBackup(asOldestSchema());
+
+    // The gear it does hold comes back whole, and the tables that schema never
+    // had arrive empty rather than being guessed at.
+    expect(backup.schemaVersion, oldestReadableSchemaVersion);
+    expect(backup.rows.pedals, saved.pedals);
+    expect(backup.rows.snapshotValues, saved.snapshotValues);
+    expect(backup.rows.patches, isEmpty);
+    expect(backup.rows.scenes, isEmpty);
+    expect(backup.rows.scenePedals, isEmpty);
+    expect(backup.rows.sceneValues, isEmpty);
+  });
+
+  test('refuses a backup older than any version ever wrote', () async {
+    final ancient = edited(
+      (document) => document['schemaVersion'] = oldestReadableSchemaVersion - 1,
     );
 
-    // Better a plain no than a restore that invents settings for the columns
-    // that version never had.
+    // Nothing shipped that could have written it, so there is nothing to
+    // convert from and guessing would be inventing.
     expect(
-      () => decodeVaultBackup(older),
+      () => decodeVaultBackup(ancient),
       failsWith(
-        'That backup was made by an older version of ToneVault and cannot be '
-        'restored into this one.',
+        'That backup was made by a version of ToneVault too old to restore '
+        'from.',
+      ),
+    );
+  });
+
+  test('a current file with a patch table missing is still damaged', () async {
+    final missing = edited(
+      (document) =>
+          (document['tables'] as Map<String, dynamic>).remove('patches'),
+    );
+
+    // Filling a table in is for a file that predates it. A file that says it is
+    // current and has one missing has lost it, and reading it as empty would
+    // quietly wipe the patches it could not find.
+    expect(
+      () => decodeVaultBackup(missing),
+      failsWith(
+        'That backup file is damaged, so nothing was restored from it.',
       ),
     );
   });

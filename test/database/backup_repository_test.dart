@@ -9,6 +9,7 @@ import 'package:tone_vault/core/enums/pedal_category.dart';
 import 'package:tone_vault/core/enums/pedal_type.dart';
 import 'package:tone_vault/core/errors/app_failure.dart';
 import 'package:tone_vault/features/backup/data/backup_repository.dart';
+import 'package:tone_vault/features/backup/data/backup_upgrades.dart';
 import 'package:tone_vault/shared/formatting/app_date_format.dart';
 import '../support/repositories.dart';
 import '../support/vault_fixture.dart';
@@ -100,6 +101,34 @@ void main() {
     expect(rows.pedals, isEmpty);
     expect(rows.pedalboards, isEmpty);
     expect(rows.snapshots, isEmpty);
+  });
+
+  test('a file from an older version restores what it does hold', () async {
+    // What an app at the schema before patches wrote: every other table, and no
+    // patch tables at all.
+    final document = json.decode(file) as Map<String, dynamic>;
+    document['schemaVersion'] = oldestReadableSchemaVersion;
+    final tables = document['tables'] as Map<String, dynamic>;
+    for (final table in const [
+      'patches',
+      'scenes',
+      'scenePedals',
+      'sceneValues',
+    ]) {
+      tables.remove(table);
+    }
+
+    await repository.restoreVault(repository.readBackup(json.encode(document)));
+
+    final rows = await database.backupDao.readEverything();
+    expect(rows.pedals, saved.pedals);
+    expect(rows.snapshotValues, saved.snapshotValues);
+
+    // The unit comes back with nothing switched on in it, and the patches that
+    // were in the vault a moment ago are gone: a restore is the whole vault
+    // becoming that file, and that file never held a patch.
+    expect(rows.patches, isEmpty);
+    expect(rows.sceneValues, isEmpty);
   });
 
   test('a refusal from the file reaches the user as it is written', () async {
