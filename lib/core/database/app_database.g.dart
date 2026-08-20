@@ -5348,6 +5348,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final RigSnapshotDao rigSnapshotDao = RigSnapshotDao(
     this as AppDatabase,
   );
+  late final BackupDao backupDao = BackupDao(this as AppDatabase);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
