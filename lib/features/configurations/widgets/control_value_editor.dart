@@ -5,6 +5,7 @@ import '../../../core/database/app_database.dart';
 import '../../../core/enums/control_type.dart';
 import '../data/control_value_range.dart';
 import 'choice_value_editor.dart';
+import 'knob_value_editor.dart';
 import 'numeric_value_editor.dart';
 import 'slider_value_editor.dart';
 
@@ -66,7 +67,15 @@ class ControlValueEditor extends StatelessWidget {
     // A callback that tolerates null is fine where a non-null value is reported,
     // so the sliders and choices below hand theirs straight through.
     return switch (control.controlType) {
-      ControlType.clock || ControlType.percentage => SliderValueEditor(
+      // A clock knob is turned rather than slid, since a pointer on a face is
+      // how the position is read off the pedal. It shared the slider below until
+      // the knob existed.
+      ControlType.clock => KnobValueEditor(
+        control: control,
+        value: value ?? startingValueFor(control),
+        onChanged: onChanged,
+      ),
+      ControlType.fader || ControlType.percentage => SliderValueEditor(
         control: control,
         value: value ?? startingValueFor(control),
         onChanged: onChanged,

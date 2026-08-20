@@ -6,8 +6,11 @@
 /// normalized 0..1 domain that `ClockValue` maps onto a clock face. Comparing
 /// two controls of different types therefore only needs their domain, not a
 /// per-type special case.
+/// Stored by name rather than by position, so a new type can be added anywhere
+/// in this list without a migration and without moving any existing control.
 enum ControlType {
   clock,
+  fader,
   percentage,
   numeric,
   toggle,
@@ -15,6 +18,7 @@ enum ControlType {
 
   String get label => switch (this) {
     ControlType.clock => 'Clock knob',
+    ControlType.fader => 'Fader',
     ControlType.percentage => 'Percentage',
     ControlType.numeric => 'Numeric',
     ControlType.toggle => 'Toggle',
@@ -26,6 +30,9 @@ enum ControlType {
   /// normalized range the clock mapping expects.
   ({double min, double max}) get defaultDomain => switch (this) {
     ControlType.clock => (min: 0, max: 1),
+    // A fader is marked in whatever the pedal chose, so 0 to 10 is a starting
+    // point rather than a rule.
+    ControlType.fader => (min: 0, max: 10),
     ControlType.percentage => (min: 0, max: 100),
     ControlType.numeric => (min: 0, max: 10),
     ControlType.toggle => (min: 0, max: 1),
@@ -37,6 +44,8 @@ enum ControlType {
     // 20 steps across the normalized range is one step per half hour on the
     // 7:00-5:00 sweep, which is the finest position readable off a real knob.
     ControlType.clock => 0.05,
+    // Half a mark on a 0-10 fader, which is as fine as its scale is printed.
+    ControlType.fader => 0.5,
     ControlType.percentage => 1,
     ControlType.numeric => null,
     ControlType.toggle => 1,

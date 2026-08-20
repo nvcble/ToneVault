@@ -6,6 +6,9 @@ import 'package:tone_vault/core/enums/control_type.dart';
 import 'package:tone_vault/features/configurations/providers/configuration_providers.dart';
 import 'package:tone_vault/features/configurations/widgets/configuration_value_list.dart';
 import 'package:tone_vault/features/controls/providers/control_providers.dart';
+import 'package:tone_vault/shared/widgets/knob_dial.dart';
+
+import '../support/themed_app.dart';
 
 /// Where a pedal is set in one configuration, given the controls and the stored
 /// values directly. What the repository writes is covered by
@@ -52,12 +55,12 @@ void main() {
             configurationId,
           ).overrideWith((ref) => values),
         ],
-        child: const MaterialApp(
-          home: Scaffold(
-            body: ConfigurationValueList(
-              pedalId: pedalId,
-              configurationId: configurationId,
-            ),
+        // The app's own theme, because the editor sheet this list opens has to
+        // lay out under the button sizing the app actually ships.
+        child: themedApp(
+          const ConfigurationValueList(
+            pedalId: pedalId,
+            configurationId: configurationId,
           ),
         ),
       ),
@@ -162,7 +165,10 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.widgetWithText(FilledButton, 'Save'), findsOne);
-    expect(find.byType(Slider), findsOne);
+    // A clock control is set by turning a knob, and the sheet has to survive
+    // laying its actions out: it used to throw here and leave the screen looking
+    // untouched.
+    expect(find.byType(KnobDial), findsOne);
     // Only offered for a control that has something stored to clear.
     expect(find.widgetWithText(TextButton, 'Clear'), findsOne);
   });

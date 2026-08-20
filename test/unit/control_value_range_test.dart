@@ -54,6 +54,42 @@ void main() {
     });
   });
 
+  group('normalizing a value into a knob\'s sweep', () {
+    test('leaves a clock control alone, since it is already normalized', () {
+      final knob = control(type: ControlType.clock);
+
+      expect(normalizedValueFor(knob, 0.25), 0.25);
+      expect(valueFromNormalized(knob, 0.25), 0.25);
+    });
+
+    test('maps a control with its own bounds onto the sweep and back', () {
+      final fader = control(type: ControlType.fader, maxValue: 10);
+
+      expect(normalizedValueFor(fader, 7.5), 0.75);
+      expect(valueFromNormalized(fader, 0.75), 7.5);
+    });
+
+    test('holds a value from outside the domain at the end stop', () {
+      // Only reachable through a hand-edited database, and a knob pinned at its
+      // end reads better than a knob pointing off the face.
+      final fader = control(type: ControlType.fader, maxValue: 10);
+
+      expect(normalizedValueFor(fader, 40), 1);
+      expect(valueFromNormalized(fader, -2), 0);
+    });
+
+    test('reads a domain with no width as fully back', () {
+      // A selection with one position, which the validator rejects anyway.
+      expect(
+        normalizedValueFor(
+          control(type: ControlType.selection, maxValue: 0),
+          0,
+        ),
+        0,
+      );
+    });
+  });
+
   group('sliderDivisionsFor', () {
     test('turns a clock knob\'s step into one notch per half hour', () {
       expect(

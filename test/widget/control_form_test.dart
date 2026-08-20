@@ -45,6 +45,24 @@ void main() {
     expect(find.text('Unit'), findsNothing);
   });
 
+  testWidgets('describes a fader by its own marks', (tester) async {
+    await harness.pumpForm(tester);
+    await harness.pickType(tester, 'Fader');
+
+    // A fader is marked in whatever the pedal chose, so it takes bounds, a step
+    // and a unit - 0 to 10 to start from.
+    expect(harness.fieldText(tester, 'Minimum'), '0');
+    expect(harness.fieldText(tester, 'Maximum'), '10');
+    expect(harness.fieldText(tester, 'Step'), '0.5');
+    expect(find.text('Unit'), findsOne);
+
+    await harness.enter(tester, 'Name', 'Level');
+    await harness.submit(tester);
+
+    expect(harness.submitted?.type, ControlType.fader);
+    expect(harness.submitted?.maxValue, 10);
+  });
+
   testWidgets('offers a unit to a numeric control only', (tester) async {
     await harness.pumpForm(tester);
     await harness.pickType(tester, 'Numeric');

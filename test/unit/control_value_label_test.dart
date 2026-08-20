@@ -21,6 +21,14 @@ void main() {
       expect(formatControlValue(8, type: ControlType.numeric), '8');
     });
 
+    test('reads a fader as the number beside it', () {
+      expect(formatControlValue(7.5, type: ControlType.fader), '7.5');
+      expect(
+        formatControlValue(-6, type: ControlType.fader, unit: 'dB'),
+        '-6 dB',
+      );
+    });
+
     test('ignores a unit on types that carry their own notation', () {
       expect(
         formatControlValue(0.5, type: ControlType.clock, unit: 'ms'),

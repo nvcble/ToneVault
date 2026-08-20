@@ -221,6 +221,8 @@ class _ControlFormState extends State<ControlForm> {
     ControlType.clock =>
       'Positions read like a clock face: 7:00 fully back, 12:00 straight up, '
           '5:00 fully forward.',
+    ControlType.fader =>
+      'A sliding fader, read as the number printed beside it.',
     ControlType.percentage => 'A number read out of 100.',
     ControlType.numeric => 'A plain number, in whatever unit the pedal uses.',
     ControlType.toggle => 'Two states, off or on.',

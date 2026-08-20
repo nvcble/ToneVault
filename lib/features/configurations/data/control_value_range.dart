@@ -22,6 +22,26 @@ double startingValueFor(PedalControl control) {
   return control.defaultValue ?? fallback;
 }
 
+/// Where [value] sits in [control]'s own domain, as `0..1`.
+///
+/// A knob turns through the same sweep whatever the control's bounds are, so the
+/// mapping lives here rather than in the widget that draws one. A clock control
+/// is already normalized, which makes this the identity for it.
+double normalizedValueFor(PedalControl control, double value) {
+  final span = control.maxValue - control.minValue;
+  if (span <= 0) {
+    return 0;
+  }
+  return ((value - control.minValue) / span).clamp(0, 1);
+}
+
+/// A `0..1` position back in [control]'s domain, so what is stored stays inside
+/// the bounds the control declared.
+double valueFromNormalized(PedalControl control, double position) {
+  final span = control.maxValue - control.minValue;
+  return control.minValue + position.clamp(0, 1) * span;
+}
+
 /// How many notches a slider for [control] gets, or null to slide freely.
 ///
 /// Derived from the control's own step, so a clock knob snaps to the half hour

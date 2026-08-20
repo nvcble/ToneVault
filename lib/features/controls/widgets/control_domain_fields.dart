@@ -12,9 +12,10 @@ import '../data/control_validator.dart';
 bool showsControlBounds(ControlType type) =>
     !type.hasFixedDomain && type != ControlType.selection;
 
-/// Only a numeric control has a unit. Clock and percentage carry their own
+/// A numeric control or a fader has a unit. Clock and percentage carry their own
 /// notation, and a toggle or selection reads as words.
-bool showsControlUnit(ControlType type) => type == ControlType.numeric;
+bool showsControlUnit(ControlType type) =>
+    type == ControlType.numeric || type == ControlType.fader;
 
 /// The minimum, maximum, step and unit of a control, for the types that have
 /// them.

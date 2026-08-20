@@ -18,6 +18,9 @@ String formatControlValue(
     // ignored for them rather than doubled up.
     ControlType.clock => ClockValue.fromNormalized(value).label,
     ControlType.percentage => '${formatControlNumber(value)}%',
+    // A fader reads as the number printed beside it, with the pedal's own unit
+    // when it has one.
+    ControlType.fader ||
     ControlType.numeric => _withUnit(formatControlNumber(value), unit),
     ControlType.toggle => value >= 0.5 ? 'On' : 'Off',
     ControlType.selection => _optionLabel(value, options),
@@ -39,7 +42,7 @@ String formatControlRange({
           '${ClockValue.fromNormalized(maxValue).label}',
     ControlType.percentage =>
       '${formatControlNumber(minValue)} – ${formatControlNumber(maxValue)}%',
-    ControlType.numeric => _withUnit(
+    ControlType.fader || ControlType.numeric => _withUnit(
       '${formatControlNumber(minValue)} – ${formatControlNumber(maxValue)}',
       unit,
     ),

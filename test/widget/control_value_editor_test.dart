@@ -3,6 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:tone_vault/core/database/app_database.dart';
 import 'package:tone_vault/core/enums/control_type.dart';
 import 'package:tone_vault/features/configurations/widgets/control_value_editor.dart';
+import 'package:tone_vault/shared/widgets/knob_dial.dart';
 
 /// Which input a control gets, decided by the control's own type and nothing
 /// else. This is where §10 is enforced: no pedal name reaches this code.
@@ -55,7 +56,7 @@ void main() {
     await tester.pumpAndSettle();
   }
 
-  testWidgets('slides a clock knob, snapped to the half hour', (tester) async {
+  testWidgets('turns a clock knob, snapped to the half hour', (tester) async {
     await pumpEditor(
       tester,
       control(type: ControlType.clock, step: 0.05),
@@ -64,10 +65,28 @@ void main() {
 
     // 20 notches across the 7:00-5:00 sweep is one per half hour, which is as
     // fine as a real knob can be read.
-    expect(tester.widget<Slider>(find.byType(Slider)).divisions, 20);
-    // The ends read as the clock face, not as the 0..1 that is stored.
-    expect(find.text('7:00'), findsOne);
-    expect(find.text('5:00'), findsOne);
+    expect(tester.widget<KnobDial>(find.byType(KnobDial)).divisions, 20);
+    // Read as the clock face and as a position out of 100, never as the 0..1
+    // that is stored.
+    expect(find.text('12:00'), findsOne);
+    expect(find.text('50 of 100'), findsOne);
+    expect(find.byType(Slider), findsNothing);
+  });
+
+  testWidgets('slides a fader between its own marks', (tester) async {
+    await pumpEditor(
+      tester,
+      control(type: ControlType.fader, name: 'Level', maxValue: 10, step: 0.5),
+      value: 7.5,
+    );
+
+    final slider = tester.widget<Slider>(find.byType(Slider));
+    expect(slider.value, 7.5);
+    expect(slider.max, 10);
+    expect(slider.divisions, 20);
+    // A fader reads as the number beside it, so both ends are plain.
+    expect(find.text('0'), findsOne);
+    expect(find.text('10'), findsOne);
   });
 
   testWidgets('slides a percentage between its own bounds', (tester) async {
