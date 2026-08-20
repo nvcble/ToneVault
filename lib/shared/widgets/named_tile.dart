@@ -12,6 +12,8 @@ class NamedTile extends StatelessWidget {
     required this.onTap,
     this.onEdit,
     this.editTooltip = 'Rename',
+    this.onCopy,
+    this.copyTooltip = 'Duplicate',
     this.onRemove,
     this.removeTooltip = 'Remove',
     super.key,
@@ -26,6 +28,11 @@ class NamedTile extends StatelessWidget {
 
   final VoidCallback? onEdit;
   final String editTooltip;
+
+  /// Offered where another one like this is a real action, such as a scene built
+  /// from the one beside it.
+  final VoidCallback? onCopy;
+  final String copyTooltip;
 
   /// Offered only where taking the thing out of this list is a real action.
   final VoidCallback? onRemove;
@@ -48,6 +55,12 @@ class NamedTile extends StatelessWidget {
           icon: const Icon(Icons.edit_outlined),
           tooltip: editTooltip,
           onPressed: onEdit,
+        ),
+      if (onCopy != null)
+        IconButton(
+          icon: const Icon(Icons.copy_outlined),
+          tooltip: copyTooltip,
+          onPressed: onCopy,
         ),
       if (onRemove != null)
         IconButton(

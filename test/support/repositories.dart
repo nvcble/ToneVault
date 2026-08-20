@@ -15,6 +15,7 @@ import 'package:tone_vault/features/configurations/data/configuration_value_repo
 import 'package:tone_vault/features/controls/data/control_repository.dart';
 import 'package:tone_vault/features/history/data/change_log_repository.dart';
 import 'package:tone_vault/features/patches/data/patch_repository.dart';
+import 'package:tone_vault/features/patches/data/scene_duplicator.dart';
 import 'package:tone_vault/features/patches/data/scene_pedal_repository.dart';
 import 'package:tone_vault/features/patches/data/scene_repository.dart';
 import 'package:tone_vault/features/patches/data/scene_value_repository.dart';
@@ -170,16 +171,33 @@ SceneRepository sceneRepository(
 }
 
 /// Adding a pedal to a scene checks the unit holds it and seeds the defaults its
-/// controls declare, which is why this one takes four accessors.
+/// controls declare, and a pedal may be created from inside the scene, which is
+/// why this one takes the whole set.
 ScenePedalRepository scenePedalRepository(
   AppDatabase database, {
   DateTime Function()? clock,
+  ChangeLogRepository? changeLog,
 }) {
   return ScenePedalRepository(
     SceneDao(database),
     PatchDao(database),
     PedalDao(database),
     PedalControlDao(database),
+    pedalRepository(database, clock: clock, changeLog: changeLog),
+    clock: clock,
+  );
+}
+
+/// Copying a scene records the copy arriving, so it takes the change log too.
+SceneDuplicator sceneDuplicator(
+  AppDatabase database, {
+  DateTime Function()? clock,
+  ChangeLogRepository? changeLog,
+}) {
+  return SceneDuplicator(
+    PatchDao(database),
+    SceneDao(database),
+    changeLog ?? changeLogRepository(database, clock: clock),
     clock: clock,
   );
 }

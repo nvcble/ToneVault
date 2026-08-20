@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
+import '../../../app/router/routes.dart';
 import '../../../app/theme/app_spacing.dart';
 import '../../../core/database/app_database.dart';
 import '../../../shared/widgets/empty_state.dart';
@@ -9,21 +11,30 @@ import '../../pedals/providers/pedal_providers.dart';
 import '../providers/patch_editor.dart';
 import '../providers/patch_providers.dart';
 
-/// Which of the unit's pedals to add to a scene.
+/// What to put in a scene: a pedal entered here and then, of the unit's pedals,
+/// the ones this scene does not already use.
 ///
-/// Only the ones it does not already use are offered: adding a pedal twice is
-/// refused by the repository, and offering it anyway is an invitation to be
-/// refused. Each arrives at whatever defaults its controls declare, which the
-/// user then moves on the scene's own screen.
+/// A new pedal comes first, because that is the ordinary way a scene is filled in.
+/// Picking is for the pedal that is already in the unit and belongs in this sound
+/// too - the same row of gear reached from both, rather than a second copy of it.
+///
+/// A pedal already in the scene is not offered: adding it twice is refused by the
+/// repository, and offering it anyway is an invitation to be refused. Each arrives
+/// at whatever defaults its controls declare, which the user then moves on the
+/// scene's own screen.
 class PickScenePedalSheet extends ConsumerWidget {
   const PickScenePedalSheet({
     required this.pedalId,
+    required this.patchId,
     required this.sceneId,
     super.key,
   });
 
   /// The unit, whose pedals are the only ones a scene may reach for.
   final int pedalId;
+
+  /// Only to build the route to the form: a scene is reached through its patch.
+  final int patchId;
   final int sceneId;
 
   @override
@@ -49,16 +60,22 @@ class PickScenePedalSheet extends ConsumerWidget {
               style: Theme.of(context).textTheme.titleLarge,
             ),
             const SizedBox(height: AppSpacing.sm),
+            ListTile(
+              leading: const Icon(Icons.add),
+              title: const Text('New pedal'),
+              subtitle: const Text(
+                'Name it and file it, then set its controls',
+              ),
+              onTap: () => _addNew(context),
+            ),
+            const Divider(height: 1),
             if (available.isEmpty)
               EmptyState(
                 icon: Icons.done_all,
                 title: inside.isEmpty
                     ? 'Nothing inside this unit yet'
                     : 'Every pedal is already in this scene',
-                message: inside.isEmpty
-                    ? 'Add the pedals the unit holds on its Patch tab first, '
-                          'under Pedals.'
-                    : null,
+                message: 'Add a new pedal above to put one in this scene.',
               )
             else
               Flexible(
@@ -78,6 +95,14 @@ class PickScenePedalSheet extends ConsumerWidget {
         ),
       ),
     );
+  }
+
+  /// The form is a screen rather than more of this sheet: a pedal has a name and
+  /// a category to enter, and it is the pedals feature's own form that asks for
+  /// them.
+  void _addNew(BuildContext context) {
+    Navigator.pop(context);
+    context.go(Routes.scenePedalNew(pedalId, patchId, sceneId));
   }
 
   Future<void> _add(BuildContext context, WidgetRef ref, int chosen) async {

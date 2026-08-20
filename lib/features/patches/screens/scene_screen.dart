@@ -92,6 +92,7 @@ class _SceneScreenState extends ConsumerState<SceneScreen> {
             child: _showingPedals
                 ? ScenePedalList(
                     pedalId: widget.pedalId,
+                    patchId: widget.patchId,
                     sceneId: widget.sceneId,
                   )
                 : SceneValueList(sceneId: widget.sceneId),

@@ -1,7 +1,9 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../pedals/data/pedal_draft.dart';
 import '../data/patch_draft.dart';
 import '../data/patch_repository.dart';
+import '../data/scene_duplicator.dart';
 import '../data/scene_pedal_repository.dart';
 import '../data/scene_repository.dart';
 import '../data/scene_value_repository.dart';
@@ -17,12 +19,14 @@ class PatchEditor {
     this._scenes,
     this._scenePedals,
     this._values,
+    this._duplicator,
   );
 
   final PatchRepository _patches;
   final SceneRepository _scenes;
   final ScenePedalRepository _scenePedals;
   final SceneValueRepository _values;
+  final SceneDuplicator _duplicator;
 
   /// Creates a patch, or renames an existing one, and reports which one to open
   /// afterwards.
@@ -60,8 +64,18 @@ class PatchEditor {
 
   Future<void> deleteScene(int sceneId) => _scenes.deleteScene(sceneId);
 
+  /// Copies a scene with the pedals it uses and where their controls sit, and
+  /// reports which one to open afterwards.
+  Future<int> duplicateScene(int sceneId) => _duplicator.duplicate(sceneId);
+
   Future<void> addPedal({required int sceneId, required int pedalId}) =>
       _scenePedals.addPedal(sceneId: sceneId, pedalId: pedalId);
+
+  /// Creates a pedal inside this scene's unit and puts it straight into the
+  /// scene, reporting its id so the caller can open it: setting its controls is
+  /// what the user does next.
+  Future<int> addNewPedal(PedalDraft draft, {required int sceneId}) =>
+      _scenePedals.addNewPedal(sceneId: sceneId, draft: draft);
 
   Future<void> removePedal({required int sceneId, required int pedalId}) =>
       _scenePedals.removePedal(sceneId: sceneId, pedalId: pedalId);
@@ -99,5 +113,6 @@ final Provider<PatchEditor> patchEditorProvider = Provider<PatchEditor>(
     ref.watch(sceneRepositoryProvider),
     ref.watch(scenePedalRepositoryProvider),
     ref.watch(sceneValueRepositoryProvider),
+    ref.watch(sceneDuplicatorProvider),
   ),
 );

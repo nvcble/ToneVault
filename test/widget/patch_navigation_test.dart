@@ -337,6 +337,44 @@ void main() {
     expect(find.text('Tube Screamer'), findsOne);
   });
 
+  testWidgets('the picker also names a pedal into the scene', (tester) async {
+    await openPatchTab(tester);
+    await openScene(tester);
+    await openScenePedals(tester);
+
+    await tester.tap(find.widgetWithText(FilledButton, 'Add pedal to scene'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('New pedal'));
+    await tester.pumpAndSettle();
+
+    // '/scenes/:sceneId/pedals/new' is nested under the scene, so it has to win
+    // over the scene's own segments rather than land on "no longer exists".
+    expect(find.widgetWithText(FilledButton, 'Add pedal'), findsOne);
+    expect(find.text('That scene no longer exists'), findsNothing);
+    // Name and category alone: it is a block of the unit, whose brand, purchase
+    // and photo were entered once on the unit itself.
+    expect(find.widgetWithText(TextFormField, 'Name'), findsOne);
+    expect(find.text('Category'), findsOne);
+    expect(find.text('Brand'), findsNothing);
+  });
+
+  testWidgets('a scene offers another one like it', (tester) async {
+    await openPatchTab(tester);
+    await tester.tap(find.text('Worship Clean'));
+    await tester.pumpAndSettle();
+
+    // Offered on the row rather than behind the scene, because a chorus is
+    // written from the verse beside it. Not tapped here: the copy is a write, and
+    // it is `scene_duplicate_test.dart` that holds it to what it copies.
+    expect(
+      find.descendant(
+        of: find.byType(NamedTile),
+        matching: find.byTooltip('Duplicate'),
+      ),
+      findsOne,
+    );
+  });
+
   testWidgets('and offers nothing once the scene uses them all', (
     tester,
   ) async {

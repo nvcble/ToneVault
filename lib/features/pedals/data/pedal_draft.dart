@@ -48,6 +48,23 @@ class PedalDraft {
   /// another unit by mistyping.
   final int? hostPedalId;
 
+  /// The same pedal, declared as sitting inside [hostPedalId].
+  ///
+  /// Used where the unit is the screen's to decide rather than the form's: a
+  /// pedal added from inside a scene is a block of the unit that scene's patch is
+  /// on, and nothing typed into the form should be able to move it elsewhere.
+  PedalDraft insideUnit(int hostPedalId) => PedalDraft(
+    name: name,
+    type: type,
+    category: category,
+    brand: brand,
+    status: status,
+    purchaseDate: purchaseDate,
+    notes: notes,
+    photoPath: photoPath,
+    hostPedalId: hostPedalId,
+  );
+
   /// Trims text and turns blank optional fields into null.
   ///
   /// A cleared text field hands back an empty string, which would be stored as

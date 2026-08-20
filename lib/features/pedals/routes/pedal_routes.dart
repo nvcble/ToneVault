@@ -7,6 +7,7 @@ import '../../controls/screens/control_form_screen.dart';
 import '../../patches/screens/patch_form_screen.dart';
 import '../../patches/screens/patch_screen.dart';
 import '../../patches/screens/scene_form_screen.dart';
+import '../../patches/screens/scene_pedal_form_screen.dart';
 import '../../patches/screens/scene_screen.dart';
 import '../screens/pedal_detail_screen.dart';
 import '../screens/pedal_form_screen.dart';
@@ -121,6 +122,16 @@ List<RouteBase> pedalRoutes() {
                     GoRoute(
                       path: Routes.sceneEditSegment,
                       builder: (context, state) => SceneFormScreen(
+                        pedalId: _pedalId(state),
+                        patchId: _patchId(state),
+                        sceneId: _sceneId(state),
+                      ),
+                    ),
+                    // A pedal entered from inside a scene. It goes into the unit
+                    // in the path and into the scene at the end of it.
+                    GoRoute(
+                      path: Routes.scenePedalNewSegment,
+                      builder: (context, state) => ScenePedalFormScreen(
                         pedalId: _pedalId(state),
                         patchId: _patchId(state),
                         sceneId: _sceneId(state),

@@ -12,7 +12,8 @@ import '../providers/patch_editor.dart';
 import '../providers/patch_providers.dart';
 import 'pick_scene_pedal_sheet.dart';
 
-/// The pedals one scene uses, picked from the ones inside the unit.
+/// The pedals one scene uses: entered here, or picked from the ones already
+/// inside the unit.
 ///
 /// A row opens the pedal itself, because that is where its controls, its
 /// configurations and its history are. Taking it out is a change to this scene
@@ -20,12 +21,16 @@ import 'pick_scene_pedal_sheet.dart';
 class ScenePedalList extends ConsumerWidget {
   const ScenePedalList({
     required this.pedalId,
+    required this.patchId,
     required this.sceneId,
     super.key,
   });
 
-  /// The unit, which is where the pedals a scene may use come from.
+  /// The unit, which is what the pedals a scene uses belong to.
   final int pedalId;
+
+  /// Passed through to the sheet, which builds the route to the pedal form.
+  final int patchId;
   final int sceneId;
 
   @override
@@ -37,8 +42,8 @@ class ScenePedalList extends ConsumerWidget {
         icon: Icons.playlist_add,
         title: 'No pedals in this scene',
         message:
-            'Pick the ones this part of the song switches on. They come from '
-            'the pedals inside the unit.',
+            'Add the ones this part of the song switches on. A new pedal is '
+            'filed under the unit, so other scenes can use it too.',
       ),
       itemBuilder: (context, pedal) => NamedTile(
         name: pedal.name,
@@ -51,8 +56,11 @@ class ScenePedalList extends ConsumerWidget {
       onAdd: () => showModalBottomSheet<void>(
         context: context,
         isScrollControlled: true,
-        builder: (sheetContext) =>
-            PickScenePedalSheet(pedalId: pedalId, sceneId: sceneId),
+        builder: (sheetContext) => PickScenePedalSheet(
+          pedalId: pedalId,
+          patchId: patchId,
+          sceneId: sceneId,
+        ),
       ),
     );
   }

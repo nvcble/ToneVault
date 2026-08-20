@@ -59,6 +59,12 @@ abstract final class Routes {
   static String sceneEdit(int pedalId, int patchId, int sceneId) =>
       '${sceneDetail(pedalId, patchId, sceneId)}/edit';
 
+  /// A pedal entered from inside a scene. It is filed under the unit like any
+  /// other block, so it is read and edited through [pedalDetail] afterwards; the
+  /// scene is in the path only because that is what the new pedal joins.
+  static String scenePedalNew(int pedalId, int patchId, int sceneId) =>
+      '${sceneDetail(pedalId, patchId, sceneId)}/pedals/new';
+
   static const String rigNew = '$rigs/new';
 
   static String rigDetail(int pedalboardId) => '$rigs/$pedalboardId';
@@ -93,6 +99,7 @@ abstract final class Routes {
   static const String sceneNewSegment = 'scenes/new';
   static const String sceneDetailSegment = 'scenes/:sceneId';
   static const String sceneEditSegment = 'edit';
+  static const String scenePedalNewSegment = 'pedals/new';
 
   static const String rigNewSegment = 'new';
   static const String rigDetailSegment = ':rigId';

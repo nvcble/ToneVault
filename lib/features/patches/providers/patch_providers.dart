@@ -9,6 +9,7 @@ import '../../controls/providers/control_providers.dart';
 import '../../history/providers/history_providers.dart';
 import '../../pedals/providers/pedal_providers.dart';
 import '../data/patch_repository.dart';
+import '../data/scene_duplicator.dart';
 import '../data/scene_pedal_repository.dart';
 import '../data/scene_repository.dart';
 import '../data/scene_value_repository.dart';
@@ -44,6 +45,18 @@ final Provider<ScenePedalRepository> scenePedalRepositoryProvider =
         ref.watch(patchDaoProvider),
         ref.watch(pedalDaoProvider),
         ref.watch(pedalControlDaoProvider),
+        ref.watch(pedalRepositoryProvider),
+      ),
+    );
+
+/// Copying a scene, which is the one operation that reaches both the scene row
+/// and everything it holds.
+final Provider<SceneDuplicator> sceneDuplicatorProvider =
+    Provider<SceneDuplicator>(
+      (ref) => SceneDuplicator(
+        ref.watch(patchDaoProvider),
+        ref.watch(sceneDaoProvider),
+        ref.watch(changeLogRepositoryProvider),
       ),
     );
 

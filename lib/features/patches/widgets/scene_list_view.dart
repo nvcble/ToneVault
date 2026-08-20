@@ -7,7 +7,9 @@ import '../../../core/database/app_database.dart';
 import '../../../shared/formatting/app_date_format.dart';
 import '../../../shared/widgets/async_list_section.dart';
 import '../../../shared/widgets/empty_state.dart';
+import '../../../shared/widgets/failure_snack_bar.dart';
 import '../../../shared/widgets/named_tile.dart';
+import '../providers/patch_editor.dart';
 import '../providers/patch_providers.dart';
 
 /// The scenes inside one patch: the sounds within the sound.
@@ -38,9 +40,27 @@ class SceneListView extends ConsumerWidget {
         subtitle: scene.notes ?? 'Changed ${formatDate(scene.updatedAt)}',
         onTap: () => context.go(Routes.sceneDetail(pedalId, patchId, scene.id)),
         onEdit: () => context.go(Routes.sceneEdit(pedalId, patchId, scene.id)),
+        onCopy: () => _duplicate(context, ref, scene.id),
       ),
       addLabel: 'Add scene',
       onAdd: () => context.go(Routes.sceneNew(pedalId, patchId)),
     );
+  }
+
+  /// Not worth a question first: nothing is overwritten, and the copy arrives
+  /// beside the original as "Verse copy" to be renamed like any other scene. The
+  /// list is watched, so it shows up on its own.
+  Future<void> _duplicate(
+    BuildContext context,
+    WidgetRef ref,
+    int sceneId,
+  ) async {
+    try {
+      await ref.read(patchEditorProvider).duplicateScene(sceneId);
+    } catch (error) {
+      if (context.mounted) {
+        showFailureSnackBar(context, error);
+      }
+    }
   }
 }
