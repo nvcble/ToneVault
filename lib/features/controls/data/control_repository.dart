@@ -6,6 +6,7 @@ import '../../../core/errors/app_failure.dart';
 import '../../../core/values/control_options.dart';
 import '../../history/data/change_entry.dart';
 import '../../history/data/change_log_repository.dart';
+import 'control_copy_name.dart';
 import 'control_draft.dart';
 import 'control_validator.dart';
 
@@ -66,6 +67,32 @@ class ControlRepository {
       }),
       'Could not save this control.',
     );
+  }
+
+  /// Adds a copy of [controlId] to the end of the same pedal's list, and returns
+  /// the name it was given.
+  ///
+  /// Everything the original accepts is copied; only the name has to differ, and
+  /// [copyNameFor] picks it. The insert itself is left to [createControl], so a
+  /// copy is validated, ordered and recorded in the history exactly the way a
+  /// hand-entered control is.
+  Future<String> duplicateControl(int controlId) async {
+    final existing = await _dao.findControl(controlId);
+    if (existing == null) {
+      throw const AppFailure('That control no longer exists.');
+    }
+
+    final onThisPedal = await _dao.controlsOf(existing.pedalId);
+    final name = copyNameFor(
+      existing.name,
+      taken: onThisPedal.map((control) => control.name),
+    );
+
+    await createControl(
+      existing.pedalId,
+      ControlDraft.fromControl(existing, name: name),
+    );
+    return name;
   }
 
   /// Display order is left alone: reordering is its own action.

@@ -1,10 +1,16 @@
+import 'package:drift/native.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:tone_vault/core/database/app_database.dart';
 import 'package:tone_vault/core/enums/control_type.dart';
+import 'package:tone_vault/core/enums/pedal_category.dart';
+import 'package:tone_vault/core/enums/pedal_type.dart';
+import 'package:tone_vault/features/controls/data/control_draft.dart';
 import 'package:tone_vault/features/controls/providers/control_providers.dart';
 import 'package:tone_vault/features/controls/widgets/control_list_view.dart';
+import 'package:tone_vault/features/pedals/data/pedal_draft.dart';
+import '../support/repositories.dart';
 
 /// The controls tab of a pedal, given its list directly.
 ///
@@ -41,12 +47,14 @@ void main() {
 
   Future<void> pumpList(
     WidgetTester tester,
-    Stream<List<PedalControl>> controls,
-  ) async {
+    Stream<List<PedalControl>> controls, {
+    List<Override> extraOverrides = const [],
+  }) async {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
           controlListProvider(pedalId).overrideWith((ref) => controls),
+          ...extraOverrides,
         ],
         child: const MaterialApp(
           home: Scaffold(body: ControlListView(pedalId: pedalId)),
@@ -129,6 +137,59 @@ void main() {
     // The row itself opens the control for editing, so dragging needs a handle
     // of its own rather than a long press that would fight the tap.
     expect(find.byIcon(Icons.drag_handle), findsExactly(2));
+  });
+
+  testWidgets('offers a copy of every control', (tester) async {
+    await pumpList(
+      tester,
+      Stream.value([
+        control(id: 1, name: 'Volume', type: ControlType.clock),
+        control(id: 2, name: 'Tone', type: ControlType.clock, displayOrder: 1),
+      ]),
+    );
+
+    // On the control itself: what is being copied is that row, not the list.
+    expect(find.byIcon(Icons.copy_outlined), findsExactly(2));
+  });
+
+  testWidgets('duplicating a control adds a copy of it', (tester) async {
+    // The write is the real one, over an in-memory database.
+    final database = AppDatabase(NativeDatabase.memory());
+    addTearDown(database.close);
+
+    final ownerId = await pedalRepository(database).createPedal(
+      const PedalDraft(
+        name: 'Caline PureSky',
+        type: PedalType.analog,
+        category: PedalCategory.overdrive,
+      ),
+    );
+    await controlRepository(database).createControl(
+      ownerId,
+      ControlDraft.ofType(ControlType.clock, name: 'Volume'),
+    );
+
+    await pumpList(
+      tester,
+      // The rows that really are in the database, as a plain stream: a live drift
+      // stream cancelled when the tree comes down leaves a timer pending, which
+      // the widget test binding rejects.
+      Stream.value(await database.pedalControlDao.controlsOf(ownerId)),
+      extraOverrides: [
+        controlRepositoryProvider.overrideWithValue(
+          controlRepository(database),
+        ),
+      ],
+    );
+
+    await tester.tap(find.byIcon(Icons.copy_outlined));
+    await tester.pumpAndSettle();
+
+    // The copy lands at the end of the list, which may be off screen, so what it
+    // is called is said out loud.
+    expect(find.text('Added "Volume copy".'), findsOne);
+    final controls = await database.pedalControlDao.controlsOf(ownerId);
+    expect(controls.map((control) => control.name), ['Volume', 'Volume copy']);
   });
 
   testWidgets('keeps a failure readable', (tester) async {

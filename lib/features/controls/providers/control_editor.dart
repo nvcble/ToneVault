@@ -25,6 +25,10 @@ class ControlEditor {
     }
   }
 
+  /// Returns what the copy is called, for the screen to say so.
+  Future<String> duplicate(int controlId) =>
+      _repository.duplicateControl(controlId);
+
   Future<void> delete(int controlId) => _repository.deleteControl(controlId);
 
   Future<void> reorder(int pedalId, List<int> controlIdsInOrder) =>

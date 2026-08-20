@@ -1,6 +1,7 @@
 import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:tone_vault/core/database/app_database.dart';
+import 'package:tone_vault/core/enums/change_type.dart';
 import 'package:tone_vault/core/enums/control_type.dart';
 import 'package:tone_vault/core/enums/pedal_category.dart';
 import 'package:tone_vault/core/enums/pedal_type.dart';
@@ -230,6 +231,85 @@ void main() {
     test('reports a control that is already gone', () async {
       await expectLater(
         repository.updateControl(404, draft(name: 'Volume')),
+        throwsA(
+          isA<AppFailure>().having(
+            (failure) => failure.message,
+            'message',
+            'That control no longer exists.',
+          ),
+        ),
+      );
+    });
+  });
+
+  group('duplicateControl', () {
+    test('copies everything the original accepts, under a new name', () async {
+      final controlId = await repository.createControl(
+        pedalId,
+        draft(
+          name: 'Mode',
+          type: ControlType.selection,
+          options: const ['Chorus', 'Vibrato', 'Rotary'],
+          defaultValue: 1,
+        ),
+      );
+
+      final name = await repository.duplicateControl(controlId);
+
+      final controls = await database.pedalControlDao.controlsOf(pedalId);
+      final copy = controls.last;
+      expect(name, 'Mode copy');
+      expect(copy.name, name);
+      expect(copy.controlType, ControlType.selection);
+      expect(decodeControlOptions(copy.options), [
+        'Chorus',
+        'Vibrato',
+        'Rotary',
+      ]);
+      expect(copy.minValue, 0);
+      expect(copy.maxValue, 2);
+      expect(copy.defaultValue, 1);
+      // A copy is another control on the pedal, so it joins the end of the list
+      // rather than displacing the one it was made from.
+      expect(controls.map((control) => control.name), ['Mode', 'Mode copy']);
+      expect(copy.displayOrder, 1);
+    });
+
+    test('numbers a copy of a copy', () async {
+      final controlId = await repository.createControl(
+        pedalId,
+        draft(name: 'Volume'),
+      );
+
+      await repository.duplicateControl(controlId);
+      final second = await repository.duplicateControl(controlId);
+
+      expect(second, 'Volume copy 2');
+      final controls = await database.pedalControlDao.controlsOf(pedalId);
+      expect(controls.map((control) => control.name), [
+        'Volume',
+        'Volume copy',
+        'Volume copy 2',
+      ]);
+    });
+
+    test('records the copy in the history like any other control', () async {
+      final controlId = await repository.createControl(
+        pedalId,
+        draft(name: 'Volume'),
+      );
+
+      await repository.duplicateControl(controlId);
+
+      final added = (await database.changeLogDao.entriesOf(
+        pedalId,
+      )).where((entry) => entry.controlName == 'Volume copy').toList();
+      expect(added.single.changeType, ChangeType.controlAdded);
+    });
+
+    test('reports a control that is already gone', () async {
+      await expectLater(
+        repository.duplicateControl(404),
         throwsA(
           isA<AppFailure>().having(
             (failure) => failure.message,

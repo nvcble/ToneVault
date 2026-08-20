@@ -34,9 +34,11 @@ class ControlDraft {
     );
   }
 
-  factory ControlDraft.fromControl(PedalControl control) {
+  /// [name] stands in for the control's own, for a copy that has to be called
+  /// something else on the same pedal.
+  factory ControlDraft.fromControl(PedalControl control, {String? name}) {
     return ControlDraft(
-      name: control.name,
+      name: name ?? control.name,
       type: control.controlType,
       minValue: control.minValue,
       maxValue: control.maxValue,

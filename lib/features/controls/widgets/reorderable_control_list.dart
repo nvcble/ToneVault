@@ -31,7 +31,16 @@ class ReorderableControlList extends ConsumerStatefulWidget {
 class _ReorderableControlListState
     extends ConsumerState<ReorderableControlList> {
   late List<PedalControl> _controls = widget.controls;
+
+  /// A drag is being written; see [didUpdateWidget].
   bool _isSaving = false;
+
+  /// A copy is being written, so one tap cannot become two controls. Kept apart
+  /// from [_isSaving] because a copy has no local order to protect: the new
+  /// control should appear as soon as the database reports it.
+  bool _isDuplicating = false;
+
+  bool get _isBusy => _isSaving || _isDuplicating;
 
   @override
   void didUpdateWidget(covariant ReorderableControlList oldWidget) {
@@ -72,6 +81,29 @@ class _ReorderableControlListState
     }
   }
 
+  /// Copies a control, and says what the copy is called: it lands at the end of
+  /// the list, which on a pedal with a few controls is off screen.
+  Future<void> _duplicate(PedalControl control) async {
+    setState(() => _isDuplicating = true);
+
+    try {
+      final name = await ref.read(controlEditorProvider).duplicate(control.id);
+      if (mounted) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Added "$name".')));
+      }
+    } catch (error) {
+      if (mounted) {
+        showFailureSnackBar(context, error);
+      }
+    } finally {
+      if (mounted) {
+        setState(() => _isDuplicating = false);
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return ReorderableListView.builder(
@@ -87,13 +119,25 @@ class _ReorderableControlListState
         return ControlTile(
           key: ValueKey<int>(control.id),
           control: control,
-          onTap: _isSaving ? null : () => widget.onEdit(control),
-          trailing: ReorderableDragStartListener(
-            index: index,
-            child: const Padding(
-              padding: EdgeInsets.all(AppSpacing.sm),
-              child: Icon(Icons.drag_handle),
-            ),
+          onTap: _isBusy ? null : () => widget.onEdit(control),
+          trailing: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // Copying is per control, so it sits on the control rather than in
+              // a menu over the whole list.
+              IconButton(
+                icon: const Icon(Icons.copy_outlined),
+                tooltip: 'Duplicate control',
+                onPressed: _isBusy ? null : () => _duplicate(control),
+              ),
+              ReorderableDragStartListener(
+                index: index,
+                child: const Padding(
+                  padding: EdgeInsets.all(AppSpacing.sm),
+                  child: Icon(Icons.drag_handle),
+                ),
+              ),
+            ],
           ),
         );
       },
