@@ -24,6 +24,7 @@ import 'package:tone_vault/features/pedalboards/data/rig_chain_repository.dart';
 import 'package:tone_vault/features/pedals/data/pedal_repository.dart';
 import 'package:tone_vault/features/replacements/data/replacement_repository.dart';
 import 'package:tone_vault/features/snapshots/data/rig_snapshot_repository.dart';
+import 'package:tone_vault/features/snapshots/data/snapshot_settings.dart';
 
 /// Repositories wired to one in-memory database, the way the providers wire them
 /// to the real one.
@@ -107,8 +108,6 @@ RigChainRepository rigChainRepository(
   );
 }
 
-/// Capture reads a rig, its pedals' controls and their configurations, which is
-/// why this one takes four accessors.
 RigSnapshotRepository rigSnapshotRepository(
   AppDatabase database, {
   DateTime Function()? clock,
@@ -116,9 +115,20 @@ RigSnapshotRepository rigSnapshotRepository(
   return RigSnapshotRepository(
     RigSnapshotDao(database),
     PedalboardDao(database),
+    snapshotSettings(database),
+    clock: clock,
+  );
+}
+
+/// What a pedal on the rig was set to: a configuration of its own, or a scene of
+/// one of a unit's patches. Four accessors, which is why capture does not read
+/// them itself.
+SnapshotSettings snapshotSettings(AppDatabase database) {
+  return SnapshotSettings(
     ConfigurationDao(database),
     PedalControlDao(database),
-    clock: clock,
+    PatchDao(database),
+    SceneDao(database),
   );
 }
 

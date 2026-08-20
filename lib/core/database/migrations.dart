@@ -20,7 +20,11 @@ import 'package:drift/drift.dart';
 /// - v9: patches, scenes, scene_pedals and scene_values, the sounds of a
 ///   multi-effects unit: a patch holds scenes, and a scene says which of the
 ///   unit's pedals it uses and where their controls sit.
-const int currentSchemaVersion = 9;
+/// - v10: rig_snapshot_values.control_pedal_name, so a snapshot of a unit on one
+///   of its scenes says which pedal inside it each frozen reading came from. The
+///   table is rebuilt rather than altered, because the reading is only unique per
+///   pedal now and SQLite cannot change a UNIQUE constraint in place.
+const int currentSchemaVersion = 10;
 
 MigrationStrategy buildMigrationStrategy(GeneratedDatabase database) {
   return MigrationStrategy(
@@ -205,6 +209,58 @@ MigrationStrategy buildMigrationStrategy(GeneratedDatabase database) {
           '"value" REAL NOT NULL, '
           'UNIQUE ("scene_id", "control_id"))',
         );
+      }
+
+      if (from < 10) {
+        // The readings are copied aside, the table is created again with the new
+        // column and the wider unique key, and they are copied back. SQLite
+        // cannot drop a UNIQUE constraint in place, and the created statement is
+        // the same one `createAll` writes, so an upgraded phone and a new install
+        // agree character for character.
+        //
+        // The rebuilt rows keep control_pedal_name null. Every reading written
+        // before this version was one pedal's own, and null means exactly that -
+        // filling in the entry's pedal name would be inventing a fact the row
+        // never carried.
+        await database.customStatement(
+          'CREATE TABLE "rig_snapshot_values_v9" ('
+          '"id" INTEGER NOT NULL, '
+          '"entry_id" INTEGER NOT NULL, '
+          '"control_name" TEXT NOT NULL, '
+          '"control_type" TEXT NOT NULL, '
+          '"value" REAL NOT NULL, '
+          '"unit" TEXT NULL, '
+          '"options" TEXT NULL, '
+          '"display_order" INTEGER NOT NULL)',
+        );
+        await database.customStatement(
+          'INSERT INTO "rig_snapshot_values_v9" '
+          'SELECT id, entry_id, control_name, control_type, value, unit, '
+          'options, display_order FROM rig_snapshot_values',
+        );
+        await database.customStatement('DROP TABLE rig_snapshot_values');
+        await database.customStatement(
+          'CREATE TABLE IF NOT EXISTS "rig_snapshot_values" ('
+          '"id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, '
+          '"entry_id" INTEGER NOT NULL '
+          'REFERENCES rig_snapshot_entries (id) ON DELETE CASCADE, '
+          '"control_name" TEXT NOT NULL, '
+          '"control_pedal_name" TEXT NULL, '
+          '"control_type" TEXT NOT NULL, '
+          '"value" REAL NOT NULL, '
+          '"unit" TEXT NULL, '
+          '"options" TEXT NULL, '
+          '"display_order" INTEGER NOT NULL, '
+          'UNIQUE ("entry_id", "control_pedal_name", "control_name"))',
+        );
+        await database.customStatement(
+          'INSERT INTO rig_snapshot_values '
+          '(id, entry_id, control_name, control_type, value, unit, options, '
+          'display_order) '
+          'SELECT id, entry_id, control_name, control_type, value, unit, '
+          'options, display_order FROM "rig_snapshot_values_v9"',
+        );
+        await database.customStatement('DROP TABLE "rig_snapshot_values_v9"');
       }
 
       if (to > currentSchemaVersion) {

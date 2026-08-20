@@ -89,42 +89,74 @@ const List<String> _v1Rows = [
 ];
 
 /// Opens a v1 database that already holds [_v1Rows] and lets drift upgrade it.
-AppDatabase openV1Database() {
-  return AppDatabase(
-    NativeDatabase.memory(
-      setup: (rawDb) {
-        for (final statement in [..._v1Schema, ..._v1Rows]) {
-          rawDb.execute(statement);
-        }
-        // What tells drift there is an upgrade to run at all.
-        rawDb.userVersion = 1;
-      },
-    ),
-  );
-}
+AppDatabase openV1Database() => _openAt(1, [..._v1Schema, ..._v1Rows]);
 
-/// The `pedals` table as it stood at v7, holding a unit filed under the
-/// 'multiEffects' pedal type that v8 dropped.
+/// The `pedals` table as it stood from v6 to v8, shared by the fixtures of both
+/// versions because no step between them touches its shape.
+const String _pedalsAtV7 =
+    'CREATE TABLE IF NOT EXISTS pedals ('
+    'id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, '
+    'name TEXT NOT NULL, '
+    'brand TEXT NULL, '
+    'type TEXT NOT NULL, '
+    'category TEXT NOT NULL, '
+    "status TEXT NOT NULL DEFAULT 'active', "
+    'photo_path TEXT NULL, '
+    'purchase_date TEXT NULL, '
+    'notes TEXT NULL, '
+    'host_pedal_id INTEGER NULL REFERENCES pedals (id) ON DELETE RESTRICT, '
+    'multi_effects_mode TEXT NULL, '
+    'created_at TEXT NOT NULL, '
+    'updated_at TEXT NOT NULL)';
+
+/// The rigs table and the snapshot tables as they stood from v5 to v9, before
+/// the v10 step rebuilt `rig_snapshot_values` around the pedal a reading is on.
 ///
-/// Only `pedals` is created: the v8 step is the only one that runs from here, and
-/// it touches nothing else. The unit's category is deliberately something other
-/// than multi-effects, so the upgrade has to set it rather than find it already
-/// right.
-const List<String> _v7Pedals = [
-  'CREATE TABLE IF NOT EXISTS pedals ('
+/// Every phone from v5 on has these, so a fixture of one has to have them too:
+/// the v10 step reads the readings out of the old table and puts them back, and
+/// a fixture missing the table would be testing a phone that cannot exist.
+const List<String> _snapshotSchemaAtV9 = [
+  'CREATE TABLE IF NOT EXISTS pedalboards ('
       'id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, '
-      'name TEXT NOT NULL, '
-      'brand TEXT NULL, '
-      'type TEXT NOT NULL, '
-      'category TEXT NOT NULL, '
-      "status TEXT NOT NULL DEFAULT 'active', "
-      'photo_path TEXT NULL, '
-      'purchase_date TEXT NULL, '
-      'notes TEXT NULL, '
-      'host_pedal_id INTEGER NULL REFERENCES pedals (id) ON DELETE RESTRICT, '
-      'multi_effects_mode TEXT NULL, '
+      'name TEXT NOT NULL UNIQUE, '
+      'description TEXT NULL, '
       'created_at TEXT NOT NULL, '
       'updated_at TEXT NOT NULL)',
+  'CREATE TABLE IF NOT EXISTS rig_snapshots ('
+      'id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, '
+      'pedalboard_id INTEGER NOT NULL '
+      'REFERENCES pedalboards (id) ON DELETE RESTRICT, '
+      'name TEXT NOT NULL, '
+      'notes TEXT NULL, '
+      'captured_at TEXT NOT NULL)',
+  'CREATE TABLE IF NOT EXISTS rig_snapshot_entries ('
+      'id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, '
+      'snapshot_id INTEGER NOT NULL '
+      'REFERENCES rig_snapshots (id) ON DELETE CASCADE, '
+      'pedal_id INTEGER NOT NULL REFERENCES pedals (id) ON DELETE RESTRICT, '
+      'position INTEGER NOT NULL, '
+      'configuration_name TEXT NULL, '
+      'UNIQUE (snapshot_id, pedal_id))',
+  // Without control_pedal_name, and unique per knob name alone, which is what
+  // the v10 step rebuilds.
+  'CREATE TABLE IF NOT EXISTS rig_snapshot_values ('
+      'id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, '
+      'entry_id INTEGER NOT NULL '
+      'REFERENCES rig_snapshot_entries (id) ON DELETE CASCADE, '
+      'control_name TEXT NOT NULL, '
+      'control_type TEXT NOT NULL, '
+      'value REAL NOT NULL, '
+      'unit TEXT NULL, '
+      'options TEXT NULL, '
+      'display_order INTEGER NOT NULL, '
+      'UNIQUE (entry_id, control_name))',
+];
+
+/// A unit filed under the 'multiEffects' pedal type that v8 dropped.
+///
+/// Its category is deliberately something other than multi-effects, so the
+/// upgrade has to set it rather than find it already right.
+const List<String> _v7Rows = [
   'INSERT INTO pedals '
       '(id, name, type, category, status, multi_effects_mode, '
       'created_at, updated_at) '
@@ -132,15 +164,48 @@ const List<String> _v7Pedals = [
       "'scene', '2026-08-01T10:00:00.000Z', '2026-08-01T10:00:00.000Z')",
 ];
 
-/// Opens a v7 database holding [_v7Pedals] and lets drift upgrade it.
+/// Opens a v7 database holding [_v7Rows] and lets drift upgrade it.
 AppDatabase openV7MultiEffectsDatabase() {
+  return _openAt(7, [_pedalsAtV7, ..._snapshotSchemaAtV9, ..._v7Rows]);
+}
+
+/// A rig, a snapshot of it, and one knob frozen in that snapshot.
+const List<String> _v9Rows = [
+  'INSERT INTO pedals (id, name, type, category, status, created_at, '
+      'updated_at) '
+      "VALUES (1, 'PureSky', 'analog', 'overdrive', 'active', "
+      "'2026-04-01T10:00:00.000Z', '2026-04-01T10:00:00.000Z')",
+  'INSERT INTO pedalboards (id, name, created_at, updated_at) '
+      "VALUES (1, 'Sunday Rig', '2026-04-01T10:00:00.000Z', "
+      "'2026-04-01T10:00:00.000Z')",
+  'INSERT INTO rig_snapshots (id, pedalboard_id, name, captured_at) '
+      "VALUES (1, 1, 'Easter 2026', '2026-04-05T09:00:00.000Z')",
+  'INSERT INTO rig_snapshot_entries (id, snapshot_id, pedal_id, position, '
+      'configuration_name) '
+      "VALUES (1, 1, 1, 0, 'Worship Clean')",
+  'INSERT INTO rig_snapshot_values (id, entry_id, control_name, control_type, '
+      'value, display_order) '
+      "VALUES (1, 1, 'Volume', 'clock', 0.75, 0)",
+];
+
+/// Opens a v9 database holding [_v9Rows] and lets drift upgrade it.
+///
+/// This is the fixture the v10 rebuild is judged on: the reading in it was
+/// frozen before the table was rebuilt, and it has to come back out unchanged.
+AppDatabase openV9SnapshotDatabase() {
+  return _openAt(9, [_pedalsAtV7, ..._snapshotSchemaAtV9, ..._v9Rows]);
+}
+
+/// A database that already holds [statements], at schema [version].
+AppDatabase _openAt(int version, List<String> statements) {
   return AppDatabase(
     NativeDatabase.memory(
       setup: (rawDb) {
-        for (final statement in _v7Pedals) {
+        for (final statement in statements) {
           rawDb.execute(statement);
         }
-        rawDb.userVersion = 7;
+        // What tells drift there is an upgrade to run at all.
+        rawDb.userVersion = version;
       },
     ),
   );

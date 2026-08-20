@@ -37,6 +37,7 @@ class _CaptureSnapshotScreenState extends ConsumerState<CaptureSnapshotScreen> {
             widget.pedalboardId,
             capture.draft,
             configurationChoices: capture.configurationChoices,
+            sceneChoices: capture.sceneChoices,
           );
       if (mounted) {
         context.go(Routes.rigDetail(widget.pedalboardId));

@@ -60,7 +60,17 @@ class SnapshotEntryTile extends StatelessWidget {
               ],
             ),
             if (entry.values.isNotEmpty) const SizedBox(height: AppSpacing.sm),
-            for (final value in entry.values) _Reading(value: value),
+            for (final value in entry.values)
+              _Reading(
+                value: value,
+                // Only when it was some other pedal's knob, which is how a unit
+                // captured on a scene reads: the entry is the unit, and the knobs
+                // belong to the pedals inside it. Repeating the entry's own name
+                // on every row would say nothing.
+                onPedal: value.controlPedalName == entry.pedal.name
+                    ? null
+                    : value.controlPedalName,
+              ),
           ],
         ),
       ),
@@ -69,10 +79,16 @@ class SnapshotEntryTile extends StatelessWidget {
 }
 
 /// Where one control stood, read in its own notation.
+///
+/// [onPedal] names the pedal the knob was on, for the readings that came from
+/// somewhere other than the pedal the entry is filed under. Null both for a
+/// pedal's own knob and for a reading frozen before the snapshot recorded which
+/// pedal each one was on.
 class _Reading extends StatelessWidget {
-  const _Reading({required this.value});
+  const _Reading({required this.value, this.onPedal});
 
   final RigSnapshotValue value;
+  final String? onPedal;
 
   @override
   Widget build(BuildContext context) {
@@ -83,7 +99,13 @@ class _Reading extends StatelessWidget {
       child: Row(
         children: [
           Expanded(
-            child: Text(value.controlName, style: theme.textTheme.bodyMedium),
+            child: Text(
+              onPedal == null
+                  ? value.controlName
+                  : '$onPedal · ${value.controlName}',
+              style: theme.textTheme.bodyMedium,
+              overflow: TextOverflow.ellipsis,
+            ),
           ),
           Text(
             formatControlValue(

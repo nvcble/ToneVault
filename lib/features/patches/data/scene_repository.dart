@@ -33,6 +33,14 @@ class SceneRepository {
 
   Stream<Scene?> watchScene(int sceneId) => _dao.watchScene(sceneId);
 
+  /// Every scene on one unit, whichever patch it is in, each with its patch.
+  ///
+  /// For the places a scene is chosen from outside the patch screens: a rig
+  /// snapshot asks which scene the unit was on, and the two-level walk down to it
+  /// would be two questions for one answer.
+  Stream<List<PatchScene>> watchUnitScenes(int pedalId) =>
+      _dao.watchUnitScenes(pedalId);
+
   Future<int> createScene(int patchId, SceneDraft draft) async {
     final scene = _validated(draft);
     final patch = await _requirePatch(patchId);

@@ -1,13 +1,12 @@
 import 'package:drift/drift.dart' show Value;
 
 import '../../../core/database/app_database.dart';
-import '../../../core/database/daos/configuration_dao.dart';
-import '../../../core/database/daos/pedal_control_dao.dart';
 import '../../../core/database/daos/pedalboard_dao.dart';
 import '../../../core/database/daos/rig_snapshot_dao.dart';
 import '../../../core/errors/app_failure.dart';
 import 'snapshot_draft.dart';
 import 'snapshot_readings.dart';
+import 'snapshot_settings.dart';
 import 'snapshot_validator.dart';
 
 /// Snapshots of a rig: taking one, correcting what it is called, removing one.
@@ -28,15 +27,16 @@ class RigSnapshotRepository {
   RigSnapshotRepository(
     this._dao,
     this._pedalboardDao,
-    this._configurationDao,
-    this._controlDao, {
+    this._settings, {
     DateTime Function()? clock,
   }) : _clock = clock ?? DateTime.now;
 
   final RigSnapshotDao _dao;
   final PedalboardDao _pedalboardDao;
-  final ConfigurationDao _configurationDao;
-  final PedalControlDao _controlDao;
+
+  /// Where the choices made on screen are turned into readings, and checked
+  /// against the database as it stands.
+  final SnapshotSettings _settings;
 
   /// Injectable so tests can assert on exact timestamps.
   final DateTime Function() _clock;
@@ -53,13 +53,16 @@ class RigSnapshotRepository {
   /// Records the rig as it stands and returns the new snapshot's id.
   ///
   /// [configurationChoices] maps a pedal on the rig to the configuration it was
-  /// set to. A pedal left out of it is captured as being on the board with
-  /// nothing dialled in, which is the honest answer for a wah, and for a pedal
-  /// whose settings the user simply did not record.
+  /// set to, and [sceneChoices] maps a multi-effects unit to the scene it was on -
+  /// a unit has no configurations of its own, so a scene is what says where it
+  /// stood. A pedal in neither is captured as being on the board with nothing
+  /// dialled in, which is the honest answer for a wah, and for a pedal whose
+  /// settings the user simply did not record.
   Future<int> captureSnapshot(
     int pedalboardId,
     SnapshotDraft draft, {
     Map<int, int> configurationChoices = const {},
+    Map<int, int> sceneChoices = const {},
   }) async {
     final snapshot = _validated(draft);
 
@@ -76,7 +79,11 @@ class RigSnapshotRepository {
       );
     }
 
-    final chosen = await _chosenConfigurations(slots, configurationChoices);
+    final chosen = await _settings.resolve(
+      onTheRig: {for (final slot in slots) slot.pedalId},
+      configurationChoices: configurationChoices,
+      sceneChoices: sceneChoices,
+    );
 
     return _guard(
       () => _dao.transaction(() async {
@@ -96,7 +103,7 @@ class RigSnapshotRepository {
             snapshotId: snapshotId,
             pedalId: slot.pedalId,
             position: position,
-            configuration: chosen[slot.pedalId],
+            setting: chosen[slot.pedalId],
           );
         }
 
@@ -146,73 +153,35 @@ class RigSnapshotRepository {
 
   /// Stores one pedal's place in the chain, with the readings it was set to.
   ///
-  /// The configuration's name is copied as text rather than referenced, so
-  /// renaming or deleting it later cannot rewrite what the snapshot says.
+  /// The setting's name is copied as text rather than referenced, so renaming or
+  /// deleting the configuration or scene later cannot rewrite what the snapshot
+  /// says.
   Future<void> _captureEntry({
     required int snapshotId,
     required int pedalId,
     required int position,
-    required Configuration? configuration,
+    required SnapshotSetting? setting,
   }) async {
     final entryId = await _dao.insertEntry(
       RigSnapshotEntriesCompanion.insert(
         snapshotId: snapshotId,
         pedalId: pedalId,
         position: position,
-        configurationName: Value(configuration?.name),
+        configurationName: Value(setting?.label),
       ),
     );
 
-    if (configuration == null) {
+    if (setting == null) {
       return;
     }
 
     await _dao.insertValues(
       frozenReadings(
         entryId: entryId,
-        // Every control the chosen configuration could have set, so a scene of a
-        // multi-effects unit is frozen as fully as an ordinary pedal's setting.
-        controls: await _controlDao.settableControlsOf(pedalId),
-        values: await _configurationDao.valuesOf(configuration.id),
+        controls: setting.controls,
+        positions: setting.positions,
       ),
     );
-  }
-
-  /// The configuration chosen for each pedal, checked against the rig as it
-  /// stands.
-  ///
-  /// A choice made on screen before someone edited the rig or the pedal would
-  /// otherwise be captured as fact, or fail as a constraint violation with
-  /// nothing readable in it.
-  Future<Map<int, Configuration>> _chosenConfigurations(
-    List<PedalboardSlot> slots,
-    Map<int, int> choices,
-  ) async {
-    final onTheRig = {for (final slot in slots) slot.pedalId};
-    final chosen = <int, Configuration>{};
-
-    for (final choice in choices.entries) {
-      if (!onTheRig.contains(choice.key)) {
-        throw const AppFailure(
-          'One of those pedals is no longer on this rig. Reopen the rig and try '
-          'again.',
-        );
-      }
-
-      final configuration = await _configurationDao.findConfiguration(
-        choice.value,
-      );
-      if (configuration == null || configuration.pedalId != choice.key) {
-        throw const AppFailure(
-          'One of those configurations is no longer on its pedal. Reopen the '
-          'rig and try again.',
-        );
-      }
-
-      chosen[choice.key] = configuration;
-    }
-
-    return chosen;
   }
 
   SnapshotDraft _validated(SnapshotDraft draft) {

@@ -3,6 +3,7 @@ import 'package:drift/drift.dart' show Value;
 import '../../../core/database/app_database.dart';
 import '../../../core/enums/change_type.dart';
 import '../../../core/enums/pedal_status.dart';
+import '../../patches/data/scene_label.dart';
 
 /// One thing that happened, ready to be appended to the history.
 ///
@@ -88,7 +89,7 @@ class ChangeEntry {
          pedalId: patch.pedalId,
          changeType: ChangeType.controlValueChanged,
          controlId: control.id,
-         configurationName: '${patch.name} · ${scene.name}',
+         configurationName: sceneLabel(patch.name, scene.name),
          controlName: control.name,
          controlPedalName: controlPedal.name,
          oldValue: oldValue,
@@ -225,7 +226,7 @@ class ChangeEntry {
     : this._sound(
         patch: patch,
         changeType: ChangeType.sceneCreated,
-        name: '${patch.name} · ${scene.name}',
+        name: sceneLabel(patch.name, scene.name),
       );
 
   /// [scene] carries the name it has now.
@@ -236,15 +237,15 @@ class ChangeEntry {
   }) : this._sound(
          patch: patch,
          changeType: ChangeType.sceneRenamed,
-         name: '${patch.name} · ${scene.name}',
-         previousName: '${patch.name} · $previousName',
+         name: sceneLabel(patch.name, scene.name),
+         previousName: sceneLabel(patch.name, previousName),
        );
 
   ChangeEntry.sceneDeleted({required Patch patch, required Scene scene})
     : this._sound(
         patch: patch,
         changeType: ChangeType.sceneDeleted,
-        name: '${patch.name} · ${scene.name}',
+        name: sceneLabel(patch.name, scene.name),
       );
 
   final int pedalId;

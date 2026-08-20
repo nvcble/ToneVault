@@ -6368,6 +6368,21 @@ class $RigSnapshotValuesTable extends RigSnapshotValues
     type: DriftSqlType.string,
     requiredDuringInsert: true,
   );
+  static const VerificationMeta _controlPedalNameMeta = const VerificationMeta(
+    'controlPedalName',
+  );
+  @override
+  late final GeneratedColumn<String> controlPedalName = GeneratedColumn<String>(
+    'control_pedal_name',
+    aliasedName,
+    true,
+    additionalChecks: GeneratedColumn.checkTextLength(
+      minTextLength: 1,
+      maxTextLength: 100,
+    ),
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
   @override
   late final GeneratedColumnWithTypeConverter<ControlType, String> controlType =
       GeneratedColumn<String>(
@@ -6428,6 +6443,7 @@ class $RigSnapshotValuesTable extends RigSnapshotValues
     id,
     entryId,
     controlName,
+    controlPedalName,
     controlType,
     value,
     unit,
@@ -6468,6 +6484,15 @@ class $RigSnapshotValuesTable extends RigSnapshotValues
     } else if (isInserting) {
       context.missing(_controlNameMeta);
     }
+    if (data.containsKey('control_pedal_name')) {
+      context.handle(
+        _controlPedalNameMeta,
+        controlPedalName.isAcceptableOrUnknown(
+          data['control_pedal_name']!,
+          _controlPedalNameMeta,
+        ),
+      );
+    }
     if (data.containsKey('value')) {
       context.handle(
         _valueMeta,
@@ -6506,7 +6531,7 @@ class $RigSnapshotValuesTable extends RigSnapshotValues
   Set<GeneratedColumn> get $primaryKey => {id};
   @override
   List<Set<GeneratedColumn>> get uniqueKeys => [
-    {entryId, controlName},
+    {entryId, controlPedalName, controlName},
   ];
   @override
   RigSnapshotValue map(Map<String, dynamic> data, {String? tablePrefix}) {
@@ -6524,6 +6549,10 @@ class $RigSnapshotValuesTable extends RigSnapshotValues
         DriftSqlType.string,
         data['${effectivePrefix}control_name'],
       )!,
+      controlPedalName: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}control_pedal_name'],
+      ),
       controlType: $RigSnapshotValuesTable.$convertercontrolType.fromSql(
         attachedDatabase.typeMapping.read(
           DriftSqlType.string,
@@ -6563,6 +6592,17 @@ class RigSnapshotValue extends DataClass
   final int id;
   final int entryId;
   final String controlName;
+
+  /// The pedal the knob was on, as that pedal was called that day.
+  ///
+  /// Set on every reading written since it was added. It is what tells two knobs
+  /// apart when a multi-effects unit is captured on one of its scenes: the entry
+  /// is the unit, but the knobs belong to the pedals inside it, and "Level at
+  /// 2:30" says nothing when three of them have a Level.
+  ///
+  /// Null on readings written before the column existed, which were all one
+  /// pedal's own: null reads as the pedal the entry is filed under.
+  final String? controlPedalName;
   final ControlType controlType;
   final double value;
   final String? unit;
@@ -6575,6 +6615,7 @@ class RigSnapshotValue extends DataClass
     required this.id,
     required this.entryId,
     required this.controlName,
+    this.controlPedalName,
     required this.controlType,
     required this.value,
     this.unit,
@@ -6587,6 +6628,9 @@ class RigSnapshotValue extends DataClass
     map['id'] = Variable<int>(id);
     map['entry_id'] = Variable<int>(entryId);
     map['control_name'] = Variable<String>(controlName);
+    if (!nullToAbsent || controlPedalName != null) {
+      map['control_pedal_name'] = Variable<String>(controlPedalName);
+    }
     {
       map['control_type'] = Variable<String>(
         $RigSnapshotValuesTable.$convertercontrolType.toSql(controlType),
@@ -6608,6 +6652,9 @@ class RigSnapshotValue extends DataClass
       id: Value(id),
       entryId: Value(entryId),
       controlName: Value(controlName),
+      controlPedalName: controlPedalName == null && nullToAbsent
+          ? const Value.absent()
+          : Value(controlPedalName),
       controlType: Value(controlType),
       value: Value(value),
       unit: unit == null && nullToAbsent ? const Value.absent() : Value(unit),
@@ -6627,6 +6674,7 @@ class RigSnapshotValue extends DataClass
       id: serializer.fromJson<int>(json['id']),
       entryId: serializer.fromJson<int>(json['entryId']),
       controlName: serializer.fromJson<String>(json['controlName']),
+      controlPedalName: serializer.fromJson<String?>(json['controlPedalName']),
       controlType: $RigSnapshotValuesTable.$convertercontrolType.fromJson(
         serializer.fromJson<String>(json['controlType']),
       ),
@@ -6643,6 +6691,7 @@ class RigSnapshotValue extends DataClass
       'id': serializer.toJson<int>(id),
       'entryId': serializer.toJson<int>(entryId),
       'controlName': serializer.toJson<String>(controlName),
+      'controlPedalName': serializer.toJson<String?>(controlPedalName),
       'controlType': serializer.toJson<String>(
         $RigSnapshotValuesTable.$convertercontrolType.toJson(controlType),
       ),
@@ -6657,6 +6706,7 @@ class RigSnapshotValue extends DataClass
     int? id,
     int? entryId,
     String? controlName,
+    Value<String?> controlPedalName = const Value.absent(),
     ControlType? controlType,
     double? value,
     Value<String?> unit = const Value.absent(),
@@ -6666,6 +6716,9 @@ class RigSnapshotValue extends DataClass
     id: id ?? this.id,
     entryId: entryId ?? this.entryId,
     controlName: controlName ?? this.controlName,
+    controlPedalName: controlPedalName.present
+        ? controlPedalName.value
+        : this.controlPedalName,
     controlType: controlType ?? this.controlType,
     value: value ?? this.value,
     unit: unit.present ? unit.value : this.unit,
@@ -6679,6 +6732,9 @@ class RigSnapshotValue extends DataClass
       controlName: data.controlName.present
           ? data.controlName.value
           : this.controlName,
+      controlPedalName: data.controlPedalName.present
+          ? data.controlPedalName.value
+          : this.controlPedalName,
       controlType: data.controlType.present
           ? data.controlType.value
           : this.controlType,
@@ -6697,6 +6753,7 @@ class RigSnapshotValue extends DataClass
           ..write('id: $id, ')
           ..write('entryId: $entryId, ')
           ..write('controlName: $controlName, ')
+          ..write('controlPedalName: $controlPedalName, ')
           ..write('controlType: $controlType, ')
           ..write('value: $value, ')
           ..write('unit: $unit, ')
@@ -6711,6 +6768,7 @@ class RigSnapshotValue extends DataClass
     id,
     entryId,
     controlName,
+    controlPedalName,
     controlType,
     value,
     unit,
@@ -6724,6 +6782,7 @@ class RigSnapshotValue extends DataClass
           other.id == this.id &&
           other.entryId == this.entryId &&
           other.controlName == this.controlName &&
+          other.controlPedalName == this.controlPedalName &&
           other.controlType == this.controlType &&
           other.value == this.value &&
           other.unit == this.unit &&
@@ -6735,6 +6794,7 @@ class RigSnapshotValuesCompanion extends UpdateCompanion<RigSnapshotValue> {
   final Value<int> id;
   final Value<int> entryId;
   final Value<String> controlName;
+  final Value<String?> controlPedalName;
   final Value<ControlType> controlType;
   final Value<double> value;
   final Value<String?> unit;
@@ -6744,6 +6804,7 @@ class RigSnapshotValuesCompanion extends UpdateCompanion<RigSnapshotValue> {
     this.id = const Value.absent(),
     this.entryId = const Value.absent(),
     this.controlName = const Value.absent(),
+    this.controlPedalName = const Value.absent(),
     this.controlType = const Value.absent(),
     this.value = const Value.absent(),
     this.unit = const Value.absent(),
@@ -6754,6 +6815,7 @@ class RigSnapshotValuesCompanion extends UpdateCompanion<RigSnapshotValue> {
     this.id = const Value.absent(),
     required int entryId,
     required String controlName,
+    this.controlPedalName = const Value.absent(),
     required ControlType controlType,
     required double value,
     this.unit = const Value.absent(),
@@ -6768,6 +6830,7 @@ class RigSnapshotValuesCompanion extends UpdateCompanion<RigSnapshotValue> {
     Expression<int>? id,
     Expression<int>? entryId,
     Expression<String>? controlName,
+    Expression<String>? controlPedalName,
     Expression<String>? controlType,
     Expression<double>? value,
     Expression<String>? unit,
@@ -6778,6 +6841,7 @@ class RigSnapshotValuesCompanion extends UpdateCompanion<RigSnapshotValue> {
       if (id != null) 'id': id,
       if (entryId != null) 'entry_id': entryId,
       if (controlName != null) 'control_name': controlName,
+      if (controlPedalName != null) 'control_pedal_name': controlPedalName,
       if (controlType != null) 'control_type': controlType,
       if (value != null) 'value': value,
       if (unit != null) 'unit': unit,
@@ -6790,6 +6854,7 @@ class RigSnapshotValuesCompanion extends UpdateCompanion<RigSnapshotValue> {
     Value<int>? id,
     Value<int>? entryId,
     Value<String>? controlName,
+    Value<String?>? controlPedalName,
     Value<ControlType>? controlType,
     Value<double>? value,
     Value<String?>? unit,
@@ -6800,6 +6865,7 @@ class RigSnapshotValuesCompanion extends UpdateCompanion<RigSnapshotValue> {
       id: id ?? this.id,
       entryId: entryId ?? this.entryId,
       controlName: controlName ?? this.controlName,
+      controlPedalName: controlPedalName ?? this.controlPedalName,
       controlType: controlType ?? this.controlType,
       value: value ?? this.value,
       unit: unit ?? this.unit,
@@ -6819,6 +6885,9 @@ class RigSnapshotValuesCompanion extends UpdateCompanion<RigSnapshotValue> {
     }
     if (controlName.present) {
       map['control_name'] = Variable<String>(controlName.value);
+    }
+    if (controlPedalName.present) {
+      map['control_pedal_name'] = Variable<String>(controlPedalName.value);
     }
     if (controlType.present) {
       map['control_type'] = Variable<String>(
@@ -6846,6 +6915,7 @@ class RigSnapshotValuesCompanion extends UpdateCompanion<RigSnapshotValue> {
           ..write('id: $id, ')
           ..write('entryId: $entryId, ')
           ..write('controlName: $controlName, ')
+          ..write('controlPedalName: $controlPedalName, ')
           ..write('controlType: $controlType, ')
           ..write('value: $value, ')
           ..write('unit: $unit, ')
@@ -14601,6 +14671,7 @@ typedef $$RigSnapshotValuesTableCreateCompanionBuilder =
       Value<int> id,
       required int entryId,
       required String controlName,
+      Value<String?> controlPedalName,
       required ControlType controlType,
       required double value,
       Value<String?> unit,
@@ -14612,6 +14683,7 @@ typedef $$RigSnapshotValuesTableUpdateCompanionBuilder =
       Value<int> id,
       Value<int> entryId,
       Value<String> controlName,
+      Value<String?> controlPedalName,
       Value<ControlType> controlType,
       Value<double> value,
       Value<String?> unit,
@@ -14667,6 +14739,11 @@ class $$RigSnapshotValuesTableFilterComposer
 
   ColumnFilters<String> get controlName => $composableBuilder(
     column: $table.controlName,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get controlPedalName => $composableBuilder(
+    column: $table.controlPedalName,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -14739,6 +14816,11 @@ class $$RigSnapshotValuesTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<String> get controlPedalName => $composableBuilder(
+    column: $table.controlPedalName,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<String> get controlType => $composableBuilder(
     column: $table.controlType,
     builder: (column) => ColumnOrderings(column),
@@ -14802,6 +14884,11 @@ class $$RigSnapshotValuesTableAnnotationComposer
 
   GeneratedColumn<String> get controlName => $composableBuilder(
     column: $table.controlName,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get controlPedalName => $composableBuilder(
+    column: $table.controlPedalName,
     builder: (column) => column,
   );
 
@@ -14886,6 +14973,7 @@ class $$RigSnapshotValuesTableTableManager
                 Value<int> id = const Value.absent(),
                 Value<int> entryId = const Value.absent(),
                 Value<String> controlName = const Value.absent(),
+                Value<String?> controlPedalName = const Value.absent(),
                 Value<ControlType> controlType = const Value.absent(),
                 Value<double> value = const Value.absent(),
                 Value<String?> unit = const Value.absent(),
@@ -14895,6 +14983,7 @@ class $$RigSnapshotValuesTableTableManager
                 id: id,
                 entryId: entryId,
                 controlName: controlName,
+                controlPedalName: controlPedalName,
                 controlType: controlType,
                 value: value,
                 unit: unit,
@@ -14906,6 +14995,7 @@ class $$RigSnapshotValuesTableTableManager
                 Value<int> id = const Value.absent(),
                 required int entryId,
                 required String controlName,
+                Value<String?> controlPedalName = const Value.absent(),
                 required ControlType controlType,
                 required double value,
                 Value<String?> unit = const Value.absent(),
@@ -14915,6 +15005,7 @@ class $$RigSnapshotValuesTableTableManager
                 id: id,
                 entryId: entryId,
                 controlName: controlName,
+                controlPedalName: controlPedalName,
                 controlType: controlType,
                 value: value,
                 unit: unit,

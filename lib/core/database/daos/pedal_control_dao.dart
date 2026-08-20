@@ -54,9 +54,13 @@ class PedalControlDao extends DatabaseAccessor<AppDatabase>
   Stream<List<OwnedControl>> watchSettableControls(int pedalId) =>
       _settable(pedalId).watch().map(_owned);
 
+  Future<List<OwnedControl>> ownedSettableControlsOf(int pedalId) async =>
+      _owned(await _settable(pedalId).get());
+
   Future<List<PedalControl>> settableControlsOf(int pedalId) async {
-    final rows = await _settable(pedalId).get();
-    return [for (final row in _owned(rows)) row.control];
+    return [
+      for (final owned in await ownedSettableControlsOf(pedalId)) owned.control,
+    ];
   }
 
   /// [controlId] with the pedal it is on, but only when a configuration of

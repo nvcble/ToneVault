@@ -4,13 +4,15 @@ import '../../../app/theme/app_spacing.dart';
 import '../../../core/database/daos/pedalboard_dao.dart';
 import '../data/snapshot_draft.dart';
 import '../data/snapshot_validator.dart';
-import 'pedal_configuration_choice.dart';
+import 'pedal_setting_choice.dart';
 
-/// What the form hands back: the snapshot's own details, and which configuration
-/// each pedal was on. A pedal left on "Not recorded" is absent from the map.
+/// What the form hands back: the snapshot's own details, which configuration each
+/// ordinary pedal was on, and which scene each multi-effects unit was on. A pedal
+/// left on "Not recorded" is absent from both maps.
 typedef SnapshotCapture = ({
   SnapshotDraft draft,
   Map<int, int> configurationChoices,
+  Map<int, int> sceneChoices,
 });
 
 /// Names a snapshot and asks where each pedal on the rig was set.
@@ -42,8 +44,9 @@ class _CaptureSnapshotFormState extends State<CaptureSnapshotForm> {
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _notesController = TextEditingController();
 
-  /// Pedal id to the configuration chosen for it. A pedal only appears here once
-  /// something has been picked for it.
+  /// Pedal id to the sound chosen for it - a configuration of its own, or a scene
+  /// for a unit. A pedal only appears here once something has been picked for it,
+  /// and which of the two it is comes from the pedal itself at submit.
   final Map<int, int> _choices = {};
 
   @override
@@ -53,12 +56,12 @@ class _CaptureSnapshotFormState extends State<CaptureSnapshotForm> {
     super.dispose();
   }
 
-  void _choose(int pedalId, int? configurationId) {
+  void _choose(int pedalId, int? settingId) {
     setState(() {
-      if (configurationId == null) {
+      if (settingId == null) {
         _choices.remove(pedalId);
       } else {
-        _choices[pedalId] = configurationId;
+        _choices[pedalId] = settingId;
       }
     });
   }
@@ -68,13 +71,28 @@ class _CaptureSnapshotFormState extends State<CaptureSnapshotForm> {
       return;
     }
 
+    // Split here rather than held apart in two maps: one dropdown per pedal is
+    // one answer, and the pedal is what says whether that answer is one of its
+    // configurations or a scene of one of its patches. Fresh maps, so the form
+    // goes on holding its own after handing these over.
+    final configurations = <int, int>{};
+    final scenes = <int, int>{};
+    for (final slot in widget.chain) {
+      if (_choices[slot.pedal.id] case final int chosen) {
+        final chose = slot.pedal.category.hasOwnControls
+            ? configurations
+            : scenes;
+        chose[slot.pedal.id] = chosen;
+      }
+    }
+
     widget.onSubmit((
       draft: SnapshotDraft(
         name: _nameController.text,
         notes: _notesController.text,
       ),
-      // A copy: the form goes on holding its own map after handing this over.
-      configurationChoices: Map<int, int>.of(_choices),
+      configurationChoices: configurations,
+      sceneChoices: scenes,
     ));
   }
 
@@ -121,13 +139,12 @@ class _CaptureSnapshotFormState extends State<CaptureSnapshotForm> {
           ),
           const SizedBox(height: AppSpacing.md),
           for (final (position, entry) in widget.chain.indexed)
-            PedalConfigurationChoice(
+            PedalSettingChoice(
               key: ValueKey<int>(entry.pedal.id),
               pedal: entry.pedal,
               position: position,
-              configurationId: _choices[entry.pedal.id],
-              onChanged: (configurationId) =>
-                  _choose(entry.pedal.id, configurationId),
+              settingId: _choices[entry.pedal.id],
+              onChanged: (settingId) => _choose(entry.pedal.id, settingId),
             ),
           const SizedBox(height: AppSpacing.sm),
           FilledButton(

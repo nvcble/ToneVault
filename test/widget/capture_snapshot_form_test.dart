@@ -2,27 +2,36 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:tone_vault/core/database/app_database.dart';
+import 'package:tone_vault/core/database/daos/patch_dao.dart';
 import 'package:tone_vault/core/database/daos/pedalboard_dao.dart';
 import 'package:tone_vault/core/enums/pedal_category.dart';
 import 'package:tone_vault/core/enums/pedal_status.dart';
 import 'package:tone_vault/core/enums/pedal_type.dart';
 import 'package:tone_vault/features/configurations/providers/configuration_providers.dart';
+import 'package:tone_vault/features/patches/providers/patch_providers.dart';
 import 'package:tone_vault/features/snapshots/widgets/capture_snapshot_form.dart';
 
-/// What the capture form hands back: a named snapshot, and one configuration per
-/// pedal that was actually set to one.
+/// What the capture form hands back: a named snapshot, one configuration per
+/// pedal that was actually set to one, and the scene each unit was on.
+///
+/// The two travel in separate maps because saving treats them differently, and a
+/// pedal that was left alone is in neither.
 ///
 /// The saving itself is rig_snapshot_capture_test.dart's job in test/database.
 void main() {
   const pedalboardId = 4;
   final moment = DateTime.utc(2026, 8, 19, 12);
 
-  Pedal pedal(int id, String name) {
+  Pedal pedal(
+    int id,
+    String name, {
+    PedalCategory category = PedalCategory.overdrive,
+  }) {
     return Pedal(
       id: id,
       name: name,
       type: PedalType.analog,
-      category: PedalCategory.overdrive,
+      category: category,
       status: PedalStatus.active,
       createdAt: moment,
       updatedAt: moment,
@@ -187,5 +196,92 @@ void main() {
 
     expect(find.byType(CircularProgressIndicator), findsOne);
     expect(captured, isNull);
+  });
+
+  group('a multi-effects unit on the rig', () {
+    final unit = pedal(
+      3,
+      'Valeton GP-200',
+      category: PedalCategory.multiEffects,
+    );
+    final worshipClean = Patch(
+      id: 40,
+      pedalId: unit.id,
+      name: 'Worship Clean',
+      createdAt: moment,
+      updatedAt: moment,
+    );
+    final verse = Scene(
+      id: 30,
+      patchId: worshipClean.id,
+      name: 'Verse',
+      createdAt: moment,
+      updatedAt: moment,
+    );
+
+    /// The form over a rig of one unit, which has [scenes] to choose between.
+    Future<void> pumpUnitForm(
+      WidgetTester tester, {
+      List<PatchScene> scenes = const [],
+    }) async {
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [
+            unitSceneListProvider(
+              unit.id,
+            ).overrideWith((ref) => Stream.value(scenes)),
+          ],
+          child: MaterialApp(
+            home: Scaffold(
+              body: CaptureSnapshotForm(
+                chain: [slot(unit, 0)],
+                onSubmit: (capture) => captured = capture,
+              ),
+            ),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+    }
+
+    testWidgets('is asked which scene it was on, patch and all', (
+      tester,
+    ) async {
+      await pumpUnitForm(tester, scenes: [(patch: worshipClean, scene: verse)]);
+
+      // Its configurations are not offered - it has none - and the scene is
+      // named with its patch, since another patch may hold a "Verse" too.
+      await tester.tap(find.byType(DropdownButtonFormField<int?>));
+      await tester.pumpAndSettle();
+      expect(find.text('Worship Clean · Verse'), findsWidgets);
+    });
+
+    testWidgets('hands its scene back apart from the configurations', (
+      tester,
+    ) async {
+      await pumpUnitForm(tester, scenes: [(patch: worshipClean, scene: verse)]);
+
+      await tester.enterText(find.byType(TextFormField).first, 'Easter 2026');
+      await choose(tester, 0, 'Worship Clean · Verse');
+      await tester.tap(find.widgetWithText(FilledButton, 'Take snapshot'));
+      await tester.pumpAndSettle();
+
+      // In the scene map, not the configuration one: saving reads a scene out of
+      // the pedals inside the unit, a configuration out of the pedal itself.
+      expect(captured?.sceneChoices, {unit.id: verse.id});
+      expect(captured?.configurationChoices, isEmpty);
+    });
+
+    testWidgets('with no scenes yet says so and cannot be set', (tester) async {
+      await pumpUnitForm(tester);
+
+      // Named after what is missing: scenes are what would fill this in, and
+      // this unit has no configurations to be short of.
+      expect(find.text('This unit has no scenes to record'), findsOne);
+      final field = tester.widget<DropdownButtonFormField<int?>>(
+        find.byType(DropdownButtonFormField<int?>),
+      );
+      expect(field.onChanged, isNull);
+    });
   });
 }

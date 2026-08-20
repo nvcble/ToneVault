@@ -89,6 +89,14 @@ final StreamProviderFamily<List<Scene>, int> sceneListProvider =
       (ref, patchId) => ref.watch(sceneRepositoryProvider).watchScenes(patchId),
     );
 
+/// Every scene on one unit, patch by patch, for choosing one from outside the
+/// patch screens.
+final StreamProviderFamily<List<PatchScene>, int> unitSceneListProvider =
+    StreamProvider.family<List<PatchScene>, int>(
+      (ref, pedalId) =>
+          ref.watch(sceneRepositoryProvider).watchUnitScenes(pedalId),
+    );
+
 final StreamProviderFamily<Scene?, int> sceneProvider =
     StreamProvider.family<Scene?, int>(
       (ref, sceneId) => ref.watch(sceneRepositoryProvider).watchScene(sceneId),
