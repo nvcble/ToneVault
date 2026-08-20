@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:tone_vault/app/app.dart';
 import 'package:tone_vault/core/database/app_database.dart';
+import 'package:tone_vault/core/enums/control_type.dart';
 import 'package:tone_vault/core/enums/pedal_category.dart';
 import 'package:tone_vault/core/enums/pedal_status.dart';
 import 'package:tone_vault/core/enums/pedal_type.dart';
@@ -53,6 +54,17 @@ void main() {
     updatedAt: moment,
   );
 
+  /// A control of the pedal inside the unit, which is what a scene sets.
+  final drive = PedalControl(
+    id: 41,
+    pedalId: screamer.id,
+    name: 'Drive',
+    controlType: ControlType.clock,
+    minValue: 0,
+    maxValue: 1,
+    displayOrder: 0,
+  );
+
   final scene = Scene(
     id: 31,
     patchId: patch.id,
@@ -63,11 +75,13 @@ void main() {
 
   /// Opens the app on the unit's Patch tab.
   ///
-  /// [scenePedals] is what the scene under test uses; everything else is the
-  /// same one unit with one patch and one scene in it.
+  /// [scenePedals] is what the scene under test uses, and [sceneValues] where it
+  /// puts their controls; everything else is the same one unit with one patch and
+  /// one scene in it.
   Future<void> openPatchTab(
     WidgetTester tester, {
     List<Pedal> scenePedals = const [],
+    Map<int, double> sceneValues = const {},
   }) async {
     // A tall window keeps the whole tab on screen, so finders do not depend on
     // scroll position.
@@ -98,6 +112,17 @@ void main() {
           scenePedalListProvider(
             scene.id,
           ).overrideWith((ref) => Stream.value(scenePedals)),
+          // The controls a scene can set follow the pedals in it, so the one
+          // pedal that has a control brings it along.
+          sceneControlsProvider(scene.id).overrideWith(
+            (ref) => Stream.value([
+              for (final pedal in scenePedals)
+                (owner: pedal, controls: <PedalControl>[drive]),
+            ]),
+          ),
+          sceneValuesProvider(
+            scene.id,
+          ).overrideWith((ref) => Stream.value(sceneValues)),
           // Read by the overview and the Replace action on the way through.
           pedalSwapsProvider(
             unit.id,
@@ -115,6 +140,28 @@ void main() {
     await tester.tap(find.text('Valeton GP-200'));
     await tester.pumpAndSettle();
     await tester.tap(find.widgetWithText(Tab, 'Patch'));
+    await tester.pumpAndSettle();
+  }
+
+  /// Opens the one scene of the one patch, on the settings it holds.
+  Future<void> openScene(WidgetTester tester) async {
+    await tester.tap(find.text('Worship Clean'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Verse'));
+    await tester.pumpAndSettle();
+  }
+
+  /// Switches an open scene over to the pedals it uses.
+  ///
+  /// 'Pedals' is a bottom navigation destination too, so the segment has to be
+  /// picked out of the switch rather than by its text alone.
+  Future<void> openScenePedals(WidgetTester tester) async {
+    await tester.tap(
+      find.descendant(
+        of: find.byType(SegmentedButton<bool>),
+        matching: find.text('Pedals'),
+      ),
+    );
     await tester.pumpAndSettle();
   }
 
@@ -203,25 +250,74 @@ void main() {
     expect(find.widgetWithText(TextFormField, 'Verse'), findsOne);
   });
 
-  testWidgets('a scene says which pedals it has none of', (tester) async {
+  testWidgets('a scene with no pedals in it has nothing to set', (
+    tester,
+  ) async {
     await openPatchTab(tester);
-    await tester.tap(find.text('Worship Clean'));
-    await tester.pumpAndSettle();
-
-    await tester.tap(find.text('Verse'));
-    await tester.pumpAndSettle();
+    await openScene(tester);
 
     // Empty rather than guessed at: putting the unit's pedals into every new
     // scene would claim sounds the user never chose.
+    expect(find.text('Nothing to set yet'), findsOne);
+    expect(find.textContaining('under Pedals'), findsOne);
+  });
+
+  testWidgets('a scene opens on where its controls sit', (tester) async {
+    await openPatchTab(
+      tester,
+      scenePedals: [screamer],
+      sceneValues: {drive.id: 0.5},
+    );
+    await openScene(tester);
+
+    // Under the pedal it is on, because a scene sets the controls of several.
+    expect(find.text('Tube Screamer'), findsOne);
+    expect(find.text('Drive'), findsOne);
+    expect(find.text('12:00'), findsOne);
+  });
+
+  testWidgets('a control the scene never set reads as unset', (tester) async {
+    await openPatchTab(tester, scenePedals: [screamer]);
+    await openScene(tester);
+
+    // Not as its default: a scene that does not say where a knob goes has not
+    // been finished, and saying 'Not set' is how the user sees what is left.
+    expect(find.text('Not set'), findsOne);
+    expect(find.text('12:00'), findsNothing);
+  });
+
+  testWidgets('a control opens the editor for this scene\'s position', (
+    tester,
+  ) async {
+    await openPatchTab(
+      tester,
+      scenePedals: [screamer],
+      sceneValues: {drive.id: 0.5},
+    );
+    await openScene(tester);
+
+    await tester.tap(find.text('Drive'));
+    await tester.pumpAndSettle();
+
+    // The same sheet a configuration uses, with the write pointed at the scene.
+    expect(find.widgetWithText(FilledButton, 'Save'), findsOne);
+    expect(find.text('Why the change?'), findsOne);
+    // Clear is offered only where there is something stored to clear.
+    expect(find.widgetWithText(TextButton, 'Clear'), findsOne);
+  });
+
+  testWidgets('a scene says which pedals it has none of', (tester) async {
+    await openPatchTab(tester);
+    await openScene(tester);
+    await openScenePedals(tester);
+
     expect(find.text('No pedals in this scene'), findsOne);
   });
 
   testWidgets('a scene lists the pedals it uses', (tester) async {
     await openPatchTab(tester, scenePedals: [screamer]);
-    await tester.tap(find.text('Worship Clean'));
-    await tester.pumpAndSettle();
-    await tester.tap(find.text('Verse'));
-    await tester.pumpAndSettle();
+    await openScene(tester);
+    await openScenePedals(tester);
 
     expect(find.text('Tube Screamer'), findsOne);
     expect(find.text('Ibanez'), findsOne);
@@ -231,10 +327,8 @@ void main() {
     tester,
   ) async {
     await openPatchTab(tester);
-    await tester.tap(find.text('Worship Clean'));
-    await tester.pumpAndSettle();
-    await tester.tap(find.text('Verse'));
-    await tester.pumpAndSettle();
+    await openScene(tester);
+    await openScenePedals(tester);
 
     await tester.tap(find.widgetWithText(FilledButton, 'Add pedal to scene'));
     await tester.pumpAndSettle();
@@ -247,10 +341,8 @@ void main() {
     tester,
   ) async {
     await openPatchTab(tester, scenePedals: [screamer]);
-    await tester.tap(find.text('Worship Clean'));
-    await tester.pumpAndSettle();
-    await tester.tap(find.text('Verse'));
-    await tester.pumpAndSettle();
+    await openScene(tester);
+    await openScenePedals(tester);
 
     await tester.tap(find.widgetWithText(FilledButton, 'Add pedal to scene'));
     await tester.pumpAndSettle();
@@ -262,10 +354,8 @@ void main() {
 
   testWidgets('taking a pedal out of a scene asks first', (tester) async {
     await openPatchTab(tester, scenePedals: [screamer]);
-    await tester.tap(find.text('Worship Clean'));
-    await tester.pumpAndSettle();
-    await tester.tap(find.text('Verse'));
-    await tester.pumpAndSettle();
+    await openScene(tester);
+    await openScenePedals(tester);
 
     await tester.tap(find.byIcon(Icons.remove_circle_outline));
     await tester.pumpAndSettle();

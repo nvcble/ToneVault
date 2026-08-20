@@ -8,40 +8,51 @@ import '../../../core/values/control_value_label.dart';
 import '../../../shared/widgets/empty_state.dart';
 import '../../../shared/widgets/failure_snack_bar.dart';
 import '../../../shared/widgets/section_label.dart';
-import '../../controls/providers/control_providers.dart';
-import '../providers/configuration_editor.dart';
-import '../providers/configuration_providers.dart';
-import 'value_editor_sheet.dart';
+import '../data/control_group.dart';
 
 /// One row of the list: a control to set, named under its own pedal when that is
-/// not the pedal being configured.
+/// not the pedal the screen is already about.
 typedef _ValueEntry = ({String? owner, PedalControl control});
 
-/// Where every control this configuration covers sits.
+/// Where a set of controls sits, whatever it is that holds those positions.
 ///
 /// The controls drive the list, in their own display order, and each is looked up
-/// in the stored values. A control with nothing stored reads as unset rather than
-/// as its default, because a configuration that does not say where a knob goes
-/// has not been finished.
+/// in [values]. A control with nothing stored reads as unset rather than as its
+/// default, because a setting that does not say where a knob goes has not been
+/// made.
 ///
-/// For an ordinary pedal those are its own controls and the list is flat. Where
-/// they come from several pedals, each pedal is named above the controls that
-/// belong to it.
-class ConfigurationValueList extends ConsumerWidget {
-  const ConfigurationValueList({
-    required this.pedalId,
-    required this.configurationId,
+/// Where the controls come from several pedals, each pedal is named above the
+/// controls that belong to it.
+///
+/// Kept for tracking: `ConfigurationValueList` spells this out inline. It is left
+/// as it is rather than changed under working, tested code; anything new uses
+/// this instead of adding another copy.
+class ControlValueList extends StatelessWidget {
+  const ControlValueList({
+    required this.groups,
+    required this.values,
+    required this.empty,
+    required this.onEdit,
+    this.ownerToHide,
     super.key,
   });
 
-  final int pedalId;
-  final int configurationId;
+  final AsyncValue<List<ControlGroup>> groups;
+
+  /// The stored positions, by control id; a control missing from it is unset.
+  final AsyncValue<Map<int, double>> values;
+
+  /// Shown when there is not one control to set.
+  final Widget empty;
+
+  /// A pedal whose name the rows leave out, because the screen already says it.
+  /// Null names every pedal.
+  final int? ownerToHide;
+
+  final void Function(PedalControl control, double? storedValue) onEdit;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final groups = ref.watch(settableControlsProvider(pedalId));
-    final values = ref.watch(configurationValuesProvider(configurationId));
-
+  Widget build(BuildContext context) {
     final error = groups.error ?? values.error;
     if (error != null) {
       return EmptyState(
@@ -58,22 +69,15 @@ class ConfigurationValueList extends ConsumerWidget {
     }
 
     if (groupList.isEmpty) {
-      return const EmptyState(
-        icon: Icons.tune,
-        title: 'Nothing to set yet',
-        message:
-            'A configuration sets the controls of the pedal it is on, and of the '
-            'pedals inside it. Add those controls and they will show up here.',
-      );
+      return empty;
     }
 
     final entries = <_ValueEntry>[
       for (final group in groupList)
         for (final (index, control) in group.controls.indexed)
           (
-            // Only above the first control of a pedal, and never for the pedal
-            // being configured: that one is already the title of the screen.
-            owner: index == 0 && group.owner.id != pedalId
+            // Only above the first control of a pedal; see [_ValueEntry].
+            owner: index == 0 && group.owner.id != ownerToHide
                 ? group.owner.name
                 : null,
             control: control,
@@ -86,43 +90,14 @@ class ConfigurationValueList extends ConsumerWidget {
       itemBuilder: (context, index) {
         final entry = entries[index];
         final control = entry.control;
+        final storedValue = valueMap[control.id];
         return _ValueRow(
           owner: entry.owner,
           control: control,
-          storedValue: valueMap[control.id],
-          onTap: () => _edit(context, ref, control, valueMap[control.id]),
+          storedValue: storedValue,
+          onTap: () => onEdit(control, storedValue),
         );
       },
-    );
-  }
-
-  /// The sheet only asks for a position; where it is stored is this list's part.
-  Future<void> _edit(
-    BuildContext context,
-    WidgetRef ref,
-    PedalControl control,
-    double? storedValue,
-  ) {
-    final editor = ref.read(configurationEditorProvider);
-
-    return showModalBottomSheet<void>(
-      context: context,
-      isScrollControlled: true,
-      builder: (sheetContext) => ValueEditorSheet(
-        control: control,
-        storedValue: storedValue,
-        onSave: (value, reason) => editor.setValue(
-          configurationId: configurationId,
-          controlId: control.id,
-          value: value,
-          reason: reason,
-        ),
-        onClear: (reason) => editor.clearValue(
-          configurationId: configurationId,
-          controlId: control.id,
-          reason: reason,
-        ),
-      ),
     );
   }
 }
