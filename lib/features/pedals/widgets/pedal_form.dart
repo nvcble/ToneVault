@@ -139,7 +139,7 @@ class _PedalFormState extends State<PedalForm> {
             value: _type,
             values: PedalType.values,
             labelOf: (type) => type.label,
-            emptyMessage: 'Pick whether this pedal is analog or digital.',
+            emptyMessage: 'Pick how this pedal makes its sound.',
             onChanged: (type) => setState(() => _type = type),
           ),
           const SizedBox(height: AppSpacing.md),

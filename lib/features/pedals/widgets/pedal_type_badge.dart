@@ -27,6 +27,12 @@ class PedalTypeBadge extends StatelessWidget {
         colors.secondaryContainer,
         colors.onSecondaryContainer,
       ),
+      // Neutral rather than a fourth accent: a multi-effects unit is told apart
+      // by the word, and three accents already carry meaning here.
+      PedalType.multiEffects => (
+        colors.surfaceContainerHighest,
+        colors.onSurfaceVariant,
+      ),
     };
 
     return DecoratedBox(

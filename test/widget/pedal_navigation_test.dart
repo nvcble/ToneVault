@@ -61,7 +61,15 @@ void main() {
   );
 
   /// Opens the app on the pedals tab with one pedal in it.
-  Future<void> pumpPedalsTab(WidgetTester tester) async {
+  ///
+  /// [type] is the one thing a caller varies: it decides which tabs the detail
+  /// screen offers, and nothing else here depends on it.
+  Future<void> pumpPedalsTab(
+    WidgetTester tester, {
+    PedalType type = PedalType.analog,
+  }) async {
+    final shown = pedal.copyWith(type: type);
+
     // A tall window keeps the whole form on screen, so finders do not depend on
     // scroll position.
     tester.view.physicalSize = const Size(1000, 2400);
@@ -73,8 +81,8 @@ void main() {
         overrides: [
           // The app opens on the home tab, which reads the pedals, the rigs and
           // the timeline before the pedals tab is ever tapped.
-          ...homeStreamOverrides(pedals: [pedal], changes: [change]),
-          pedalProvider(pedal.id).overrideWith((ref) => Stream.value(pedal)),
+          ...homeStreamOverrides(pedals: [shown], changes: [change]),
+          pedalProvider(pedal.id).overrideWith((ref) => Stream.value(shown)),
           // The detail screen lists the pedal's controls, so the controls come
           // from here rather than from a real database.
           controlListProvider(
@@ -182,6 +190,26 @@ void main() {
     expect(find.text('Add control'), findsExactly(2)); // title and button
     expect(find.text('That control no longer exists'), findsNothing);
     expect(find.text('Type'), findsOne);
+  });
+
+  testWidgets('a multi-effects unit is offered no controls tab', (
+    tester,
+  ) async {
+    await pumpPedalsTab(tester, type: PedalType.multiEffects);
+
+    await tester.tap(find.text('Caline PureSky'));
+    await tester.pumpAndSettle();
+
+    // Its sounds live in patches and stomps inside the unit, so there is no
+    // row of knobs on the outside for a Controls tab to list.
+    expect(find.widgetWithText(Tab, 'Controls'), findsNothing);
+    expect(find.text('Volume'), findsNothing);
+
+    // The other three stay, and the badge says what it is.
+    expect(find.widgetWithText(Tab, 'Overview'), findsOne);
+    expect(find.widgetWithText(Tab, 'Configurations'), findsOne);
+    expect(find.widgetWithText(Tab, 'History'), findsOne);
+    expect(find.text('Multi-effects'), findsOne);
   });
 
   testWidgets('the configurations tab opens one and lists its settings', (

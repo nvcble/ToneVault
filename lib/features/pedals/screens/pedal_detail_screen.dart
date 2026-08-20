@@ -39,8 +39,20 @@ class PedalDetailScreen extends ConsumerWidget {
         ref.watch(pedalSwapsProvider(pedalId)).valueOrNull ?? const [];
     final isReplaced = retirementOf(pedalId, swaps) != null;
 
+    // A multi-effects unit has no controls of its own, so it has no Controls tab
+    // either; PedalType.hasOwnControls is the single place that decides. Until
+    // the pedal has loaded the full set is shown, which is what every pedal but
+    // a multi-effects ends up with.
+    final hasControls = pedal?.type.hasOwnControls ?? true;
+    final tabs = <String>[
+      'Overview',
+      if (hasControls) 'Controls',
+      'Configurations',
+      'History',
+    ];
+
     return DefaultTabController(
-      length: 4,
+      length: tabs.length,
       child: Scaffold(
         appBar: AppBar(
           title: Text(pedal?.name ?? 'Pedal'),
@@ -64,19 +76,14 @@ class PedalDetailScreen extends ConsumerWidget {
                     onPressed: () => _confirmDelete(context, ref, pedal.name),
                   ),
                 ],
-          bottom: const TabBar(
+          bottom: TabBar(
             // Four tabs including 'Configurations' will not fit across a phone
             // in portrait, so the bar scrolls rather than squeezing the labels
             // into something unreadable.
             isScrollable: true,
             tabAlignment: TabAlignment.start,
-            labelPadding: EdgeInsets.symmetric(horizontal: AppSpacing.md),
-            tabs: [
-              Tab(text: 'Overview'),
-              Tab(text: 'Controls'),
-              Tab(text: 'Configurations'),
-              Tab(text: 'History'),
-            ],
+            labelPadding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
+            tabs: [for (final label in tabs) Tab(text: label)],
           ),
         ),
         body: pedalValue.when(
@@ -93,13 +100,15 @@ class PedalDetailScreen extends ConsumerWidget {
                   message: 'It may have been deleted on another screen.',
                 )
               : TabBarView(
+                  // Same order and the same condition as `tabs` above, which is
+                  // what keeps a label pointing at its own view.
                   children: [
                     PedalOverview(
                       pedal: pedal,
                       onOpenPedal: (otherId) =>
                           context.go(Routes.pedalDetail(otherId)),
                     ),
-                    ControlListView(pedalId: pedalId),
+                    if (hasControls) ControlListView(pedalId: pedalId),
                     ConfigurationListView(pedalId: pedalId),
                     PedalHistoryView(pedalId: pedalId),
                   ],

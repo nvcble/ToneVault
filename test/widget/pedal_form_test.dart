@@ -93,10 +93,8 @@ void main() {
     );
     await submit(tester);
 
-    expect(
-      find.text('Pick whether this pedal is analog or digital.'),
-      findsOne,
-    );
+    // Not "analog or digital": multi-effects is a type too.
+    expect(find.text('Pick how this pedal makes its sound.'), findsOne);
     expect(find.text('Pick what this pedal does.'), findsOne);
     expect(submitted, isNull);
   });
