@@ -12,10 +12,10 @@ import 'package:tone_vault/core/enums/pedal_type.dart';
 import 'package:tone_vault/features/configurations/providers/configuration_providers.dart';
 import 'package:tone_vault/features/controls/providers/control_providers.dart';
 import 'package:tone_vault/features/history/providers/history_providers.dart';
-import 'package:tone_vault/features/pedalboards/providers/pedalboard_providers.dart';
 import 'package:tone_vault/features/pedals/providers/pedal_providers.dart';
 import 'package:tone_vault/features/replacements/providers/replacement_providers.dart';
 import '../support/app_tabs.dart';
+import '../support/home_streams.dart';
 
 void main() {
   final pedal = Pedal(
@@ -71,11 +71,9 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
-          pedalListProvider.overrideWith((ref) => Stream.value([pedal])),
-          // The app opens on the home tab, which counts the rigs too.
-          pedalboardListProvider.overrideWith(
-            (ref) => Stream.value(const <Pedalboard>[]),
-          ),
+          // The app opens on the home tab, which reads the pedals, the rigs and
+          // the timeline before the pedals tab is ever tapped.
+          ...homeStreamOverrides(pedals: [pedal], changes: [change]),
           pedalProvider(pedal.id).overrideWith((ref) => Stream.value(pedal)),
           // The detail screen lists the pedal's controls, so the controls come
           // from here rather than from a real database.

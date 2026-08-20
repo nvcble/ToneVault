@@ -9,9 +9,9 @@ import 'package:tone_vault/core/enums/pedal_status.dart';
 import 'package:tone_vault/core/enums/pedal_type.dart';
 import 'package:tone_vault/features/configurations/providers/configuration_providers.dart';
 import 'package:tone_vault/features/pedalboards/providers/pedalboard_providers.dart';
-import 'package:tone_vault/features/pedals/providers/pedal_providers.dart';
 import 'package:tone_vault/features/snapshots/providers/snapshot_providers.dart';
 import '../support/app_tabs.dart';
+import '../support/home_streams.dart';
 
 /// Getting around the rigs tab: the list, one rig, and the forms either side of
 /// it. Every stream is a plain value, so no database is involved.
@@ -57,11 +57,9 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
-          pedalboardListProvider.overrideWith(
-            (ref) => Stream.value(pedalboards),
-          ),
-          // The app opens on the home tab, which counts the pedals too.
-          pedalListProvider.overrideWith((ref) => Stream.value(<Pedal>[drive])),
+          // The app opens on the home tab, which reads the pedals, the rigs and
+          // the timeline before the rigs tab is ever tapped.
+          ...homeStreamOverrides(pedals: [drive], rigs: pedalboards),
           pedalboardProvider(
             worship.id,
           ).overrideWith((ref) => Stream.value(worship)),
@@ -153,8 +151,7 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
-          pedalboardListProvider.overrideWith((ref) => Stream.value([worship])),
-          pedalListProvider.overrideWith((ref) => Stream.value(<Pedal>[drive])),
+          ...homeStreamOverrides(pedals: [drive], rigs: [worship]),
           // Deleted on another screen while this one was open.
           pedalboardProvider(
             worship.id,

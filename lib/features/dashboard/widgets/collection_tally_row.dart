@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../app/theme/app_spacing.dart';
-import '../../../shared/widgets/failure_snack_bar.dart';
 import '../data/collection_tally.dart';
+import 'problem_card.dart';
 import 'stat_card.dart';
 
 /// What the collection holds, side by side, each card opening its own tab.
@@ -23,7 +22,10 @@ class CollectionTallyRow extends StatelessWidget {
   Widget build(BuildContext context) {
     return tally.when(
       loading: () => const _Counting(),
-      error: (error, _) => _CouldNotCount(error: error),
+      // A zero here would read as an empty collection, which is a different
+      // thing entirely, so the failure is shown instead of a number.
+      error: (error, _) =>
+          ProblemCard(title: 'Could not count your gear', error: error),
       // Stretched to the taller card, so the pair sits flush however long the
       // lines under the numbers turn out to be. A Row cannot stretch inside a
       // list on its own: it has no height to stretch to until this measures one.
@@ -66,41 +68,6 @@ class _Counting extends StatelessWidget {
     return const SizedBox(
       height: 116,
       child: Center(child: CircularProgressIndicator()),
-    );
-  }
-}
-
-class _CouldNotCount extends StatelessWidget {
-  const _CouldNotCount({required this.error});
-
-  final Object error;
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(AppSpacing.md),
-        child: Row(
-          children: [
-            const Icon(Icons.error_outline),
-            const SizedBox(width: AppSpacing.md),
-            // Said plainly and left on screen: a wrong count is worse than a
-            // count that admits it is missing.
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Could not count your gear',
-                    style: Theme.of(context).textTheme.titleSmall,
-                  ),
-                  Text(failureMessage(error)),
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
     );
   }
 }

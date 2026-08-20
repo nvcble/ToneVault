@@ -5,10 +5,14 @@ import 'package:go_router/go_router.dart';
 import '../../../app/router/routes.dart';
 import '../../../app/theme/app_spacing.dart';
 import '../../../shared/widgets/section_label.dart';
+import '../../history/providers/history_providers.dart';
 import '../providers/dashboard_providers.dart';
 import '../widgets/collection_tally_row.dart';
+import '../widgets/dashboard_actions.dart';
+import '../widgets/latest_changes.dart';
 
-/// The tab the app opens on: what the collection holds, and the way into it.
+/// The tab the app opens on: what the collection holds, what to do next, and
+/// what happened last.
 class DashboardScreen extends ConsumerWidget {
   const DashboardScreen({super.key});
 
@@ -27,6 +31,18 @@ class DashboardScreen extends ConsumerWidget {
               onOpenPedals: () => context.go(Routes.pedals),
               onOpenRigs: () => context.go(Routes.rigs),
             ),
+          ),
+          // Above the timeline: on an empty collection these are the only things
+          // worth doing, and on a full one they are still the shortest way in.
+          DashboardActions(
+            onAddPedal: () => context.go(Routes.pedalNew),
+            onBuildRig: () => context.go(Routes.rigNew),
+          ),
+          const SectionLabel('Lately'),
+          LatestChanges(
+            changes: ref.watch(recentHistoryProvider),
+            onOpenPedal: (pedalId) => context.go(Routes.pedalDetail(pedalId)),
+            onSeeAll: () => context.go(Routes.history),
           ),
         ],
       ),
