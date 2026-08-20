@@ -32,6 +32,17 @@ dependencies:
   share_plus: ^13.3.0
   file_selector: ^1.1.0
 
+  # A photo of the pedal itself.
+  #
+  # image_picker rather than file_selector, which is already here: a pedal is
+  # photographed on the board more often than it is found in a folder, and only
+  # image_picker offers the camera. It needs no Android permission of its own,
+  # because it asks the system camera app for the shot.
+  # path_provider says where the copy goes. It was already here transitively; the
+  # photo is the first thing the app keeps in a file of its own.
+  image_picker: ^1.2.0
+  path_provider: ^2.1.6
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

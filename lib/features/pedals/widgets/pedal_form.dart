@@ -8,6 +8,7 @@ import '../../../shared/widgets/enum_dropdown_field.dart';
 import '../../../shared/widgets/optional_date_field.dart';
 import '../data/pedal_draft.dart';
 import '../data/pedal_validator.dart';
+import 'pedal_photo_field.dart';
 
 /// Editable pedal fields, shared by the add and edit screens.
 ///
@@ -52,6 +53,7 @@ class _PedalFormState extends State<PedalForm> {
   PedalCategory? _category;
   PedalStatus _status = PedalStatus.active;
   DateTime? _purchaseDate;
+  String? _photoPath;
 
   @override
   void initState() {
@@ -64,6 +66,7 @@ class _PedalFormState extends State<PedalForm> {
     _category = draft?.category;
     _status = draft?.status ?? PedalStatus.active;
     _purchaseDate = draft?.purchaseDate;
+    _photoPath = draft?.photoPath;
   }
 
   @override
@@ -78,9 +81,9 @@ class _PedalFormState extends State<PedalForm> {
   /// and its category alone.
   ///
   /// What a unit sounds like is in its patches. A pedal inside one has no brand,
-  /// purchase date or status of its own either: the unit is the box that was
-  /// bought and that sits on the board, so asking again per pedal inside it only
-  /// invites answers that disagree with it.
+  /// purchase date, status or photo of its own either: the unit is the box that
+  /// was bought, that sits on the board and that can be photographed, so asking
+  /// again per pedal inside it only invites answers that disagree with it.
   bool get _isNameAndCategoryOnly =>
       _category == PedalCategory.multiEffects || widget.hostPedalId != null;
 
@@ -111,7 +114,7 @@ class _PedalFormState extends State<PedalForm> {
         status: _status,
         purchaseDate: _purchaseDate,
         notes: _notesController.text,
-        photoPath: widget.initialDraft?.photoPath,
+        photoPath: _photoPath,
         hostPedalId: widget.hostPedalId,
       ),
     );
@@ -202,6 +205,12 @@ class _PedalFormState extends State<PedalForm> {
               minLines: 3,
               maxLines: 6,
               textCapitalization: TextCapitalization.sentences,
+            ),
+            const SizedBox(height: AppSpacing.md),
+            PedalPhotoField(
+              photoPath: _photoPath,
+              onChanged: (path) => setState(() => _photoPath = path),
+              enabled: !widget.isSaving,
             ),
           ],
           const SizedBox(height: AppSpacing.lg),

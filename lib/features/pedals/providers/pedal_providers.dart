@@ -1,11 +1,16 @@
+import 'dart:io';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:path_provider/path_provider.dart';
 
 import '../../../core/database/app_database.dart';
 import '../../../core/database/daos/pedal_dao.dart';
 import '../../../core/database/database_provider.dart';
 import '../../history/providers/history_providers.dart';
+import '../data/pedal_photo_repository.dart';
 import '../data/pedal_repository.dart';
 import '../data/pedal_seeder.dart';
+import '../data/photo_picker.dart';
 
 final Provider<PedalDao> pedalDaoProvider = Provider<PedalDao>(
   (ref) => PedalDao(ref.watch(appDatabaseProvider)),
@@ -16,6 +21,26 @@ final Provider<PedalRepository> pedalRepositoryProvider =
       (ref) => PedalRepository(
         ref.watch(pedalDaoProvider),
         ref.watch(changeLogRepositoryProvider),
+      ),
+    );
+
+/// Overridden in tests, which have no camera and no gallery.
+final Provider<PhotoPicker> photoPickerProvider = Provider<PhotoPicker>(
+  (ref) => ImagePickerPhotos(),
+);
+
+/// Inside the app's own documents directory, which needs no permission and is
+/// backed up and removed with the app.
+Future<Directory> _pedalPhotoFolder() async {
+  final documents = await getApplicationDocumentsDirectory();
+  return Directory('${documents.path}/pedal_photos');
+}
+
+final Provider<PedalPhotoRepository> pedalPhotoRepositoryProvider =
+    Provider<PedalPhotoRepository>(
+      (ref) => PedalPhotoRepository(
+        ref.watch(photoPickerProvider),
+        _pedalPhotoFolder,
       ),
     );
 

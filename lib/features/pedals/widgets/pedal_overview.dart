@@ -4,6 +4,7 @@ import '../../../app/theme/app_spacing.dart';
 import '../../../core/database/app_database.dart';
 import '../../../shared/formatting/app_date_format.dart';
 import '../../replacements/widgets/replacement_summary.dart';
+import 'pedal_photo.dart';
 import 'pedal_type_badge.dart';
 
 /// What was recorded about the pedal itself, as opposed to what it can be set
@@ -21,10 +22,17 @@ class PedalOverview extends StatelessWidget {
   Widget build(BuildContext context) {
     final purchaseDate = pedal.purchaseDate;
     final notes = pedal.notes;
+    final photoPath = pedal.photoPath;
 
     return ListView(
       padding: const EdgeInsets.all(AppSpacing.md),
       children: [
+        // Only for a pedal that was given one: an empty frame on every other
+        // pedal would push the facts below the fold for nothing.
+        if (photoPath != null) ...[
+          PedalPhoto(photoPath: photoPath),
+          const SizedBox(height: AppSpacing.md),
+        ],
         Row(
           children: [
             PedalTypeBadge(pedal.type),

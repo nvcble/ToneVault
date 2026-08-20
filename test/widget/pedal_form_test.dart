@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:tone_vault/core/enums/pedal_category.dart';
 import 'package:tone_vault/core/enums/pedal_status.dart';
@@ -22,14 +23,19 @@ void main() {
     tester.view.devicePixelRatio = 1;
     addTearDown(tester.view.reset);
 
+    // Scoped because the photo field reads its picker from a provider. Nothing
+    // here taps it, so the real one is never reached; `pedal_photo_field_test`
+    // is where the photo itself is driven.
     await tester.pumpWidget(
-      MaterialApp(
-        home: Scaffold(
-          body: PedalForm(
-            submitLabel: 'Add pedal',
-            initialDraft: initialDraft,
-            hostPedalId: hostPedalId,
-            onSubmit: (draft) => submitted = draft,
+      ProviderScope(
+        child: MaterialApp(
+          home: Scaffold(
+            body: PedalForm(
+              submitLabel: 'Add pedal',
+              initialDraft: initialDraft,
+              hostPedalId: hostPedalId,
+              onSubmit: (draft) => submitted = draft,
+            ),
           ),
         ),
       ),
@@ -121,6 +127,7 @@ void main() {
     expect(find.byType(DropdownButtonFormField<PedalType>), findsNothing);
     expect(find.byType(DropdownButtonFormField<PedalStatus>), findsNothing);
     expect(find.text('Purchase date'), findsNothing);
+    expect(find.text('Photo'), findsNothing);
   });
 
   testWidgets('a unit saves without being asked how it makes its sound', (
@@ -158,6 +165,7 @@ void main() {
     expect(find.byType(DropdownButtonFormField<PedalType>), findsNothing);
     expect(find.byType(DropdownButtonFormField<PedalStatus>), findsNothing);
     expect(find.text('Purchase date'), findsNothing);
+    expect(find.text('Photo'), findsNothing);
   });
 
   testWidgets('a pedal added inside a unit saves against that unit', (
