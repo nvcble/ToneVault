@@ -1,4 +1,5 @@
 import 'package:tone_vault/core/database/app_database.dart';
+import 'package:tone_vault/core/database/daos/backup_dao.dart';
 import 'package:tone_vault/core/database/daos/change_log_dao.dart';
 import 'package:tone_vault/core/database/daos/configuration_dao.dart';
 import 'package:tone_vault/core/database/daos/pedal_control_dao.dart';
@@ -6,6 +7,7 @@ import 'package:tone_vault/core/database/daos/pedal_dao.dart';
 import 'package:tone_vault/core/database/daos/pedal_replacement_dao.dart';
 import 'package:tone_vault/core/database/daos/pedalboard_dao.dart';
 import 'package:tone_vault/core/database/daos/rig_snapshot_dao.dart';
+import 'package:tone_vault/features/backup/data/backup_repository.dart';
 import 'package:tone_vault/features/configurations/data/configuration_repository.dart';
 import 'package:tone_vault/features/configurations/data/configuration_value_repository.dart';
 import 'package:tone_vault/features/controls/data/control_repository.dart';
@@ -111,6 +113,14 @@ RigSnapshotRepository rigSnapshotRepository(
     PedalControlDao(database),
     clock: clock,
   );
+}
+
+/// The only repository that reaches every table at once.
+BackupRepository backupRepository(
+  AppDatabase database, {
+  DateTime Function()? clock,
+}) {
+  return BackupRepository(BackupDao(database), clock: clock);
 }
 
 ConfigurationValueRepository configurationValueRepository(
