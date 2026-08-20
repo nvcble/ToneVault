@@ -40,7 +40,7 @@ void main() {
       ('Pedals', 'No pedals yet'),
       ('Rigs', 'No rigs yet'),
       ('History', 'Nothing logged yet'),
-      ('Settings', 'No settings yet'),
+      ('Settings', 'Your gear, kept safe'),
       ('Home', 'Your rig at a glance'),
     ]) {
       await tester.tap(find.text(label));

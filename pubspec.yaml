@@ -21,6 +21,17 @@ dependencies:
 
   go_router: ^17.5.0
 
+  # Getting a backup out of the app and one back in, without the app owning a
+  # folder on the device or asking for storage permission.
+  #
+  # share_plus hands the finished file to the system share sheet, so the user
+  # picks Drive, email or Files themselves; it writes the temporary file itself,
+  # which is why path_provider is still not a direct dependency. It pulls
+  # url_launcher in for its desktop fallback.
+  # file_selector picks a backup back up, and reads it without a path.
+  share_plus: ^13.3.0
+  file_selector: ^1.1.0
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

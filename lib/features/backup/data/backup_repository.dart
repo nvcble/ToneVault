@@ -2,6 +2,9 @@ import '../../../core/database/daos/backup_dao.dart';
 import '../../../core/errors/app_failure.dart';
 import 'backup_document.dart';
 
+/// A backup file waiting to be saved somewhere.
+typedef VaultExport = ({String fileName, String contents});
+
 /// Backing the vault up to a file, and putting a file back into the vault.
 ///
 /// Reading a file and restoring it are two steps on purpose. A restore replaces
@@ -22,14 +25,22 @@ class BackupRepository {
   /// Injectable so tests can assert on exact timestamps.
   final DateTime Function() _clock;
 
-  /// The whole vault as the contents of a backup file.
-  Future<String> exportVault() async {
+  /// The whole vault as a backup file, named and ready to be saved.
+  ///
+  /// The name comes back with the contents because both are stamped with the
+  /// same moment: a file called one day that says inside it was taken on another
+  /// would be a file nobody could trust.
+  Future<VaultExport> exportVault() async {
     final rows = await _guard(
       _dao.readEverything,
       'Could not read your gear to back it up.',
     );
 
-    return encodeVaultBackup(rows, exportedAt: _clock());
+    final exportedAt = _clock();
+    return (
+      fileName: backupFileName(exportedAt),
+      contents: encodeVaultBackup(rows, exportedAt: exportedAt),
+    );
   }
 
   /// What a file holds, without touching the vault.

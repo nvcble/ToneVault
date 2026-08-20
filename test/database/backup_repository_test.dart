@@ -9,6 +9,7 @@ import 'package:tone_vault/core/enums/pedal_category.dart';
 import 'package:tone_vault/core/enums/pedal_type.dart';
 import 'package:tone_vault/core/errors/app_failure.dart';
 import 'package:tone_vault/features/backup/data/backup_repository.dart';
+import 'package:tone_vault/shared/formatting/app_date_format.dart';
 import '../support/repositories.dart';
 import '../support/vault_fixture.dart';
 
@@ -39,14 +40,20 @@ void main() {
     repository = backupRepository(database, clock: () => exportedAt);
     await fillVault(database);
     saved = await database.backupDao.readEverything();
-    file = await repository.exportVault();
+    file = (await repository.exportVault()).contents;
   });
 
   tearDown(() => database.close());
 
   test('exports the vault, stamped with when it was made', () async {
-    final backup = repository.readBackup(file);
+    final export = await repository.exportVault();
+    final backup = repository.readBackup(export.contents);
 
+    // The name and the stamp inside come from one reading of the clock.
+    expect(
+      export.fileName,
+      'tonevault-backup-${formatDate(exportedAt.toLocal())}.json',
+    );
     expect(backup.exportedAt, exportedAt);
     expect(backup.rows.pedals, saved.pedals);
     expect(backup.rows.snapshotValues, saved.snapshotValues);

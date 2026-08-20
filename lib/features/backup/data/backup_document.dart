@@ -6,6 +6,7 @@ import '../../../core/database/app_database.dart';
 import '../../../core/database/daos/backup_dao.dart';
 import '../../../core/database/migrations.dart';
 import '../../../core/errors/app_failure.dart';
+import '../../../shared/formatting/app_date_format.dart';
 import 'vault_value_serializer.dart';
 
 /// The version of the backup file's own layout - the header keys and the shape
@@ -14,6 +15,13 @@ import 'vault_value_serializer.dart';
 /// It moves only if that layout changes, so a file always says plainly whether
 /// this app knows how to read it.
 const int backupFormatVersion = 1;
+
+/// What a backup file is called: the app, and the day it was taken.
+///
+/// The date is the user's own rather than UTC. A file named for yesterday
+/// because the phone is west of Greenwich is a file they cannot find again.
+String backupFileName(DateTime exportedAt) =>
+    'tonevault-backup-${formatDate(exportedAt.toLocal())}.json';
 
 /// A backup file, read.
 typedef VaultBackup = ({
