@@ -99,6 +99,72 @@ void main() {
     expect(submitted, isNull);
   });
 
+  testWidgets('a multi-effects unit is asked for its name and category only', (
+    tester,
+  ) async {
+    await pumpForm(tester);
+
+    await pick<PedalCategory>(tester, 'Multi Effects');
+
+    // A unit's sound is in its patches, and the pedals inside it carry their own
+    // brand, dates and status, so asking again here only invites two answers
+    // that disagree.
+    expect(find.widgetWithText(TextFormField, 'Name'), findsOne);
+    expect(find.byType(DropdownButtonFormField<PedalCategory>), findsOne);
+    expect(find.widgetWithText(TextFormField, 'Brand'), findsNothing);
+    expect(find.widgetWithText(TextFormField, 'Notes'), findsNothing);
+    expect(find.byType(DropdownButtonFormField<PedalType>), findsNothing);
+    expect(find.byType(DropdownButtonFormField<PedalStatus>), findsNothing);
+    expect(find.text('Purchase date'), findsNothing);
+  });
+
+  testWidgets('a unit saves without being asked how it makes its sound', (
+    tester,
+  ) async {
+    await pumpForm(tester);
+
+    await tester.enterText(
+      find.widgetWithText(TextFormField, 'Name'),
+      'Valeton GP-200',
+    );
+    await pick<PedalCategory>(tester, 'Multi Effects');
+    await submit(tester);
+
+    // Every multi-effects unit is digital, so the field that is not on screen is
+    // not a missing answer to report either.
+    expect(find.text('Pick how this pedal makes its sound.'), findsNothing);
+    expect(submitted?.name, 'Valeton GP-200');
+    expect(submitted?.category, PedalCategory.multiEffects);
+    expect(submitted?.type, PedalType.digital);
+    expect(submitted?.status, PedalStatus.active);
+  });
+
+  testWidgets('making a pedal a unit keeps what it was already told', (
+    tester,
+  ) async {
+    await pumpForm(
+      tester,
+      initialDraft: PedalDraft(
+        name: 'Valeton GP-200',
+        type: PedalType.digital,
+        category: PedalCategory.overdrive,
+        brand: 'Valeton',
+        purchaseDate: DateTime.utc(2024, 1, 2),
+        notes: 'Bought used.',
+      ),
+    );
+
+    await pick<PedalCategory>(tester, 'Multi Effects');
+    await submit(tester);
+
+    // Hidden is not cleared: a brand and a purchase date are facts about the box
+    // whichever category it is filed under, and dropping them on a category
+    // change would be an edit the user never asked for.
+    expect(submitted?.brand, 'Valeton');
+    expect(submitted?.purchaseDate, DateTime.utc(2024, 1, 2));
+    expect(submitted?.notes, 'Bought used.');
+  });
+
   testWidgets('starts an edit from the existing values', (tester) async {
     await pumpForm(
       tester,

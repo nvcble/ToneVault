@@ -73,15 +73,30 @@ class _PedalFormState extends State<PedalForm> {
     super.dispose();
   }
 
+  /// A multi-effects unit is described by its name and its category alone.
+  ///
+  /// What it sounds like is in its patches, and the pedals inside it carry their
+  /// own brand, dates and status - asking for those on the outside as well only
+  /// invites two answers that disagree.
+  bool get _isUnit => _category == PedalCategory.multiEffects;
+
   void _submit() {
-    final type = _type;
     final category = _category;
+    // The type field is not on screen for a unit, so it is not asked for: every
+    // multi-effects unit is digital, which is the same fact the v8 migration
+    // asserted when the multi-effects pedal type was dropped.
+    final type = _isUnit ? PedalType.digital : _type;
+
     if (!(_formKey.currentState?.validate() ?? false) ||
         type == null ||
         category == null) {
       return;
     }
 
+    // The hidden fields hand back whatever they were holding rather than null:
+    // a pedal that was filled in and then made a unit keeps its brand and its
+    // purchase date, which are facts about it either way. Only the type is
+    // decided here.
     widget.onSubmit(
       PedalDraft(
         name: _nameController.text,
@@ -129,29 +144,34 @@ class _PedalFormState extends State<PedalForm> {
             textInputAction: TextInputAction.next,
             validator: PedalValidator.name,
           ),
-          const SizedBox(height: AppSpacing.md),
-          TextFormField(
-            controller: _brandController,
-            decoration: const InputDecoration(
-              labelText: 'Brand',
-              helperText: 'Optional',
+          // Everything but the name and the category belongs to a pedal that
+          // makes one sound; see [_isUnit].
+          if (!_isUnit) ...[
+            const SizedBox(height: AppSpacing.md),
+            TextFormField(
+              controller: _brandController,
+              decoration: const InputDecoration(
+                labelText: 'Brand',
+                helperText: 'Optional',
+              ),
+              textCapitalization: TextCapitalization.words,
+              textInputAction: TextInputAction.next,
+              validator: PedalValidator.brand,
             ),
-            textCapitalization: TextCapitalization.words,
-            textInputAction: TextInputAction.next,
-            validator: PedalValidator.brand,
-          ),
-          const SizedBox(height: AppSpacing.md),
-          _enumField<PedalType>(
-            label: 'Type',
-            value: _type,
-            values: PedalType.values,
-            labelOf: (type) => type.label,
-            emptyMessage: 'Pick how this pedal makes its sound.',
-            onChanged: (type) => setState(() => _type = type),
-          ),
+            const SizedBox(height: AppSpacing.md),
+            _enumField<PedalType>(
+              label: 'Type',
+              value: _type,
+              values: PedalType.values,
+              labelOf: (type) => type.label,
+              emptyMessage: 'Pick how this pedal makes its sound.',
+              onChanged: (type) => setState(() => _type = type),
+            ),
+          ],
           const SizedBox(height: AppSpacing.md),
           // Category is what makes a pedal a multi-effects unit, and with it what
-          // its own screen holds: patches instead of controls.
+          // its own screen holds: patches instead of controls, and this form
+          // without the fields above and below.
           _enumField<PedalCategory>(
             label: 'Category',
             value: _category,
@@ -160,47 +180,49 @@ class _PedalFormState extends State<PedalForm> {
             emptyMessage: 'Pick what this pedal does.',
             onChanged: (category) => setState(() => _category = category),
           ),
-          const SizedBox(height: AppSpacing.md),
-          _enumField<PedalStatus>(
-            label: 'Status',
-            value: _status,
-            values: PedalStatus.values,
-            labelOf: (status) => status.label,
-            emptyMessage: 'Pick a status.',
-            onChanged: (status) => setState(() => _status = status),
-          ),
-          const SizedBox(height: AppSpacing.md),
-          InkWell(
-            onTap: widget.isSaving ? null : _pickPurchaseDate,
-            child: InputDecorator(
-              decoration: InputDecoration(
-                labelText: 'Purchase date',
+          if (!_isUnit) ...[
+            const SizedBox(height: AppSpacing.md),
+            _enumField<PedalStatus>(
+              label: 'Status',
+              value: _status,
+              values: PedalStatus.values,
+              labelOf: (status) => status.label,
+              emptyMessage: 'Pick a status.',
+              onChanged: (status) => setState(() => _status = status),
+            ),
+            const SizedBox(height: AppSpacing.md),
+            InkWell(
+              onTap: widget.isSaving ? null : _pickPurchaseDate,
+              child: InputDecorator(
+                decoration: InputDecoration(
+                  labelText: 'Purchase date',
+                  helperText: 'Optional',
+                  suffixIcon: purchaseDate == null
+                      ? const Icon(Icons.calendar_today)
+                      : IconButton(
+                          icon: const Icon(Icons.clear),
+                          tooltip: 'Clear purchase date',
+                          onPressed: () => setState(() => _purchaseDate = null),
+                        ),
+                ),
+                child: Text(
+                  purchaseDate == null ? 'Not set' : formatDate(purchaseDate),
+                ),
+              ),
+            ),
+            const SizedBox(height: AppSpacing.md),
+            TextFormField(
+              controller: _notesController,
+              decoration: const InputDecoration(
+                labelText: 'Notes',
                 helperText: 'Optional',
-                suffixIcon: purchaseDate == null
-                    ? const Icon(Icons.calendar_today)
-                    : IconButton(
-                        icon: const Icon(Icons.clear),
-                        tooltip: 'Clear purchase date',
-                        onPressed: () => setState(() => _purchaseDate = null),
-                      ),
+                alignLabelWithHint: true,
               ),
-              child: Text(
-                purchaseDate == null ? 'Not set' : formatDate(purchaseDate),
-              ),
+              minLines: 3,
+              maxLines: 6,
+              textCapitalization: TextCapitalization.sentences,
             ),
-          ),
-          const SizedBox(height: AppSpacing.md),
-          TextFormField(
-            controller: _notesController,
-            decoration: const InputDecoration(
-              labelText: 'Notes',
-              helperText: 'Optional',
-              alignLabelWithHint: true,
-            ),
-            minLines: 3,
-            maxLines: 6,
-            textCapitalization: TextCapitalization.sentences,
-          ),
+          ],
           const SizedBox(height: AppSpacing.lg),
           FilledButton(
             onPressed: widget.isSaving ? null : _submit,
