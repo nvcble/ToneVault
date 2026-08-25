@@ -12,14 +12,9 @@ import '../widgets/pedal_form.dart';
 
 /// Adds a pedal, or edits [pedalId] when one is given.
 class PedalFormScreen extends ConsumerStatefulWidget {
-  const PedalFormScreen({this.pedalId, this.hostPedalId, super.key});
+  const PedalFormScreen({this.pedalId, super.key});
 
   final int? pedalId;
-
-  /// The multi-effects unit the new pedal belongs inside, when it is a stomp or
-  /// a block rather than a pedal of its own. Ignored on an edit, where the pedal
-  /// already knows where it sits.
-  final int? hostPedalId;
 
   @override
   ConsumerState<PedalFormScreen> createState() => _PedalFormScreenState();
@@ -46,19 +41,12 @@ class _PedalFormScreenState extends ConsumerState<PedalFormScreen> {
     }
   }
 
-  /// Goes to wherever the pedal now lives: its own screen after an edit, and
-  /// after adding one either the list it joined or the unit it went inside.
+  /// Goes to wherever the pedal now lives: its own screen after an edit, and the
+  /// list it joined after adding one. A pedal inside a unit is added from a
+  /// scene, which `ScenePedalFormScreen` takes care of instead.
   void _leave() {
     final pedalId = widget.pedalId;
-    if (pedalId != null) {
-      context.go(Routes.pedalDetail(pedalId));
-      return;
-    }
-
-    final hostPedalId = widget.hostPedalId;
-    context.go(
-      hostPedalId == null ? Routes.pedals : Routes.pedalDetail(hostPedalId),
-    );
+    context.go(pedalId == null ? Routes.pedals : Routes.pedalDetail(pedalId));
   }
 
   @override
@@ -69,19 +57,11 @@ class _PedalFormScreenState extends ConsumerState<PedalFormScreen> {
     );
   }
 
-  String get _title {
-    if (_isEditing) {
-      return 'Edit pedal';
-    }
-    // Says which unit it is going into, so the form does not look like it is
-    // about to add another pedal to the inventory.
-    return widget.hostPedalId == null ? 'Add pedal' : 'Add to this unit';
-  }
+  String get _title => _isEditing ? 'Edit pedal' : 'Add pedal';
 
   Widget _buildAddBody() {
     return PedalForm(
       submitLabel: 'Add pedal',
-      hostPedalId: widget.hostPedalId,
       isSaving: _isSaving,
       onSubmit: _save,
     );

@@ -3,6 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:tone_vault/core/database/app_database.dart';
 import 'package:tone_vault/core/enums/pedal_category.dart';
 import 'package:tone_vault/core/enums/pedal_type.dart';
+import 'package:tone_vault/core/enums/signal_block_type.dart';
 import 'package:tone_vault/core/errors/app_failure.dart';
 import 'package:tone_vault/features/pedalboards/data/pedalboard_draft.dart';
 import 'package:tone_vault/features/pedals/data/pedal_draft.dart';
@@ -34,9 +35,11 @@ void main() {
         category: PedalCategory.overdrive,
       ),
     );
-    await rigChainRepository(
-      database,
-    ).addPedal(pedalboardId: rigId, pedalId: pedalId);
+    await signalChainRepository(database).addBlock(
+      pedalboardId: rigId,
+      blockType: SignalBlockType.overdrive,
+      pedalId: pedalId,
+    );
     snapshotId = await rigSnapshotRepository(
       database,
       clock: () => captured,
@@ -111,16 +114,13 @@ void main() {
       expect(await database.rigSnapshotDao.findSnapshot(snapshotId), isNull);
       // The rig and its chain are what the user still owns and plays.
       expect(await database.pedalboardDao.findPedalboard(rigId), isNotNull);
-      expect(
-        await database.pedalboardDao.watchChain(rigId).first,
-        hasLength(1),
-      );
+      expect(await database.signalChainDao.blocksOf(rigId), hasLength(1));
     });
 
     test('frees the rig to be deleted again', () async {
       await rigSnapshotRepository(database).deleteSnapshot(snapshotId);
-      final slots = await database.pedalboardDao.slotsOf(rigId);
-      await rigChainRepository(database).removePedal(slots.single.id);
+      final blocks = await database.signalChainDao.blocksOf(rigId);
+      await signalChainRepository(database).removeBlock(blocks.single.id);
 
       await pedalboardRepository(database).deletePedalboard(rigId);
 

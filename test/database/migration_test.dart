@@ -7,6 +7,7 @@ import 'package:tone_vault/core/enums/control_type.dart';
 import 'package:tone_vault/core/enums/multi_effects_mode.dart';
 import 'package:tone_vault/core/enums/pedal_category.dart';
 import 'package:tone_vault/core/enums/pedal_type.dart';
+import 'package:tone_vault/core/enums/signal_block_type.dart';
 import 'package:tone_vault/core/values/control_options.dart';
 import 'package:tone_vault/features/configurations/data/configuration_draft.dart';
 import 'package:tone_vault/features/controls/data/control_draft.dart';
@@ -74,19 +75,38 @@ void main() {
     expect(row.data.values.single, currentSchemaVersion);
   });
 
-  test('the rig chain table is created exactly as a fresh one is', () async {
+  test('the chain tables are created exactly as fresh ones are', () async {
+    const tables = ['signal_blocks', 'signal_connections', 'signal_endpoints'];
+
     // One at a time: two live databases at once only earn a drift warning.
     final fresh = AppDatabase(NativeDatabase.memory());
-    final expected = await schemaFor(fresh, 'pedalboard_slots');
+    final expected = <String, List<String>>{
+      for (final table in tables) table: await schemaFor(fresh, table),
+    };
     await fresh.close();
 
     final upgraded = openV1Database();
     addTearDown(upgraded.close);
 
     // Hand-written migration SQL against what the current definition creates:
-    // an upgraded phone and a new install have to end up with the same table,
-    // constraints and index, not merely similar ones.
-    expect(await schemaFor(upgraded, 'pedalboard_slots'), expected);
+    // an upgraded phone and a new install have to end up with the same tables,
+    // constraints and indexes, not merely similar ones.
+    for (final table in tables) {
+      expect(
+        await schemaFor(upgraded, table),
+        expected[table],
+        reason: '$table differs between an upgraded phone and a new install',
+      );
+    }
+  });
+
+  test('the table the blocks replaced is gone', () async {
+    final db = openV1Database();
+    addTearDown(db.close);
+
+    // Left behind, it would be a second copy of every chain, drifting from the
+    // one the app writes to.
+    expect(await schemaFor(db, 'pedalboard_slots'), isEmpty);
   });
 
   test('the snapshot tables are created exactly as fresh ones are', () async {
@@ -221,12 +241,57 @@ void main() {
     final rigId = await pedalboardRepository(
       db,
     ).createPedalboard(const PedalboardDraft(name: 'Hybrid Worship Rig'));
+    final repository = signalChainRepository(db);
     // Pedal 1 is the one already stored in the v1 fixture.
-    await rigChainRepository(db).addPedal(pedalboardId: rigId, pedalId: 1);
+    await repository.addBlock(
+      pedalboardId: rigId,
+      blockType: SignalBlockType.overdrive,
+      pedalId: 1,
+    );
+    await repository.addBlock(
+      pedalboardId: rigId,
+      blockType: SignalBlockType.delay,
+    );
 
-    final chain = await db.pedalboardDao.watchChain(rigId).first;
-    expect(chain.single.pedal.name, 'PureSky');
-    expect(chain.single.slot.position, 0);
+    final chain = await repository.watchChain(rigId).first;
+    expect(chain.map((entry) => entry.pedal?.name), ['PureSky', null]);
+    expect(chain.map((entry) => entry.block.position), [0, 1]);
+  });
+
+  test('the slots already on a phone come back as blocks', () async {
+    final db = openV10ChainDatabase();
+    addTearDown(db.close);
+
+    final chain = await signalChainRepository(db).watchChain(1).first;
+
+    // Ids are kept, so anything already pointing at a slot finds the block it
+    // became, and the order the user put them in is the order they come back.
+    expect(chain.map((entry) => entry.block.id), [7, 8, 9]);
+    expect(chain.map((entry) => entry.pedal?.name), [
+      'NS-2',
+      'PureSky',
+      'Line Selector',
+    ]);
+    // The type is read off the pedal's category: under the same name where there
+    // is one, under the block's name where they differ, and as a plain custom
+    // block where the category is no kind of effect at all.
+    expect(chain.map((entry) => entry.block.blockType), [
+      SignalBlockType.gate,
+      SignalBlockType.overdrive,
+      SignalBlockType.custom,
+    ]);
+    // A slot said the pedal was on the board, and nothing recorded a bypass
+    // before now.
+    expect(chain.every((entry) => entry.block.isEnabled), isTrue);
+  });
+
+  test('a carried-over chain has no cables and reads as one line', () async {
+    final db = openV10ChainDatabase();
+    addTearDown(db.close);
+
+    // A plain chain writes no connection at all: position order is the whole
+    // answer until the user wires something in parallel.
+    expect(await db.signalChainDao.connectionsOf(1), isEmpty);
   });
 
   test('an upgraded database can hold a pedal inside a unit', () async {

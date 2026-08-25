@@ -4,10 +4,13 @@ import 'package:tone_vault/core/database/app_database.dart';
 import 'package:tone_vault/core/enums/control_type.dart';
 import 'package:tone_vault/core/enums/pedal_category.dart';
 import 'package:tone_vault/core/enums/pedal_type.dart';
+import 'package:tone_vault/core/enums/signal_block_type.dart';
+import 'package:tone_vault/core/enums/signal_destination.dart';
 import 'package:tone_vault/core/errors/app_failure.dart';
 import 'package:tone_vault/features/configurations/data/configuration_draft.dart';
 import 'package:tone_vault/features/controls/data/control_draft.dart';
 import 'package:tone_vault/features/pedalboards/data/pedalboard_draft.dart';
+import 'package:tone_vault/features/pedalboards/data/signal_endpoint_draft.dart';
 import 'package:tone_vault/features/pedals/data/pedal_draft.dart';
 import 'package:tone_vault/features/snapshots/data/snapshot_draft.dart';
 import '../support/repositories.dart';
@@ -32,9 +35,11 @@ void main() {
         category: PedalCategory.overdrive,
       ),
     );
-    await rigChainRepository(
-      database,
-    ).addPedal(pedalboardId: rigId, pedalId: pedalId);
+    await signalChainRepository(database).addBlock(
+      pedalboardId: rigId,
+      blockType: SignalBlockType.overdrive,
+      pedalId: pedalId,
+    );
     return pedalId;
   }
 
@@ -178,6 +183,93 @@ void main() {
     expect(entry.values, isEmpty);
   });
 
+  test(
+    'records the chain in the order signal runs, not the order it sits',
+    () async {
+      await addPedal('Vox Wah');
+      await addPedal('Caline PureSky');
+      await addPedal('Flashback');
+      final blocks = await database.signalChainDao.blocksOf(rigId);
+      // The wah is patched into after the drive rather than before it, so it is no
+      // longer first in line even though it is still the first row of the chain.
+      await signalRoutingRepository(
+        database,
+      ).connect(sourceBlockId: blocks[1].id, targetBlockId: blocks[0].id);
+
+      final snapshotId = await capture();
+
+      // A snapshot copied off the rows would read the guitar into the wah, which is
+      // a rig nobody played.
+      final entries = await database.rigSnapshotDao
+          .watchEntries(snapshotId)
+          .first;
+      expect(
+        [for (final entry in entries) entry.pedal.name],
+        ['Caline PureSky', 'Flashback', 'Vox Wah'],
+      );
+      expect([for (final entry in entries) entry.entry.position], [0, 1, 2]);
+    },
+  );
+
+  test('records a pedal that was switched off as switched off', () async {
+    await addPedal('Vox Wah');
+    await addPedal('Caline PureSky');
+    final blocks = await database.signalChainDao.blocksOf(rigId);
+    await signalChainRepository(
+      database,
+    ).setEnabled(blockId: blocks.first.id, isEnabled: false);
+
+    final snapshotId = await capture();
+
+    // Kept rather than left out: the wah was on the board with its footswitch up,
+    // which is part of how the rig was set that day.
+    final entries = await database.rigSnapshotDao
+        .watchEntries(snapshotId)
+        .first;
+    expect(
+      {for (final entry in entries) entry.pedal.name: entry.entry.isEnabled},
+      {'Vox Wah': false, 'Caline PureSky': true},
+    );
+  });
+
+  test('records where the rig reached, in the words the chain read', () async {
+    await addPedal('Caline PureSky');
+    final outputId = await signalChainRepository(
+      database,
+    ).addBlock(pedalboardId: rigId, blockType: SignalBlockType.output);
+    await signalEndpointRepository(database).describe(
+      blockId: outputId,
+      draft: const SignalEndpointDraft(
+        destination: SignalDestination.foh,
+        gear: 'Behringer X32',
+      ),
+    );
+
+    final snapshotId = await capture();
+
+    // Copied as text: the desk can be swapped for an amplifier tomorrow without
+    // rewriting where this rig went.
+    final snapshot = (await database.rigSnapshotDao.findSnapshot(snapshotId))!;
+    expect(snapshot.endpointSummary, 'To Front of house · Behringer X32');
+    // And the block itself is not an entry: it held no pedal.
+    final entries = await database.rigSnapshotDao
+        .watchEntries(snapshotId)
+        .first;
+    expect(entries.single.pedal.name, 'Caline PureSky');
+  });
+
+  test('a rig that never said where it goes records nothing about it', () async {
+    await addPedal('Caline PureSky');
+
+    final snapshotId = await capture();
+
+    // Null rather than a guessed amplifier, which is most rigs and no kind of gap.
+    expect(
+      (await database.rigSnapshotDao.findSnapshot(snapshotId))!.endpointSummary,
+      isNull,
+    );
+  });
+
   test('refuses a snapshot with no name', () async {
     await addPedal('Vox Wah');
 
@@ -216,10 +308,10 @@ void main() {
     final pedalId = await addPedal('Caline PureSky');
     final configurationId = await addConfiguration(pedalId, name: 'Lead');
     await addPedal('Vox Wah');
-    final slots = await database.pedalboardDao.slotsOf(rigId);
-    await rigChainRepository(
+    final blocks = await database.signalChainDao.blocksOf(rigId);
+    await signalChainRepository(
       database,
-    ).removePedal(slots.firstWhere((slot) => slot.pedalId == pedalId).id);
+    ).removeBlock(blocks.firstWhere((block) => block.pedalId == pedalId).id);
 
     await expectLater(
       capture(choices: {pedalId: configurationId}),

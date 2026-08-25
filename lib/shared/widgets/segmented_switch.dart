@@ -6,10 +6,6 @@ import '../../app/theme/app_spacing.dart';
 ///
 /// The caller keeps [showingSecond], because which half is open is that screen's
 /// state and not this widget's.
-///
-/// Kept for tracking: `MultiEffectsView` spells this out inline. It is left as it
-/// is rather than changed under working, tested code; anything new uses this
-/// instead of adding another copy.
 class SegmentedSwitch extends StatelessWidget {
   const SegmentedSwitch({
     required this.firstLabel,

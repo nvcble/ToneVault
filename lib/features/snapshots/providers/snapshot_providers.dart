@@ -33,6 +33,7 @@ final Provider<RigSnapshotRepository> rigSnapshotRepositoryProvider =
       (ref) => RigSnapshotRepository(
         ref.watch(rigSnapshotDaoProvider),
         ref.watch(pedalboardDaoProvider),
+        ref.watch(signalChainDaoProvider),
         ref.watch(snapshotSettingsProvider),
       ),
     );

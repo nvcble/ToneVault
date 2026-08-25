@@ -3,7 +3,11 @@ import 'package:drift/drift.dart' show Value;
 import '../../../core/database/app_database.dart';
 import '../../../core/database/daos/pedalboard_dao.dart';
 import '../../../core/database/daos/rig_snapshot_dao.dart';
+import '../../../core/database/daos/signal_chain_dao.dart';
 import '../../../core/errors/app_failure.dart';
+import '../../pedalboards/data/chain_endpoints.dart';
+import '../../pedalboards/data/chain_order.dart';
+import '../../pedalboards/data/endpoint_summary.dart';
 import 'snapshot_draft.dart';
 import 'snapshot_readings.dart';
 import 'snapshot_settings.dart';
@@ -27,12 +31,14 @@ class RigSnapshotRepository {
   RigSnapshotRepository(
     this._dao,
     this._pedalboardDao,
+    this._chainDao,
     this._settings, {
     DateTime Function()? clock,
   }) : _clock = clock ?? DateTime.now;
 
   final RigSnapshotDao _dao;
   final PedalboardDao _pedalboardDao;
+  final SignalChainDao _chainDao;
 
   /// Where the choices made on screen are turned into readings, and checked
   /// against the database as it stands.
@@ -71,8 +77,21 @@ class RigSnapshotRepository {
       throw const AppFailure('That rig no longer exists.');
     }
 
-    final slots = await _pedalboardDao.slotsOf(pedalboardId);
-    if (slots.isEmpty) {
+    // The chain as the screen reads it, not as the rows happen to sit: a rig
+    // wired with cables, or out through an amplifier's loop and back, runs in an
+    // order position alone does not say, and a snapshot filed in the wrong order
+    // is a record of a rig nobody played.
+    final rows = await _chainDao.chainRows(pedalboardId);
+    final chain = chainInSignalOrder(rows);
+
+    // Only the blocks with a pedal in them: an empty block is a place the rig
+    // has kept for something, and a snapshot records what was played, not what
+    // is still to be bought.
+    final filled = [
+      for (final entry in chain)
+        if (entry.pedal != null) entry.block,
+    ];
+    if (filled.isEmpty) {
       throw AppFailure(
         'There is nothing on ${rig.name} to record yet. Add some pedals to the '
         'rig first.',
@@ -80,7 +99,7 @@ class RigSnapshotRepository {
     }
 
     final chosen = await _settings.resolve(
-      onTheRig: {for (final slot in slots) slot.pedalId},
+      onTheRig: {for (final block in filled) block.pedalId!},
       configurationChoices: configurationChoices,
       sceneChoices: sceneChoices,
     );
@@ -93,17 +112,18 @@ class RigSnapshotRepository {
             name: snapshot.name,
             notes: Value(snapshot.notes),
             capturedAt: _clock(),
+            endpointSummary: Value(_edgesOf(chain, rows.endpoints)),
           ),
         );
 
-        // The index, not the slot's own position: a snapshot's positions are
-        // 0, 1, 2 by construction, whatever the chain happens to hold.
-        for (final (position, slot) in slots.indexed) {
+        // The index, not the block's own position: a snapshot's positions are
+        // 0, 1, 2 by construction, whatever gaps the chain happens to hold.
+        for (final (position, block) in filled.indexed) {
           await _captureEntry(
             snapshotId: snapshotId,
-            pedalId: slot.pedalId,
+            block: block,
             position: position,
-            setting: chosen[slot.pedalId],
+            setting: chosen[block.pedalId],
           );
         }
 
@@ -155,19 +175,21 @@ class RigSnapshotRepository {
   ///
   /// The setting's name is copied as text rather than referenced, so renaming or
   /// deleting the configuration or scene later cannot rewrite what the snapshot
-  /// says.
+  /// says. Whether the block was switched on is copied for the same reason, and
+  /// because a pedal sat there bypassed is part of how the rig was set up.
   Future<void> _captureEntry({
     required int snapshotId,
-    required int pedalId,
+    required SignalBlock block,
     required int position,
     required SnapshotSetting? setting,
   }) async {
     final entryId = await _dao.insertEntry(
       RigSnapshotEntriesCompanion.insert(
         snapshotId: snapshotId,
-        pedalId: pedalId,
+        pedalId: block.pedalId!,
         position: position,
         configurationName: Value(setting?.label),
+        isEnabled: Value(block.isEnabled),
       ),
     );
 
@@ -182,6 +204,23 @@ class RigSnapshotRepository {
         positions: setting.positions,
       ),
     );
+  }
+
+  /// Where the rig reached at either end, in the words the chain itself read.
+  ///
+  /// Text rather than a reference to the blocks that said it, for the reason a
+  /// configuration's name is copied: those blocks can be rewired the next morning,
+  /// and a record that changed with them would not be a record. Null on a rig that
+  /// never said, which is most rigs and no kind of gap.
+  String? _edgesOf(List<ChainBlock> chain, List<SignalEndpoint> endpoints) {
+    final lines = endpointSummaries(
+      chain: chain,
+      endpoints: ChainEndpoints(endpoints),
+    );
+    if (lines.isEmpty) return null;
+
+    // In signal order, so a rig that says both ends reads from the guitar out.
+    return [for (final entry in chain) ?lines[entry.block.id]].join('\n');
   }
 
   SnapshotDraft _validated(SnapshotDraft draft) {

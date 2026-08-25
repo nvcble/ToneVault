@@ -55,7 +55,7 @@ class _CaptureSnapshotScreenState extends ConsumerState<CaptureSnapshotScreen> {
     return Scaffold(
       appBar: AppBar(title: const Text('Take snapshot')),
       body: ref
-          .watch(rigChainProvider(widget.pedalboardId))
+          .watch(signalChainProvider(widget.pedalboardId))
           .when(
             loading: () => const Center(child: CircularProgressIndicator()),
             error: (error, _) => EmptyState(
@@ -63,19 +63,25 @@ class _CaptureSnapshotScreenState extends ConsumerState<CaptureSnapshotScreen> {
               title: 'Could not read the rig',
               message: failureMessage(error),
             ),
-            data: (chain) => chain.isEmpty
-                ? const EmptyState(
-                    icon: Icons.linear_scale,
-                    title: 'Nothing on this rig to record',
-                    message:
-                        'Add the pedals you played, then a snapshot can say '
-                        'where each of them was set.',
-                  )
-                : CaptureSnapshotForm(
-                    chain: chain,
-                    isSaving: _isSaving,
-                    onSubmit: _capture,
-                  ),
+            // Only the blocks with a pedal in them, which is what the repository
+            // captures too. An empty block is a place the rig has kept for
+            // something, and there is nothing about it to record.
+            data: (chain) => switch ([
+              for (final entry in chain) ?entry.pedal,
+            ]) {
+              [] => const EmptyState(
+                icon: Icons.linear_scale,
+                title: 'Nothing on this rig to record',
+                message:
+                    'Put the pedals you played into its blocks, then a snapshot '
+                    'can say where each of them was set.',
+              ),
+              final pedals => CaptureSnapshotForm(
+                pedals: pedals,
+                isSaving: _isSaving,
+                onSubmit: _capture,
+              ),
+            },
           ),
     );
   }

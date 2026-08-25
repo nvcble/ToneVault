@@ -10,7 +10,7 @@ import '../../../shared/widgets/failure_snack_bar.dart';
 import '../../configurations/widgets/configuration_list_view.dart';
 import '../../controls/widgets/control_list_view.dart';
 import '../../history/widgets/pedal_history_view.dart';
-import '../../multi_effects/widgets/multi_effects_view.dart';
+import '../../patches/widgets/patch_list_view.dart';
 import '../../replacements/data/replacement_choices.dart';
 import '../../replacements/providers/replacement_providers.dart';
 import '../../replacements/widgets/replace_pedal_sheet.dart';
@@ -48,7 +48,8 @@ class PedalDetailScreen extends ConsumerWidget {
 
     // Where an ordinary pedal keeps configurations, a unit keeps patches: a patch
     // has a scene for each sound, and a scene has the pedals inside it. That is
-    // the same slot in the bar, named for what is behind it.
+    // the same slot in the bar, named for what is behind it. The unit's pedals
+    // are reached through a scene, which is the only place they are put to use.
     final tabs = <String>[
       'Overview',
       if (hasControls) 'Controls',
@@ -117,7 +118,7 @@ class PedalDetailScreen extends ConsumerWidget {
                     if (hasControls)
                       ConfigurationListView(pedalId: pedalId)
                     else
-                      MultiEffectsView(pedalId: pedalId),
+                      PatchListView(pedalId: pedalId),
                     PedalHistoryView(pedalId: pedalId),
                   ],
                 ),

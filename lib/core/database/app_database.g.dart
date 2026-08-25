@@ -5249,12 +5249,12 @@ class PedalboardsCompanion extends UpdateCompanion<Pedalboard> {
   }
 }
 
-class $PedalboardSlotsTable extends PedalboardSlots
-    with TableInfo<$PedalboardSlotsTable, PedalboardSlot> {
+class $SignalBlocksTable extends SignalBlocks
+    with TableInfo<$SignalBlocksTable, SignalBlock> {
   @override
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
-  $PedalboardSlotsTable(this.attachedDatabase, [this._alias]);
+  $SignalBlocksTable(this.attachedDatabase, [this._alias]);
   static const VerificationMeta _idMeta = const VerificationMeta('id');
   @override
   late final GeneratedColumn<int> id = GeneratedColumn<int>(
@@ -5289,12 +5289,34 @@ class $PedalboardSlotsTable extends PedalboardSlots
   late final GeneratedColumn<int> pedalId = GeneratedColumn<int>(
     'pedal_id',
     aliasedName,
-    false,
+    true,
     type: DriftSqlType.int,
-    requiredDuringInsert: true,
+    requiredDuringInsert: false,
     defaultConstraints: GeneratedColumn.constraintIsAlways(
       'REFERENCES pedals (id) ON DELETE RESTRICT',
     ),
+  );
+  @override
+  late final GeneratedColumnWithTypeConverter<SignalBlockType, String>
+  blockType = GeneratedColumn<String>(
+    'block_type',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  ).withConverter<SignalBlockType>($SignalBlocksTable.$converterblockType);
+  static const VerificationMeta _labelMeta = const VerificationMeta('label');
+  @override
+  late final GeneratedColumn<String> label = GeneratedColumn<String>(
+    'label',
+    aliasedName,
+    true,
+    additionalChecks: GeneratedColumn.checkTextLength(
+      minTextLength: 1,
+      maxTextLength: 80,
+    ),
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
   );
   static const VerificationMeta _positionMeta = const VerificationMeta(
     'position',
@@ -5307,16 +5329,49 @@ class $PedalboardSlotsTable extends PedalboardSlots
     type: DriftSqlType.int,
     requiredDuringInsert: true,
   );
+  static const VerificationMeta _isEnabledMeta = const VerificationMeta(
+    'isEnabled',
+  );
   @override
-  List<GeneratedColumn> get $columns => [id, pedalboardId, pedalId, position];
+  late final GeneratedColumn<bool> isEnabled = GeneratedColumn<bool>(
+    'is_enabled',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("is_enabled" IN (0, 1))',
+    ),
+    defaultValue: const Constant(true),
+  );
+  static const VerificationMeta _notesMeta = const VerificationMeta('notes');
+  @override
+  late final GeneratedColumn<String> notes = GeneratedColumn<String>(
+    'notes',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    pedalboardId,
+    pedalId,
+    blockType,
+    label,
+    position,
+    isEnabled,
+    notes,
+  ];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
   String get actualTableName => $name;
-  static const String $name = 'pedalboard_slots';
+  static const String $name = 'signal_blocks';
   @override
   VerificationContext validateIntegrity(
-    Insertable<PedalboardSlot> instance, {
+    Insertable<SignalBlock> instance, {
     bool isInserting = false,
   }) {
     final context = VerificationContext();
@@ -5340,8 +5395,12 @@ class $PedalboardSlotsTable extends PedalboardSlots
         _pedalIdMeta,
         pedalId.isAcceptableOrUnknown(data['pedal_id']!, _pedalIdMeta),
       );
-    } else if (isInserting) {
-      context.missing(_pedalIdMeta);
+    }
+    if (data.containsKey('label')) {
+      context.handle(
+        _labelMeta,
+        label.isAcceptableOrUnknown(data['label']!, _labelMeta),
+      );
     }
     if (data.containsKey('position')) {
       context.handle(
@@ -5350,6 +5409,18 @@ class $PedalboardSlotsTable extends PedalboardSlots
       );
     } else if (isInserting) {
       context.missing(_positionMeta);
+    }
+    if (data.containsKey('is_enabled')) {
+      context.handle(
+        _isEnabledMeta,
+        isEnabled.isAcceptableOrUnknown(data['is_enabled']!, _isEnabledMeta),
+      );
+    }
+    if (data.containsKey('notes')) {
+      context.handle(
+        _notesMeta,
+        notes.isAcceptableOrUnknown(data['notes']!, _notesMeta),
+      );
     }
     return context;
   }
@@ -5361,9 +5432,9 @@ class $PedalboardSlotsTable extends PedalboardSlots
     {pedalboardId, pedalId},
   ];
   @override
-  PedalboardSlot map(Map<String, dynamic> data, {String? tablePrefix}) {
+  SignalBlock map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return PedalboardSlot(
+    return SignalBlock(
       id: attachedDatabase.typeMapping.read(
         DriftSqlType.int,
         data['${effectivePrefix}id'],
@@ -5375,67 +5446,135 @@ class $PedalboardSlotsTable extends PedalboardSlots
       pedalId: attachedDatabase.typeMapping.read(
         DriftSqlType.int,
         data['${effectivePrefix}pedal_id'],
-      )!,
+      ),
+      blockType: $SignalBlocksTable.$converterblockType.fromSql(
+        attachedDatabase.typeMapping.read(
+          DriftSqlType.string,
+          data['${effectivePrefix}block_type'],
+        )!,
+      ),
+      label: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}label'],
+      ),
       position: attachedDatabase.typeMapping.read(
         DriftSqlType.int,
         data['${effectivePrefix}position'],
       )!,
+      isEnabled: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}is_enabled'],
+      )!,
+      notes: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}notes'],
+      ),
     );
   }
 
   @override
-  $PedalboardSlotsTable createAlias(String alias) {
-    return $PedalboardSlotsTable(attachedDatabase, alias);
+  $SignalBlocksTable createAlias(String alias) {
+    return $SignalBlocksTable(attachedDatabase, alias);
   }
+
+  static JsonTypeConverter2<SignalBlockType, String, String>
+  $converterblockType = const EnumNameConverter<SignalBlockType>(
+    SignalBlockType.values,
+  );
 }
 
-class PedalboardSlot extends DataClass implements Insertable<PedalboardSlot> {
+class SignalBlock extends DataClass implements Insertable<SignalBlock> {
   final int id;
 
-  /// Deleting a rig deletes its slots: a slot only says where a pedal sat on
-  /// that rig, so with the rig gone there is nothing left for it to mean. The
-  /// pedals themselves are untouched.
+  /// Deleting a rig deletes its blocks: a block only says what sat where on that
+  /// rig, so with the rig gone there is nothing left for it to mean. The pedals
+  /// themselves are untouched.
   final int pedalboardId;
 
   /// Restrict, like every other reference to a pedal: one that is on a rig has
   /// to be taken off it before it can be deleted.
-  final int pedalId;
+  final int? pedalId;
+  final SignalBlockType blockType;
+
+  /// What this block is called on the board, where the pedal's own name is not
+  /// what the user thinks of it as ('Always on', 'Solo boost').
+  final String? label;
   final int position;
-  const PedalboardSlot({
+
+  /// Whether the block passes signal or is bypassed. A bypassed block keeps its
+  /// place in the chain, because bypassing is a sound the user is trying, not a
+  /// decision to take the pedal off the board.
+  final bool isEnabled;
+  final String? notes;
+  const SignalBlock({
     required this.id,
     required this.pedalboardId,
-    required this.pedalId,
+    this.pedalId,
+    required this.blockType,
+    this.label,
     required this.position,
+    required this.isEnabled,
+    this.notes,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
     map['id'] = Variable<int>(id);
     map['pedalboard_id'] = Variable<int>(pedalboardId);
-    map['pedal_id'] = Variable<int>(pedalId);
+    if (!nullToAbsent || pedalId != null) {
+      map['pedal_id'] = Variable<int>(pedalId);
+    }
+    {
+      map['block_type'] = Variable<String>(
+        $SignalBlocksTable.$converterblockType.toSql(blockType),
+      );
+    }
+    if (!nullToAbsent || label != null) {
+      map['label'] = Variable<String>(label);
+    }
     map['position'] = Variable<int>(position);
+    map['is_enabled'] = Variable<bool>(isEnabled);
+    if (!nullToAbsent || notes != null) {
+      map['notes'] = Variable<String>(notes);
+    }
     return map;
   }
 
-  PedalboardSlotsCompanion toCompanion(bool nullToAbsent) {
-    return PedalboardSlotsCompanion(
+  SignalBlocksCompanion toCompanion(bool nullToAbsent) {
+    return SignalBlocksCompanion(
       id: Value(id),
       pedalboardId: Value(pedalboardId),
-      pedalId: Value(pedalId),
+      pedalId: pedalId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(pedalId),
+      blockType: Value(blockType),
+      label: label == null && nullToAbsent
+          ? const Value.absent()
+          : Value(label),
       position: Value(position),
+      isEnabled: Value(isEnabled),
+      notes: notes == null && nullToAbsent
+          ? const Value.absent()
+          : Value(notes),
     );
   }
 
-  factory PedalboardSlot.fromJson(
+  factory SignalBlock.fromJson(
     Map<String, dynamic> json, {
     ValueSerializer? serializer,
   }) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
-    return PedalboardSlot(
+    return SignalBlock(
       id: serializer.fromJson<int>(json['id']),
       pedalboardId: serializer.fromJson<int>(json['pedalboardId']),
-      pedalId: serializer.fromJson<int>(json['pedalId']),
+      pedalId: serializer.fromJson<int?>(json['pedalId']),
+      blockType: $SignalBlocksTable.$converterblockType.fromJson(
+        serializer.fromJson<String>(json['blockType']),
+      ),
+      label: serializer.fromJson<String?>(json['label']),
       position: serializer.fromJson<int>(json['position']),
+      isEnabled: serializer.fromJson<bool>(json['isEnabled']),
+      notes: serializer.fromJson<String?>(json['notes']),
     );
   }
   @override
@@ -5444,100 +5583,163 @@ class PedalboardSlot extends DataClass implements Insertable<PedalboardSlot> {
     return <String, dynamic>{
       'id': serializer.toJson<int>(id),
       'pedalboardId': serializer.toJson<int>(pedalboardId),
-      'pedalId': serializer.toJson<int>(pedalId),
+      'pedalId': serializer.toJson<int?>(pedalId),
+      'blockType': serializer.toJson<String>(
+        $SignalBlocksTable.$converterblockType.toJson(blockType),
+      ),
+      'label': serializer.toJson<String?>(label),
       'position': serializer.toJson<int>(position),
+      'isEnabled': serializer.toJson<bool>(isEnabled),
+      'notes': serializer.toJson<String?>(notes),
     };
   }
 
-  PedalboardSlot copyWith({
+  SignalBlock copyWith({
     int? id,
     int? pedalboardId,
-    int? pedalId,
+    Value<int?> pedalId = const Value.absent(),
+    SignalBlockType? blockType,
+    Value<String?> label = const Value.absent(),
     int? position,
-  }) => PedalboardSlot(
+    bool? isEnabled,
+    Value<String?> notes = const Value.absent(),
+  }) => SignalBlock(
     id: id ?? this.id,
     pedalboardId: pedalboardId ?? this.pedalboardId,
-    pedalId: pedalId ?? this.pedalId,
+    pedalId: pedalId.present ? pedalId.value : this.pedalId,
+    blockType: blockType ?? this.blockType,
+    label: label.present ? label.value : this.label,
     position: position ?? this.position,
+    isEnabled: isEnabled ?? this.isEnabled,
+    notes: notes.present ? notes.value : this.notes,
   );
-  PedalboardSlot copyWithCompanion(PedalboardSlotsCompanion data) {
-    return PedalboardSlot(
+  SignalBlock copyWithCompanion(SignalBlocksCompanion data) {
+    return SignalBlock(
       id: data.id.present ? data.id.value : this.id,
       pedalboardId: data.pedalboardId.present
           ? data.pedalboardId.value
           : this.pedalboardId,
       pedalId: data.pedalId.present ? data.pedalId.value : this.pedalId,
+      blockType: data.blockType.present ? data.blockType.value : this.blockType,
+      label: data.label.present ? data.label.value : this.label,
       position: data.position.present ? data.position.value : this.position,
+      isEnabled: data.isEnabled.present ? data.isEnabled.value : this.isEnabled,
+      notes: data.notes.present ? data.notes.value : this.notes,
     );
   }
 
   @override
   String toString() {
-    return (StringBuffer('PedalboardSlot(')
+    return (StringBuffer('SignalBlock(')
           ..write('id: $id, ')
           ..write('pedalboardId: $pedalboardId, ')
           ..write('pedalId: $pedalId, ')
-          ..write('position: $position')
+          ..write('blockType: $blockType, ')
+          ..write('label: $label, ')
+          ..write('position: $position, ')
+          ..write('isEnabled: $isEnabled, ')
+          ..write('notes: $notes')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(id, pedalboardId, pedalId, position);
+  int get hashCode => Object.hash(
+    id,
+    pedalboardId,
+    pedalId,
+    blockType,
+    label,
+    position,
+    isEnabled,
+    notes,
+  );
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      (other is PedalboardSlot &&
+      (other is SignalBlock &&
           other.id == this.id &&
           other.pedalboardId == this.pedalboardId &&
           other.pedalId == this.pedalId &&
-          other.position == this.position);
+          other.blockType == this.blockType &&
+          other.label == this.label &&
+          other.position == this.position &&
+          other.isEnabled == this.isEnabled &&
+          other.notes == this.notes);
 }
 
-class PedalboardSlotsCompanion extends UpdateCompanion<PedalboardSlot> {
+class SignalBlocksCompanion extends UpdateCompanion<SignalBlock> {
   final Value<int> id;
   final Value<int> pedalboardId;
-  final Value<int> pedalId;
+  final Value<int?> pedalId;
+  final Value<SignalBlockType> blockType;
+  final Value<String?> label;
   final Value<int> position;
-  const PedalboardSlotsCompanion({
+  final Value<bool> isEnabled;
+  final Value<String?> notes;
+  const SignalBlocksCompanion({
     this.id = const Value.absent(),
     this.pedalboardId = const Value.absent(),
     this.pedalId = const Value.absent(),
+    this.blockType = const Value.absent(),
+    this.label = const Value.absent(),
     this.position = const Value.absent(),
+    this.isEnabled = const Value.absent(),
+    this.notes = const Value.absent(),
   });
-  PedalboardSlotsCompanion.insert({
+  SignalBlocksCompanion.insert({
     this.id = const Value.absent(),
     required int pedalboardId,
-    required int pedalId,
+    this.pedalId = const Value.absent(),
+    required SignalBlockType blockType,
+    this.label = const Value.absent(),
     required int position,
+    this.isEnabled = const Value.absent(),
+    this.notes = const Value.absent(),
   }) : pedalboardId = Value(pedalboardId),
-       pedalId = Value(pedalId),
+       blockType = Value(blockType),
        position = Value(position);
-  static Insertable<PedalboardSlot> custom({
+  static Insertable<SignalBlock> custom({
     Expression<int>? id,
     Expression<int>? pedalboardId,
     Expression<int>? pedalId,
+    Expression<String>? blockType,
+    Expression<String>? label,
     Expression<int>? position,
+    Expression<bool>? isEnabled,
+    Expression<String>? notes,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
       if (pedalboardId != null) 'pedalboard_id': pedalboardId,
       if (pedalId != null) 'pedal_id': pedalId,
+      if (blockType != null) 'block_type': blockType,
+      if (label != null) 'label': label,
       if (position != null) 'position': position,
+      if (isEnabled != null) 'is_enabled': isEnabled,
+      if (notes != null) 'notes': notes,
     });
   }
 
-  PedalboardSlotsCompanion copyWith({
+  SignalBlocksCompanion copyWith({
     Value<int>? id,
     Value<int>? pedalboardId,
-    Value<int>? pedalId,
+    Value<int?>? pedalId,
+    Value<SignalBlockType>? blockType,
+    Value<String?>? label,
     Value<int>? position,
+    Value<bool>? isEnabled,
+    Value<String?>? notes,
   }) {
-    return PedalboardSlotsCompanion(
+    return SignalBlocksCompanion(
       id: id ?? this.id,
       pedalboardId: pedalboardId ?? this.pedalboardId,
       pedalId: pedalId ?? this.pedalId,
+      blockType: blockType ?? this.blockType,
+      label: label ?? this.label,
       position: position ?? this.position,
+      isEnabled: isEnabled ?? this.isEnabled,
+      notes: notes ?? this.notes,
     );
   }
 
@@ -5553,19 +5755,940 @@ class PedalboardSlotsCompanion extends UpdateCompanion<PedalboardSlot> {
     if (pedalId.present) {
       map['pedal_id'] = Variable<int>(pedalId.value);
     }
+    if (blockType.present) {
+      map['block_type'] = Variable<String>(
+        $SignalBlocksTable.$converterblockType.toSql(blockType.value),
+      );
+    }
+    if (label.present) {
+      map['label'] = Variable<String>(label.value);
+    }
     if (position.present) {
       map['position'] = Variable<int>(position.value);
+    }
+    if (isEnabled.present) {
+      map['is_enabled'] = Variable<bool>(isEnabled.value);
+    }
+    if (notes.present) {
+      map['notes'] = Variable<String>(notes.value);
     }
     return map;
   }
 
   @override
   String toString() {
-    return (StringBuffer('PedalboardSlotsCompanion(')
+    return (StringBuffer('SignalBlocksCompanion(')
           ..write('id: $id, ')
           ..write('pedalboardId: $pedalboardId, ')
           ..write('pedalId: $pedalId, ')
-          ..write('position: $position')
+          ..write('blockType: $blockType, ')
+          ..write('label: $label, ')
+          ..write('position: $position, ')
+          ..write('isEnabled: $isEnabled, ')
+          ..write('notes: $notes')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $SignalConnectionsTable extends SignalConnections
+    with TableInfo<$SignalConnectionsTable, SignalConnection> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $SignalConnectionsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'PRIMARY KEY AUTOINCREMENT',
+    ),
+  );
+  static const VerificationMeta _pedalboardIdMeta = const VerificationMeta(
+    'pedalboardId',
+  );
+  @override
+  late final GeneratedColumn<int> pedalboardId = GeneratedColumn<int>(
+    'pedalboard_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES pedalboards (id) ON DELETE CASCADE',
+    ),
+  );
+  static const VerificationMeta _sourceBlockIdMeta = const VerificationMeta(
+    'sourceBlockId',
+  );
+  @override
+  late final GeneratedColumn<int> sourceBlockId = GeneratedColumn<int>(
+    'source_block_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES signal_blocks (id) ON DELETE CASCADE',
+    ),
+  );
+  static const VerificationMeta _targetBlockIdMeta = const VerificationMeta(
+    'targetBlockId',
+  );
+  @override
+  late final GeneratedColumn<int> targetBlockId = GeneratedColumn<int>(
+    'target_block_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES signal_blocks (id) ON DELETE CASCADE',
+    ),
+  );
+  @override
+  late final GeneratedColumnWithTypeConverter<SignalConnectionType, String>
+  connectionType =
+      GeneratedColumn<String>(
+        'connection_type',
+        aliasedName,
+        false,
+        type: DriftSqlType.string,
+        requiredDuringInsert: true,
+      ).withConverter<SignalConnectionType>(
+        $SignalConnectionsTable.$converterconnectionType,
+      );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    pedalboardId,
+    sourceBlockId,
+    targetBlockId,
+    connectionType,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'signal_connections';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<SignalConnection> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('pedalboard_id')) {
+      context.handle(
+        _pedalboardIdMeta,
+        pedalboardId.isAcceptableOrUnknown(
+          data['pedalboard_id']!,
+          _pedalboardIdMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_pedalboardIdMeta);
+    }
+    if (data.containsKey('source_block_id')) {
+      context.handle(
+        _sourceBlockIdMeta,
+        sourceBlockId.isAcceptableOrUnknown(
+          data['source_block_id']!,
+          _sourceBlockIdMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_sourceBlockIdMeta);
+    }
+    if (data.containsKey('target_block_id')) {
+      context.handle(
+        _targetBlockIdMeta,
+        targetBlockId.isAcceptableOrUnknown(
+          data['target_block_id']!,
+          _targetBlockIdMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_targetBlockIdMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  List<Set<GeneratedColumn>> get uniqueKeys => [
+    {sourceBlockId, targetBlockId},
+  ];
+  @override
+  SignalConnection map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return SignalConnection(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      pedalboardId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}pedalboard_id'],
+      )!,
+      sourceBlockId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}source_block_id'],
+      )!,
+      targetBlockId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}target_block_id'],
+      )!,
+      connectionType: $SignalConnectionsTable.$converterconnectionType.fromSql(
+        attachedDatabase.typeMapping.read(
+          DriftSqlType.string,
+          data['${effectivePrefix}connection_type'],
+        )!,
+      ),
+    );
+  }
+
+  @override
+  $SignalConnectionsTable createAlias(String alias) {
+    return $SignalConnectionsTable(attachedDatabase, alias);
+  }
+
+  static JsonTypeConverter2<SignalConnectionType, String, String>
+  $converterconnectionType = const EnumNameConverter<SignalConnectionType>(
+    SignalConnectionType.values,
+  );
+}
+
+class SignalConnection extends DataClass
+    implements Insertable<SignalConnection> {
+  final int id;
+  final int pedalboardId;
+
+  /// Cascade both ways: a cable to a block that is gone is not a cable, so
+  /// removing a block takes its connections with it rather than refusing.
+  ///
+  /// Both ends name the same table, so each is named for the direction it looks
+  /// in; without that drift cannot tell the two apart.
+  final int sourceBlockId;
+  final int targetBlockId;
+  final SignalConnectionType connectionType;
+  const SignalConnection({
+    required this.id,
+    required this.pedalboardId,
+    required this.sourceBlockId,
+    required this.targetBlockId,
+    required this.connectionType,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['pedalboard_id'] = Variable<int>(pedalboardId);
+    map['source_block_id'] = Variable<int>(sourceBlockId);
+    map['target_block_id'] = Variable<int>(targetBlockId);
+    {
+      map['connection_type'] = Variable<String>(
+        $SignalConnectionsTable.$converterconnectionType.toSql(connectionType),
+      );
+    }
+    return map;
+  }
+
+  SignalConnectionsCompanion toCompanion(bool nullToAbsent) {
+    return SignalConnectionsCompanion(
+      id: Value(id),
+      pedalboardId: Value(pedalboardId),
+      sourceBlockId: Value(sourceBlockId),
+      targetBlockId: Value(targetBlockId),
+      connectionType: Value(connectionType),
+    );
+  }
+
+  factory SignalConnection.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return SignalConnection(
+      id: serializer.fromJson<int>(json['id']),
+      pedalboardId: serializer.fromJson<int>(json['pedalboardId']),
+      sourceBlockId: serializer.fromJson<int>(json['sourceBlockId']),
+      targetBlockId: serializer.fromJson<int>(json['targetBlockId']),
+      connectionType: $SignalConnectionsTable.$converterconnectionType.fromJson(
+        serializer.fromJson<String>(json['connectionType']),
+      ),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'pedalboardId': serializer.toJson<int>(pedalboardId),
+      'sourceBlockId': serializer.toJson<int>(sourceBlockId),
+      'targetBlockId': serializer.toJson<int>(targetBlockId),
+      'connectionType': serializer.toJson<String>(
+        $SignalConnectionsTable.$converterconnectionType.toJson(connectionType),
+      ),
+    };
+  }
+
+  SignalConnection copyWith({
+    int? id,
+    int? pedalboardId,
+    int? sourceBlockId,
+    int? targetBlockId,
+    SignalConnectionType? connectionType,
+  }) => SignalConnection(
+    id: id ?? this.id,
+    pedalboardId: pedalboardId ?? this.pedalboardId,
+    sourceBlockId: sourceBlockId ?? this.sourceBlockId,
+    targetBlockId: targetBlockId ?? this.targetBlockId,
+    connectionType: connectionType ?? this.connectionType,
+  );
+  SignalConnection copyWithCompanion(SignalConnectionsCompanion data) {
+    return SignalConnection(
+      id: data.id.present ? data.id.value : this.id,
+      pedalboardId: data.pedalboardId.present
+          ? data.pedalboardId.value
+          : this.pedalboardId,
+      sourceBlockId: data.sourceBlockId.present
+          ? data.sourceBlockId.value
+          : this.sourceBlockId,
+      targetBlockId: data.targetBlockId.present
+          ? data.targetBlockId.value
+          : this.targetBlockId,
+      connectionType: data.connectionType.present
+          ? data.connectionType.value
+          : this.connectionType,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('SignalConnection(')
+          ..write('id: $id, ')
+          ..write('pedalboardId: $pedalboardId, ')
+          ..write('sourceBlockId: $sourceBlockId, ')
+          ..write('targetBlockId: $targetBlockId, ')
+          ..write('connectionType: $connectionType')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    pedalboardId,
+    sourceBlockId,
+    targetBlockId,
+    connectionType,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is SignalConnection &&
+          other.id == this.id &&
+          other.pedalboardId == this.pedalboardId &&
+          other.sourceBlockId == this.sourceBlockId &&
+          other.targetBlockId == this.targetBlockId &&
+          other.connectionType == this.connectionType);
+}
+
+class SignalConnectionsCompanion extends UpdateCompanion<SignalConnection> {
+  final Value<int> id;
+  final Value<int> pedalboardId;
+  final Value<int> sourceBlockId;
+  final Value<int> targetBlockId;
+  final Value<SignalConnectionType> connectionType;
+  const SignalConnectionsCompanion({
+    this.id = const Value.absent(),
+    this.pedalboardId = const Value.absent(),
+    this.sourceBlockId = const Value.absent(),
+    this.targetBlockId = const Value.absent(),
+    this.connectionType = const Value.absent(),
+  });
+  SignalConnectionsCompanion.insert({
+    this.id = const Value.absent(),
+    required int pedalboardId,
+    required int sourceBlockId,
+    required int targetBlockId,
+    required SignalConnectionType connectionType,
+  }) : pedalboardId = Value(pedalboardId),
+       sourceBlockId = Value(sourceBlockId),
+       targetBlockId = Value(targetBlockId),
+       connectionType = Value(connectionType);
+  static Insertable<SignalConnection> custom({
+    Expression<int>? id,
+    Expression<int>? pedalboardId,
+    Expression<int>? sourceBlockId,
+    Expression<int>? targetBlockId,
+    Expression<String>? connectionType,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (pedalboardId != null) 'pedalboard_id': pedalboardId,
+      if (sourceBlockId != null) 'source_block_id': sourceBlockId,
+      if (targetBlockId != null) 'target_block_id': targetBlockId,
+      if (connectionType != null) 'connection_type': connectionType,
+    });
+  }
+
+  SignalConnectionsCompanion copyWith({
+    Value<int>? id,
+    Value<int>? pedalboardId,
+    Value<int>? sourceBlockId,
+    Value<int>? targetBlockId,
+    Value<SignalConnectionType>? connectionType,
+  }) {
+    return SignalConnectionsCompanion(
+      id: id ?? this.id,
+      pedalboardId: pedalboardId ?? this.pedalboardId,
+      sourceBlockId: sourceBlockId ?? this.sourceBlockId,
+      targetBlockId: targetBlockId ?? this.targetBlockId,
+      connectionType: connectionType ?? this.connectionType,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (pedalboardId.present) {
+      map['pedalboard_id'] = Variable<int>(pedalboardId.value);
+    }
+    if (sourceBlockId.present) {
+      map['source_block_id'] = Variable<int>(sourceBlockId.value);
+    }
+    if (targetBlockId.present) {
+      map['target_block_id'] = Variable<int>(targetBlockId.value);
+    }
+    if (connectionType.present) {
+      map['connection_type'] = Variable<String>(
+        $SignalConnectionsTable.$converterconnectionType.toSql(
+          connectionType.value,
+        ),
+      );
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('SignalConnectionsCompanion(')
+          ..write('id: $id, ')
+          ..write('pedalboardId: $pedalboardId, ')
+          ..write('sourceBlockId: $sourceBlockId, ')
+          ..write('targetBlockId: $targetBlockId, ')
+          ..write('connectionType: $connectionType')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $SignalEndpointsTable extends SignalEndpoints
+    with TableInfo<$SignalEndpointsTable, SignalEndpoint> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $SignalEndpointsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'PRIMARY KEY AUTOINCREMENT',
+    ),
+  );
+  static const VerificationMeta _blockIdMeta = const VerificationMeta(
+    'blockId',
+  );
+  @override
+  late final GeneratedColumn<int> blockId = GeneratedColumn<int>(
+    'block_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES signal_blocks (id) ON DELETE CASCADE',
+    ),
+  );
+  @override
+  late final GeneratedColumnWithTypeConverter<SignalDestination?, String>
+  destination =
+      GeneratedColumn<String>(
+        'destination',
+        aliasedName,
+        true,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+      ).withConverter<SignalDestination?>(
+        $SignalEndpointsTable.$converterdestinationn,
+      );
+  @override
+  late final GeneratedColumnWithTypeConverter<SignalSource?, String> source =
+      GeneratedColumn<String>(
+        'source',
+        aliasedName,
+        true,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+      ).withConverter<SignalSource?>($SignalEndpointsTable.$convertersourcen);
+  static const VerificationMeta _pairedBlockIdMeta = const VerificationMeta(
+    'pairedBlockId',
+  );
+  @override
+  late final GeneratedColumn<int> pairedBlockId = GeneratedColumn<int>(
+    'paired_block_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES signal_blocks (id) ON DELETE SET NULL',
+    ),
+  );
+  static const VerificationMeta _gearMeta = const VerificationMeta('gear');
+  @override
+  late final GeneratedColumn<String> gear = GeneratedColumn<String>(
+    'gear',
+    aliasedName,
+    true,
+    additionalChecks: GeneratedColumn.checkTextLength(
+      minTextLength: 1,
+      maxTextLength: 120,
+    ),
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _notesMeta = const VerificationMeta('notes');
+  @override
+  late final GeneratedColumn<String> notes = GeneratedColumn<String>(
+    'notes',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    blockId,
+    destination,
+    source,
+    pairedBlockId,
+    gear,
+    notes,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'signal_endpoints';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<SignalEndpoint> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('block_id')) {
+      context.handle(
+        _blockIdMeta,
+        blockId.isAcceptableOrUnknown(data['block_id']!, _blockIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_blockIdMeta);
+    }
+    if (data.containsKey('paired_block_id')) {
+      context.handle(
+        _pairedBlockIdMeta,
+        pairedBlockId.isAcceptableOrUnknown(
+          data['paired_block_id']!,
+          _pairedBlockIdMeta,
+        ),
+      );
+    }
+    if (data.containsKey('gear')) {
+      context.handle(
+        _gearMeta,
+        gear.isAcceptableOrUnknown(data['gear']!, _gearMeta),
+      );
+    }
+    if (data.containsKey('notes')) {
+      context.handle(
+        _notesMeta,
+        notes.isAcceptableOrUnknown(data['notes']!, _notesMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  List<Set<GeneratedColumn>> get uniqueKeys => [
+    {blockId},
+  ];
+  @override
+  SignalEndpoint map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return SignalEndpoint(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      blockId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}block_id'],
+      )!,
+      destination: $SignalEndpointsTable.$converterdestinationn.fromSql(
+        attachedDatabase.typeMapping.read(
+          DriftSqlType.string,
+          data['${effectivePrefix}destination'],
+        ),
+      ),
+      source: $SignalEndpointsTable.$convertersourcen.fromSql(
+        attachedDatabase.typeMapping.read(
+          DriftSqlType.string,
+          data['${effectivePrefix}source'],
+        ),
+      ),
+      pairedBlockId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}paired_block_id'],
+      ),
+      gear: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}gear'],
+      ),
+      notes: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}notes'],
+      ),
+    );
+  }
+
+  @override
+  $SignalEndpointsTable createAlias(String alias) {
+    return $SignalEndpointsTable(attachedDatabase, alias);
+  }
+
+  static JsonTypeConverter2<SignalDestination, String, String>
+  $converterdestination = const EnumNameConverter<SignalDestination>(
+    SignalDestination.values,
+  );
+  static JsonTypeConverter2<SignalDestination?, String?, String?>
+  $converterdestinationn = JsonTypeConverter2.asNullable($converterdestination);
+  static JsonTypeConverter2<SignalSource, String, String> $convertersource =
+      const EnumNameConverter<SignalSource>(SignalSource.values);
+  static JsonTypeConverter2<SignalSource?, String?, String?> $convertersourcen =
+      JsonTypeConverter2.asNullable($convertersource);
+}
+
+class SignalEndpoint extends DataClass implements Insertable<SignalEndpoint> {
+  final int id;
+
+  /// Cascade: what a block reaches is only a fact about that block, so with the
+  /// block gone there is nothing left for the row to describe.
+  final int blockId;
+  final SignalDestination? destination;
+  final SignalSource? source;
+
+  /// Set null rather than cascade: losing the return does not make the send stop
+  /// existing, it makes it a send with nothing coming back yet.
+  final int? pairedBlockId;
+
+  /// What is actually at the other end, in the user's own words: 'Marshall JVM,
+  /// channel 2', 'the desk on stage left'.
+  final String? gear;
+  final String? notes;
+  const SignalEndpoint({
+    required this.id,
+    required this.blockId,
+    this.destination,
+    this.source,
+    this.pairedBlockId,
+    this.gear,
+    this.notes,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['block_id'] = Variable<int>(blockId);
+    if (!nullToAbsent || destination != null) {
+      map['destination'] = Variable<String>(
+        $SignalEndpointsTable.$converterdestinationn.toSql(destination),
+      );
+    }
+    if (!nullToAbsent || source != null) {
+      map['source'] = Variable<String>(
+        $SignalEndpointsTable.$convertersourcen.toSql(source),
+      );
+    }
+    if (!nullToAbsent || pairedBlockId != null) {
+      map['paired_block_id'] = Variable<int>(pairedBlockId);
+    }
+    if (!nullToAbsent || gear != null) {
+      map['gear'] = Variable<String>(gear);
+    }
+    if (!nullToAbsent || notes != null) {
+      map['notes'] = Variable<String>(notes);
+    }
+    return map;
+  }
+
+  SignalEndpointsCompanion toCompanion(bool nullToAbsent) {
+    return SignalEndpointsCompanion(
+      id: Value(id),
+      blockId: Value(blockId),
+      destination: destination == null && nullToAbsent
+          ? const Value.absent()
+          : Value(destination),
+      source: source == null && nullToAbsent
+          ? const Value.absent()
+          : Value(source),
+      pairedBlockId: pairedBlockId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(pairedBlockId),
+      gear: gear == null && nullToAbsent ? const Value.absent() : Value(gear),
+      notes: notes == null && nullToAbsent
+          ? const Value.absent()
+          : Value(notes),
+    );
+  }
+
+  factory SignalEndpoint.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return SignalEndpoint(
+      id: serializer.fromJson<int>(json['id']),
+      blockId: serializer.fromJson<int>(json['blockId']),
+      destination: $SignalEndpointsTable.$converterdestinationn.fromJson(
+        serializer.fromJson<String?>(json['destination']),
+      ),
+      source: $SignalEndpointsTable.$convertersourcen.fromJson(
+        serializer.fromJson<String?>(json['source']),
+      ),
+      pairedBlockId: serializer.fromJson<int?>(json['pairedBlockId']),
+      gear: serializer.fromJson<String?>(json['gear']),
+      notes: serializer.fromJson<String?>(json['notes']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'blockId': serializer.toJson<int>(blockId),
+      'destination': serializer.toJson<String?>(
+        $SignalEndpointsTable.$converterdestinationn.toJson(destination),
+      ),
+      'source': serializer.toJson<String?>(
+        $SignalEndpointsTable.$convertersourcen.toJson(source),
+      ),
+      'pairedBlockId': serializer.toJson<int?>(pairedBlockId),
+      'gear': serializer.toJson<String?>(gear),
+      'notes': serializer.toJson<String?>(notes),
+    };
+  }
+
+  SignalEndpoint copyWith({
+    int? id,
+    int? blockId,
+    Value<SignalDestination?> destination = const Value.absent(),
+    Value<SignalSource?> source = const Value.absent(),
+    Value<int?> pairedBlockId = const Value.absent(),
+    Value<String?> gear = const Value.absent(),
+    Value<String?> notes = const Value.absent(),
+  }) => SignalEndpoint(
+    id: id ?? this.id,
+    blockId: blockId ?? this.blockId,
+    destination: destination.present ? destination.value : this.destination,
+    source: source.present ? source.value : this.source,
+    pairedBlockId: pairedBlockId.present
+        ? pairedBlockId.value
+        : this.pairedBlockId,
+    gear: gear.present ? gear.value : this.gear,
+    notes: notes.present ? notes.value : this.notes,
+  );
+  SignalEndpoint copyWithCompanion(SignalEndpointsCompanion data) {
+    return SignalEndpoint(
+      id: data.id.present ? data.id.value : this.id,
+      blockId: data.blockId.present ? data.blockId.value : this.blockId,
+      destination: data.destination.present
+          ? data.destination.value
+          : this.destination,
+      source: data.source.present ? data.source.value : this.source,
+      pairedBlockId: data.pairedBlockId.present
+          ? data.pairedBlockId.value
+          : this.pairedBlockId,
+      gear: data.gear.present ? data.gear.value : this.gear,
+      notes: data.notes.present ? data.notes.value : this.notes,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('SignalEndpoint(')
+          ..write('id: $id, ')
+          ..write('blockId: $blockId, ')
+          ..write('destination: $destination, ')
+          ..write('source: $source, ')
+          ..write('pairedBlockId: $pairedBlockId, ')
+          ..write('gear: $gear, ')
+          ..write('notes: $notes')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode =>
+      Object.hash(id, blockId, destination, source, pairedBlockId, gear, notes);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is SignalEndpoint &&
+          other.id == this.id &&
+          other.blockId == this.blockId &&
+          other.destination == this.destination &&
+          other.source == this.source &&
+          other.pairedBlockId == this.pairedBlockId &&
+          other.gear == this.gear &&
+          other.notes == this.notes);
+}
+
+class SignalEndpointsCompanion extends UpdateCompanion<SignalEndpoint> {
+  final Value<int> id;
+  final Value<int> blockId;
+  final Value<SignalDestination?> destination;
+  final Value<SignalSource?> source;
+  final Value<int?> pairedBlockId;
+  final Value<String?> gear;
+  final Value<String?> notes;
+  const SignalEndpointsCompanion({
+    this.id = const Value.absent(),
+    this.blockId = const Value.absent(),
+    this.destination = const Value.absent(),
+    this.source = const Value.absent(),
+    this.pairedBlockId = const Value.absent(),
+    this.gear = const Value.absent(),
+    this.notes = const Value.absent(),
+  });
+  SignalEndpointsCompanion.insert({
+    this.id = const Value.absent(),
+    required int blockId,
+    this.destination = const Value.absent(),
+    this.source = const Value.absent(),
+    this.pairedBlockId = const Value.absent(),
+    this.gear = const Value.absent(),
+    this.notes = const Value.absent(),
+  }) : blockId = Value(blockId);
+  static Insertable<SignalEndpoint> custom({
+    Expression<int>? id,
+    Expression<int>? blockId,
+    Expression<String>? destination,
+    Expression<String>? source,
+    Expression<int>? pairedBlockId,
+    Expression<String>? gear,
+    Expression<String>? notes,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (blockId != null) 'block_id': blockId,
+      if (destination != null) 'destination': destination,
+      if (source != null) 'source': source,
+      if (pairedBlockId != null) 'paired_block_id': pairedBlockId,
+      if (gear != null) 'gear': gear,
+      if (notes != null) 'notes': notes,
+    });
+  }
+
+  SignalEndpointsCompanion copyWith({
+    Value<int>? id,
+    Value<int>? blockId,
+    Value<SignalDestination?>? destination,
+    Value<SignalSource?>? source,
+    Value<int?>? pairedBlockId,
+    Value<String?>? gear,
+    Value<String?>? notes,
+  }) {
+    return SignalEndpointsCompanion(
+      id: id ?? this.id,
+      blockId: blockId ?? this.blockId,
+      destination: destination ?? this.destination,
+      source: source ?? this.source,
+      pairedBlockId: pairedBlockId ?? this.pairedBlockId,
+      gear: gear ?? this.gear,
+      notes: notes ?? this.notes,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (blockId.present) {
+      map['block_id'] = Variable<int>(blockId.value);
+    }
+    if (destination.present) {
+      map['destination'] = Variable<String>(
+        $SignalEndpointsTable.$converterdestinationn.toSql(destination.value),
+      );
+    }
+    if (source.present) {
+      map['source'] = Variable<String>(
+        $SignalEndpointsTable.$convertersourcen.toSql(source.value),
+      );
+    }
+    if (pairedBlockId.present) {
+      map['paired_block_id'] = Variable<int>(pairedBlockId.value);
+    }
+    if (gear.present) {
+      map['gear'] = Variable<String>(gear.value);
+    }
+    if (notes.present) {
+      map['notes'] = Variable<String>(notes.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('SignalEndpointsCompanion(')
+          ..write('id: $id, ')
+          ..write('blockId: $blockId, ')
+          ..write('destination: $destination, ')
+          ..write('source: $source, ')
+          ..write('pairedBlockId: $pairedBlockId, ')
+          ..write('gear: $gear, ')
+          ..write('notes: $notes')
           ..write(')'))
         .toString();
   }
@@ -5637,6 +6760,17 @@ class $RigSnapshotsTable extends RigSnapshots
     type: DriftSqlType.dateTime,
     requiredDuringInsert: true,
   );
+  static const VerificationMeta _endpointSummaryMeta = const VerificationMeta(
+    'endpointSummary',
+  );
+  @override
+  late final GeneratedColumn<String> endpointSummary = GeneratedColumn<String>(
+    'endpoint_summary',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
   @override
   List<GeneratedColumn> get $columns => [
     id,
@@ -5644,6 +6778,7 @@ class $RigSnapshotsTable extends RigSnapshots
     name,
     notes,
     capturedAt,
+    endpointSummary,
   ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -5693,6 +6828,15 @@ class $RigSnapshotsTable extends RigSnapshots
     } else if (isInserting) {
       context.missing(_capturedAtMeta);
     }
+    if (data.containsKey('endpoint_summary')) {
+      context.handle(
+        _endpointSummaryMeta,
+        endpointSummary.isAcceptableOrUnknown(
+          data['endpoint_summary']!,
+          _endpointSummaryMeta,
+        ),
+      );
+    }
     return context;
   }
 
@@ -5722,6 +6866,10 @@ class $RigSnapshotsTable extends RigSnapshots
         DriftSqlType.dateTime,
         data['${effectivePrefix}captured_at'],
       )!,
+      endpointSummary: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}endpoint_summary'],
+      ),
     );
   }
 
@@ -5740,12 +6888,22 @@ class RigSnapshot extends DataClass implements Insertable<RigSnapshot> {
   /// When the rig looked like this, which is the snapshot's whole point and so
   /// is never rewritten. The name and notes stay editable.
   final DateTime capturedAt;
+
+  /// Where the rig reached at either end that day, one line per edge, in the
+  /// words the chain read.
+  ///
+  /// Copied as text for the reason [RigSnapshotEntries.configurationName] is: the
+  /// blocks that said it can be rewired the next morning, and a record that
+  /// changed with them would not be a record. Null on a rig that never said which
+  /// amp or desk it ran into, which is most rigs.
+  final String? endpointSummary;
   const RigSnapshot({
     required this.id,
     required this.pedalboardId,
     required this.name,
     this.notes,
     required this.capturedAt,
+    this.endpointSummary,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -5757,6 +6915,9 @@ class RigSnapshot extends DataClass implements Insertable<RigSnapshot> {
       map['notes'] = Variable<String>(notes);
     }
     map['captured_at'] = Variable<DateTime>(capturedAt);
+    if (!nullToAbsent || endpointSummary != null) {
+      map['endpoint_summary'] = Variable<String>(endpointSummary);
+    }
     return map;
   }
 
@@ -5769,6 +6930,9 @@ class RigSnapshot extends DataClass implements Insertable<RigSnapshot> {
           ? const Value.absent()
           : Value(notes),
       capturedAt: Value(capturedAt),
+      endpointSummary: endpointSummary == null && nullToAbsent
+          ? const Value.absent()
+          : Value(endpointSummary),
     );
   }
 
@@ -5783,6 +6947,7 @@ class RigSnapshot extends DataClass implements Insertable<RigSnapshot> {
       name: serializer.fromJson<String>(json['name']),
       notes: serializer.fromJson<String?>(json['notes']),
       capturedAt: serializer.fromJson<DateTime>(json['capturedAt']),
+      endpointSummary: serializer.fromJson<String?>(json['endpointSummary']),
     );
   }
   @override
@@ -5794,6 +6959,7 @@ class RigSnapshot extends DataClass implements Insertable<RigSnapshot> {
       'name': serializer.toJson<String>(name),
       'notes': serializer.toJson<String?>(notes),
       'capturedAt': serializer.toJson<DateTime>(capturedAt),
+      'endpointSummary': serializer.toJson<String?>(endpointSummary),
     };
   }
 
@@ -5803,12 +6969,16 @@ class RigSnapshot extends DataClass implements Insertable<RigSnapshot> {
     String? name,
     Value<String?> notes = const Value.absent(),
     DateTime? capturedAt,
+    Value<String?> endpointSummary = const Value.absent(),
   }) => RigSnapshot(
     id: id ?? this.id,
     pedalboardId: pedalboardId ?? this.pedalboardId,
     name: name ?? this.name,
     notes: notes.present ? notes.value : this.notes,
     capturedAt: capturedAt ?? this.capturedAt,
+    endpointSummary: endpointSummary.present
+        ? endpointSummary.value
+        : this.endpointSummary,
   );
   RigSnapshot copyWithCompanion(RigSnapshotsCompanion data) {
     return RigSnapshot(
@@ -5821,6 +6991,9 @@ class RigSnapshot extends DataClass implements Insertable<RigSnapshot> {
       capturedAt: data.capturedAt.present
           ? data.capturedAt.value
           : this.capturedAt,
+      endpointSummary: data.endpointSummary.present
+          ? data.endpointSummary.value
+          : this.endpointSummary,
     );
   }
 
@@ -5831,13 +7004,15 @@ class RigSnapshot extends DataClass implements Insertable<RigSnapshot> {
           ..write('pedalboardId: $pedalboardId, ')
           ..write('name: $name, ')
           ..write('notes: $notes, ')
-          ..write('capturedAt: $capturedAt')
+          ..write('capturedAt: $capturedAt, ')
+          ..write('endpointSummary: $endpointSummary')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(id, pedalboardId, name, notes, capturedAt);
+  int get hashCode =>
+      Object.hash(id, pedalboardId, name, notes, capturedAt, endpointSummary);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -5846,7 +7021,8 @@ class RigSnapshot extends DataClass implements Insertable<RigSnapshot> {
           other.pedalboardId == this.pedalboardId &&
           other.name == this.name &&
           other.notes == this.notes &&
-          other.capturedAt == this.capturedAt);
+          other.capturedAt == this.capturedAt &&
+          other.endpointSummary == this.endpointSummary);
 }
 
 class RigSnapshotsCompanion extends UpdateCompanion<RigSnapshot> {
@@ -5855,12 +7031,14 @@ class RigSnapshotsCompanion extends UpdateCompanion<RigSnapshot> {
   final Value<String> name;
   final Value<String?> notes;
   final Value<DateTime> capturedAt;
+  final Value<String?> endpointSummary;
   const RigSnapshotsCompanion({
     this.id = const Value.absent(),
     this.pedalboardId = const Value.absent(),
     this.name = const Value.absent(),
     this.notes = const Value.absent(),
     this.capturedAt = const Value.absent(),
+    this.endpointSummary = const Value.absent(),
   });
   RigSnapshotsCompanion.insert({
     this.id = const Value.absent(),
@@ -5868,6 +7046,7 @@ class RigSnapshotsCompanion extends UpdateCompanion<RigSnapshot> {
     required String name,
     this.notes = const Value.absent(),
     required DateTime capturedAt,
+    this.endpointSummary = const Value.absent(),
   }) : pedalboardId = Value(pedalboardId),
        name = Value(name),
        capturedAt = Value(capturedAt);
@@ -5877,6 +7056,7 @@ class RigSnapshotsCompanion extends UpdateCompanion<RigSnapshot> {
     Expression<String>? name,
     Expression<String>? notes,
     Expression<DateTime>? capturedAt,
+    Expression<String>? endpointSummary,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
@@ -5884,6 +7064,7 @@ class RigSnapshotsCompanion extends UpdateCompanion<RigSnapshot> {
       if (name != null) 'name': name,
       if (notes != null) 'notes': notes,
       if (capturedAt != null) 'captured_at': capturedAt,
+      if (endpointSummary != null) 'endpoint_summary': endpointSummary,
     });
   }
 
@@ -5893,6 +7074,7 @@ class RigSnapshotsCompanion extends UpdateCompanion<RigSnapshot> {
     Value<String>? name,
     Value<String?>? notes,
     Value<DateTime>? capturedAt,
+    Value<String?>? endpointSummary,
   }) {
     return RigSnapshotsCompanion(
       id: id ?? this.id,
@@ -5900,6 +7082,7 @@ class RigSnapshotsCompanion extends UpdateCompanion<RigSnapshot> {
       name: name ?? this.name,
       notes: notes ?? this.notes,
       capturedAt: capturedAt ?? this.capturedAt,
+      endpointSummary: endpointSummary ?? this.endpointSummary,
     );
   }
 
@@ -5921,6 +7104,9 @@ class RigSnapshotsCompanion extends UpdateCompanion<RigSnapshot> {
     if (capturedAt.present) {
       map['captured_at'] = Variable<DateTime>(capturedAt.value);
     }
+    if (endpointSummary.present) {
+      map['endpoint_summary'] = Variable<String>(endpointSummary.value);
+    }
     return map;
   }
 
@@ -5931,7 +7117,8 @@ class RigSnapshotsCompanion extends UpdateCompanion<RigSnapshot> {
           ..write('pedalboardId: $pedalboardId, ')
           ..write('name: $name, ')
           ..write('notes: $notes, ')
-          ..write('capturedAt: $capturedAt')
+          ..write('capturedAt: $capturedAt, ')
+          ..write('endpointSummary: $endpointSummary')
           ..write(')'))
         .toString();
   }
@@ -6011,6 +7198,21 @@ class $RigSnapshotEntriesTable extends RigSnapshotEntries
         type: DriftSqlType.string,
         requiredDuringInsert: false,
       );
+  static const VerificationMeta _isEnabledMeta = const VerificationMeta(
+    'isEnabled',
+  );
+  @override
+  late final GeneratedColumn<bool> isEnabled = GeneratedColumn<bool>(
+    'is_enabled',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("is_enabled" IN (0, 1))',
+    ),
+    defaultValue: const Constant(true),
+  );
   @override
   List<GeneratedColumn> get $columns => [
     id,
@@ -6018,6 +7220,7 @@ class $RigSnapshotEntriesTable extends RigSnapshotEntries
     pedalId,
     position,
     configurationName,
+    isEnabled,
   ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -6067,6 +7270,12 @@ class $RigSnapshotEntriesTable extends RigSnapshotEntries
         ),
       );
     }
+    if (data.containsKey('is_enabled')) {
+      context.handle(
+        _isEnabledMeta,
+        isEnabled.isAcceptableOrUnknown(data['is_enabled']!, _isEnabledMeta),
+      );
+    }
     return context;
   }
 
@@ -6100,6 +7309,10 @@ class $RigSnapshotEntriesTable extends RigSnapshotEntries
         DriftSqlType.string,
         data['${effectivePrefix}configuration_name'],
       ),
+      isEnabled: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}is_enabled'],
+      )!,
     );
   }
 
@@ -6118,12 +7331,19 @@ class RigSnapshotEntry extends DataClass
   /// Zero-based, in the order signal reached it, exactly as the chain read.
   final int position;
   final String? configurationName;
+
+  /// Whether the pedal was passing signal that day, or stood on the board with
+  /// its footswitch off. A bypassed pedal is part of what was played - it was set
+  /// up that way and reached for mid-song - so it is recorded rather than left
+  /// out, and true is what every entry taken before this was recorded meant.
+  final bool isEnabled;
   const RigSnapshotEntry({
     required this.id,
     required this.snapshotId,
     required this.pedalId,
     required this.position,
     this.configurationName,
+    required this.isEnabled,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -6135,6 +7355,7 @@ class RigSnapshotEntry extends DataClass
     if (!nullToAbsent || configurationName != null) {
       map['configuration_name'] = Variable<String>(configurationName);
     }
+    map['is_enabled'] = Variable<bool>(isEnabled);
     return map;
   }
 
@@ -6147,6 +7368,7 @@ class RigSnapshotEntry extends DataClass
       configurationName: configurationName == null && nullToAbsent
           ? const Value.absent()
           : Value(configurationName),
+      isEnabled: Value(isEnabled),
     );
   }
 
@@ -6163,6 +7385,7 @@ class RigSnapshotEntry extends DataClass
       configurationName: serializer.fromJson<String?>(
         json['configurationName'],
       ),
+      isEnabled: serializer.fromJson<bool>(json['isEnabled']),
     );
   }
   @override
@@ -6174,6 +7397,7 @@ class RigSnapshotEntry extends DataClass
       'pedalId': serializer.toJson<int>(pedalId),
       'position': serializer.toJson<int>(position),
       'configurationName': serializer.toJson<String?>(configurationName),
+      'isEnabled': serializer.toJson<bool>(isEnabled),
     };
   }
 
@@ -6183,6 +7407,7 @@ class RigSnapshotEntry extends DataClass
     int? pedalId,
     int? position,
     Value<String?> configurationName = const Value.absent(),
+    bool? isEnabled,
   }) => RigSnapshotEntry(
     id: id ?? this.id,
     snapshotId: snapshotId ?? this.snapshotId,
@@ -6191,6 +7416,7 @@ class RigSnapshotEntry extends DataClass
     configurationName: configurationName.present
         ? configurationName.value
         : this.configurationName,
+    isEnabled: isEnabled ?? this.isEnabled,
   );
   RigSnapshotEntry copyWithCompanion(RigSnapshotEntriesCompanion data) {
     return RigSnapshotEntry(
@@ -6203,6 +7429,7 @@ class RigSnapshotEntry extends DataClass
       configurationName: data.configurationName.present
           ? data.configurationName.value
           : this.configurationName,
+      isEnabled: data.isEnabled.present ? data.isEnabled.value : this.isEnabled,
     );
   }
 
@@ -6213,14 +7440,21 @@ class RigSnapshotEntry extends DataClass
           ..write('snapshotId: $snapshotId, ')
           ..write('pedalId: $pedalId, ')
           ..write('position: $position, ')
-          ..write('configurationName: $configurationName')
+          ..write('configurationName: $configurationName, ')
+          ..write('isEnabled: $isEnabled')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode =>
-      Object.hash(id, snapshotId, pedalId, position, configurationName);
+  int get hashCode => Object.hash(
+    id,
+    snapshotId,
+    pedalId,
+    position,
+    configurationName,
+    isEnabled,
+  );
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -6229,7 +7463,8 @@ class RigSnapshotEntry extends DataClass
           other.snapshotId == this.snapshotId &&
           other.pedalId == this.pedalId &&
           other.position == this.position &&
-          other.configurationName == this.configurationName);
+          other.configurationName == this.configurationName &&
+          other.isEnabled == this.isEnabled);
 }
 
 class RigSnapshotEntriesCompanion extends UpdateCompanion<RigSnapshotEntry> {
@@ -6238,12 +7473,14 @@ class RigSnapshotEntriesCompanion extends UpdateCompanion<RigSnapshotEntry> {
   final Value<int> pedalId;
   final Value<int> position;
   final Value<String?> configurationName;
+  final Value<bool> isEnabled;
   const RigSnapshotEntriesCompanion({
     this.id = const Value.absent(),
     this.snapshotId = const Value.absent(),
     this.pedalId = const Value.absent(),
     this.position = const Value.absent(),
     this.configurationName = const Value.absent(),
+    this.isEnabled = const Value.absent(),
   });
   RigSnapshotEntriesCompanion.insert({
     this.id = const Value.absent(),
@@ -6251,6 +7488,7 @@ class RigSnapshotEntriesCompanion extends UpdateCompanion<RigSnapshotEntry> {
     required int pedalId,
     required int position,
     this.configurationName = const Value.absent(),
+    this.isEnabled = const Value.absent(),
   }) : snapshotId = Value(snapshotId),
        pedalId = Value(pedalId),
        position = Value(position);
@@ -6260,6 +7498,7 @@ class RigSnapshotEntriesCompanion extends UpdateCompanion<RigSnapshotEntry> {
     Expression<int>? pedalId,
     Expression<int>? position,
     Expression<String>? configurationName,
+    Expression<bool>? isEnabled,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
@@ -6267,6 +7506,7 @@ class RigSnapshotEntriesCompanion extends UpdateCompanion<RigSnapshotEntry> {
       if (pedalId != null) 'pedal_id': pedalId,
       if (position != null) 'position': position,
       if (configurationName != null) 'configuration_name': configurationName,
+      if (isEnabled != null) 'is_enabled': isEnabled,
     });
   }
 
@@ -6276,6 +7516,7 @@ class RigSnapshotEntriesCompanion extends UpdateCompanion<RigSnapshotEntry> {
     Value<int>? pedalId,
     Value<int>? position,
     Value<String?>? configurationName,
+    Value<bool>? isEnabled,
   }) {
     return RigSnapshotEntriesCompanion(
       id: id ?? this.id,
@@ -6283,6 +7524,7 @@ class RigSnapshotEntriesCompanion extends UpdateCompanion<RigSnapshotEntry> {
       pedalId: pedalId ?? this.pedalId,
       position: position ?? this.position,
       configurationName: configurationName ?? this.configurationName,
+      isEnabled: isEnabled ?? this.isEnabled,
     );
   }
 
@@ -6304,6 +7546,9 @@ class RigSnapshotEntriesCompanion extends UpdateCompanion<RigSnapshotEntry> {
     if (configurationName.present) {
       map['configuration_name'] = Variable<String>(configurationName.value);
     }
+    if (isEnabled.present) {
+      map['is_enabled'] = Variable<bool>(isEnabled.value);
+    }
     return map;
   }
 
@@ -6314,7 +7559,8 @@ class RigSnapshotEntriesCompanion extends UpdateCompanion<RigSnapshotEntry> {
           ..write('snapshotId: $snapshotId, ')
           ..write('pedalId: $pedalId, ')
           ..write('position: $position, ')
-          ..write('configurationName: $configurationName')
+          ..write('configurationName: $configurationName, ')
+          ..write('isEnabled: $isEnabled')
           ..write(')'))
         .toString();
   }
@@ -6942,7 +8188,10 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final $PedalReplacementsTable pedalReplacements =
       $PedalReplacementsTable(this);
   late final $PedalboardsTable pedalboards = $PedalboardsTable(this);
-  late final $PedalboardSlotsTable pedalboardSlots = $PedalboardSlotsTable(
+  late final $SignalBlocksTable signalBlocks = $SignalBlocksTable(this);
+  late final $SignalConnectionsTable signalConnections =
+      $SignalConnectionsTable(this);
+  late final $SignalEndpointsTable signalEndpoints = $SignalEndpointsTable(
     this,
   );
   late final $RigSnapshotsTable rigSnapshots = $RigSnapshotsTable(this);
@@ -6994,9 +8243,13 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     'idx_pedal_replacements_new',
     'CREATE INDEX idx_pedal_replacements_new ON pedal_replacements (new_pedal_id)',
   );
-  late final Index idxPedalboardSlotsBoardPosition = Index(
-    'idx_pedalboard_slots_board_position',
-    'CREATE INDEX idx_pedalboard_slots_board_position ON pedalboard_slots (pedalboard_id, position)',
+  late final Index idxSignalBlocksBoardPosition = Index(
+    'idx_signal_blocks_board_position',
+    'CREATE INDEX idx_signal_blocks_board_position ON signal_blocks (pedalboard_id, position)',
+  );
+  late final Index idxSignalConnectionsBoard = Index(
+    'idx_signal_connections_board',
+    'CREATE INDEX idx_signal_connections_board ON signal_connections (pedalboard_id)',
   );
   late final Index idxRigSnapshotsBoardCaptured = Index(
     'idx_rig_snapshots_board_captured',
@@ -7020,6 +8273,12 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     this as AppDatabase,
   );
   late final PedalboardDao pedalboardDao = PedalboardDao(this as AppDatabase);
+  late final SignalChainDao signalChainDao = SignalChainDao(
+    this as AppDatabase,
+  );
+  late final SignalEndpointDao signalEndpointDao = SignalEndpointDao(
+    this as AppDatabase,
+  );
   late final RigSnapshotDao rigSnapshotDao = RigSnapshotDao(
     this as AppDatabase,
   );
@@ -7040,7 +8299,9 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     changeLogs,
     pedalReplacements,
     pedalboards,
-    pedalboardSlots,
+    signalBlocks,
+    signalConnections,
+    signalEndpoints,
     rigSnapshots,
     rigSnapshotEntries,
     rigSnapshotValues,
@@ -7055,7 +8316,8 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     idxChangeLogsConfiguration,
     idxPedalReplacementsOld,
     idxPedalReplacementsNew,
-    idxPedalboardSlotsBoardPosition,
+    idxSignalBlocksBoardPosition,
+    idxSignalConnectionsBoard,
     idxRigSnapshotsBoardCaptured,
     idxRigSnapshotEntriesSnapshotPosition,
   ];
@@ -7122,7 +8384,42 @@ abstract class _$AppDatabase extends GeneratedDatabase {
         'pedalboards',
         limitUpdateKind: UpdateKind.delete,
       ),
-      result: [TableUpdate('pedalboard_slots', kind: UpdateKind.delete)],
+      result: [TableUpdate('signal_blocks', kind: UpdateKind.delete)],
+    ),
+    WritePropagation(
+      on: TableUpdateQuery.onTableName(
+        'pedalboards',
+        limitUpdateKind: UpdateKind.delete,
+      ),
+      result: [TableUpdate('signal_connections', kind: UpdateKind.delete)],
+    ),
+    WritePropagation(
+      on: TableUpdateQuery.onTableName(
+        'signal_blocks',
+        limitUpdateKind: UpdateKind.delete,
+      ),
+      result: [TableUpdate('signal_connections', kind: UpdateKind.delete)],
+    ),
+    WritePropagation(
+      on: TableUpdateQuery.onTableName(
+        'signal_blocks',
+        limitUpdateKind: UpdateKind.delete,
+      ),
+      result: [TableUpdate('signal_connections', kind: UpdateKind.delete)],
+    ),
+    WritePropagation(
+      on: TableUpdateQuery.onTableName(
+        'signal_blocks',
+        limitUpdateKind: UpdateKind.delete,
+      ),
+      result: [TableUpdate('signal_endpoints', kind: UpdateKind.delete)],
+    ),
+    WritePropagation(
+      on: TableUpdateQuery.onTableName(
+        'signal_blocks',
+        limitUpdateKind: UpdateKind.delete,
+      ),
+      result: [TableUpdate('signal_endpoints', kind: UpdateKind.update)],
     ),
     WritePropagation(
       on: TableUpdateQuery.onTableName(
@@ -7331,21 +8628,19 @@ final class $$PedalsTableReferences
     );
   }
 
-  static MultiTypedResultKey<$PedalboardSlotsTable, List<PedalboardSlot>>
-  _pedalboardSlotsRefsTable(_$AppDatabase db) => MultiTypedResultKey.fromTable(
-    db.pedalboardSlots,
-    aliasName: 'pedals__id__pedalboard_slots__pedal_id',
+  static MultiTypedResultKey<$SignalBlocksTable, List<SignalBlock>>
+  _signalBlocksRefsTable(_$AppDatabase db) => MultiTypedResultKey.fromTable(
+    db.signalBlocks,
+    aliasName: 'pedals__id__signal_blocks__pedal_id',
   );
 
-  $$PedalboardSlotsTableProcessedTableManager get pedalboardSlotsRefs {
-    final manager = $$PedalboardSlotsTableTableManager(
+  $$SignalBlocksTableProcessedTableManager get signalBlocksRefs {
+    final manager = $$SignalBlocksTableTableManager(
       $_db,
-      $_db.pedalboardSlots,
+      $_db.signalBlocks,
     ).filter((f) => f.pedalId.id.sqlEquals($_itemColumn<int>('id')!));
 
-    final cache = $_typedResult.readTableOrNull(
-      _pedalboardSlotsRefsTable($_db),
-    );
+    final cache = $_typedResult.readTableOrNull(_signalBlocksRefsTable($_db));
     return ProcessedTableManager(
       manager.$state.copyWith(prefetchedData: cache),
     );
@@ -7644,22 +8939,22 @@ class $$PedalsTableFilterComposer
     return f(composer);
   }
 
-  Expression<bool> pedalboardSlotsRefs(
-    Expression<bool> Function($$PedalboardSlotsTableFilterComposer f) f,
+  Expression<bool> signalBlocksRefs(
+    Expression<bool> Function($$SignalBlocksTableFilterComposer f) f,
   ) {
-    final $$PedalboardSlotsTableFilterComposer composer = $composerBuilder(
+    final $$SignalBlocksTableFilterComposer composer = $composerBuilder(
       composer: this,
       getCurrentColumn: (t) => t.id,
-      referencedTable: $db.pedalboardSlots,
+      referencedTable: $db.signalBlocks,
       getReferencedColumn: (t) => t.pedalId,
       builder:
           (
             joinBuilder, {
             $addJoinBuilderToRootComposer,
             $removeJoinBuilderFromRootComposer,
-          }) => $$PedalboardSlotsTableFilterComposer(
+          }) => $$SignalBlocksTableFilterComposer(
             $db: $db,
-            $table: $db.pedalboardSlots,
+            $table: $db.signalBlocks,
             $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
             joinBuilder: joinBuilder,
             $removeJoinBuilderFromRootComposer:
@@ -8038,22 +9333,22 @@ class $$PedalsTableAnnotationComposer
     return f(composer);
   }
 
-  Expression<T> pedalboardSlotsRefs<T extends Object>(
-    Expression<T> Function($$PedalboardSlotsTableAnnotationComposer a) f,
+  Expression<T> signalBlocksRefs<T extends Object>(
+    Expression<T> Function($$SignalBlocksTableAnnotationComposer a) f,
   ) {
-    final $$PedalboardSlotsTableAnnotationComposer composer = $composerBuilder(
+    final $$SignalBlocksTableAnnotationComposer composer = $composerBuilder(
       composer: this,
       getCurrentColumn: (t) => t.id,
-      referencedTable: $db.pedalboardSlots,
+      referencedTable: $db.signalBlocks,
       getReferencedColumn: (t) => t.pedalId,
       builder:
           (
             joinBuilder, {
             $addJoinBuilderToRootComposer,
             $removeJoinBuilderFromRootComposer,
-          }) => $$PedalboardSlotsTableAnnotationComposer(
+          }) => $$SignalBlocksTableAnnotationComposer(
             $db: $db,
-            $table: $db.pedalboardSlots,
+            $table: $db.signalBlocks,
             $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
             joinBuilder: joinBuilder,
             $removeJoinBuilderFromRootComposer:
@@ -8112,7 +9407,7 @@ class $$PedalsTableTableManager
             bool changeLogsRefs,
             bool replacementsWhereOutgoing,
             bool replacementsWhereIncoming,
-            bool pedalboardSlotsRefs,
+            bool signalBlocksRefs,
             bool rigSnapshotEntriesRefs,
           })
         > {
@@ -8205,7 +9500,7 @@ class $$PedalsTableTableManager
                 changeLogsRefs = false,
                 replacementsWhereOutgoing = false,
                 replacementsWhereIncoming = false,
-                pedalboardSlotsRefs = false,
+                signalBlocksRefs = false,
                 rigSnapshotEntriesRefs = false,
               }) {
                 return PrefetchHooks(
@@ -8218,7 +9513,7 @@ class $$PedalsTableTableManager
                     if (changeLogsRefs) db.changeLogs,
                     if (replacementsWhereOutgoing) db.pedalReplacements,
                     if (replacementsWhereIncoming) db.pedalReplacements,
-                    if (pedalboardSlotsRefs) db.pedalboardSlots,
+                    if (signalBlocksRefs) db.signalBlocks,
                     if (rigSnapshotEntriesRefs) db.rigSnapshotEntries,
                   ],
                   addJoins:
@@ -8398,21 +9693,21 @@ class $$PedalsTableTableManager
                               ),
                           typedResults: items,
                         ),
-                      if (pedalboardSlotsRefs)
+                      if (signalBlocksRefs)
                         await $_getPrefetchedData<
                           Pedal,
                           $PedalsTable,
-                          PedalboardSlot
+                          SignalBlock
                         >(
                           currentTable: table,
                           referencedTable: $$PedalsTableReferences
-                              ._pedalboardSlotsRefsTable(db),
+                              ._signalBlocksRefsTable(db),
                           managerFromTypedResult: (p0) =>
                               $$PedalsTableReferences(
                                 db,
                                 table,
                                 p0,
-                              ).pedalboardSlotsRefs,
+                              ).signalBlocksRefs,
                           referencedItemsForCurrentItem:
                               (item, referencedItems) => referencedItems.where(
                                 (e) => e.pedalId == item.id,
@@ -8469,7 +9764,7 @@ typedef $$PedalsTableProcessedTableManager =
         bool changeLogsRefs,
         bool replacementsWhereOutgoing,
         bool replacementsWhereIncoming,
-        bool pedalboardSlotsRefs,
+        bool signalBlocksRefs,
         bool rigSnapshotEntriesRefs,
       })
     >;
@@ -12957,20 +14252,39 @@ final class $$PedalboardsTableReferences
     extends BaseReferences<_$AppDatabase, $PedalboardsTable, Pedalboard> {
   $$PedalboardsTableReferences(super.$_db, super.$_table, super.$_typedResult);
 
-  static MultiTypedResultKey<$PedalboardSlotsTable, List<PedalboardSlot>>
-  _pedalboardSlotsRefsTable(_$AppDatabase db) => MultiTypedResultKey.fromTable(
-    db.pedalboardSlots,
-    aliasName: 'pedalboards__id__pedalboard_slots__pedalboard_id',
+  static MultiTypedResultKey<$SignalBlocksTable, List<SignalBlock>>
+  _signalBlocksRefsTable(_$AppDatabase db) => MultiTypedResultKey.fromTable(
+    db.signalBlocks,
+    aliasName: 'pedalboards__id__signal_blocks__pedalboard_id',
   );
 
-  $$PedalboardSlotsTableProcessedTableManager get pedalboardSlotsRefs {
-    final manager = $$PedalboardSlotsTableTableManager(
+  $$SignalBlocksTableProcessedTableManager get signalBlocksRefs {
+    final manager = $$SignalBlocksTableTableManager(
       $_db,
-      $_db.pedalboardSlots,
+      $_db.signalBlocks,
+    ).filter((f) => f.pedalboardId.id.sqlEquals($_itemColumn<int>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(_signalBlocksRefsTable($_db));
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+
+  static MultiTypedResultKey<$SignalConnectionsTable, List<SignalConnection>>
+  _signalConnectionsRefsTable(_$AppDatabase db) =>
+      MultiTypedResultKey.fromTable(
+        db.signalConnections,
+        aliasName: 'pedalboards__id__signal_connections__pedalboard_id',
+      );
+
+  $$SignalConnectionsTableProcessedTableManager get signalConnectionsRefs {
+    final manager = $$SignalConnectionsTableTableManager(
+      $_db,
+      $_db.signalConnections,
     ).filter((f) => f.pedalboardId.id.sqlEquals($_itemColumn<int>('id')!));
 
     final cache = $_typedResult.readTableOrNull(
-      _pedalboardSlotsRefsTable($_db),
+      _signalConnectionsRefsTable($_db),
     );
     return ProcessedTableManager(
       manager.$state.copyWith(prefetchedData: cache),
@@ -13030,22 +14344,47 @@ class $$PedalboardsTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
-  Expression<bool> pedalboardSlotsRefs(
-    Expression<bool> Function($$PedalboardSlotsTableFilterComposer f) f,
+  Expression<bool> signalBlocksRefs(
+    Expression<bool> Function($$SignalBlocksTableFilterComposer f) f,
   ) {
-    final $$PedalboardSlotsTableFilterComposer composer = $composerBuilder(
+    final $$SignalBlocksTableFilterComposer composer = $composerBuilder(
       composer: this,
       getCurrentColumn: (t) => t.id,
-      referencedTable: $db.pedalboardSlots,
+      referencedTable: $db.signalBlocks,
       getReferencedColumn: (t) => t.pedalboardId,
       builder:
           (
             joinBuilder, {
             $addJoinBuilderToRootComposer,
             $removeJoinBuilderFromRootComposer,
-          }) => $$PedalboardSlotsTableFilterComposer(
+          }) => $$SignalBlocksTableFilterComposer(
             $db: $db,
-            $table: $db.pedalboardSlots,
+            $table: $db.signalBlocks,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+
+  Expression<bool> signalConnectionsRefs(
+    Expression<bool> Function($$SignalConnectionsTableFilterComposer f) f,
+  ) {
+    final $$SignalConnectionsTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.signalConnections,
+      getReferencedColumn: (t) => t.pedalboardId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$SignalConnectionsTableFilterComposer(
+            $db: $db,
+            $table: $db.signalConnections,
             $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
             joinBuilder: joinBuilder,
             $removeJoinBuilderFromRootComposer:
@@ -13142,28 +14481,54 @@ class $$PedalboardsTableAnnotationComposer
   GeneratedColumn<DateTime> get updatedAt =>
       $composableBuilder(column: $table.updatedAt, builder: (column) => column);
 
-  Expression<T> pedalboardSlotsRefs<T extends Object>(
-    Expression<T> Function($$PedalboardSlotsTableAnnotationComposer a) f,
+  Expression<T> signalBlocksRefs<T extends Object>(
+    Expression<T> Function($$SignalBlocksTableAnnotationComposer a) f,
   ) {
-    final $$PedalboardSlotsTableAnnotationComposer composer = $composerBuilder(
+    final $$SignalBlocksTableAnnotationComposer composer = $composerBuilder(
       composer: this,
       getCurrentColumn: (t) => t.id,
-      referencedTable: $db.pedalboardSlots,
+      referencedTable: $db.signalBlocks,
       getReferencedColumn: (t) => t.pedalboardId,
       builder:
           (
             joinBuilder, {
             $addJoinBuilderToRootComposer,
             $removeJoinBuilderFromRootComposer,
-          }) => $$PedalboardSlotsTableAnnotationComposer(
+          }) => $$SignalBlocksTableAnnotationComposer(
             $db: $db,
-            $table: $db.pedalboardSlots,
+            $table: $db.signalBlocks,
             $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
             joinBuilder: joinBuilder,
             $removeJoinBuilderFromRootComposer:
                 $removeJoinBuilderFromRootComposer,
           ),
     );
+    return f(composer);
+  }
+
+  Expression<T> signalConnectionsRefs<T extends Object>(
+    Expression<T> Function($$SignalConnectionsTableAnnotationComposer a) f,
+  ) {
+    final $$SignalConnectionsTableAnnotationComposer composer =
+        $composerBuilder(
+          composer: this,
+          getCurrentColumn: (t) => t.id,
+          referencedTable: $db.signalConnections,
+          getReferencedColumn: (t) => t.pedalboardId,
+          builder:
+              (
+                joinBuilder, {
+                $addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer,
+              }) => $$SignalConnectionsTableAnnotationComposer(
+                $db: $db,
+                $table: $db.signalConnections,
+                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                joinBuilder: joinBuilder,
+                $removeJoinBuilderFromRootComposer:
+                    $removeJoinBuilderFromRootComposer,
+              ),
+        );
     return f(composer);
   }
 
@@ -13207,7 +14572,8 @@ class $$PedalboardsTableTableManager
           (Pedalboard, $$PedalboardsTableReferences),
           Pedalboard,
           PrefetchHooks Function({
-            bool pedalboardSlotsRefs,
+            bool signalBlocksRefs,
+            bool signalConnectionsRefs,
             bool rigSnapshotsRefs,
           })
         > {
@@ -13259,31 +14625,57 @@ class $$PedalboardsTableTableManager
               )
               .toList(),
           prefetchHooksCallback:
-              ({pedalboardSlotsRefs = false, rigSnapshotsRefs = false}) {
+              ({
+                signalBlocksRefs = false,
+                signalConnectionsRefs = false,
+                rigSnapshotsRefs = false,
+              }) {
                 return PrefetchHooks(
                   db: db,
                   explicitlyWatchedTables: [
-                    if (pedalboardSlotsRefs) db.pedalboardSlots,
+                    if (signalBlocksRefs) db.signalBlocks,
+                    if (signalConnectionsRefs) db.signalConnections,
                     if (rigSnapshotsRefs) db.rigSnapshots,
                   ],
                   addJoins: null,
                   getPrefetchedDataCallback: (items) async {
                     return [
-                      if (pedalboardSlotsRefs)
+                      if (signalBlocksRefs)
                         await $_getPrefetchedData<
                           Pedalboard,
                           $PedalboardsTable,
-                          PedalboardSlot
+                          SignalBlock
                         >(
                           currentTable: table,
                           referencedTable: $$PedalboardsTableReferences
-                              ._pedalboardSlotsRefsTable(db),
+                              ._signalBlocksRefsTable(db),
                           managerFromTypedResult: (p0) =>
                               $$PedalboardsTableReferences(
                                 db,
                                 table,
                                 p0,
-                              ).pedalboardSlotsRefs,
+                              ).signalBlocksRefs,
+                          referencedItemsForCurrentItem:
+                              (item, referencedItems) => referencedItems.where(
+                                (e) => e.pedalboardId == item.id,
+                              ),
+                          typedResults: items,
+                        ),
+                      if (signalConnectionsRefs)
+                        await $_getPrefetchedData<
+                          Pedalboard,
+                          $PedalboardsTable,
+                          SignalConnection
+                        >(
+                          currentTable: table,
+                          referencedTable: $$PedalboardsTableReferences
+                              ._signalConnectionsRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$PedalboardsTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).signalConnectionsRefs,
                           referencedItemsForCurrentItem:
                               (item, referencedItems) => referencedItems.where(
                                 (e) => e.pedalboardId == item.id,
@@ -13331,35 +14723,42 @@ typedef $$PedalboardsTableProcessedTableManager =
       $$PedalboardsTableUpdateCompanionBuilder,
       (Pedalboard, $$PedalboardsTableReferences),
       Pedalboard,
-      PrefetchHooks Function({bool pedalboardSlotsRefs, bool rigSnapshotsRefs})
+      PrefetchHooks Function({
+        bool signalBlocksRefs,
+        bool signalConnectionsRefs,
+        bool rigSnapshotsRefs,
+      })
     >;
-typedef $$PedalboardSlotsTableCreateCompanionBuilder =
-    PedalboardSlotsCompanion Function({
+typedef $$SignalBlocksTableCreateCompanionBuilder =
+    SignalBlocksCompanion Function({
       Value<int> id,
       required int pedalboardId,
-      required int pedalId,
+      Value<int?> pedalId,
+      required SignalBlockType blockType,
+      Value<String?> label,
       required int position,
+      Value<bool> isEnabled,
+      Value<String?> notes,
     });
-typedef $$PedalboardSlotsTableUpdateCompanionBuilder =
-    PedalboardSlotsCompanion Function({
+typedef $$SignalBlocksTableUpdateCompanionBuilder =
+    SignalBlocksCompanion Function({
       Value<int> id,
       Value<int> pedalboardId,
-      Value<int> pedalId,
+      Value<int?> pedalId,
+      Value<SignalBlockType> blockType,
+      Value<String?> label,
       Value<int> position,
+      Value<bool> isEnabled,
+      Value<String?> notes,
     });
 
-final class $$PedalboardSlotsTableReferences
-    extends
-        BaseReferences<_$AppDatabase, $PedalboardSlotsTable, PedalboardSlot> {
-  $$PedalboardSlotsTableReferences(
-    super.$_db,
-    super.$_table,
-    super.$_typedResult,
-  );
+final class $$SignalBlocksTableReferences
+    extends BaseReferences<_$AppDatabase, $SignalBlocksTable, SignalBlock> {
+  $$SignalBlocksTableReferences(super.$_db, super.$_table, super.$_typedResult);
 
   static $PedalboardsTable _pedalboardIdTable(_$AppDatabase db) => db
       .pedalboards
-      .createAlias('pedalboard_slots__pedalboard_id__pedalboards__id');
+      .createAlias('signal_blocks__pedalboard_id__pedalboards__id');
 
   $$PedalboardsTableProcessedTableManager get pedalboardId {
     final $_column = $_itemColumn<int>('pedalboard_id')!;
@@ -13376,11 +14775,11 @@ final class $$PedalboardSlotsTableReferences
   }
 
   static $PedalsTable _pedalIdTable(_$AppDatabase db) =>
-      db.pedals.createAlias('pedalboard_slots__pedal_id__pedals__id');
+      db.pedals.createAlias('signal_blocks__pedal_id__pedals__id');
 
-  $$PedalsTableProcessedTableManager get pedalId {
-    final $_column = $_itemColumn<int>('pedal_id')!;
-
+  $$PedalsTableProcessedTableManager? get pedalId {
+    final $_column = $_itemColumn<int>('pedal_id');
+    if ($_column == null) return null;
     final manager = $$PedalsTableTableManager(
       $_db,
       $_db.pedals,
@@ -13391,11 +14790,87 @@ final class $$PedalboardSlotsTableReferences
       manager.$state.copyWith(prefetchedData: [item]),
     );
   }
+
+  static MultiTypedResultKey<$SignalConnectionsTable, List<SignalConnection>>
+  _outgoingConnectionsTable(_$AppDatabase db) => MultiTypedResultKey.fromTable(
+    db.signalConnections,
+    aliasName: 'signal_blocks__id__signal_connections__source_block_id',
+  );
+
+  $$SignalConnectionsTableProcessedTableManager get outgoingConnections {
+    final manager = $$SignalConnectionsTableTableManager(
+      $_db,
+      $_db.signalConnections,
+    ).filter((f) => f.sourceBlockId.id.sqlEquals($_itemColumn<int>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(
+      _outgoingConnectionsTable($_db),
+    );
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+
+  static MultiTypedResultKey<$SignalConnectionsTable, List<SignalConnection>>
+  _incomingConnectionsTable(_$AppDatabase db) => MultiTypedResultKey.fromTable(
+    db.signalConnections,
+    aliasName: 'signal_blocks__id__signal_connections__target_block_id',
+  );
+
+  $$SignalConnectionsTableProcessedTableManager get incomingConnections {
+    final manager = $$SignalConnectionsTableTableManager(
+      $_db,
+      $_db.signalConnections,
+    ).filter((f) => f.targetBlockId.id.sqlEquals($_itemColumn<int>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(
+      _incomingConnectionsTable($_db),
+    );
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+
+  static MultiTypedResultKey<$SignalEndpointsTable, List<SignalEndpoint>>
+  _endpointsTable(_$AppDatabase db) => MultiTypedResultKey.fromTable(
+    db.signalEndpoints,
+    aliasName: 'signal_blocks__id__signal_endpoints__block_id',
+  );
+
+  $$SignalEndpointsTableProcessedTableManager get endpoints {
+    final manager = $$SignalEndpointsTableTableManager(
+      $_db,
+      $_db.signalEndpoints,
+    ).filter((f) => f.blockId.id.sqlEquals($_itemColumn<int>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(_endpointsTable($_db));
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+
+  static MultiTypedResultKey<$SignalEndpointsTable, List<SignalEndpoint>>
+  _pairingsTable(_$AppDatabase db) => MultiTypedResultKey.fromTable(
+    db.signalEndpoints,
+    aliasName: 'signal_blocks__id__signal_endpoints__paired_block_id',
+  );
+
+  $$SignalEndpointsTableProcessedTableManager get pairings {
+    final manager = $$SignalEndpointsTableTableManager(
+      $_db,
+      $_db.signalEndpoints,
+    ).filter((f) => f.pairedBlockId.id.sqlEquals($_itemColumn<int>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(_pairingsTable($_db));
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
 }
 
-class $$PedalboardSlotsTableFilterComposer
-    extends Composer<_$AppDatabase, $PedalboardSlotsTable> {
-  $$PedalboardSlotsTableFilterComposer({
+class $$SignalBlocksTableFilterComposer
+    extends Composer<_$AppDatabase, $SignalBlocksTable> {
+  $$SignalBlocksTableFilterComposer({
     required super.$db,
     required super.$table,
     super.joinBuilder,
@@ -13407,8 +14882,29 @@ class $$PedalboardSlotsTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
+  ColumnWithTypeConverterFilters<SignalBlockType, SignalBlockType, String>
+  get blockType => $composableBuilder(
+    column: $table.blockType,
+    builder: (column) => ColumnWithTypeConverterFilters(column),
+  );
+
+  ColumnFilters<String> get label => $composableBuilder(
+    column: $table.label,
+    builder: (column) => ColumnFilters(column),
+  );
+
   ColumnFilters<int> get position => $composableBuilder(
     column: $table.position,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get isEnabled => $composableBuilder(
+    column: $table.isEnabled,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get notes => $composableBuilder(
+    column: $table.notes,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -13457,11 +14953,111 @@ class $$PedalboardSlotsTableFilterComposer
     );
     return composer;
   }
+
+  Expression<bool> outgoingConnections(
+    Expression<bool> Function($$SignalConnectionsTableFilterComposer f) f,
+  ) {
+    final $$SignalConnectionsTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.signalConnections,
+      getReferencedColumn: (t) => t.sourceBlockId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$SignalConnectionsTableFilterComposer(
+            $db: $db,
+            $table: $db.signalConnections,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+
+  Expression<bool> incomingConnections(
+    Expression<bool> Function($$SignalConnectionsTableFilterComposer f) f,
+  ) {
+    final $$SignalConnectionsTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.signalConnections,
+      getReferencedColumn: (t) => t.targetBlockId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$SignalConnectionsTableFilterComposer(
+            $db: $db,
+            $table: $db.signalConnections,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+
+  Expression<bool> endpoints(
+    Expression<bool> Function($$SignalEndpointsTableFilterComposer f) f,
+  ) {
+    final $$SignalEndpointsTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.signalEndpoints,
+      getReferencedColumn: (t) => t.blockId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$SignalEndpointsTableFilterComposer(
+            $db: $db,
+            $table: $db.signalEndpoints,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+
+  Expression<bool> pairings(
+    Expression<bool> Function($$SignalEndpointsTableFilterComposer f) f,
+  ) {
+    final $$SignalEndpointsTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.signalEndpoints,
+      getReferencedColumn: (t) => t.pairedBlockId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$SignalEndpointsTableFilterComposer(
+            $db: $db,
+            $table: $db.signalEndpoints,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
 }
 
-class $$PedalboardSlotsTableOrderingComposer
-    extends Composer<_$AppDatabase, $PedalboardSlotsTable> {
-  $$PedalboardSlotsTableOrderingComposer({
+class $$SignalBlocksTableOrderingComposer
+    extends Composer<_$AppDatabase, $SignalBlocksTable> {
+  $$SignalBlocksTableOrderingComposer({
     required super.$db,
     required super.$table,
     super.joinBuilder,
@@ -13473,8 +15069,28 @@ class $$PedalboardSlotsTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<String> get blockType => $composableBuilder(
+    column: $table.blockType,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get label => $composableBuilder(
+    column: $table.label,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<int> get position => $composableBuilder(
     column: $table.position,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get isEnabled => $composableBuilder(
+    column: $table.isEnabled,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get notes => $composableBuilder(
+    column: $table.notes,
     builder: (column) => ColumnOrderings(column),
   );
 
@@ -13525,9 +15141,9 @@ class $$PedalboardSlotsTableOrderingComposer
   }
 }
 
-class $$PedalboardSlotsTableAnnotationComposer
-    extends Composer<_$AppDatabase, $PedalboardSlotsTable> {
-  $$PedalboardSlotsTableAnnotationComposer({
+class $$SignalBlocksTableAnnotationComposer
+    extends Composer<_$AppDatabase, $SignalBlocksTable> {
+  $$SignalBlocksTableAnnotationComposer({
     required super.$db,
     required super.$table,
     super.joinBuilder,
@@ -13537,8 +15153,20 @@ class $$PedalboardSlotsTableAnnotationComposer
   GeneratedColumn<int> get id =>
       $composableBuilder(column: $table.id, builder: (column) => column);
 
+  GeneratedColumnWithTypeConverter<SignalBlockType, String> get blockType =>
+      $composableBuilder(column: $table.blockType, builder: (column) => column);
+
+  GeneratedColumn<String> get label =>
+      $composableBuilder(column: $table.label, builder: (column) => column);
+
   GeneratedColumn<int> get position =>
       $composableBuilder(column: $table.position, builder: (column) => column);
+
+  GeneratedColumn<bool> get isEnabled =>
+      $composableBuilder(column: $table.isEnabled, builder: (column) => column);
+
+  GeneratedColumn<String> get notes =>
+      $composableBuilder(column: $table.notes, builder: (column) => column);
 
   $$PedalboardsTableAnnotationComposer get pedalboardId {
     final $$PedalboardsTableAnnotationComposer composer = $composerBuilder(
@@ -13585,69 +15213,1277 @@ class $$PedalboardSlotsTableAnnotationComposer
     );
     return composer;
   }
+
+  Expression<T> outgoingConnections<T extends Object>(
+    Expression<T> Function($$SignalConnectionsTableAnnotationComposer a) f,
+  ) {
+    final $$SignalConnectionsTableAnnotationComposer composer =
+        $composerBuilder(
+          composer: this,
+          getCurrentColumn: (t) => t.id,
+          referencedTable: $db.signalConnections,
+          getReferencedColumn: (t) => t.sourceBlockId,
+          builder:
+              (
+                joinBuilder, {
+                $addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer,
+              }) => $$SignalConnectionsTableAnnotationComposer(
+                $db: $db,
+                $table: $db.signalConnections,
+                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                joinBuilder: joinBuilder,
+                $removeJoinBuilderFromRootComposer:
+                    $removeJoinBuilderFromRootComposer,
+              ),
+        );
+    return f(composer);
+  }
+
+  Expression<T> incomingConnections<T extends Object>(
+    Expression<T> Function($$SignalConnectionsTableAnnotationComposer a) f,
+  ) {
+    final $$SignalConnectionsTableAnnotationComposer composer =
+        $composerBuilder(
+          composer: this,
+          getCurrentColumn: (t) => t.id,
+          referencedTable: $db.signalConnections,
+          getReferencedColumn: (t) => t.targetBlockId,
+          builder:
+              (
+                joinBuilder, {
+                $addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer,
+              }) => $$SignalConnectionsTableAnnotationComposer(
+                $db: $db,
+                $table: $db.signalConnections,
+                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                joinBuilder: joinBuilder,
+                $removeJoinBuilderFromRootComposer:
+                    $removeJoinBuilderFromRootComposer,
+              ),
+        );
+    return f(composer);
+  }
+
+  Expression<T> endpoints<T extends Object>(
+    Expression<T> Function($$SignalEndpointsTableAnnotationComposer a) f,
+  ) {
+    final $$SignalEndpointsTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.signalEndpoints,
+      getReferencedColumn: (t) => t.blockId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$SignalEndpointsTableAnnotationComposer(
+            $db: $db,
+            $table: $db.signalEndpoints,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+
+  Expression<T> pairings<T extends Object>(
+    Expression<T> Function($$SignalEndpointsTableAnnotationComposer a) f,
+  ) {
+    final $$SignalEndpointsTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.signalEndpoints,
+      getReferencedColumn: (t) => t.pairedBlockId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$SignalEndpointsTableAnnotationComposer(
+            $db: $db,
+            $table: $db.signalEndpoints,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
 }
 
-class $$PedalboardSlotsTableTableManager
+class $$SignalBlocksTableTableManager
     extends
         RootTableManager<
           _$AppDatabase,
-          $PedalboardSlotsTable,
-          PedalboardSlot,
-          $$PedalboardSlotsTableFilterComposer,
-          $$PedalboardSlotsTableOrderingComposer,
-          $$PedalboardSlotsTableAnnotationComposer,
-          $$PedalboardSlotsTableCreateCompanionBuilder,
-          $$PedalboardSlotsTableUpdateCompanionBuilder,
-          (PedalboardSlot, $$PedalboardSlotsTableReferences),
-          PedalboardSlot,
-          PrefetchHooks Function({bool pedalboardId, bool pedalId})
+          $SignalBlocksTable,
+          SignalBlock,
+          $$SignalBlocksTableFilterComposer,
+          $$SignalBlocksTableOrderingComposer,
+          $$SignalBlocksTableAnnotationComposer,
+          $$SignalBlocksTableCreateCompanionBuilder,
+          $$SignalBlocksTableUpdateCompanionBuilder,
+          (SignalBlock, $$SignalBlocksTableReferences),
+          SignalBlock,
+          PrefetchHooks Function({
+            bool pedalboardId,
+            bool pedalId,
+            bool outgoingConnections,
+            bool incomingConnections,
+            bool endpoints,
+            bool pairings,
+          })
         > {
-  $$PedalboardSlotsTableTableManager(
-    _$AppDatabase db,
-    $PedalboardSlotsTable table,
-  ) : super(
+  $$SignalBlocksTableTableManager(_$AppDatabase db, $SignalBlocksTable table)
+    : super(
         TableManagerState(
           db: db,
           table: table,
           createFilteringComposer: () =>
-              $$PedalboardSlotsTableFilterComposer($db: db, $table: table),
+              $$SignalBlocksTableFilterComposer($db: db, $table: table),
           createOrderingComposer: () =>
-              $$PedalboardSlotsTableOrderingComposer($db: db, $table: table),
+              $$SignalBlocksTableOrderingComposer($db: db, $table: table),
           createComputedFieldComposer: () =>
-              $$PedalboardSlotsTableAnnotationComposer($db: db, $table: table),
+              $$SignalBlocksTableAnnotationComposer($db: db, $table: table),
           updateCompanionCallback:
               ({
                 Value<int> id = const Value.absent(),
                 Value<int> pedalboardId = const Value.absent(),
-                Value<int> pedalId = const Value.absent(),
+                Value<int?> pedalId = const Value.absent(),
+                Value<SignalBlockType> blockType = const Value.absent(),
+                Value<String?> label = const Value.absent(),
                 Value<int> position = const Value.absent(),
-              }) => PedalboardSlotsCompanion(
+                Value<bool> isEnabled = const Value.absent(),
+                Value<String?> notes = const Value.absent(),
+              }) => SignalBlocksCompanion(
                 id: id,
                 pedalboardId: pedalboardId,
                 pedalId: pedalId,
+                blockType: blockType,
+                label: label,
                 position: position,
+                isEnabled: isEnabled,
+                notes: notes,
               ),
           createCompanionCallback:
               ({
                 Value<int> id = const Value.absent(),
                 required int pedalboardId,
-                required int pedalId,
+                Value<int?> pedalId = const Value.absent(),
+                required SignalBlockType blockType,
+                Value<String?> label = const Value.absent(),
                 required int position,
-              }) => PedalboardSlotsCompanion.insert(
+                Value<bool> isEnabled = const Value.absent(),
+                Value<String?> notes = const Value.absent(),
+              }) => SignalBlocksCompanion.insert(
                 id: id,
                 pedalboardId: pedalboardId,
                 pedalId: pedalId,
+                blockType: blockType,
+                label: label,
                 position: position,
+                isEnabled: isEnabled,
+                notes: notes,
               ),
           withReferenceMapper: (p0) => p0
               .map(
                 (e) => (
                   e.readTable(table),
-                  $$PedalboardSlotsTableReferences(db, table, e),
+                  $$SignalBlocksTableReferences(db, table, e),
                 ),
               )
               .toList(),
-          prefetchHooksCallback: ({pedalboardId = false, pedalId = false}) {
+          prefetchHooksCallback:
+              ({
+                pedalboardId = false,
+                pedalId = false,
+                outgoingConnections = false,
+                incomingConnections = false,
+                endpoints = false,
+                pairings = false,
+              }) {
+                return PrefetchHooks(
+                  db: db,
+                  explicitlyWatchedTables: [
+                    if (outgoingConnections) db.signalConnections,
+                    if (incomingConnections) db.signalConnections,
+                    if (endpoints) db.signalEndpoints,
+                    if (pairings) db.signalEndpoints,
+                  ],
+                  addJoins:
+                      <
+                        T extends TableManagerState<
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic
+                        >
+                      >(state) {
+                        if (pedalboardId) {
+                          state =
+                              state.withJoin(
+                                    currentTable: table,
+                                    currentColumn: table.pedalboardId,
+                                    referencedTable:
+                                        $$SignalBlocksTableReferences
+                                            ._pedalboardIdTable(db),
+                                    referencedColumn:
+                                        $$SignalBlocksTableReferences
+                                            ._pedalboardIdTable(db)
+                                            .id,
+                                  )
+                                  as T;
+                        }
+                        if (pedalId) {
+                          state =
+                              state.withJoin(
+                                    currentTable: table,
+                                    currentColumn: table.pedalId,
+                                    referencedTable:
+                                        $$SignalBlocksTableReferences
+                                            ._pedalIdTable(db),
+                                    referencedColumn:
+                                        $$SignalBlocksTableReferences
+                                            ._pedalIdTable(db)
+                                            .id,
+                                  )
+                                  as T;
+                        }
+
+                        return state;
+                      },
+                  getPrefetchedDataCallback: (items) async {
+                    return [
+                      if (outgoingConnections)
+                        await $_getPrefetchedData<
+                          SignalBlock,
+                          $SignalBlocksTable,
+                          SignalConnection
+                        >(
+                          currentTable: table,
+                          referencedTable: $$SignalBlocksTableReferences
+                              ._outgoingConnectionsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$SignalBlocksTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).outgoingConnections,
+                          referencedItemsForCurrentItem:
+                              (item, referencedItems) => referencedItems.where(
+                                (e) => e.sourceBlockId == item.id,
+                              ),
+                          typedResults: items,
+                        ),
+                      if (incomingConnections)
+                        await $_getPrefetchedData<
+                          SignalBlock,
+                          $SignalBlocksTable,
+                          SignalConnection
+                        >(
+                          currentTable: table,
+                          referencedTable: $$SignalBlocksTableReferences
+                              ._incomingConnectionsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$SignalBlocksTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).incomingConnections,
+                          referencedItemsForCurrentItem:
+                              (item, referencedItems) => referencedItems.where(
+                                (e) => e.targetBlockId == item.id,
+                              ),
+                          typedResults: items,
+                        ),
+                      if (endpoints)
+                        await $_getPrefetchedData<
+                          SignalBlock,
+                          $SignalBlocksTable,
+                          SignalEndpoint
+                        >(
+                          currentTable: table,
+                          referencedTable: $$SignalBlocksTableReferences
+                              ._endpointsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$SignalBlocksTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).endpoints,
+                          referencedItemsForCurrentItem:
+                              (item, referencedItems) => referencedItems.where(
+                                (e) => e.blockId == item.id,
+                              ),
+                          typedResults: items,
+                        ),
+                      if (pairings)
+                        await $_getPrefetchedData<
+                          SignalBlock,
+                          $SignalBlocksTable,
+                          SignalEndpoint
+                        >(
+                          currentTable: table,
+                          referencedTable: $$SignalBlocksTableReferences
+                              ._pairingsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$SignalBlocksTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).pairings,
+                          referencedItemsForCurrentItem:
+                              (item, referencedItems) => referencedItems.where(
+                                (e) => e.pairedBlockId == item.id,
+                              ),
+                          typedResults: items,
+                        ),
+                    ];
+                  },
+                );
+              },
+        ),
+      );
+}
+
+typedef $$SignalBlocksTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $SignalBlocksTable,
+      SignalBlock,
+      $$SignalBlocksTableFilterComposer,
+      $$SignalBlocksTableOrderingComposer,
+      $$SignalBlocksTableAnnotationComposer,
+      $$SignalBlocksTableCreateCompanionBuilder,
+      $$SignalBlocksTableUpdateCompanionBuilder,
+      (SignalBlock, $$SignalBlocksTableReferences),
+      SignalBlock,
+      PrefetchHooks Function({
+        bool pedalboardId,
+        bool pedalId,
+        bool outgoingConnections,
+        bool incomingConnections,
+        bool endpoints,
+        bool pairings,
+      })
+    >;
+typedef $$SignalConnectionsTableCreateCompanionBuilder =
+    SignalConnectionsCompanion Function({
+      Value<int> id,
+      required int pedalboardId,
+      required int sourceBlockId,
+      required int targetBlockId,
+      required SignalConnectionType connectionType,
+    });
+typedef $$SignalConnectionsTableUpdateCompanionBuilder =
+    SignalConnectionsCompanion Function({
+      Value<int> id,
+      Value<int> pedalboardId,
+      Value<int> sourceBlockId,
+      Value<int> targetBlockId,
+      Value<SignalConnectionType> connectionType,
+    });
+
+final class $$SignalConnectionsTableReferences
+    extends
+        BaseReferences<
+          _$AppDatabase,
+          $SignalConnectionsTable,
+          SignalConnection
+        > {
+  $$SignalConnectionsTableReferences(
+    super.$_db,
+    super.$_table,
+    super.$_typedResult,
+  );
+
+  static $PedalboardsTable _pedalboardIdTable(_$AppDatabase db) => db
+      .pedalboards
+      .createAlias('signal_connections__pedalboard_id__pedalboards__id');
+
+  $$PedalboardsTableProcessedTableManager get pedalboardId {
+    final $_column = $_itemColumn<int>('pedalboard_id')!;
+
+    final manager = $$PedalboardsTableTableManager(
+      $_db,
+      $_db.pedalboards,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_pedalboardIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+
+  static $SignalBlocksTable _sourceBlockIdTable(_$AppDatabase db) => db
+      .signalBlocks
+      .createAlias('signal_connections__source_block_id__signal_blocks__id');
+
+  $$SignalBlocksTableProcessedTableManager get sourceBlockId {
+    final $_column = $_itemColumn<int>('source_block_id')!;
+
+    final manager = $$SignalBlocksTableTableManager(
+      $_db,
+      $_db.signalBlocks,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_sourceBlockIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+
+  static $SignalBlocksTable _targetBlockIdTable(_$AppDatabase db) => db
+      .signalBlocks
+      .createAlias('signal_connections__target_block_id__signal_blocks__id');
+
+  $$SignalBlocksTableProcessedTableManager get targetBlockId {
+    final $_column = $_itemColumn<int>('target_block_id')!;
+
+    final manager = $$SignalBlocksTableTableManager(
+      $_db,
+      $_db.signalBlocks,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_targetBlockIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+}
+
+class $$SignalConnectionsTableFilterComposer
+    extends Composer<_$AppDatabase, $SignalConnectionsTable> {
+  $$SignalConnectionsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnWithTypeConverterFilters<
+    SignalConnectionType,
+    SignalConnectionType,
+    String
+  >
+  get connectionType => $composableBuilder(
+    column: $table.connectionType,
+    builder: (column) => ColumnWithTypeConverterFilters(column),
+  );
+
+  $$PedalboardsTableFilterComposer get pedalboardId {
+    final $$PedalboardsTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.pedalboardId,
+      referencedTable: $db.pedalboards,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$PedalboardsTableFilterComposer(
+            $db: $db,
+            $table: $db.pedalboards,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  $$SignalBlocksTableFilterComposer get sourceBlockId {
+    final $$SignalBlocksTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.sourceBlockId,
+      referencedTable: $db.signalBlocks,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$SignalBlocksTableFilterComposer(
+            $db: $db,
+            $table: $db.signalBlocks,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  $$SignalBlocksTableFilterComposer get targetBlockId {
+    final $$SignalBlocksTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.targetBlockId,
+      referencedTable: $db.signalBlocks,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$SignalBlocksTableFilterComposer(
+            $db: $db,
+            $table: $db.signalBlocks,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$SignalConnectionsTableOrderingComposer
+    extends Composer<_$AppDatabase, $SignalConnectionsTable> {
+  $$SignalConnectionsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get connectionType => $composableBuilder(
+    column: $table.connectionType,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  $$PedalboardsTableOrderingComposer get pedalboardId {
+    final $$PedalboardsTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.pedalboardId,
+      referencedTable: $db.pedalboards,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$PedalboardsTableOrderingComposer(
+            $db: $db,
+            $table: $db.pedalboards,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  $$SignalBlocksTableOrderingComposer get sourceBlockId {
+    final $$SignalBlocksTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.sourceBlockId,
+      referencedTable: $db.signalBlocks,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$SignalBlocksTableOrderingComposer(
+            $db: $db,
+            $table: $db.signalBlocks,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  $$SignalBlocksTableOrderingComposer get targetBlockId {
+    final $$SignalBlocksTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.targetBlockId,
+      referencedTable: $db.signalBlocks,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$SignalBlocksTableOrderingComposer(
+            $db: $db,
+            $table: $db.signalBlocks,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$SignalConnectionsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $SignalConnectionsTable> {
+  $$SignalConnectionsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumnWithTypeConverter<SignalConnectionType, String>
+  get connectionType => $composableBuilder(
+    column: $table.connectionType,
+    builder: (column) => column,
+  );
+
+  $$PedalboardsTableAnnotationComposer get pedalboardId {
+    final $$PedalboardsTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.pedalboardId,
+      referencedTable: $db.pedalboards,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$PedalboardsTableAnnotationComposer(
+            $db: $db,
+            $table: $db.pedalboards,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  $$SignalBlocksTableAnnotationComposer get sourceBlockId {
+    final $$SignalBlocksTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.sourceBlockId,
+      referencedTable: $db.signalBlocks,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$SignalBlocksTableAnnotationComposer(
+            $db: $db,
+            $table: $db.signalBlocks,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  $$SignalBlocksTableAnnotationComposer get targetBlockId {
+    final $$SignalBlocksTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.targetBlockId,
+      referencedTable: $db.signalBlocks,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$SignalBlocksTableAnnotationComposer(
+            $db: $db,
+            $table: $db.signalBlocks,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$SignalConnectionsTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $SignalConnectionsTable,
+          SignalConnection,
+          $$SignalConnectionsTableFilterComposer,
+          $$SignalConnectionsTableOrderingComposer,
+          $$SignalConnectionsTableAnnotationComposer,
+          $$SignalConnectionsTableCreateCompanionBuilder,
+          $$SignalConnectionsTableUpdateCompanionBuilder,
+          (SignalConnection, $$SignalConnectionsTableReferences),
+          SignalConnection,
+          PrefetchHooks Function({
+            bool pedalboardId,
+            bool sourceBlockId,
+            bool targetBlockId,
+          })
+        > {
+  $$SignalConnectionsTableTableManager(
+    _$AppDatabase db,
+    $SignalConnectionsTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$SignalConnectionsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$SignalConnectionsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$SignalConnectionsTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<int> pedalboardId = const Value.absent(),
+                Value<int> sourceBlockId = const Value.absent(),
+                Value<int> targetBlockId = const Value.absent(),
+                Value<SignalConnectionType> connectionType =
+                    const Value.absent(),
+              }) => SignalConnectionsCompanion(
+                id: id,
+                pedalboardId: pedalboardId,
+                sourceBlockId: sourceBlockId,
+                targetBlockId: targetBlockId,
+                connectionType: connectionType,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                required int pedalboardId,
+                required int sourceBlockId,
+                required int targetBlockId,
+                required SignalConnectionType connectionType,
+              }) => SignalConnectionsCompanion.insert(
+                id: id,
+                pedalboardId: pedalboardId,
+                sourceBlockId: sourceBlockId,
+                targetBlockId: targetBlockId,
+                connectionType: connectionType,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable(table),
+                  $$SignalConnectionsTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback:
+              ({
+                pedalboardId = false,
+                sourceBlockId = false,
+                targetBlockId = false,
+              }) {
+                return PrefetchHooks(
+                  db: db,
+                  explicitlyWatchedTables: [],
+                  addJoins:
+                      <
+                        T extends TableManagerState<
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic
+                        >
+                      >(state) {
+                        if (pedalboardId) {
+                          state =
+                              state.withJoin(
+                                    currentTable: table,
+                                    currentColumn: table.pedalboardId,
+                                    referencedTable:
+                                        $$SignalConnectionsTableReferences
+                                            ._pedalboardIdTable(db),
+                                    referencedColumn:
+                                        $$SignalConnectionsTableReferences
+                                            ._pedalboardIdTable(db)
+                                            .id,
+                                  )
+                                  as T;
+                        }
+                        if (sourceBlockId) {
+                          state =
+                              state.withJoin(
+                                    currentTable: table,
+                                    currentColumn: table.sourceBlockId,
+                                    referencedTable:
+                                        $$SignalConnectionsTableReferences
+                                            ._sourceBlockIdTable(db),
+                                    referencedColumn:
+                                        $$SignalConnectionsTableReferences
+                                            ._sourceBlockIdTable(db)
+                                            .id,
+                                  )
+                                  as T;
+                        }
+                        if (targetBlockId) {
+                          state =
+                              state.withJoin(
+                                    currentTable: table,
+                                    currentColumn: table.targetBlockId,
+                                    referencedTable:
+                                        $$SignalConnectionsTableReferences
+                                            ._targetBlockIdTable(db),
+                                    referencedColumn:
+                                        $$SignalConnectionsTableReferences
+                                            ._targetBlockIdTable(db)
+                                            .id,
+                                  )
+                                  as T;
+                        }
+
+                        return state;
+                      },
+                  getPrefetchedDataCallback: (items) async {
+                    return [];
+                  },
+                );
+              },
+        ),
+      );
+}
+
+typedef $$SignalConnectionsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $SignalConnectionsTable,
+      SignalConnection,
+      $$SignalConnectionsTableFilterComposer,
+      $$SignalConnectionsTableOrderingComposer,
+      $$SignalConnectionsTableAnnotationComposer,
+      $$SignalConnectionsTableCreateCompanionBuilder,
+      $$SignalConnectionsTableUpdateCompanionBuilder,
+      (SignalConnection, $$SignalConnectionsTableReferences),
+      SignalConnection,
+      PrefetchHooks Function({
+        bool pedalboardId,
+        bool sourceBlockId,
+        bool targetBlockId,
+      })
+    >;
+typedef $$SignalEndpointsTableCreateCompanionBuilder =
+    SignalEndpointsCompanion Function({
+      Value<int> id,
+      required int blockId,
+      Value<SignalDestination?> destination,
+      Value<SignalSource?> source,
+      Value<int?> pairedBlockId,
+      Value<String?> gear,
+      Value<String?> notes,
+    });
+typedef $$SignalEndpointsTableUpdateCompanionBuilder =
+    SignalEndpointsCompanion Function({
+      Value<int> id,
+      Value<int> blockId,
+      Value<SignalDestination?> destination,
+      Value<SignalSource?> source,
+      Value<int?> pairedBlockId,
+      Value<String?> gear,
+      Value<String?> notes,
+    });
+
+final class $$SignalEndpointsTableReferences
+    extends
+        BaseReferences<_$AppDatabase, $SignalEndpointsTable, SignalEndpoint> {
+  $$SignalEndpointsTableReferences(
+    super.$_db,
+    super.$_table,
+    super.$_typedResult,
+  );
+
+  static $SignalBlocksTable _blockIdTable(_$AppDatabase db) => db.signalBlocks
+      .createAlias('signal_endpoints__block_id__signal_blocks__id');
+
+  $$SignalBlocksTableProcessedTableManager get blockId {
+    final $_column = $_itemColumn<int>('block_id')!;
+
+    final manager = $$SignalBlocksTableTableManager(
+      $_db,
+      $_db.signalBlocks,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_blockIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+
+  static $SignalBlocksTable _pairedBlockIdTable(_$AppDatabase db) => db
+      .signalBlocks
+      .createAlias('signal_endpoints__paired_block_id__signal_blocks__id');
+
+  $$SignalBlocksTableProcessedTableManager? get pairedBlockId {
+    final $_column = $_itemColumn<int>('paired_block_id');
+    if ($_column == null) return null;
+    final manager = $$SignalBlocksTableTableManager(
+      $_db,
+      $_db.signalBlocks,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_pairedBlockIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+}
+
+class $$SignalEndpointsTableFilterComposer
+    extends Composer<_$AppDatabase, $SignalEndpointsTable> {
+  $$SignalEndpointsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnWithTypeConverterFilters<SignalDestination?, SignalDestination, String>
+  get destination => $composableBuilder(
+    column: $table.destination,
+    builder: (column) => ColumnWithTypeConverterFilters(column),
+  );
+
+  ColumnWithTypeConverterFilters<SignalSource?, SignalSource, String>
+  get source => $composableBuilder(
+    column: $table.source,
+    builder: (column) => ColumnWithTypeConverterFilters(column),
+  );
+
+  ColumnFilters<String> get gear => $composableBuilder(
+    column: $table.gear,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get notes => $composableBuilder(
+    column: $table.notes,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  $$SignalBlocksTableFilterComposer get blockId {
+    final $$SignalBlocksTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.blockId,
+      referencedTable: $db.signalBlocks,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$SignalBlocksTableFilterComposer(
+            $db: $db,
+            $table: $db.signalBlocks,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  $$SignalBlocksTableFilterComposer get pairedBlockId {
+    final $$SignalBlocksTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.pairedBlockId,
+      referencedTable: $db.signalBlocks,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$SignalBlocksTableFilterComposer(
+            $db: $db,
+            $table: $db.signalBlocks,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$SignalEndpointsTableOrderingComposer
+    extends Composer<_$AppDatabase, $SignalEndpointsTable> {
+  $$SignalEndpointsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get destination => $composableBuilder(
+    column: $table.destination,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get source => $composableBuilder(
+    column: $table.source,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get gear => $composableBuilder(
+    column: $table.gear,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get notes => $composableBuilder(
+    column: $table.notes,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  $$SignalBlocksTableOrderingComposer get blockId {
+    final $$SignalBlocksTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.blockId,
+      referencedTable: $db.signalBlocks,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$SignalBlocksTableOrderingComposer(
+            $db: $db,
+            $table: $db.signalBlocks,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  $$SignalBlocksTableOrderingComposer get pairedBlockId {
+    final $$SignalBlocksTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.pairedBlockId,
+      referencedTable: $db.signalBlocks,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$SignalBlocksTableOrderingComposer(
+            $db: $db,
+            $table: $db.signalBlocks,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$SignalEndpointsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $SignalEndpointsTable> {
+  $$SignalEndpointsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumnWithTypeConverter<SignalDestination?, String>
+  get destination => $composableBuilder(
+    column: $table.destination,
+    builder: (column) => column,
+  );
+
+  GeneratedColumnWithTypeConverter<SignalSource?, String> get source =>
+      $composableBuilder(column: $table.source, builder: (column) => column);
+
+  GeneratedColumn<String> get gear =>
+      $composableBuilder(column: $table.gear, builder: (column) => column);
+
+  GeneratedColumn<String> get notes =>
+      $composableBuilder(column: $table.notes, builder: (column) => column);
+
+  $$SignalBlocksTableAnnotationComposer get blockId {
+    final $$SignalBlocksTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.blockId,
+      referencedTable: $db.signalBlocks,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$SignalBlocksTableAnnotationComposer(
+            $db: $db,
+            $table: $db.signalBlocks,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  $$SignalBlocksTableAnnotationComposer get pairedBlockId {
+    final $$SignalBlocksTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.pairedBlockId,
+      referencedTable: $db.signalBlocks,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$SignalBlocksTableAnnotationComposer(
+            $db: $db,
+            $table: $db.signalBlocks,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$SignalEndpointsTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $SignalEndpointsTable,
+          SignalEndpoint,
+          $$SignalEndpointsTableFilterComposer,
+          $$SignalEndpointsTableOrderingComposer,
+          $$SignalEndpointsTableAnnotationComposer,
+          $$SignalEndpointsTableCreateCompanionBuilder,
+          $$SignalEndpointsTableUpdateCompanionBuilder,
+          (SignalEndpoint, $$SignalEndpointsTableReferences),
+          SignalEndpoint,
+          PrefetchHooks Function({bool blockId, bool pairedBlockId})
+        > {
+  $$SignalEndpointsTableTableManager(
+    _$AppDatabase db,
+    $SignalEndpointsTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$SignalEndpointsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$SignalEndpointsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$SignalEndpointsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<int> blockId = const Value.absent(),
+                Value<SignalDestination?> destination = const Value.absent(),
+                Value<SignalSource?> source = const Value.absent(),
+                Value<int?> pairedBlockId = const Value.absent(),
+                Value<String?> gear = const Value.absent(),
+                Value<String?> notes = const Value.absent(),
+              }) => SignalEndpointsCompanion(
+                id: id,
+                blockId: blockId,
+                destination: destination,
+                source: source,
+                pairedBlockId: pairedBlockId,
+                gear: gear,
+                notes: notes,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                required int blockId,
+                Value<SignalDestination?> destination = const Value.absent(),
+                Value<SignalSource?> source = const Value.absent(),
+                Value<int?> pairedBlockId = const Value.absent(),
+                Value<String?> gear = const Value.absent(),
+                Value<String?> notes = const Value.absent(),
+              }) => SignalEndpointsCompanion.insert(
+                id: id,
+                blockId: blockId,
+                destination: destination,
+                source: source,
+                pairedBlockId: pairedBlockId,
+                gear: gear,
+                notes: notes,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable(table),
+                  $$SignalEndpointsTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: ({blockId = false, pairedBlockId = false}) {
             return PrefetchHooks(
               db: db,
               explicitlyWatchedTables: [],
@@ -13667,32 +16503,32 @@ class $$PedalboardSlotsTableTableManager
                       dynamic
                     >
                   >(state) {
-                    if (pedalboardId) {
+                    if (blockId) {
                       state =
                           state.withJoin(
                                 currentTable: table,
-                                currentColumn: table.pedalboardId,
+                                currentColumn: table.blockId,
                                 referencedTable:
-                                    $$PedalboardSlotsTableReferences
-                                        ._pedalboardIdTable(db),
+                                    $$SignalEndpointsTableReferences
+                                        ._blockIdTable(db),
                                 referencedColumn:
-                                    $$PedalboardSlotsTableReferences
-                                        ._pedalboardIdTable(db)
+                                    $$SignalEndpointsTableReferences
+                                        ._blockIdTable(db)
                                         .id,
                               )
                               as T;
                     }
-                    if (pedalId) {
+                    if (pairedBlockId) {
                       state =
                           state.withJoin(
                                 currentTable: table,
-                                currentColumn: table.pedalId,
+                                currentColumn: table.pairedBlockId,
                                 referencedTable:
-                                    $$PedalboardSlotsTableReferences
-                                        ._pedalIdTable(db),
+                                    $$SignalEndpointsTableReferences
+                                        ._pairedBlockIdTable(db),
                                 referencedColumn:
-                                    $$PedalboardSlotsTableReferences
-                                        ._pedalIdTable(db)
+                                    $$SignalEndpointsTableReferences
+                                        ._pairedBlockIdTable(db)
                                         .id,
                               )
                               as T;
@@ -13709,19 +16545,19 @@ class $$PedalboardSlotsTableTableManager
       );
 }
 
-typedef $$PedalboardSlotsTableProcessedTableManager =
+typedef $$SignalEndpointsTableProcessedTableManager =
     ProcessedTableManager<
       _$AppDatabase,
-      $PedalboardSlotsTable,
-      PedalboardSlot,
-      $$PedalboardSlotsTableFilterComposer,
-      $$PedalboardSlotsTableOrderingComposer,
-      $$PedalboardSlotsTableAnnotationComposer,
-      $$PedalboardSlotsTableCreateCompanionBuilder,
-      $$PedalboardSlotsTableUpdateCompanionBuilder,
-      (PedalboardSlot, $$PedalboardSlotsTableReferences),
-      PedalboardSlot,
-      PrefetchHooks Function({bool pedalboardId, bool pedalId})
+      $SignalEndpointsTable,
+      SignalEndpoint,
+      $$SignalEndpointsTableFilterComposer,
+      $$SignalEndpointsTableOrderingComposer,
+      $$SignalEndpointsTableAnnotationComposer,
+      $$SignalEndpointsTableCreateCompanionBuilder,
+      $$SignalEndpointsTableUpdateCompanionBuilder,
+      (SignalEndpoint, $$SignalEndpointsTableReferences),
+      SignalEndpoint,
+      PrefetchHooks Function({bool blockId, bool pairedBlockId})
     >;
 typedef $$RigSnapshotsTableCreateCompanionBuilder =
     RigSnapshotsCompanion Function({
@@ -13730,6 +16566,7 @@ typedef $$RigSnapshotsTableCreateCompanionBuilder =
       required String name,
       Value<String?> notes,
       required DateTime capturedAt,
+      Value<String?> endpointSummary,
     });
 typedef $$RigSnapshotsTableUpdateCompanionBuilder =
     RigSnapshotsCompanion Function({
@@ -13738,6 +16575,7 @@ typedef $$RigSnapshotsTableUpdateCompanionBuilder =
       Value<String> name,
       Value<String?> notes,
       Value<DateTime> capturedAt,
+      Value<String?> endpointSummary,
     });
 
 final class $$RigSnapshotsTableReferences
@@ -13810,6 +16648,11 @@ class $$RigSnapshotsTableFilterComposer
 
   ColumnFilters<DateTime> get capturedAt => $composableBuilder(
     column: $table.capturedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get endpointSummary => $composableBuilder(
+    column: $table.endpointSummary,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -13891,6 +16734,11 @@ class $$RigSnapshotsTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<String> get endpointSummary => $composableBuilder(
+    column: $table.endpointSummary,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   $$PedalboardsTableOrderingComposer get pedalboardId {
     final $$PedalboardsTableOrderingComposer composer = $composerBuilder(
       composer: this,
@@ -13935,6 +16783,11 @@ class $$RigSnapshotsTableAnnotationComposer
 
   GeneratedColumn<DateTime> get capturedAt => $composableBuilder(
     column: $table.capturedAt,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get endpointSummary => $composableBuilder(
+    column: $table.endpointSummary,
     builder: (column) => column,
   );
 
@@ -14024,12 +16877,14 @@ class $$RigSnapshotsTableTableManager
                 Value<String> name = const Value.absent(),
                 Value<String?> notes = const Value.absent(),
                 Value<DateTime> capturedAt = const Value.absent(),
+                Value<String?> endpointSummary = const Value.absent(),
               }) => RigSnapshotsCompanion(
                 id: id,
                 pedalboardId: pedalboardId,
                 name: name,
                 notes: notes,
                 capturedAt: capturedAt,
+                endpointSummary: endpointSummary,
               ),
           createCompanionCallback:
               ({
@@ -14038,12 +16893,14 @@ class $$RigSnapshotsTableTableManager
                 required String name,
                 Value<String?> notes = const Value.absent(),
                 required DateTime capturedAt,
+                Value<String?> endpointSummary = const Value.absent(),
               }) => RigSnapshotsCompanion.insert(
                 id: id,
                 pedalboardId: pedalboardId,
                 name: name,
                 notes: notes,
                 capturedAt: capturedAt,
+                endpointSummary: endpointSummary,
               ),
           withReferenceMapper: (p0) => p0
               .map(
@@ -14146,6 +17003,7 @@ typedef $$RigSnapshotEntriesTableCreateCompanionBuilder =
       required int pedalId,
       required int position,
       Value<String?> configurationName,
+      Value<bool> isEnabled,
     });
 typedef $$RigSnapshotEntriesTableUpdateCompanionBuilder =
     RigSnapshotEntriesCompanion Function({
@@ -14154,6 +17012,7 @@ typedef $$RigSnapshotEntriesTableUpdateCompanionBuilder =
       Value<int> pedalId,
       Value<int> position,
       Value<String?> configurationName,
+      Value<bool> isEnabled,
     });
 
 final class $$RigSnapshotEntriesTableReferences
@@ -14247,6 +17106,11 @@ class $$RigSnapshotEntriesTableFilterComposer
 
   ColumnFilters<String> get configurationName => $composableBuilder(
     column: $table.configurationName,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get isEnabled => $composableBuilder(
+    column: $table.isEnabled,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -14346,6 +17210,11 @@ class $$RigSnapshotEntriesTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<bool> get isEnabled => $composableBuilder(
+    column: $table.isEnabled,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   $$RigSnapshotsTableOrderingComposer get snapshotId {
     final $$RigSnapshotsTableOrderingComposer composer = $composerBuilder(
       composer: this,
@@ -14412,6 +17281,9 @@ class $$RigSnapshotEntriesTableAnnotationComposer
     column: $table.configurationName,
     builder: (column) => column,
   );
+
+  GeneratedColumn<bool> get isEnabled =>
+      $composableBuilder(column: $table.isEnabled, builder: (column) => column);
 
   $$RigSnapshotsTableAnnotationComposer get snapshotId {
     final $$RigSnapshotsTableAnnotationComposer composer = $composerBuilder(
@@ -14528,12 +17400,14 @@ class $$RigSnapshotEntriesTableTableManager
                 Value<int> pedalId = const Value.absent(),
                 Value<int> position = const Value.absent(),
                 Value<String?> configurationName = const Value.absent(),
+                Value<bool> isEnabled = const Value.absent(),
               }) => RigSnapshotEntriesCompanion(
                 id: id,
                 snapshotId: snapshotId,
                 pedalId: pedalId,
                 position: position,
                 configurationName: configurationName,
+                isEnabled: isEnabled,
               ),
           createCompanionCallback:
               ({
@@ -14542,12 +17416,14 @@ class $$RigSnapshotEntriesTableTableManager
                 required int pedalId,
                 required int position,
                 Value<String?> configurationName = const Value.absent(),
+                Value<bool> isEnabled = const Value.absent(),
               }) => RigSnapshotEntriesCompanion.insert(
                 id: id,
                 snapshotId: snapshotId,
                 pedalId: pedalId,
                 position: position,
                 configurationName: configurationName,
+                isEnabled: isEnabled,
               ),
           withReferenceMapper: (p0) => p0
               .map(
@@ -15107,8 +17983,12 @@ class $AppDatabaseManager {
       $$PedalReplacementsTableTableManager(_db, _db.pedalReplacements);
   $$PedalboardsTableTableManager get pedalboards =>
       $$PedalboardsTableTableManager(_db, _db.pedalboards);
-  $$PedalboardSlotsTableTableManager get pedalboardSlots =>
-      $$PedalboardSlotsTableTableManager(_db, _db.pedalboardSlots);
+  $$SignalBlocksTableTableManager get signalBlocks =>
+      $$SignalBlocksTableTableManager(_db, _db.signalBlocks);
+  $$SignalConnectionsTableTableManager get signalConnections =>
+      $$SignalConnectionsTableTableManager(_db, _db.signalConnections);
+  $$SignalEndpointsTableTableManager get signalEndpoints =>
+      $$SignalEndpointsTableTableManager(_db, _db.signalEndpoints);
   $$RigSnapshotsTableTableManager get rigSnapshots =>
       $$RigSnapshotsTableTableManager(_db, _db.rigSnapshots);
   $$RigSnapshotEntriesTableTableManager get rigSnapshotEntries =>

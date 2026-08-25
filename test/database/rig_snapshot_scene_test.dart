@@ -5,6 +5,7 @@ import 'package:tone_vault/core/database/daos/rig_snapshot_dao.dart';
 import 'package:tone_vault/core/enums/control_type.dart';
 import 'package:tone_vault/core/enums/pedal_category.dart';
 import 'package:tone_vault/core/enums/pedal_type.dart';
+import 'package:tone_vault/core/enums/signal_block_type.dart';
 import 'package:tone_vault/core/errors/app_failure.dart';
 import 'package:tone_vault/features/configurations/data/configuration_draft.dart';
 import 'package:tone_vault/features/controls/data/control_draft.dart';
@@ -92,9 +93,11 @@ void main() {
         category: PedalCategory.multiEffects,
       ),
     );
-    await rigChainRepository(
-      database,
-    ).addPedal(pedalboardId: rigId, pedalId: unitId);
+    await signalChainRepository(database).addBlock(
+      pedalboardId: rigId,
+      blockType: SignalBlockType.multiEffect,
+      pedalId: unitId,
+    );
 
     screamerId = await addPedalInside('Tube Screamer');
     reverbId = await addPedalInside('Hall Reverb');

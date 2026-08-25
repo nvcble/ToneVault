@@ -23,8 +23,11 @@ class RigSnapshotsView extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final snapshots = ref.watch(rigSnapshotsProvider(pedalboardId));
-    final chain = ref.watch(rigChainProvider(pedalboardId)).valueOrNull;
-    final rigIsEmpty = chain != null && chain.isEmpty;
+    final chain = ref.watch(signalChainProvider(pedalboardId)).valueOrNull;
+    // Blocks with nothing in them do not count: the repository refuses a rig
+    // with no pedals to read, so offering capture would only be a refusal.
+    final rigIsEmpty =
+        chain != null && chain.every((entry) => entry.pedal == null);
 
     return Column(
       children: [
@@ -41,8 +44,8 @@ class RigSnapshotsView extends ConsumerWidget {
                     icon: Icons.photo_camera_outlined,
                     title: 'No snapshots of this rig yet',
                     message: rigIsEmpty
-                        ? 'Build the chain first. A snapshot then records where '
-                              'every pedal on it was set.'
+                        ? 'Put some pedals on the chain first. A snapshot then '
+                              'records where every one of them was set.'
                         : 'Take one to keep where every pedal was set on the '
                               'day you played it.',
                   )

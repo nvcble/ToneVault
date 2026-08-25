@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:tone_vault/core/database/app_database.dart';
 import 'package:tone_vault/core/database/daos/patch_dao.dart';
-import 'package:tone_vault/core/database/daos/pedalboard_dao.dart';
 import 'package:tone_vault/core/enums/pedal_category.dart';
 import 'package:tone_vault/core/enums/pedal_status.dart';
 import 'package:tone_vault/core/enums/pedal_type.dart';
@@ -19,7 +18,6 @@ import 'package:tone_vault/features/snapshots/widgets/capture_snapshot_form.dart
 ///
 /// The saving itself is rig_snapshot_capture_test.dart's job in test/database.
 void main() {
-  const pedalboardId = 4;
   final moment = DateTime.utc(2026, 8, 19, 12);
 
   Pedal pedal(
@@ -48,22 +46,10 @@ void main() {
     );
   }
 
-  ChainSlot slot(Pedal pedal, int position) {
-    return (
-      slot: PedalboardSlot(
-        id: 10 + position,
-        pedalboardId: pedalboardId,
-        pedalId: pedal.id,
-        position: position,
-      ),
-      pedal: pedal,
-    );
-  }
-
   final wah = pedal(1, 'Vox Wah');
   final drive = pedal(2, 'Caline PureSky');
 
-  final chain = [slot(wah, 0), slot(drive, 1)];
+  final pedals = [wah, drive];
 
   SnapshotCapture? captured;
 
@@ -94,7 +80,7 @@ void main() {
         child: MaterialApp(
           home: Scaffold(
             body: CaptureSnapshotForm(
-              chain: chain,
+              pedals: pedals,
               isSaving: isSaving,
               onSubmit: (capture) => captured = capture,
             ),
@@ -234,7 +220,7 @@ void main() {
           child: MaterialApp(
             home: Scaffold(
               body: CaptureSnapshotForm(
-                chain: [slot(unit, 0)],
+                pedals: [unit],
                 onSubmit: (capture) => captured = capture,
               ),
             ),

@@ -24,7 +24,23 @@ import 'package:drift/drift.dart';
 ///   of its scenes says which pedal inside it each frozen reading came from. The
 ///   table is rebuilt rather than altered, because the reading is only unique per
 ///   pedal now and SQLite cannot change a UNIQUE constraint in place.
-const int currentSchemaVersion = 10;
+/// - v11: signal_blocks replaces pedalboard_slots and signal_connections joins
+///   them up. A rig is designed before it is owned, so a block says what belongs
+///   at that point in the chain and holds a pedal only once there is one to put
+///   there; the connections say what feeds what, which a plain chain leaves empty
+///   and reads off the order instead.
+/// - v12: signal_endpoints, what the edges of a rig reach. A rig does not always
+///   begin at a guitar and end at an amplifier, so an input, an output, a send or
+///   a return says which socket it is - and a send and a return name each other,
+///   which is what a trip out through an amp's effects loop and back is made of.
+///   Purely additive: a rig that says nothing here reads exactly as it did.
+/// - v13: rig_snapshot_entries.is_enabled and rig_snapshots.endpoint_summary, so
+///   a snapshot says which pedals were switched off as well as which were on, and
+///   where the rig reached at either end. The entries table is rebuilt rather than
+///   altered: SQLite adds a column after the UNIQUE constraint and `createAll`
+///   writes it before, so an altered table would stop reading the same as a new
+///   install's.
+const int currentSchemaVersion = 13;
 
 MigrationStrategy buildMigrationStrategy(GeneratedDatabase database) {
   return MigrationStrategy(
@@ -261,6 +277,154 @@ MigrationStrategy buildMigrationStrategy(GeneratedDatabase database) {
           'options, display_order FROM "rig_snapshot_values_v9"',
         );
         await database.customStatement('DROP TABLE "rig_snapshot_values_v9"');
+      }
+
+      if (from < 11) {
+        // The slots are carried over into blocks rather than migrated in place:
+        // pedal_id has to become nullable so a chain can be planned with places
+        // still to fill, and SQLite cannot drop NOT NULL from a column.
+        //
+        // Ids are kept, so a snapshot or anything else already pointing at a slot
+        // still finds the block it became. Every slot held a pedal, so its type
+        // is read off that pedal's category - the same mapping `blockTypeFor`
+        // makes, frozen here so a later edit to it cannot change what an old
+        // phone's rows say they are. Each is enabled, because a slot said the
+        // pedal was on the board and nothing recorded a bypass before now.
+        await database.customStatement(
+          'CREATE TABLE IF NOT EXISTS "signal_blocks" ('
+          '"id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, '
+          '"pedalboard_id" INTEGER NOT NULL '
+          'REFERENCES pedalboards (id) ON DELETE CASCADE, '
+          '"pedal_id" INTEGER NULL '
+          'REFERENCES pedals (id) ON DELETE RESTRICT, '
+          '"block_type" TEXT NOT NULL, '
+          '"label" TEXT NULL, '
+          '"position" INTEGER NOT NULL, '
+          '"is_enabled" INTEGER NOT NULL DEFAULT 1 '
+          'CHECK ("is_enabled" IN (0, 1)), '
+          '"notes" TEXT NULL, '
+          'UNIQUE ("pedalboard_id", "pedal_id"))',
+        );
+        await database.customStatement(
+          'CREATE INDEX IF NOT EXISTS idx_signal_blocks_board_position '
+          'ON signal_blocks (pedalboard_id, position)',
+        );
+        await database.customStatement(
+          'INSERT INTO signal_blocks '
+          '(id, pedalboard_id, pedal_id, block_type, position, is_enabled) '
+          'SELECT slot.id, slot.pedalboard_id, slot.pedal_id, CASE pedal.category'
+          " WHEN 'equalizer' THEN 'eq'"
+          " WHEN 'noiseGate' THEN 'gate'"
+          " WHEN 'ampSim' THEN 'amp'"
+          " WHEN 'cabinetIr' THEN 'cab'"
+          " WHEN 'multiEffects' THEN 'multiEffect'"
+          " WHEN 'other' THEN 'custom'"
+          ' ELSE pedal.category END, slot.position, 1 '
+          'FROM pedalboard_slots AS slot '
+          'JOIN pedals AS pedal ON pedal.id = slot.pedal_id',
+        );
+        await database.customStatement('DROP TABLE pedalboard_slots');
+        await database.customStatement(
+          'CREATE TABLE IF NOT EXISTS "signal_connections" ('
+          '"id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, '
+          '"pedalboard_id" INTEGER NOT NULL '
+          'REFERENCES pedalboards (id) ON DELETE CASCADE, '
+          '"source_block_id" INTEGER NOT NULL '
+          'REFERENCES signal_blocks (id) ON DELETE CASCADE, '
+          '"target_block_id" INTEGER NOT NULL '
+          'REFERENCES signal_blocks (id) ON DELETE CASCADE, '
+          '"connection_type" TEXT NOT NULL, '
+          'UNIQUE ("source_block_id", "target_block_id"))',
+        );
+        await database.customStatement(
+          'CREATE INDEX IF NOT EXISTS idx_signal_connections_board '
+          'ON signal_connections (pedalboard_id)',
+        );
+      }
+
+      if (from < 12) {
+        // Nothing is backfilled and no existing table is touched. A rig on a
+        // phone today has no row here, and none means only that the user has not
+        // said yet where the chain starts or finishes - which is exactly what the
+        // screen drew before this version, and still draws.
+        //
+        // Character for character what `createAll` writes on a new install,
+        // checked against a fresh database by migration_test.dart.
+        await database.customStatement(
+          'CREATE TABLE IF NOT EXISTS "signal_endpoints" ('
+          '"id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, '
+          '"block_id" INTEGER NOT NULL '
+          'REFERENCES signal_blocks (id) ON DELETE CASCADE, '
+          '"destination" TEXT NULL, '
+          '"source" TEXT NULL, '
+          '"paired_block_id" INTEGER NULL '
+          'REFERENCES signal_blocks (id) ON DELETE SET NULL, '
+          '"gear" TEXT NULL, '
+          '"notes" TEXT NULL, '
+          'UNIQUE ("block_id"))',
+        );
+      }
+
+      if (from < 13) {
+        // The entries are copied aside, the table is created again with the
+        // bypass column, and they are copied back - the same rebuild v10 makes of
+        // the readings, and for the same reason: a column added in place would
+        // land after the UNIQUE constraint, and the created statement here is the
+        // one `createAll` writes.
+        //
+        // The rebuilt rows come back enabled, which is what the column's default
+        // says and what every entry written before this version meant: a snapshot
+        // recorded the pedals on the board, and nothing recorded a bypass.
+        //
+        // The readings under them are untouched. Ids are kept and the table comes
+        // back under its own name, so every rig_snapshot_values row still finds
+        // the entry it was frozen against.
+        await database.customStatement(
+          'CREATE TABLE "rig_snapshot_entries_v12" ('
+          '"id" INTEGER NOT NULL, '
+          '"snapshot_id" INTEGER NOT NULL, '
+          '"pedal_id" INTEGER NOT NULL, '
+          '"position" INTEGER NOT NULL, '
+          '"configuration_name" TEXT NULL)',
+        );
+        await database.customStatement(
+          'INSERT INTO "rig_snapshot_entries_v12" '
+          'SELECT id, snapshot_id, pedal_id, position, configuration_name '
+          'FROM rig_snapshot_entries',
+        );
+        await database.customStatement('DROP TABLE rig_snapshot_entries');
+        await database.customStatement(
+          'CREATE TABLE IF NOT EXISTS "rig_snapshot_entries" ('
+          '"id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, '
+          '"snapshot_id" INTEGER NOT NULL '
+          'REFERENCES rig_snapshots (id) ON DELETE CASCADE, '
+          '"pedal_id" INTEGER NOT NULL '
+          'REFERENCES pedals (id) ON DELETE RESTRICT, '
+          '"position" INTEGER NOT NULL, '
+          '"configuration_name" TEXT NULL, '
+          '"is_enabled" INTEGER NOT NULL DEFAULT 1 '
+          'CHECK ("is_enabled" IN (0, 1)), '
+          'UNIQUE ("snapshot_id", "pedal_id"))',
+        );
+        await database.customStatement(
+          'CREATE INDEX IF NOT EXISTS '
+          'idx_rig_snapshot_entries_snapshot_position '
+          'ON rig_snapshot_entries (snapshot_id, position)',
+        );
+        await database.customStatement(
+          'INSERT INTO rig_snapshot_entries '
+          '(id, snapshot_id, pedal_id, position, configuration_name) '
+          'SELECT id, snapshot_id, pedal_id, position, configuration_name '
+          'FROM "rig_snapshot_entries_v12"',
+        );
+        await database.customStatement('DROP TABLE "rig_snapshot_entries_v12"');
+
+        // Nullable with no default, so every snapshot already taken keeps saying
+        // nothing about its edges - which is exactly what it recorded.
+        await database.customStatement(
+          'ALTER TABLE rig_snapshots '
+          'ADD COLUMN "endpoint_summary" TEXT NULL;',
+        );
       }
 
       if (to > currentSchemaVersion) {

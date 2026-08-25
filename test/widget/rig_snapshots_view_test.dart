@@ -2,14 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:tone_vault/core/database/app_database.dart';
-import 'package:tone_vault/core/database/daos/pedalboard_dao.dart';
-import 'package:tone_vault/core/enums/pedal_category.dart';
-import 'package:tone_vault/core/enums/pedal_status.dart';
-import 'package:tone_vault/core/enums/pedal_type.dart';
+import 'package:tone_vault/core/database/daos/signal_chain_dao.dart';
+import 'package:tone_vault/core/enums/signal_block_type.dart';
 import 'package:tone_vault/features/pedalboards/providers/pedalboard_providers.dart';
 import 'package:tone_vault/features/snapshots/providers/snapshot_providers.dart';
 import 'package:tone_vault/features/snapshots/widgets/rig_snapshots_view.dart';
 import 'package:tone_vault/features/snapshots/widgets/snapshot_card.dart';
+import '../support/chain_rows.dart';
 
 /// A rig's snapshots as they read, and when taking one is offered at all.
 void main() {
@@ -40,31 +39,16 @@ void main() {
   );
   final friday = snapshot(2, 'Friday rehearsal', DateTime(2026, 8, 14, 19));
 
-  final onePedal = <ChainSlot>[
-    (
-      slot: const PedalboardSlot(
-        id: 10,
-        pedalboardId: pedalboardId,
-        pedalId: 1,
-        position: 0,
-      ),
-      pedal: Pedal(
-        id: 1,
-        name: 'Caline PureSky',
-        type: PedalType.analog,
-        category: PedalCategory.overdrive,
-        status: PedalStatus.active,
-        createdAt: DateTime.utc(2026, 8, 19, 12),
-        updatedAt: DateTime.utc(2026, 8, 19, 12),
-      ),
-    ),
-  ];
+  final onePedal = [chainBlock(10, pedal: chainPedal(1, 'Caline PureSky'))];
+
+  /// A chain laid out but not yet filled, which is nothing to take a snapshot of.
+  final onlyEmptyBlocks = [chainBlock(10, type: SignalBlockType.delay)];
 
   /// The snapshots tab over a rig holding [chain], with [snapshots] taken of it.
   Future<void> pumpSnapshots(
     WidgetTester tester, {
     Stream<List<RigSnapshot>>? snapshots,
-    List<ChainSlot> chain = const [],
+    List<ChainBlock> chain = const [],
   }) async {
     await tester.pumpWidget(
       ProviderScope(
@@ -72,7 +56,7 @@ void main() {
           rigSnapshotsProvider(
             pedalboardId,
           ).overrideWith((ref) => snapshots ?? Stream.value(const [])),
-          rigChainProvider(
+          signalChainProvider(
             pedalboardId,
           ).overrideWith((ref) => Stream.value(chain)),
         ],
@@ -107,9 +91,11 @@ void main() {
   testWidgets('an empty rig is asked for pedals rather than a snapshot', (
     tester,
   ) async {
-    await pumpSnapshots(tester);
+    // Blocks with nothing in them are still an empty rig as far as a snapshot is
+    // concerned: there are no readings to freeze.
+    await pumpSnapshots(tester, chain: onlyEmptyBlocks);
 
-    expect(find.textContaining('Build the chain first'), findsOne);
+    expect(find.textContaining('Put some pedals on the chain first'), findsOne);
     // The repository refuses an empty rig, so the button says so by being off
     // rather than by failing when pressed.
     expect(captureOffered(tester), isFalse);

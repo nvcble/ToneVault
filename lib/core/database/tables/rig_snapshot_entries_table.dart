@@ -32,6 +32,12 @@ class RigSnapshotEntries extends Table {
   TextColumn get configurationName =>
       text().withLength(min: 1, max: 80).nullable()();
 
+  /// Whether the pedal was passing signal that day, or stood on the board with
+  /// its footswitch off. A bypassed pedal is part of what was played - it was set
+  /// up that way and reached for mid-song - so it is recorded rather than left
+  /// out, and true is what every entry taken before this was recorded meant.
+  BoolColumn get isEnabled => boolean().withDefault(const Constant(true))();
+
   /// One pedal appears on a board once, so it appears in a snapshot of that
   /// board once too.
   @override

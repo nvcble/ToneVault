@@ -15,12 +15,6 @@ abstract final class Routes {
 
   static String pedalEdit(int pedalId) => '${pedalDetail(pedalId)}/edit';
 
-  /// A stomp or block is added through the multi-effects unit that will hold it,
-  /// which is where its host comes from. It is an ordinary pedal once saved, so
-  /// it is read and edited through [pedalDetail] like any other.
-  static String componentNew(int hostPedalId) =>
-      '${pedalDetail(hostPedalId)}/components/new';
-
   /// Controls belong to one pedal, so they are reached through it.
   static String controlNew(int pedalId) =>
       '${pedalDetail(pedalId)}/controls/new';
@@ -71,6 +65,11 @@ abstract final class Routes {
 
   static String rigEdit(int pedalboardId) => '${rigDetail(pedalboardId)}/edit';
 
+  /// A block is one stage of one rig's chain, so it is reached through the rig.
+  /// Adding one takes no screen, so only editing has a path.
+  static String blockEdit(int pedalboardId, int blockId) =>
+      '${rigDetail(pedalboardId)}/blocks/$blockId/edit';
+
   /// A snapshot is of one rig, so it is reached through it.
   static String snapshotNew(int pedalboardId) =>
       '${rigDetail(pedalboardId)}/snapshots/new';
@@ -86,7 +85,6 @@ abstract final class Routes {
   static const String pedalNewSegment = 'new';
   static const String pedalDetailSegment = ':pedalId';
   static const String pedalEditSegment = 'edit';
-  static const String componentNewSegment = 'components/new';
   static const String controlNewSegment = 'controls/new';
   static const String controlEditSegment = 'controls/:controlId/edit';
   static const String configurationNewSegment = 'configurations/new';
@@ -104,6 +102,7 @@ abstract final class Routes {
   static const String rigNewSegment = 'new';
   static const String rigDetailSegment = ':rigId';
   static const String rigEditSegment = 'edit';
+  static const String blockEditSegment = 'blocks/:blockId/edit';
   static const String snapshotNewSegment = 'snapshots/new';
   static const String snapshotDetailSegment = 'snapshots/:snapshotId';
   static const String snapshotEditSegment = 'edit';

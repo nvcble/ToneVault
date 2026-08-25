@@ -12,9 +12,9 @@ import 'failure_snack_bar.dart';
 /// same four cases every time, so they are decided here rather than in each
 /// section.
 ///
-/// Kept for tracking: `ConfigurationListView` and `ComponentPedalList` spell
-/// this out inline. They are left as they are rather than changed under working,
-/// tested code; anything new uses this.
+/// Kept for tracking: `ConfigurationListView` spells this out inline. It is left
+/// as it is rather than changed under working, tested code; anything new uses
+/// this.
 class AsyncListSection<T> extends StatelessWidget {
   const AsyncListSection({
     required this.items,

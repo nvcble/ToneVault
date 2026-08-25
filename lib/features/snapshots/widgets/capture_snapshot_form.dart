@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../app/theme/app_spacing.dart';
-import '../../../core/database/daos/pedalboard_dao.dart';
+import '../../../core/database/app_database.dart';
 import '../data/snapshot_draft.dart';
 import '../data/snapshot_validator.dart';
 import 'pedal_setting_choice.dart';
@@ -21,14 +21,16 @@ typedef SnapshotCapture = ({
 /// nothing about saving.
 class CaptureSnapshotForm extends StatefulWidget {
   const CaptureSnapshotForm({
-    required this.chain,
+    required this.pedals,
     required this.onSubmit,
     this.isSaving = false,
     super.key,
   });
 
-  /// The rig in signal order, which is the order the pedals are asked about.
-  final List<ChainSlot> chain;
+  /// The pedals on the rig in signal order, which is the order they are asked
+  /// about. Blocks the rig has not filled yet are not among them: a snapshot
+  /// records what was played, not what is still to be bought.
+  final List<Pedal> pedals;
 
   /// Disables the form while a save is in flight, so one tap cannot become two
   /// snapshots.
@@ -77,12 +79,10 @@ class _CaptureSnapshotFormState extends State<CaptureSnapshotForm> {
     // goes on holding its own after handing these over.
     final configurations = <int, int>{};
     final scenes = <int, int>{};
-    for (final slot in widget.chain) {
-      if (_choices[slot.pedal.id] case final int chosen) {
-        final chose = slot.pedal.category.hasOwnControls
-            ? configurations
-            : scenes;
-        chose[slot.pedal.id] = chosen;
+    for (final pedal in widget.pedals) {
+      if (_choices[pedal.id] case final int chosen) {
+        final chose = pedal.category.hasOwnControls ? configurations : scenes;
+        chose[pedal.id] = chosen;
       }
     }
 
@@ -138,13 +138,13 @@ class _CaptureSnapshotFormState extends State<CaptureSnapshotForm> {
             ),
           ),
           const SizedBox(height: AppSpacing.md),
-          for (final (position, entry) in widget.chain.indexed)
+          for (final (position, pedal) in widget.pedals.indexed)
             PedalSettingChoice(
-              key: ValueKey<int>(entry.pedal.id),
-              pedal: entry.pedal,
+              key: ValueKey<int>(pedal.id),
+              pedal: pedal,
               position: position,
-              settingId: _choices[entry.pedal.id],
-              onChanged: (settingId) => _choose(entry.pedal.id, settingId),
+              settingId: _choices[pedal.id],
+              onChanged: (settingId) => _choose(pedal.id, settingId),
             ),
           const SizedBox(height: AppSpacing.sm),
           FilledButton(

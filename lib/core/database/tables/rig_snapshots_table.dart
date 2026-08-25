@@ -33,4 +33,13 @@ class RigSnapshots extends Table {
   /// When the rig looked like this, which is the snapshot's whole point and so
   /// is never rewritten. The name and notes stay editable.
   DateTimeColumn get capturedAt => dateTime()();
+
+  /// Where the rig reached at either end that day, one line per edge, in the
+  /// words the chain read.
+  ///
+  /// Copied as text for the reason [RigSnapshotEntries.configurationName] is: the
+  /// blocks that said it can be rewired the next morning, and a record that
+  /// changed with them would not be a record. Null on a rig that never said which
+  /// amp or desk it ran into, which is most rigs.
+  TextColumn get endpointSummary => text().nullable()();
 }

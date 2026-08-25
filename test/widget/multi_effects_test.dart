@@ -115,17 +115,16 @@ void main() {
     expect(find.text('Chorus scene'), findsNothing);
   });
 
-  testWidgets('and behind a switch, the pedals the unit holds', (tester) async {
+  testWidgets('and nothing else: its pedals are managed in a scene', (
+    tester,
+  ) async {
     await pumpUnit(tester);
     await tester.tap(find.widgetWithText(Tab, 'Patch'));
     await tester.pumpAndSettle();
 
-    await tester.tap(find.text('Pedals'));
-    await tester.pumpAndSettle();
-
-    // Each is an ordinary pedal, so it reads as one: the same card the inventory
-    // list uses. A scene then picks from them.
-    expect(find.text('Tube Screamer'), findsOne);
-    expect(find.widgetWithText(FilledButton, 'Add pedal'), findsOne);
+    // No switch over to the unit's pedals, because a pedal is only of use once a
+    // scene says it is on.
+    expect(find.byType(SegmentedButton<bool>), findsNothing);
+    expect(find.text('Tube Screamer'), findsNothing);
   });
 }

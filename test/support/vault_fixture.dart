@@ -5,6 +5,9 @@ import 'package:tone_vault/core/enums/control_type.dart';
 import 'package:tone_vault/core/enums/pedal_category.dart';
 import 'package:tone_vault/core/enums/pedal_status.dart';
 import 'package:tone_vault/core/enums/pedal_type.dart';
+import 'package:tone_vault/core/enums/signal_block_type.dart';
+import 'package:tone_vault/core/enums/signal_connection_type.dart';
+import 'package:tone_vault/core/enums/signal_destination.dart';
 
 /// A vault with one row in every table, for anything that has to handle the
 /// whole database at once.
@@ -198,13 +201,60 @@ Future<void> fillVault(AppDatabase database) async {
         ),
       );
 
-  await database
-      .into(database.pedalboardSlots)
+  final driveBlockId = await database
+      .into(database.signalBlocks)
       .insert(
-        PedalboardSlotsCompanion.insert(
+        SignalBlocksCompanion.insert(
           pedalboardId: pedalboardId,
-          pedalId: drivePedalId,
+          pedalId: Value(drivePedalId),
+          blockType: SignalBlockType.overdrive,
           position: 0,
+        ),
+      );
+
+  // An empty block, and a cable to it: a backup has to carry the parts of a
+  // chain that hold no pedal as faithfully as the parts that do.
+  final emptyBlockId = await database
+      .into(database.signalBlocks)
+      .insert(
+        SignalBlocksCompanion.insert(
+          pedalboardId: pedalboardId,
+          blockType: SignalBlockType.delay,
+          label: const Value('Slapback'),
+          position: 1,
+        ),
+      );
+
+  await database
+      .into(database.signalConnections)
+      .insert(
+        SignalConnectionsCompanion.insert(
+          pedalboardId: pedalboardId,
+          sourceBlockId: driveBlockId,
+          targetBlockId: emptyBlockId,
+          connectionType: SignalConnectionType.series,
+        ),
+      );
+
+  // Where the rig ends, said rather than assumed: this one goes to the desk, not
+  // to an amplifier, which is the sort of thing a backup has to carry.
+  final outputBlockId = await database
+      .into(database.signalBlocks)
+      .insert(
+        SignalBlocksCompanion.insert(
+          pedalboardId: pedalboardId,
+          blockType: SignalBlockType.output,
+          position: 2,
+        ),
+      );
+
+  await database
+      .into(database.signalEndpoints)
+      .insert(
+        SignalEndpointsCompanion.insert(
+          blockId: outputBlockId,
+          destination: const Value(SignalDestination.foh),
+          gear: const Value('The desk on stage left'),
         ),
       );
 

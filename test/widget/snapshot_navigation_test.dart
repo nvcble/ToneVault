@@ -3,15 +3,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:tone_vault/app/app.dart';
 import 'package:tone_vault/core/database/app_database.dart';
-import 'package:tone_vault/core/database/daos/pedalboard_dao.dart';
 import 'package:tone_vault/core/database/daos/rig_snapshot_dao.dart';
 import 'package:tone_vault/core/enums/control_type.dart';
-import 'package:tone_vault/core/enums/pedal_category.dart';
-import 'package:tone_vault/core/enums/pedal_status.dart';
-import 'package:tone_vault/core/enums/pedal_type.dart';
+import 'package:tone_vault/features/pedalboards/data/chain_routing.dart';
 import 'package:tone_vault/features/pedalboards/providers/pedalboard_providers.dart';
 import 'package:tone_vault/features/snapshots/providers/snapshot_providers.dart';
 import '../support/app_tabs.dart';
+import '../support/chain_rows.dart';
 import '../support/home_streams.dart';
 
 /// Getting to a snapshot and back out of it: the rig's list, the snapshot
@@ -28,15 +26,7 @@ void main() {
     updatedAt: moment,
   );
 
-  final drive = Pedal(
-    id: 7,
-    name: 'Caline PureSky',
-    type: PedalType.analog,
-    category: PedalCategory.overdrive,
-    status: PedalStatus.active,
-    createdAt: moment,
-    updatedAt: moment,
-  );
+  final drive = chainPedal(7, 'Caline PureSky');
 
   // A local time, since a snapshot reads back on the user's own clock.
   final easter = RigSnapshot(
@@ -45,6 +35,8 @@ void main() {
     name: 'Easter 2026',
     notes: 'Second service, quieter mix',
     capturedAt: DateTime(2026, 4, 5, 9, 30),
+    // The rig said where it ran that day, in the words the chain read.
+    endpointSummary: 'To Amp FX return · Marshall JVM',
   );
 
   final captured = <SnapshotEntry>[
@@ -55,6 +47,7 @@ void main() {
         pedalId: drive.id,
         position: 0,
         configurationName: 'Worship Lead',
+        isEnabled: true,
       ),
       pedal: drive,
       values: [
@@ -70,17 +63,7 @@ void main() {
     ),
   ];
 
-  final chain = <ChainSlot>[
-    (
-      slot: PedalboardSlot(
-        id: 20,
-        pedalboardId: worship.id,
-        pedalId: drive.id,
-        position: 0,
-      ),
-      pedal: drive,
-    ),
-  ];
+  final chain = [chainBlock(20, pedalboardId: worship.id, pedal: drive)];
 
   /// Opens the snapshots tab of the one rig, with [easter] already taken.
   Future<void> pumpSnapshotsTab(WidgetTester tester) async {
@@ -93,9 +76,12 @@ void main() {
           pedalboardProvider(
             worship.id,
           ).overrideWith((ref) => Stream.value(worship)),
-          rigChainProvider(
+          signalChainProvider(
             worship.id,
           ).overrideWith((ref) => Stream.value(chain)),
+          signalRoutingProvider(
+            worship.id,
+          ).overrideWith((ref) => Stream.value(ChainRouting.none)),
           rigSnapshotsProvider(
             worship.id,
           ).overrideWith((ref) => Stream.value([easter])),
@@ -126,6 +112,9 @@ void main() {
 
     expect(find.text('Taken 2026-04-05 09:30'), findsOne);
     expect(find.text('Second service, quieter mix'), findsOne);
+    // Where the rig reached is on the snapshot rather than on a pedal: the block
+    // that said it held none.
+    expect(find.text('To Amp FX return · Marshall JVM'), findsOne);
     // The pedal, the configuration it was on, and where its knob sat.
     expect(find.text('Caline PureSky'), findsOne);
     expect(find.text('Worship Lead'), findsOne);

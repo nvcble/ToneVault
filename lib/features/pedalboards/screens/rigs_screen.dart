@@ -41,19 +41,28 @@ class RigsScreen extends ConsumerWidget {
                     icon: Icons.dashboard_outlined,
                     title: 'No rigs yet',
                     message:
-                        'A rig is an ordered signal chain built from pedals '
-                        'you own.',
+                        'A rig is a signal chain you lay out block by block, '
+                        'filling each with a pedal you own.',
                   )
-                : _RigList(pedalboards: pedalboards),
+                : _RigList(
+                    pedalboards: pedalboards,
+                    // Absent while the counts are still loading, so a card
+                    // waits to say a number rather than claiming none.
+                    blockCounts: ref.watch(blockCountsProvider).valueOrNull,
+                  ),
           ),
     );
   }
 }
 
 class _RigList extends StatelessWidget {
-  const _RigList({required this.pedalboards});
+  const _RigList({required this.pedalboards, this.blockCounts});
 
   final List<Pedalboard> pedalboards;
+
+  /// How many blocks each rig holds, by rig id. A rig with an empty chain is
+  /// absent from the map; the whole map is null until the counts have loaded.
+  final Map<int, int>? blockCounts;
 
   @override
   Widget build(BuildContext context) {
@@ -71,8 +80,11 @@ class _RigList extends StatelessWidget {
       itemCount: pedalboards.length,
       itemBuilder: (context, index) {
         final pedalboard = pedalboards[index];
+        final counts = blockCounts;
+
         return RigCard(
           pedalboard: pedalboard,
+          blockCount: counts == null ? null : counts[pedalboard.id] ?? 0,
           onTap: () => context.go(Routes.rigDetail(pedalboard.id)),
         );
       },

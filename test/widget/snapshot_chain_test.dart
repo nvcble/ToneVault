@@ -61,6 +61,7 @@ void main() {
     int position, {
     String? configurationName,
     List<RigSnapshotValue> values = const [],
+    bool isEnabled = true,
   }) {
     return (
       entry: RigSnapshotEntry(
@@ -69,6 +70,7 @@ void main() {
         pedalId: pedal.id,
         position: position,
         configurationName: configurationName,
+        isEnabled: isEnabled,
       ),
       pedal: pedal,
       values: values,
@@ -151,6 +153,20 @@ void main() {
 
     // The wah was on the board and that is all the snapshot claims.
     expect(find.text('Settings not recorded'), findsOne);
+  });
+
+  testWidgets('a pedal that was switched off is read out as bypassed', (
+    tester,
+  ) async {
+    await pumpChain(
+      tester,
+      Stream.value([entry(10, wah, 0, isEnabled: false), entries.last]),
+    );
+
+    // Marked rather than dropped: the wah was on the board with its footswitch
+    // up, and only the one that was off is marked.
+    expect(find.text('Bypassed'), findsOne);
+    expect(find.text('Vox Wah'), findsOne);
   });
 
   testWidgets('an empty snapshot says there is nothing to read', (

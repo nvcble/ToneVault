@@ -7,7 +7,6 @@ import '../tables/configurations_table.dart';
 import '../tables/patches_table.dart';
 import '../tables/pedal_controls_table.dart';
 import '../tables/pedal_replacements_table.dart';
-import '../tables/pedalboard_slots_table.dart';
 import '../tables/pedalboards_table.dart';
 import '../tables/pedals_table.dart';
 import '../tables/rig_snapshot_entries_table.dart';
@@ -16,6 +15,9 @@ import '../tables/rig_snapshots_table.dart';
 import '../tables/scene_pedals_table.dart';
 import '../tables/scene_values_table.dart';
 import '../tables/scenes_table.dart';
+import '../tables/signal_blocks_table.dart';
+import '../tables/signal_connections_table.dart';
+import '../tables/signal_endpoints_table.dart';
 
 part 'backup_dao.g.dart';
 
@@ -35,7 +37,9 @@ typedef VaultRows = ({
   List<ChangeLog> changeLogs,
   List<PedalReplacement> replacements,
   List<Pedalboard> pedalboards,
-  List<PedalboardSlot> slots,
+  List<SignalBlock> signalBlocks,
+  List<SignalConnection> signalConnections,
+  List<SignalEndpoint> signalEndpoints,
   List<RigSnapshot> snapshots,
   List<RigSnapshotEntry> snapshotEntries,
   List<RigSnapshotValue> snapshotValues,
@@ -60,7 +64,9 @@ typedef VaultRows = ({
     ChangeLogs,
     PedalReplacements,
     Pedalboards,
-    PedalboardSlots,
+    SignalBlocks,
+    SignalConnections,
+    SignalEndpoints,
     RigSnapshots,
     RigSnapshotEntries,
     RigSnapshotValues,
@@ -85,7 +91,9 @@ class BackupDao extends DatabaseAccessor<AppDatabase> with _$BackupDaoMixin {
         changeLogs: await select(changeLogs).get(),
         replacements: await select(pedalReplacements).get(),
         pedalboards: await select(pedalboards).get(),
-        slots: await select(pedalboardSlots).get(),
+        signalBlocks: await select(signalBlocks).get(),
+        signalConnections: await select(signalConnections).get(),
+        signalEndpoints: await select(signalEndpoints).get(),
         snapshots: await select(rigSnapshots).get(),
         snapshotEntries: await select(rigSnapshotEntries).get(),
         snapshotValues: await select(rigSnapshotValues).get(),
@@ -125,7 +133,9 @@ class BackupDao extends DatabaseAccessor<AppDatabase> with _$BackupDaoMixin {
         batch.insertAll(changeLogs, rows.changeLogs);
         batch.insertAll(pedalReplacements, rows.replacements);
         batch.insertAll(pedalboards, rows.pedalboards);
-        batch.insertAll(pedalboardSlots, rows.slots);
+        batch.insertAll(signalBlocks, rows.signalBlocks);
+        batch.insertAll(signalConnections, rows.signalConnections);
+        batch.insertAll(signalEndpoints, rows.signalEndpoints);
         batch.insertAll(rigSnapshots, rows.snapshots);
         batch.insertAll(rigSnapshotEntries, rows.snapshotEntries);
         batch.insertAll(rigSnapshotValues, rows.snapshotValues);
@@ -139,7 +149,9 @@ class BackupDao extends DatabaseAccessor<AppDatabase> with _$BackupDaoMixin {
     await delete(rigSnapshotValues).go();
     await delete(rigSnapshotEntries).go();
     await delete(rigSnapshots).go();
-    await delete(pedalboardSlots).go();
+    await delete(signalEndpoints).go();
+    await delete(signalConnections).go();
+    await delete(signalBlocks).go();
     await delete(pedalboards).go();
     await delete(pedalReplacements).go();
     await delete(changeLogs).go();

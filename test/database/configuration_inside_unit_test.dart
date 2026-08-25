@@ -5,6 +5,7 @@ import 'package:tone_vault/core/database/daos/pedal_control_dao.dart';
 import 'package:tone_vault/core/enums/control_type.dart';
 import 'package:tone_vault/core/enums/pedal_category.dart';
 import 'package:tone_vault/core/enums/pedal_type.dart';
+import 'package:tone_vault/core/enums/signal_block_type.dart';
 import 'package:tone_vault/core/errors/app_failure.dart';
 import 'package:tone_vault/features/configurations/data/configuration_draft.dart';
 import 'package:tone_vault/features/configurations/providers/configuration_editor.dart';
@@ -212,9 +213,11 @@ void main() {
     final rigId = await pedalboardRepository(
       database,
     ).createPedalboard(const PedalboardDraft(name: 'Hybrid Worship Rig'));
-    await rigChainRepository(
-      database,
-    ).addPedal(pedalboardId: rigId, pedalId: unitId);
+    await signalChainRepository(database).addBlock(
+      pedalboardId: rigId,
+      blockType: SignalBlockType.multiEffect,
+      pedalId: unitId,
+    );
     await configurationValueRepository(
       database,
     ).setValue(configurationId: sceneId, controlId: driveId, value: 0.75);

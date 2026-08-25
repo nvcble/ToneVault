@@ -17,7 +17,10 @@ mixin _$BackupDaoMixin on DatabaseAccessor<AppDatabase> {
   $PedalReplacementsTable get pedalReplacements =>
       attachedDatabase.pedalReplacements;
   $PedalboardsTable get pedalboards => attachedDatabase.pedalboards;
-  $PedalboardSlotsTable get pedalboardSlots => attachedDatabase.pedalboardSlots;
+  $SignalBlocksTable get signalBlocks => attachedDatabase.signalBlocks;
+  $SignalConnectionsTable get signalConnections =>
+      attachedDatabase.signalConnections;
+  $SignalEndpointsTable get signalEndpoints => attachedDatabase.signalEndpoints;
   $RigSnapshotsTable get rigSnapshots => attachedDatabase.rigSnapshots;
   $RigSnapshotEntriesTable get rigSnapshotEntries =>
       attachedDatabase.rigSnapshotEntries;
@@ -60,10 +63,17 @@ class BackupDaoManager {
       );
   $$PedalboardsTableTableManager get pedalboards =>
       $$PedalboardsTableTableManager(_db.attachedDatabase, _db.pedalboards);
-  $$PedalboardSlotsTableTableManager get pedalboardSlots =>
-      $$PedalboardSlotsTableTableManager(
+  $$SignalBlocksTableTableManager get signalBlocks =>
+      $$SignalBlocksTableTableManager(_db.attachedDatabase, _db.signalBlocks);
+  $$SignalConnectionsTableTableManager get signalConnections =>
+      $$SignalConnectionsTableTableManager(
         _db.attachedDatabase,
-        _db.pedalboardSlots,
+        _db.signalConnections,
+      );
+  $$SignalEndpointsTableTableManager get signalEndpoints =>
+      $$SignalEndpointsTableTableManager(
+        _db.attachedDatabase,
+        _db.signalEndpoints,
       );
   $$RigSnapshotsTableTableManager get rigSnapshots =>
       $$RigSnapshotsTableTableManager(_db.attachedDatabase, _db.rigSnapshots);

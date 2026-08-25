@@ -116,27 +116,7 @@ const String _pedalsAtV7 =
 /// the v10 step reads the readings out of the old table and puts them back, and
 /// a fixture missing the table would be testing a phone that cannot exist.
 const List<String> _snapshotSchemaAtV9 = [
-  'CREATE TABLE IF NOT EXISTS pedalboards ('
-      'id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, '
-      'name TEXT NOT NULL UNIQUE, '
-      'description TEXT NULL, '
-      'created_at TEXT NOT NULL, '
-      'updated_at TEXT NOT NULL)',
-  'CREATE TABLE IF NOT EXISTS rig_snapshots ('
-      'id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, '
-      'pedalboard_id INTEGER NOT NULL '
-      'REFERENCES pedalboards (id) ON DELETE RESTRICT, '
-      'name TEXT NOT NULL, '
-      'notes TEXT NULL, '
-      'captured_at TEXT NOT NULL)',
-  'CREATE TABLE IF NOT EXISTS rig_snapshot_entries ('
-      'id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, '
-      'snapshot_id INTEGER NOT NULL '
-      'REFERENCES rig_snapshots (id) ON DELETE CASCADE, '
-      'pedal_id INTEGER NOT NULL REFERENCES pedals (id) ON DELETE RESTRICT, '
-      'position INTEGER NOT NULL, '
-      'configuration_name TEXT NULL, '
-      'UNIQUE (snapshot_id, pedal_id))',
+  ..._snapshotTablesToV12,
   // Without control_pedal_name, and unique per knob name alone, which is what
   // the v10 step rebuilds.
   'CREATE TABLE IF NOT EXISTS rig_snapshot_values ('
@@ -150,6 +130,32 @@ const List<String> _snapshotSchemaAtV9 = [
       'options TEXT NULL, '
       'display_order INTEGER NOT NULL, '
       'UNIQUE (entry_id, control_name))',
+];
+
+/// The rigs table, the snapshots of one and the entries under them, unchanged
+/// from v5 all the way to v12.
+///
+/// Every phone from v5 on has all three, so every fixture of one has to have them
+/// too: the v13 step reads the entries out of their table and puts them back, and
+/// a fixture missing it would be testing a phone that cannot exist.
+const List<String> _snapshotTablesToV12 = [
+  _pedalboardsTable,
+  'CREATE TABLE IF NOT EXISTS rig_snapshots ('
+      'id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, '
+      'pedalboard_id INTEGER NOT NULL '
+      'REFERENCES pedalboards (id) ON DELETE RESTRICT, '
+      'name TEXT NOT NULL, '
+      'notes TEXT NULL, '
+      'captured_at TEXT NOT NULL)',
+  // Without is_enabled, which is what the v13 step rebuilds.
+  'CREATE TABLE IF NOT EXISTS rig_snapshot_entries ('
+      'id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, '
+      'snapshot_id INTEGER NOT NULL '
+      'REFERENCES rig_snapshots (id) ON DELETE CASCADE, '
+      'pedal_id INTEGER NOT NULL REFERENCES pedals (id) ON DELETE RESTRICT, '
+      'position INTEGER NOT NULL, '
+      'configuration_name TEXT NULL, '
+      'UNIQUE (snapshot_id, pedal_id))',
 ];
 
 /// A unit filed under the 'multiEffects' pedal type that v8 dropped.
@@ -166,7 +172,12 @@ const List<String> _v7Rows = [
 
 /// Opens a v7 database holding [_v7Rows] and lets drift upgrade it.
 AppDatabase openV7MultiEffectsDatabase() {
-  return _openAt(7, [_pedalsAtV7, ..._snapshotSchemaAtV9, ..._v7Rows]);
+  return _openAt(7, [
+    _pedalsAtV7,
+    ..._snapshotSchemaAtV9,
+    _pedalboardSlotsAtV10,
+    ..._v7Rows,
+  ]);
 }
 
 /// A rig, a snapshot of it, and one knob frozen in that snapshot.
@@ -193,7 +204,77 @@ const List<String> _v9Rows = [
 /// This is the fixture the v10 rebuild is judged on: the reading in it was
 /// frozen before the table was rebuilt, and it has to come back out unchanged.
 AppDatabase openV9SnapshotDatabase() {
-  return _openAt(9, [_pedalsAtV7, ..._snapshotSchemaAtV9, ..._v9Rows]);
+  return _openAt(9, [
+    _pedalsAtV7,
+    ..._snapshotSchemaAtV9,
+    _pedalboardSlotsAtV10,
+    ..._v9Rows,
+  ]);
+}
+
+/// The rigs table, which shipped in v1 and has not changed since.
+const String _pedalboardsTable =
+    'CREATE TABLE IF NOT EXISTS pedalboards ('
+    'id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, '
+    'name TEXT NOT NULL UNIQUE, '
+    'description TEXT NULL, '
+    'created_at TEXT NOT NULL, '
+    'updated_at TEXT NOT NULL)';
+
+/// The chain table as it stood from v4 to v10, when a slot was a pedal on a rig
+/// and nothing else: no type, no label, and never empty.
+///
+/// Every phone from v4 on has it, so every fixture of one has to have it too: the
+/// v11 step reads the slots out of it into blocks and then drops it, and a fixture
+/// missing the table would be testing a phone that cannot exist.
+const String _pedalboardSlotsAtV10 =
+    'CREATE TABLE IF NOT EXISTS pedalboard_slots ('
+    'id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, '
+    'pedalboard_id INTEGER NOT NULL '
+    'REFERENCES pedalboards (id) ON DELETE CASCADE, '
+    'pedal_id INTEGER NOT NULL REFERENCES pedals (id) ON DELETE RESTRICT, '
+    'position INTEGER NOT NULL, '
+    'UNIQUE (pedalboard_id, pedal_id))';
+
+/// A rig with three pedals on it, chosen for what their categories become: one
+/// that is a block type under the same name, one under a different name, and one
+/// with no block of its own at all.
+const List<String> _v10Rows = [
+  'INSERT INTO pedals (id, name, type, category, status, created_at, '
+      'updated_at) '
+      "VALUES (1, 'PureSky', 'analog', 'overdrive', 'active', "
+      "'2026-04-01T10:00:00.000Z', '2026-04-01T10:00:00.000Z')",
+  'INSERT INTO pedals (id, name, type, category, status, created_at, '
+      'updated_at) '
+      "VALUES (2, 'NS-2', 'analog', 'noiseGate', 'active', "
+      "'2026-04-01T10:00:00.000Z', '2026-04-01T10:00:00.000Z')",
+  'INSERT INTO pedals (id, name, type, category, status, created_at, '
+      'updated_at) '
+      "VALUES (3, 'Line Selector', 'analog', 'other', 'active', "
+      "'2026-04-01T10:00:00.000Z', '2026-04-01T10:00:00.000Z')",
+  'INSERT INTO pedalboards (id, name, created_at, updated_at) '
+      "VALUES (1, 'Sunday Rig', '2026-04-01T10:00:00.000Z', "
+      "'2026-04-01T10:00:00.000Z')",
+  'INSERT INTO pedalboard_slots (id, pedalboard_id, pedal_id, position) '
+      'VALUES (7, 1, 2, 0)',
+  'INSERT INTO pedalboard_slots (id, pedalboard_id, pedal_id, position) '
+      'VALUES (8, 1, 1, 1)',
+  'INSERT INTO pedalboard_slots (id, pedalboard_id, pedal_id, position) '
+      'VALUES (9, 1, 3, 2)',
+];
+
+/// Opens a v10 database holding [_v10Rows] and lets drift upgrade it.
+///
+/// This is the fixture the v11 carry-over is judged on: the slots in it were
+/// written before a block had a type, and they have to come out as the blocks
+/// they always were, under the ids anything else already points at.
+AppDatabase openV10ChainDatabase() {
+  return _openAt(10, [
+    _pedalsAtV7,
+    ..._snapshotTablesToV12,
+    _pedalboardSlotsAtV10,
+    ..._v10Rows,
+  ]);
 }
 
 /// A database that already holds [statements], at schema [version].

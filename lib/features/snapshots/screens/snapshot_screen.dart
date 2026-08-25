@@ -68,7 +68,13 @@ class SnapshotScreen extends ConsumerWidget {
   }
 }
 
-/// When the rig looked like this, and whatever was written about the day.
+/// When the rig looked like this, whatever was written about the day, and where
+/// the rig reached at either end.
+///
+/// The edges are here rather than in the chain below because the blocks that said
+/// them held no pedal, so there is no row of the snapshot for them to sit on. They
+/// are the snapshot's own copy either way: the rig can be rewired the next
+/// morning without touching what this says.
 class _TakenOn extends StatelessWidget {
   const _TakenOn({required this.snapshot});
 
@@ -78,6 +84,7 @@ class _TakenOn extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final notes = snapshot.notes;
+    final edges = snapshot.endpointSummary;
 
     return Container(
       width: double.infinity,
@@ -93,6 +100,15 @@ class _TakenOn extends StatelessWidget {
           if (notes != null) ...[
             const SizedBox(height: AppSpacing.xs),
             Text(notes, style: theme.textTheme.bodyMedium),
+          ],
+          if (edges != null) ...[
+            const SizedBox(height: AppSpacing.xs),
+            Text(
+              edges,
+              style: theme.textTheme.bodySmall?.copyWith(
+                color: theme.colorScheme.onSurfaceVariant,
+              ),
+            ),
           ],
         ],
       ),

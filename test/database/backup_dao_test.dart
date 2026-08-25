@@ -26,7 +26,9 @@ void main() {
     changeLogs: const [],
     replacements: const [],
     pedalboards: const [],
-    slots: const [],
+    signalBlocks: const [],
+    signalConnections: const [],
+    signalEndpoints: const [],
     snapshots: const [],
     snapshotEntries: const [],
     snapshotValues: const [],
@@ -56,7 +58,10 @@ void main() {
     expect(rows.changeLogs, hasLength(1));
     expect(rows.replacements, hasLength(1));
     expect(rows.pedalboards, hasLength(1));
-    expect(rows.slots, hasLength(1));
+    // One holding a pedal, one empty, and the output the rig ends at.
+    expect(rows.signalBlocks, hasLength(3));
+    expect(rows.signalConnections, hasLength(1));
+    expect(rows.signalEndpoints, hasLength(1));
     expect(rows.snapshots, hasLength(1));
     expect(rows.snapshotEntries, hasLength(1));
     expect(rows.snapshotValues, hasLength(1));
@@ -81,7 +86,9 @@ void main() {
     expect(rows.pedals, backed.pedals);
     expect(rows.controls, backed.controls);
     expect(rows.configurationValues, backed.configurationValues);
-    expect(rows.slots, backed.slots);
+    expect(rows.signalBlocks, backed.signalBlocks);
+    expect(rows.signalConnections, backed.signalConnections);
+    expect(rows.signalEndpoints, backed.signalEndpoints);
     expect(rows.snapshotEntries, backed.snapshotEntries);
     expect(rows.snapshotValues, backed.snapshotValues);
   });

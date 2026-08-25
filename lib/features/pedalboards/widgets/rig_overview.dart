@@ -4,10 +4,10 @@ import '../../../app/theme/app_spacing.dart';
 import '../../../core/database/app_database.dart';
 import '../../../shared/formatting/app_date_format.dart';
 
-/// What one rig is, above its signal chain.
+/// What one rig is: what the user said about it, and when it last changed.
 ///
-/// A fixed header rather than a scrolling list: the chain underneath is the long
-/// part of the screen and does the scrolling.
+/// Scrollable, because a description is as long as the user made it and this is
+/// a tab of its own rather than a header above the chain.
 class RigOverview extends StatelessWidget {
   const RigOverview({required this.pedalboard, super.key});
 
@@ -18,24 +18,21 @@ class RigOverview extends StatelessWidget {
     final theme = Theme.of(context);
     final description = pedalboard.description;
 
-    return Padding(
+    return ListView(
       padding: const EdgeInsets.all(AppSpacing.md),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          if (description != null) ...[
-            Text(description, style: theme.textTheme.bodyLarge),
-            const SizedBox(height: AppSpacing.sm),
-          ],
-          Text(
-            'Built ${formatDate(pedalboard.createdAt)} · '
-            'last changed ${formatDate(pedalboard.updatedAt)}',
-            style: theme.textTheme.bodySmall?.copyWith(
-              color: theme.colorScheme.onSurfaceVariant,
-            ),
-          ),
+      children: [
+        if (description != null) ...[
+          Text(description, style: theme.textTheme.bodyLarge),
+          const SizedBox(height: AppSpacing.sm),
         ],
-      ),
+        Text(
+          'Built ${formatDate(pedalboard.createdAt)} · '
+          'last changed ${formatDate(pedalboard.updatedAt)}',
+          style: theme.textTheme.bodySmall?.copyWith(
+            color: theme.colorScheme.onSurfaceVariant,
+          ),
+        ),
+      ],
     );
   }
 }

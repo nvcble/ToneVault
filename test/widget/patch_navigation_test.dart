@@ -168,28 +168,11 @@ void main() {
   testWidgets('the Patch tab opens on the unit\'s patches', (tester) async {
     await openPatchTab(tester);
 
-    // Patches first: the pedals inside the unit are entered once and rarely
-    // returned to, so they are the other half of the switch.
+    // Patches and nothing else: the pedals inside the unit are reached through
+    // the scene that uses them.
     expect(find.text('Worship Clean'), findsOne);
     expect(find.text('Second service'), findsOne);
     expect(find.text('Tube Screamer'), findsNothing);
-  });
-
-  testWidgets('the same tab shows the pedals inside the unit', (tester) async {
-    await openPatchTab(tester);
-
-    // 'Pedals' is a bottom navigation destination too, so the segment has to be
-    // picked out of the switch rather than by its text alone.
-    await tester.tap(
-      find.descendant(
-        of: find.byType(SegmentedButton<bool>),
-        matching: find.text('Pedals'),
-      ),
-    );
-    await tester.pumpAndSettle();
-
-    expect(find.text('Tube Screamer'), findsOne);
-    expect(find.text('Worship Clean'), findsNothing);
   });
 
   testWidgets('a patch opens on the scenes inside it', (tester) async {

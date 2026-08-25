@@ -72,7 +72,9 @@ void main() {
     expect(backup.rows.changeLogs, saved.changeLogs);
     expect(backup.rows.replacements, saved.replacements);
     expect(backup.rows.pedalboards, saved.pedalboards);
-    expect(backup.rows.slots, saved.slots);
+    expect(backup.rows.signalBlocks, saved.signalBlocks);
+    expect(backup.rows.signalConnections, saved.signalConnections);
+    expect(backup.rows.signalEndpoints, saved.signalEndpoints);
     expect(backup.rows.snapshots, saved.snapshots);
     expect(backup.rows.snapshotEntries, saved.snapshotEntries);
     expect(backup.rows.snapshotValues, saved.snapshotValues);
@@ -225,10 +227,10 @@ void main() {
   test('refuses a file with a table missing', () async {
     final missing = edited(
       (document) =>
-          (document['tables'] as Map<String, dynamic>).remove('slots'),
+          (document['tables'] as Map<String, dynamic>).remove('signalBlocks'),
     );
 
-    // Read as empty, it would quietly wipe the rig it could not find.
+    // Read as empty, it would quietly wipe the chain it could not find.
     expect(
       () => decodeVaultBackup(missing),
       failsWith(

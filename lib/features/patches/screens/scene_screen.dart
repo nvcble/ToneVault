@@ -14,9 +14,9 @@ import '../widgets/scene_value_list.dart';
 
 /// One scene: where the controls of the pedals this part of the song uses sit.
 ///
-/// Settings come first and the pedals are behind the switch, the same way round
-/// as the unit's own tab: which pedals a scene uses is decided once, and where
-/// their controls sit is what the user comes back to.
+/// Settings come first and the pedals are behind the switch: which pedals a
+/// scene uses is decided once, and where their controls sit is what the user
+/// comes back to. This is the only place the unit's pedals are managed.
 class SceneScreen extends ConsumerStatefulWidget {
   const SceneScreen({
     required this.pedalId,

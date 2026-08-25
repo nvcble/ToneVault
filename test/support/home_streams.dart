@@ -16,8 +16,11 @@ List<Override> homeStreamOverrides({
   List<Pedal> pedals = const [],
   List<Pedalboard> rigs = const [],
   List<PedalChange> changes = const [],
+  Map<int, int> blockCounts = const {},
 }) => [
   pedalListProvider.overrideWith((ref) => Stream.value(pedals)),
   pedalboardListProvider.overrideWith((ref) => Stream.value(rigs)),
   recentHistoryProvider.overrideWith((ref) => Stream.value(changes)),
+  // Read by the rigs tab beside the list itself, to say how long each chain is.
+  blockCountsProvider.overrideWith((ref) => Stream.value(blockCounts)),
 ];

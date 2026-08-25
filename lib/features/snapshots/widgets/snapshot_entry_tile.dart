@@ -57,6 +57,15 @@ class SnapshotEntryTile extends StatelessWidget {
                     ],
                   ),
                 ),
+                // Said rather than left out: a pedal on the board with its
+                // footswitch off is part of how the rig was set up that day.
+                if (!entry.entry.isEnabled)
+                  Text(
+                    'Bypassed',
+                    style: theme.textTheme.labelMedium?.copyWith(
+                      color: theme.colorScheme.onSurfaceVariant,
+                    ),
+                  ),
               ],
             ),
             if (entry.values.isNotEmpty) const SizedBox(height: AppSpacing.sm),

@@ -7,6 +7,7 @@ import '../../snapshots/screens/snapshot_screen.dart';
 import '../screens/rig_form_screen.dart';
 import '../screens/rig_screen.dart';
 import '../screens/rigs_screen.dart';
+import '../screens/signal_block_form_screen.dart';
 
 /// The `/rigs` section of the app.
 ///
@@ -33,6 +34,13 @@ List<RouteBase> rigRoutes() {
               path: Routes.rigEditSegment,
               builder: (context, state) =>
                   RigFormScreen(pedalboardId: _pedalboardId(state)),
+            ),
+            GoRoute(
+              path: Routes.blockEditSegment,
+              builder: (context, state) => SignalBlockFormScreen(
+                pedalboardId: _pedalboardId(state),
+                blockId: _blockId(state),
+              ),
             ),
             GoRoute(
               path: Routes.snapshotNewSegment,
@@ -68,6 +76,9 @@ List<RouteBase> rigRoutes() {
 /// exists" state instead of throwing.
 int _pedalboardId(GoRouterState state) =>
     int.tryParse(state.pathParameters['rigId'] ?? '') ?? -1;
+
+int _blockId(GoRouterState state) =>
+    int.tryParse(state.pathParameters['blockId'] ?? '') ?? -1;
 
 int _snapshotId(GoRouterState state) =>
     int.tryParse(state.pathParameters['snapshotId'] ?? '') ?? -1;

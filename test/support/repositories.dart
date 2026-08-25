@@ -9,6 +9,8 @@ import 'package:tone_vault/core/database/daos/pedal_replacement_dao.dart';
 import 'package:tone_vault/core/database/daos/pedalboard_dao.dart';
 import 'package:tone_vault/core/database/daos/rig_snapshot_dao.dart';
 import 'package:tone_vault/core/database/daos/scene_dao.dart';
+import 'package:tone_vault/core/database/daos/signal_chain_dao.dart';
+import 'package:tone_vault/core/database/daos/signal_endpoint_dao.dart';
 import 'package:tone_vault/features/backup/data/backup_repository.dart';
 import 'package:tone_vault/features/configurations/data/configuration_repository.dart';
 import 'package:tone_vault/features/configurations/data/configuration_value_repository.dart';
@@ -20,7 +22,9 @@ import 'package:tone_vault/features/patches/data/scene_pedal_repository.dart';
 import 'package:tone_vault/features/patches/data/scene_repository.dart';
 import 'package:tone_vault/features/patches/data/scene_value_repository.dart';
 import 'package:tone_vault/features/pedalboards/data/pedalboard_repository.dart';
-import 'package:tone_vault/features/pedalboards/data/rig_chain_repository.dart';
+import 'package:tone_vault/features/pedalboards/data/signal_chain_repository.dart';
+import 'package:tone_vault/features/pedalboards/data/signal_endpoint_repository.dart';
+import 'package:tone_vault/features/pedalboards/data/signal_routing_repository.dart';
 import 'package:tone_vault/features/pedals/data/pedal_repository.dart';
 import 'package:tone_vault/features/replacements/data/replacement_repository.dart';
 import 'package:tone_vault/features/snapshots/data/rig_snapshot_repository.dart';
@@ -97,13 +101,42 @@ PedalboardRepository pedalboardRepository(
   return PedalboardRepository(PedalboardDao(database), clock: clock);
 }
 
-RigChainRepository rigChainRepository(
+/// The blocks of a rig's chain: three accessors, because a block is checked
+/// against the rig it is on and the pedal it holds before it is written.
+SignalChainRepository signalChainRepository(
   AppDatabase database, {
   DateTime Function()? clock,
 }) {
-  return RigChainRepository(
+  return SignalChainRepository(
+    SignalChainDao(database),
     PedalboardDao(database),
     PedalDao(database),
+    clock: clock,
+  );
+}
+
+/// The cables between blocks, which is all a rig needs for parallel routing.
+SignalRoutingRepository signalRoutingRepository(
+  AppDatabase database, {
+  DateTime Function()? clock,
+}) {
+  return SignalRoutingRepository(
+    SignalChainDao(database),
+    PedalboardDao(database),
+    clock: clock,
+  );
+}
+
+/// What the edges of a rig reach, which is where a chain stops being the app's
+/// business and becomes an amp, a desk or a pair of headphones.
+SignalEndpointRepository signalEndpointRepository(
+  AppDatabase database, {
+  DateTime Function()? clock,
+}) {
+  return SignalEndpointRepository(
+    SignalEndpointDao(database),
+    SignalChainDao(database),
+    PedalboardDao(database),
     clock: clock,
   );
 }
@@ -115,6 +148,7 @@ RigSnapshotRepository rigSnapshotRepository(
   return RigSnapshotRepository(
     RigSnapshotDao(database),
     PedalboardDao(database),
+    SignalChainDao(database),
     snapshotSettings(database),
     clock: clock,
   );
