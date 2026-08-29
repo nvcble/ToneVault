@@ -1,0 +1,330 @@
+{
+  "formatVersion": 1,
+  "courses": [
+    {
+      "slug": "lead-professional-playing-for-the-song",
+      "path": "lead",
+      "level": "professional",
+      "title": "Playing for the Song, at Any Tempo",
+      "summary": "Bebop lines over moving harmony, altered dominants, going outside and coming back, transcription, and lead playing in jazz, gospel and a live worship set where nobody hands you a part.",
+      "modules": [
+        {
+          "slug": "over-moving-harmony",
+          "title": "Over Moving Harmony",
+          "summary": "Lines that keep up when the chords change every two beats.",
+          "lessons": [
+            {
+              "slug": "bebop-lines-over-ii-v-i",
+              "title": "Bebop Lines Over ii V I",
+              "kind": "genre",
+              "genre": "jazz",
+              "estimatedMinutes": 30,
+              "suggestedBpm": 140,
+              "timeSignature": "fourFour",
+              "theoryKeys": [
+                "Dm7",
+                "G7",
+                "Cmaj7"
+              ],
+              "body": "A bebop line is eighth notes with the chord tones on the beat and everything else between them.\n\nBuild one deliberately: over **Dm7** start on the third and walk down the arpeggio; over **G7** land on its third, B, on beat 1; over **Cmaj7** resolve to E rather than C, because the third is warmer than the root and does not close the tune down.\n\nThen learn two or three lines cold, in every key, at every tempo, and stop collecting more. Vocabulary in this music is small and deeply owned, not large and approximate.",
+              "exercises": [
+                {
+                  "title": "One line, twelve keys",
+                  "instructions": "Play a two-bar ii V I line in C, then the same line in every key round the cycle of fourths, eighth notes throughout.",
+                  "startBpm": 90,
+                  "targetBpm": 200,
+                  "timeSignature": "fourFour"
+                }
+              ],
+              "objective": "Play one two-bar ii V I line in every key round the cycle of fourths, with the chord tones on the beat and the resolution on the third.",
+              "commonMistakes": [
+                "Collecting lines rather than owning two or three of them in every key.",
+                "Chord tones landing off the beat, which is what makes an eighth-note line sound accidental.",
+                "Resolving to the root, which closes the tune down when the third would have kept it open."
+              ],
+              "practiceTips": [
+                "One line, twelve keys, eighth notes throughout. Slow enough that no key is worse than the others.",
+                "Sing the line before playing it in a new key, so the hand is following the ear rather than a shape."
+              ],
+              "nextSkill": "Altered Dominants"
+            },
+            {
+              "slug": "altered-dominants",
+              "title": "Altered Dominants",
+              "kind": "theory",
+              "estimatedMinutes": 30,
+              "theoryKeys": [
+                "G7alt",
+                "Ab melodic minor",
+                "Cmaj7"
+              ],
+              "body": "A dominant chord can carry any note that increases its need to resolve. Flatten or raise the fifth, flatten or raise the ninth, and it pulls harder.\n\nOne scale covers all of it: **the altered scale**, which is the melodic minor of the key a semitone above. Over **G7**, play **Ab melodic minor**. Every altered note is in there and nothing else is.\n\nThe same set of notes is the tritone substitute's Lydian dominant, which is why the two devices sound alike - they are one idea seen from either end. Play it only on the dominant, resolve immediately, and it sounds like intention rather than error.",
+              "exercises": [
+                {
+                  "title": "Altered on the five only",
+                  "instructions": "Over Dm7 G7 Cmaj7, play D minor material, then Ab melodic minor over the G7 bar, resolving to E on beat 1 of the Cmaj7.",
+                  "startBpm": 70,
+                  "targetBpm": 150,
+                  "timeSignature": "fourFour"
+                }
+              ],
+              "objective": "Play the melodic minor a semitone above a dominant chord for one bar and resolve immediately, so every altered note arrives where it is wanted.",
+              "commonMistakes": [
+                "Holding the altered sound past the dominant, so nothing resolves and it reads as an error.",
+                "Learning four separate altered notes instead of the one scale that contains them.",
+                "Playing the scale as a run rather than voice-leading its altered notes into the next chord."
+              ],
+              "practiceTips": [
+                "Say the target chord out loud before the dominant arrives. Altered playing is aiming, not colouring.",
+                "D minor material, then Ab melodic minor for one bar, resolving to E on beat 1. Loop it until the change is automatic."
+              ],
+              "nextSkill": "Substitution, Outside, and the Way Back"
+            },
+            {
+              "slug": "pentatonic-substitution-and-outside",
+              "title": "Substitution, Outside, and the Way Back",
+              "kind": "theory",
+              "estimatedMinutes": 25,
+              "theoryKeys": [
+                "Cmaj7",
+                "D pentatonic",
+                "Eb pentatonic"
+              ],
+              "body": "Playing a pentatonic scale that does not belong to the key is the cheapest way to sound like you meant something difficult - provided you come back.\n\nOver **Cmaj7**, D major pentatonic gives every extension and stays consonant. Move it up a semitone to **Eb** and every note is wrong, which is the point: hold it for two bars, keep the rhythm absolutely steady, and land back inside on a chord tone.\n\nWhat makes outside playing work is the return and the time. A line that goes out and comes back on the beat sounds deliberate. The same notes with the rhythm wobbling sound like a mistake being covered.",
+              "exercises": [
+                {
+                  "title": "Out for two, back on the beat",
+                  "instructions": "Over an eight-bar Cmaj7 vamp, play inside for two bars, a semitone outside for two, and resolve to a chord tone exactly on beat 1. Repeat twice.",
+                  "startBpm": 70,
+                  "targetBpm": 140,
+                  "timeSignature": "fourFour"
+                }
+              ],
+              "objective": "Play a pentatonic a semitone outside the key for two bars and land back on a chord tone exactly on the beat.",
+              "commonMistakes": [
+                "Going out and not coming back, which is the difference between a device and a mistake.",
+                "The rhythm wobbling while the notes are outside, which is what tells a listener it was not deliberate.",
+                "Resolving late, so the return is heard as a correction."
+              ],
+              "practiceTips": [
+                "Two bars in, two bars out, resolving on beat 1. Keep the click on and let it be the proof.",
+                "Learn the inside substitution first: D major pentatonic over Cmaj7 gives every extension and stays consonant."
+              ],
+              "nextSkill": "Symmetrical Scales: Diminished, Whole Tone and Chromatic"
+            },
+            {
+              "slug": "symmetrical-scales",
+              "title": "Symmetrical Scales: Diminished, Whole Tone and Chromatic",
+              "kind": "theory",
+              "estimatedMinutes": 25,
+              "theoryKeys": [
+                "C diminished",
+                "C whole tone",
+                "G7",
+                "C chromatic"
+              ],
+              "body": "Three scales built from one repeated step. None of them has a key, and that is what they are for: over a dominant chord going somewhere unexpected, a scale with no home of its own does not argue with where you are heading.\n\n**Diminished** is tone, semitone, over and over - eight notes. The whole-half form fits a diminished seventh chord, and started a semitone along it is the half-whole scale everyone plays over an altered dominant. One shape, moved by minor thirds, covers the neck: whatever fits at one fret fits three frets up, which is why these scales are so quick to get around in.\n\n**Whole tone** is nothing but tones - six notes, and the sound of a 7#5. Over **G7** it gives the raised fifth and the raised fourth and nothing that resolves, so it hangs until you land.\n\n**Chromatic** is not a sound, it is a corridor. Its use is getting from one chord tone to another late and arriving on the beat - approach notes, enclosures, a run that fills two beats and ends where the harmony says.\n\nThe rule for all three is the same as for going outside: the symmetry is the reason a line can be moved anywhere, and landing on a chord tone in time is the reason anybody believes you meant it.",
+              "exercises": [
+                {
+                  "title": "Moved by minor thirds",
+                  "instructions": "Over a G7 vamp, play one two-beat half-whole diminished figure, then the same figure three frets up, then three more, all the way up the neck and back - resolving onto a note of C on the beat at the end of each pass.",
+                  "startBpm": 60,
+                  "targetBpm": 130,
+                  "timeSignature": "fourFour"
+                },
+                {
+                  "title": "Whole tone, then out",
+                  "instructions": "Two bars of G whole tone over G7, then resolve to Cmaj7 on beat 1 and stay diatonic for two bars. Repeat four times without the tempo moving.",
+                  "startBpm": 70,
+                  "targetBpm": 130,
+                  "timeSignature": "fourFour"
+                }
+              ],
+              "objective": "Move one diminished figure up the neck in minor thirds and land it on a chord tone in time, and hang a whole-tone line over a dominant before resolving.",
+              "commonMistakes": [
+                "Treating a symmetrical scale as a sound to sit in, when it has no home to sit in.",
+                "Moving the figure by minor thirds without landing anywhere, so the symmetry becomes the whole idea.",
+                "Chromatic runs that arrive off the beat, which is a corridor with no door at the end."
+              ],
+              "practiceTips": [
+                "One two-beat figure, moved three frets at a time, resolving onto a note of the key at the end of each pass.",
+                "Whatever fits at one fret fits three frets up. Learn one shape properly rather than four."
+              ],
+              "nextSkill": "Fast Tempos, and Playing Less at Them"
+            },
+            {
+              "slug": "fast-tempos-and-economy",
+              "title": "Fast Tempos, and Playing Less at Them",
+              "kind": "technique",
+              "estimatedMinutes": 25,
+              "suggestedBpm": 200,
+              "timeSignature": "fourFour",
+              "body": "At 240 BPM, eighth notes are a mechanical problem and quarter notes are a musical opportunity.\n\nWhat actually works at speed: half the notes, longer lines, and phrases that begin on beat 2 or 4 so the hand is not restarting from silence at every bar. Economy picking or legato across string changes rather than strict alternate, because the crossings are what break down first.\n\nPractise a phrase at the tempo you can play it cleanly and then move up by two clicks at a time. Speed built by five sessions of accuracy holds; speed grabbed in one session comes apart on the stand.",
+              "exercises": [
+                {
+                  "title": "Two clicks at a time",
+                  "instructions": "One four-bar phrase, played four times cleanly, then the tempo up two BPM. Stop at the first tempo where it is not clean and stay there.",
+                  "startBpm": 140,
+                  "targetBpm": 240,
+                  "timeSignature": "fourFour"
+                }
+              ],
+              "objective": "Play a phrase cleanly and raise the tempo two clicks at a time, using longer lines and fewer notes at speed rather than more.",
+              "commonMistakes": [
+                "Grabbing speed in one session, which comes apart on the stand.",
+                "Starting every phrase on beat 1, so the hand restarts from silence at every bar.",
+                "Strict alternate picking through string changes, which is what breaks down first at tempo."
+              ],
+              "practiceTips": [
+                "Four clean repetitions, then two BPM up. Stop at the first tempo that is not clean and stay there.",
+                "At high tempos try quarter notes. Half the notes at twice the speed is still twice as fast."
+              ],
+              "nextSkill": "Transcription as a Working Method"
+            }
+          ]
+        },
+        {
+          "slug": "the-professional-ear",
+          "title": "The Professional Ear",
+          "summary": "Learning a part from a record, and inventing one on a stand.",
+          "lessons": [
+            {
+              "slug": "transcription-as-a-method",
+              "title": "Transcription as a Working Method",
+              "kind": "earTraining",
+              "estimatedMinutes": 30,
+              "body": "Being handed a record and a rehearsal two days later is a normal week. The work is transcription, and it has a routine.\n\nForm first - count the bars and mark the sections. Then the bass, because it tells you the harmony faster than the chords do. Then the rhythm figure of the guitar part. The notes come last, and by then most of them are obvious.\n\nWrite the chart in numbers so the key can change, and mark only what you would otherwise get wrong. A twelve-line chart you can read at a glance beats a full transcription you have to study.",
+              "exercises": [
+                {
+                  "title": "Whole song in one pass",
+                  "instructions": "Take a song you do not know. Chart the form, then the bass, then the guitar figure, then play along. Time yourself and aim under thirty minutes.",
+                  "startBpm": 60,
+                  "targetBpm": 90,
+                  "timeSignature": "fourFour"
+                }
+              ],
+              "objective": "Chart an unfamiliar song in one pass - form, then bass, then the guitar figure, then the notes - in under thirty minutes.",
+              "commonMistakes": [
+                "Starting with the notes, which is the slowest way in and the least useful.",
+                "A full transcription nobody can read at a glance instead of a twelve-line chart.",
+                "Writing the chart in letters, so it is useless the moment the key moves."
+              ],
+              "practiceTips": [
+                "Count the bars and mark the sections before playing a single note.",
+                "Mark only what you would otherwise get wrong. Everything else is copying for its own sake."
+              ],
+              "nextSkill": "Soloing on a Form You Just Heard"
+            },
+            {
+              "slug": "soloing-on-a-form-you-just-heard",
+              "title": "Soloing on a Form You Just Heard",
+              "kind": "practice",
+              "estimatedMinutes": 25,
+              "suggestedBpm": 120,
+              "timeSignature": "fourFour",
+              "body": "You get eight bars of a song you have never played and then a solo. This is a skill, not luck.\n\nWhat to establish in those eight bars: the key, whether the harmony is major or minor, where the form turns around, and one chord that is not diatonic. That is enough to play a whole chorus safely.\n\nThen play the first phrase short and unambitious, on notes you are certain of, and listen to what came back. A first phrase that is right and plain buys you the rest of the solo. A first phrase that is ambitious and wrong costs you the rest of it.",
+              "exercises": [
+                {
+                  "title": "Eight bars, then play",
+                  "instructions": "Have a backing you do not know play eight bars while you name the key and the turnaround out loud, then solo for a full chorus.",
+                  "startBpm": 90,
+                  "targetBpm": 160,
+                  "timeSignature": "fourFour"
+                }
+              ],
+              "objective": "Name the key, the turnaround and one chord outside the key within eight bars, then play a first phrase that is short and certain.",
+              "commonMistakes": [
+                "An ambitious first phrase, which costs the rest of the solo when it is wrong.",
+                "Playing before the form has turned around once, so the ending arrives as a surprise.",
+                "Listening for the chords rather than the bass, which says the same thing sooner."
+              ],
+              "practiceTips": [
+                "Say the key and the turnaround out loud during the eight bars. Naming it is what fixes it.",
+                "First phrase plain, on notes you are certain of, then listen to what came back before the second."
+              ],
+              "nextSkill": "Gospel: Lines Over the Shout"
+            }
+          ]
+        },
+        {
+          "slug": "professional-lead-styles",
+          "title": "Where It Is Actually Asked For",
+          "summary": "Two rooms where a lead guitarist has to be both invisible and ready.",
+          "lessons": [
+            {
+              "slug": "gospel-shout-and-praise-break",
+              "title": "Gospel: Lines Over the Shout",
+              "kind": "genre",
+              "genre": "gospel",
+              "estimatedMinutes": 30,
+              "suggestedBpm": 130,
+              "timeSignature": "fourFour",
+              "theoryKeys": [
+                "Ab",
+                "Eb7",
+                "Ab minor pentatonic"
+              ],
+              "body": "During a shout the tempo is high, the harmony is two or three chords, and the band is loud. A lead line there has to cut through without adding clutter.\n\nThe vocabulary is short, repeated figures on the top strings, heavy on double stops and semitone slides, landing hard on the beat. Think horn section rather than solo: play the same figure four times and change it on the fifth.\n\nAnd expect the key to move under you. Know the pentatonic and the arpeggios of the chords in Ab, A, Bb and Eb well enough that a modulation is a shift of the hand and nothing else.",
+              "exercises": [
+                {
+                  "title": "One figure, then the modulation",
+                  "instructions": "A two-beat double-stop figure over a shout groove in Ab, four times, then the same figure up a semitone in A without a gap.",
+                  "startBpm": 100,
+                  "targetBpm": 170,
+                  "timeSignature": "fourFour"
+                }
+              ],
+              "objective": "Play a two-beat double-stop figure over a fast shout groove four times and move it to a new key without a gap.",
+              "commonMistakes": [
+                "Adding notes into a loud, fast section that needed a horn line and got clutter.",
+                "Being caught out by the modulation, which is a normal part of the form and not an accident.",
+                "Landing behind the beat. A shout line lands hard and on top of it."
+              ],
+              "practiceTips": [
+                "Play the same figure four times and change it on the fifth. Think horn section, not solo.",
+                "Know the pentatonic and the chord arpeggios in Ab, A, Bb and Eb, so a modulation is a shift of the hand."
+              ],
+              "nextSkill": "Worship: Lead Parts Nobody Wrote Down"
+            },
+            {
+              "slug": "worship-lead-in-a-live-set",
+              "title": "Worship: Lead Parts Nobody Wrote Down",
+              "kind": "genre",
+              "genre": "worship",
+              "estimatedMinutes": 25,
+              "suggestedBpm": 72,
+              "timeSignature": "fourFour",
+              "theoryKeys": [
+                "E",
+                "B",
+                "C#m",
+                "A"
+              ],
+              "body": "Most of a worship lead part is a texture and a three-note hook, and the rest is knowing when to play nothing at all.\n\nThe repertoire: a delayed arpeggio figure that fills the space between chords, a single sustained note held across a chord change, a swell that arrives on a section boundary, and one melodic hook the congregation recognises from the record.\n\nDecide the hook and the entry point before the set. Then, during it, watch rather than play: an eight-bar entry that lands where the arrangement lifts is worth more than a chorus of soloing over a room full of people trying to sing.",
+              "exercises": [
+                {
+                  "title": "Enter on the lift",
+                  "instructions": "Over a vamp in E, stay silent for sixteen bars, enter with a three-note hook exactly on the seventeenth, and drop out again after eight.",
+                  "startBpm": 66,
+                  "targetBpm": 88,
+                  "timeSignature": "fourFour"
+                }
+              ],
+              "objective": "Stay out for sixteen bars, enter with a three-note hook exactly on the section boundary, and drop out again after eight.",
+              "commonMistakes": [
+                "Soloing over a room full of people trying to sing.",
+                "Deciding the hook during the set instead of before it.",
+                "Filling every gap between chords, when the part is a texture and a hook."
+              ],
+              "practiceTips": [
+                "Decide the hook and the entry point before the set, then spend the set watching rather than playing.",
+                "A swell that arrives on a section boundary is worth more than anything played in the middle of one."
+              ],
+              "nextSkill": "Depping on a set you have never played"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

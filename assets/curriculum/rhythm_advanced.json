@@ -1,0 +1,431 @@
+{
+  "formatVersion": 1,
+  "courses": [
+    {
+      "slug": "rhythm-advanced-voicings-and-feel",
+      "path": "rhythm",
+      "level": "advanced",
+      "title": "Voicings, Voice Leading and Feel",
+      "summary": "Choosing which three notes to play and where they go next: extended chords, inversions, voice leading, odd time and subdivision against the beat, and the styles built on all of it - soul, R&B, reggae and gospel.",
+      "modules": [
+        {
+          "slug": "choosing-the-notes",
+          "title": "Choosing Which Notes to Play",
+          "summary": "A six-string chord is a beginner's answer to a question with better ones.",
+          "lessons": [
+            {
+              "slug": "shell-voicings-and-three-note-chords",
+              "title": "Three Notes Is Usually Enough",
+              "kind": "theory",
+              "estimatedMinutes": 20,
+              "theoryKeys": [
+                "Cmaj7",
+                "Dm7",
+                "G7"
+              ],
+              "body": "In a band, the bass has the root and the keys have the middle. A six-string chord from a guitar in that company is mud.\n\nA **shell voicing** is the root, the seventh and the third - three notes, usually on strings six, four and three, or five, four and three. It states the chord completely: the root names it, the third makes it major or minor, the seventh says where it is going. Everything else is decoration.\n\nDrop the root as well and you have a rootless voicing, which is the working chord vocabulary of every guitarist who plays with a bass player.",
+              "exercises": [
+                {
+                  "title": "Shells around the cycle",
+                  "instructions": "Play ii V I shells in C, then move the whole progression down a tone and repeat, around all twelve keys. One chord per bar.",
+                  "startBpm": 50,
+                  "targetBpm": 90,
+                  "timeSignature": "fourFour"
+                }
+              ],
+              "objective": "Play a ii V I as three-note shell voicings round the cycle of keys, stating each chord with its root, third and seventh alone.",
+              "commonMistakes": [
+                "Six-string chords in a band, which is mud where the bass and the keys already are.",
+                "Dropping the third or the seventh, which are the two notes that say what the chord is.",
+                "Learning shells in one key only, so they are shapes rather than a vocabulary."
+              ],
+              "practiceTips": [
+                "One chord a bar, moving the whole progression down a tone each time round, until all twelve keys are covered.",
+                "Once the shells are solid, drop the root as well. That is the working chord vocabulary in a band with a bass player."
+              ],
+              "nextSkill": "Ninths, Elevenths and Thirteenths"
+            },
+            {
+              "slug": "extended-chords",
+              "title": "Ninths, Elevenths and Thirteenths",
+              "kind": "theory",
+              "estimatedMinutes": 25,
+              "theoryKeys": [
+                "C9",
+                "Am11",
+                "G13"
+              ],
+              "body": "Keep stacking thirds past the seventh and you get the **ninth, eleventh and thirteenth** - the second, fourth and sixth of the scale, an octave up.\n\nThey are colours, not obligations, and each has a job:\n\n- **9** on a dominant chord - funk and blues. On a major seventh - warmth.\n- **11** on a minor chord - the neo-soul sound. Avoid it over a plain major third; they fight.\n- **13** on a dominant - the jazz and gospel dominant, fuller than a plain 7 and less tense than an altered one.\n\nWhen you add an extension, take something out. A guitar has six strings and a good voicing rarely needs more than four of them.",
+              "exercises": [
+                {
+                  "title": "Same progression, three colours",
+                  "instructions": "Play Dm7 G7 Cmaj7 as plain sevenths, then as Dm11 G13 Cmaj9, then choose per chord. One bar each.",
+                  "startBpm": 50,
+                  "targetBpm": 90,
+                  "timeSignature": "fourFour"
+                }
+              ],
+              "objective": "Add a ninth, an eleventh or a thirteenth to a voicing and take a note out to make room for it.",
+              "commonMistakes": [
+                "Adding an extension without removing anything, which needs more strings than a good voicing has.",
+                "An eleventh over a plain major third. The two of them fight.",
+                "Extensions on every chord, which turns colour into wallpaper."
+              ],
+              "practiceTips": [
+                "Play a progression as plain sevenths, then all extended, then chord by chord as you would choose it.",
+                "Four notes is usually the most a voicing needs. Decide which four before your fingers do."
+              ],
+              "nextSkill": "Inversions and Slash Chords"
+            },
+            {
+              "slug": "inversions-and-slash-chords",
+              "title": "Inversions and Slash Chords",
+              "kind": "theory",
+              "estimatedMinutes": 20,
+              "theoryKeys": [
+                "C/E",
+                "C/G",
+                "G/B"
+              ],
+              "body": "Put a note other than the root at the bottom and the chord's function stays while its weight changes. **C/E** is a C major chord that leans forward; **C/G** is a C major chord that sits still.\n\nThe common use is a bass line under static harmony: C, C/B, Am, C/G walks the bottom voice down while the top barely moves. Written on a chart it looks like four chords. Heard, it is one chord with something happening underneath it.\n\nA slash chord is also how a guitar plays a keyboard's left hand without stepping on the bass: name the bass note the chart asks for, take it as the lowest string you play, and leave the rest of the low end alone.",
+              "exercises": [
+                {
+                  "title": "Descending bass, still top",
+                  "instructions": "C, C/B, Am, C/G, F, one bar each, keeping the top two notes unchanged wherever possible.",
+                  "startBpm": 55,
+                  "targetBpm": 95,
+                  "timeSignature": "fourFour"
+                }
+              ],
+              "objective": "Walk a bass line under static harmony with slash chords, keeping the top voices as still as possible.",
+              "commonMistakes": [
+                "Reading a slash chord as a new chord, when it is the same chord with a different bottom note.",
+                "Rebuilding the top of the voicing at every change, which loses the effect entirely.",
+                "Playing the low strings under a bass player who is already playing the line."
+              ],
+              "practiceTips": [
+                "C, C/B, Am, C/G, F, one bar each, moving the bottom voice and nothing else you can help.",
+                "Take the named bass note as the lowest string you play and leave the rest of the low end alone."
+              ],
+              "nextSkill": "Voice Leading: the Shortest Distance"
+            },
+            {
+              "slug": "voice-leading",
+              "title": "Voice Leading: the Shortest Distance",
+              "kind": "theory",
+              "estimatedMinutes": 25,
+              "theoryKeys": [
+                "Dm7",
+                "G7",
+                "Cmaj7"
+              ],
+              "body": "Two chords in a row are not two shapes. They are three or four voices, each of which moves as little as it can.\n\nFrom **Dm7** to **G7**, the C stays put, the F drops a semitone to E, the A drops to G. Nobody jumps. The result is a change you hear as movement rather than as a new shape being grabbed.\n\nSo choose the next voicing by asking where your fingers already are, not by asking which shape you know for that chord. This is the single largest difference between a player who knows a lot of chords and a player who sounds good playing them.",
+              "exercises": [
+                {
+                  "title": "Nearest voicing wins",
+                  "instructions": "Play a ii V I vi loop in F, choosing each voicing so no voice moves more than two frets. Stay within a four-fret span for the whole loop.",
+                  "startBpm": 50,
+                  "targetBpm": 85,
+                  "timeSignature": "fourFour"
+                }
+              ],
+              "objective": "Choose each voicing so no voice moves more than two frets, staying inside a four-fret span for a whole progression.",
+              "commonMistakes": [
+                "Asking which shape you know for the next chord rather than where your fingers already are.",
+                "Jumping the whole hand to a new position at every change.",
+                "Keeping every voice still, so nothing moves and nothing is led anywhere."
+              ],
+              "practiceTips": [
+                "Find the voice that has to move a semitone and build the next voicing around it.",
+                "Loop four chords in one position until no change needs a jump. Then move the loop up two frets."
+              ],
+              "nextSkill": "Three Against Four"
+            }
+          ]
+        },
+        {
+          "slug": "time-past-four-four",
+          "title": "Time Past 4/4",
+          "summary": "Subdivision against the beat, and bars that are not four beats long.",
+          "lessons": [
+            {
+              "slug": "three-against-four",
+              "title": "Three Against Four",
+              "kind": "practice",
+              "estimatedMinutes": 25,
+              "suggestedBpm": 80,
+              "timeSignature": "fourFour",
+              "body": "Play three evenly spaced strums across a bar of four beats. The first lands on 1, the others between beats, and the pattern only agrees with the click once a bar.\n\nCount the sixteenths and play on **1, the a of 2, and the and of 3**. That is a triplet spread over the bar, and it is the feel behind an enormous amount of West African, Latin and gospel playing.\n\nThe skill is holding your three while hearing their four. Once you can, hemiola stops being a trick and becomes something you can lean on and come back from.",
+              "exercises": [
+                {
+                  "title": "Three across the bar",
+                  "instructions": "Four bars of three even strums per bar over Am, then four bars of straight quarters, alternating without a gap.",
+                  "startBpm": 60,
+                  "targetBpm": 100,
+                  "timeSignature": "fourFour"
+                }
+              ],
+              "objective": "Play three evenly spaced strums across a bar of four beats, holding your three while hearing their four.",
+              "commonMistakes": [
+                "Drifting into a triplet feel for the whole bar rather than three across four beats.",
+                "Losing the click, which is the only thing that makes the pattern mean anything.",
+                "Counting in threes, when the sixteenths are what place the second and third strum."
+              ],
+              "practiceTips": [
+                "Play on 1, the a of 2 and the and of 3. Count the sixteenths out loud until those land by themselves.",
+                "Four bars of three, four bars of straight quarters, alternating with no gap between them."
+              ],
+              "nextSkill": "Compound Time: 12/8 and 6/8"
+            },
+            {
+              "slug": "twelve-eight-and-six-eight",
+              "title": "Compound Time: 12/8 and 6/8",
+              "kind": "practice",
+              "estimatedMinutes": 20,
+              "suggestedBpm": 120,
+              "timeSignature": "twelveEight",
+              "theoryKeys": [
+                "A7",
+                "D7",
+                "E7"
+              ],
+              "body": "A slow blues, a doo-wop ballad and a great many hymns are in **12/8**: four beats, each divided into three.\n\nSet the metronome to 12/8 and hear twelve clicks with an accent every third one. Your strumming hand rides the triplets; the chords land on the four accents.\n\n**6/8** is the same division in half a bar, counted in two. The difference between 6/8 and 3/4 is not the notes - it is where the weight is. Six eighths in two groups of three, against three quarters each divided in two.",
+              "exercises": [
+                {
+                  "title": "Slow blues in twelve",
+                  "instructions": "Twelve bars in A at 12/8, strumming triplets throughout, chords landing on the four accented beats.",
+                  "startBpm": 90,
+                  "targetBpm": 160,
+                  "timeSignature": "twelveEight"
+                }
+              ],
+              "objective": "Ride triplets through a bar of 12/8 with the chords landing on the four accented beats.",
+              "commonMistakes": [
+                "Counting twelve as four groups of three but playing chords on all twelve.",
+                "Straightening the triplets as the tempo rises, which turns a slow blues into a slow shuffle.",
+                "Treating 6/8 as 3/4. Same notes, different weight."
+              ],
+              "practiceTips": [
+                "Set the metronome to 12/8 and listen for the accent every third click before playing anything.",
+                "Count one-and-a two-and-a three-and-a four-and-a. Chords on the numbers, the hand on everything."
+              ],
+              "nextSkill": "Five and Seven"
+            },
+            {
+              "slug": "odd-meters",
+              "title": "Five and Seven",
+              "kind": "practice",
+              "estimatedMinutes": 20,
+              "suggestedBpm": 100,
+              "timeSignature": "sevenEight",
+              "body": "An odd bar is only frightening until you group it. **7/8** is not seven of anything you have to count - it is 4 + 3, or 3 + 4, or 2 + 2 + 3, and you choose.\n\nPlay 7/8 as a bar of two beats and a bar of one and a half. Accent the first of each group. Once the groups are audible, the bar walks.\n\n**5/4** the same way: 3 + 2 or 2 + 3. Set the metronome to it, find the grouping, and play a two-chord vamp until the bar stops feeling short.",
+              "exercises": [
+                {
+                  "title": "Two plus two plus three",
+                  "instructions": "A one-chord vamp in 7/8, accenting beats 1, 3 and 5. Eight bars, then switch the grouping to 3 + 2 + 2.",
+                  "startBpm": 80,
+                  "targetBpm": 140,
+                  "timeSignature": "sevenEight"
+                }
+              ],
+              "objective": "Group an odd bar and accent the first of each group, so a bar of 7/8 or 5/4 walks instead of feeling short.",
+              "commonMistakes": [
+                "Counting seven or five as a row of numbers rather than as groups.",
+                "Changing the grouping mid-exercise without deciding to.",
+                "Playing a busy pattern before the bar itself is comfortable."
+              ],
+              "practiceTips": [
+                "A one-chord vamp in 7/8, accenting 1, 3 and 5. Then the same bar as 3 + 2 + 2 and hear it change.",
+                "Say the groups out loud: two, two, three. The mouth learns it before the hands do."
+              ],
+              "nextSkill": "Hearing a Progression Before You Play It"
+            },
+            {
+              "slug": "hearing-a-progression",
+              "title": "Hearing a Progression Before You Play It",
+              "kind": "earTraining",
+              "estimatedMinutes": 20,
+              "theoryKeys": [
+                "G",
+                "C",
+                "D",
+                "Em"
+              ],
+              "body": "On a stand, the chart is often somebody's memory. The ear has to do the rest.\n\nWhat to listen for, in this order: **is the bass moving up or down**, **is the chord major or minor**, **is it the 1, the 4 or the 5**. Three questions answer most of popular music, and they are quicker than trying to name a chord outright.\n\nPractise on records you do not know. Guess the number, then check it against the instrument. Being wrong quickly and often is the method; there is no other one.",
+              "exercises": [
+                {
+                  "title": "Name it before you find it",
+                  "instructions": "Play a random chord in the key, then sing what you think the number is, then check. Twenty in a row at one chord per two bars.",
+                  "startBpm": 50,
+                  "targetBpm": 70,
+                  "timeSignature": "fourFour"
+                }
+              ],
+              "objective": "Name a chord by its number before finding it, asking whether the bass moved, whether it is major or minor, and whether it is the 1, 4 or 5.",
+              "commonMistakes": [
+                "Trying to name the chord outright rather than answering the three quicker questions.",
+                "Checking on the guitar before committing to a guess, which teaches nothing.",
+                "Practising only on songs you already know."
+              ],
+              "practiceTips": [
+                "Guess the number out loud, then check. Being wrong quickly and often is the method.",
+                "Twenty guesses in a row at one chord per two bars, on a record you have never played."
+              ],
+              "nextSkill": "Soul: Playing Inside a Big Arrangement"
+            }
+          ]
+        },
+        {
+          "slug": "advanced-styles",
+          "title": "Styles That Need All of It",
+          "summary": "Soul, R&B, reggae and gospel: four traditions where the rhythm guitar part is the arrangement.",
+          "lessons": [
+            {
+              "slug": "soul-motown-comping",
+              "title": "Soul: Playing Inside a Big Arrangement",
+              "kind": "genre",
+              "genre": "soul",
+              "estimatedMinutes": 25,
+              "suggestedBpm": 105,
+              "timeSignature": "fourFour",
+              "theoryKeys": [
+                "C",
+                "Am7",
+                "F",
+                "G7"
+              ],
+              "body": "In a soul band there are horns, keys, bass, drums and often two guitars. Your part is a texture, not a chord chart being executed.\n\nThe classic devices: sixteenth-note double stops high up, a chord on the **2 and the 4** with nothing on 1, and a muted single-note figure that answers the horns. Pick one and do only that for the whole verse.\n\nThe test of a soul rhythm part is whether it can be removed. If the track collapses without you, the part is doing real work. If the track sounds cleaner without you, you were playing too much.",
+              "exercises": [
+                {
+                  "title": "Only 2 and 4",
+                  "instructions": "Over C, Am7, F, G7, play a short chord on beats 2 and 4 only, top three strings, muted immediately. Eight bars without adding anything.",
+                  "startBpm": 85,
+                  "targetBpm": 120,
+                  "timeSignature": "fourFour"
+                }
+              ],
+              "objective": "Play a short chord on beats 2 and 4 only, top strings, muted immediately, and add nothing for eight bars.",
+              "commonMistakes": [
+                "Playing on beat 1 as well, which is where the rest of the band already is.",
+                "Changing device every four bars instead of holding one for the whole verse.",
+                "A part that makes the track cleaner when it is removed."
+              ],
+              "practiceTips": [
+                "Pick one device and do only that. A texture is a decision, not an assortment.",
+                "Ask whether the track collapses without you. If it does, the part is doing real work."
+              ],
+              "nextSkill": "R&B: Neo-Soul Voicings and Space"
+            },
+            {
+              "slug": "rnb-neo-soul-voicings",
+              "title": "R&B: Neo-Soul Voicings and Space",
+              "kind": "genre",
+              "genre": "rnb",
+              "estimatedMinutes": 25,
+              "suggestedBpm": 84,
+              "timeSignature": "fourFour",
+              "theoryKeys": [
+                "Fmaj9",
+                "Bbmaj7",
+                "Am11",
+                "Dm9"
+              ],
+              "body": "Neo-soul guitar is built from four-note voicings with a ninth or eleventh in them, played behind the beat with a lot of nothing around them.\n\nTake **Fmaj9** on the middle four strings and move the same shape through the key. Then play it slightly late - not sloppy, deliberately behind the click - and let it ring into a bar of silence.\n\nTwo habits make the style: chords that resolve **into** each other by a semitone in one voice, and a right hand that plays fewer notes than the tempo suggests. The groove comes from where you are not.",
+              "exercises": [
+                {
+                  "title": "Behind the beat",
+                  "instructions": "Fmaj9 for two bars, Am11 for two, Dm9 for two, Bbmaj7 for two, one strum per bar placed just after beat 1 each time.",
+                  "startBpm": 70,
+                  "targetBpm": 95,
+                  "timeSignature": "fourFour"
+                }
+              ],
+              "objective": "Move a four-note ninth or eleventh voicing through a key, placed deliberately just after beat 1, and let it ring into silence.",
+              "commonMistakes": [
+                "Behind the beat turning into out of time, which is a different thing entirely.",
+                "Filling the bar the voicing was supposed to ring into.",
+                "Rebuilding the shape at each chord rather than moving one that resolves by a semitone."
+              ],
+              "practiceTips": [
+                "One strum a bar, just after the beat, with the click on. The click is what proves it was deliberate.",
+                "Find the voice that moves a semitone between two chords and let it lead the change."
+              ],
+              "nextSkill": "Reggae: One Drop, Rockers, Steppers and Dub"
+            },
+            {
+              "slug": "reggae-one-drop-rockers-steppers",
+              "title": "Reggae: One Drop, Rockers, Steppers and Dub",
+              "kind": "genre",
+              "genre": "reggae",
+              "estimatedMinutes": 25,
+              "suggestedBpm": 72,
+              "timeSignature": "fourFour",
+              "theoryKeys": [
+                "Am",
+                "Dm",
+                "G"
+              ],
+              "body": "The chop on the upbeat is one lesson's worth. What separates the grooves is what the drums are doing and how your part answers it.\n\n- **One drop** - no kick on 1, everything lands on 3. The guitar chop stays on the upbeats and the bar feels suspended.\n- **Rockers** - a kick on every beat. The part tightens; shorten the chop further and play it harder.\n- **Steppers** - four on the floor and faster. Some players add a second chop on the last sixteenth of the beat.\n\nThen there is **dub**, where the arrangement is subtraction: a chop drenched in delay, played once every two bars, is a complete part. Learn to leave a bar entirely empty and let the echo be the guitar.",
+              "exercises": [
+                {
+                  "title": "Three grooves, one chord",
+                  "instructions": "Eight bars of Am chopping one-drop style, eight bars rockers, eight bars steppers. Only the length and weight of the chop changes.",
+                  "startBpm": 60,
+                  "targetBpm": 95,
+                  "timeSignature": "fourFour"
+                }
+              ],
+              "objective": "Chop the same chord three ways - one drop, rockers and steppers - changing only the length and the weight of it.",
+              "commonMistakes": [
+                "Changing the notes or the pattern when only the chop should change.",
+                "The same chop for every groove, which is what makes all three sound like one.",
+                "Filling a dub arrangement, where a chop every two bars is a whole part."
+              ],
+              "practiceTips": [
+                "Eight bars of each, back to back, on one chord, so nothing but the feel is different.",
+                "Learn to leave a bar completely empty and let the echo be the guitar."
+              ],
+              "nextSkill": "Gospel: Passing Chords and the Walk-Up"
+            },
+            {
+              "slug": "gospel-passing-chords",
+              "title": "Gospel: Passing Chords and the Walk-Up",
+              "kind": "genre",
+              "genre": "gospel",
+              "estimatedMinutes": 30,
+              "suggestedBpm": 90,
+              "timeSignature": "fourFour",
+              "theoryKeys": [
+                "Ab",
+                "Db",
+                "Eb7",
+                "Bbm7"
+              ],
+              "body": "Gospel takes a simple progression and fills every gap in it with chords that lead somewhere.\n\nThree devices to start with:\n\n- **Diminished passing chord** - between the 1 and the 2, a chord a semitone above the 1 pulls both voices upward.\n- **Secondary dominant** - before any chord, play the dominant seventh a fourth below it. Any chord can be approached this way, which is where the sound of endless movement comes from.\n- **The walk-up** - the last two bars of a section climb chromatically into the next one, chord on every beat.\n\nGospel keys sit where the singers are: Ab, Db, Eb. Practise all of this there rather than in G, because that is where you will be asked to play it.",
+              "exercises": [
+                {
+                  "title": "Fill every gap",
+                  "instructions": "In Ab, play 1 4 5 1 with a passing chord on every second beat. Then play the last two bars as a chromatic walk-up, one chord per beat.",
+                  "startBpm": 60,
+                  "targetBpm": 100,
+                  "timeSignature": "fourFour"
+                }
+              ],
+              "objective": "Fill a simple progression in a gospel key with a passing chord on every second beat, and walk chromatically into the next section.",
+              "commonMistakes": [
+                "Practising it in G, when it will be asked for in Ab, Db and Eb.",
+                "Passing chords that arrive without resolving, so movement becomes clutter.",
+                "A walk-up that runs out of bars before it reaches the chord it was climbing to."
+              ],
+              "practiceTips": [
+                "One device at a time: diminished passing chord first, then secondary dominants, then the walk-up.",
+                "Count the walk-up backwards from the chord it lands on, so it always arrives on the beat."
+              ],
+              "nextSkill": "Comping behind a soloist"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

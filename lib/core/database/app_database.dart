@@ -2,16 +2,26 @@ import 'package:drift/drift.dart';
 
 // The generated part file names these enums in companion and manager APIs, and
 // a part file can only see imports declared by its parent library.
+import '../enums/bookmark_target.dart';
 import '../enums/change_type.dart';
 import '../enums/control_type.dart';
+import '../enums/learning_path.dart';
+import '../enums/lesson_kind.dart';
 import '../enums/multi_effects_mode.dart';
+import '../enums/music_genre.dart';
 import '../enums/pedal_category.dart';
 import '../enums/pedal_status.dart';
 import '../enums/pedal_type.dart';
+import '../enums/progress_state.dart';
 import '../enums/signal_block_type.dart';
 import '../enums/signal_connection_type.dart';
 import '../enums/signal_destination.dart';
 import '../enums/signal_source.dart';
+import '../enums/skill_level.dart';
+import '../enums/time_signature.dart';
+import 'daos/academy_bookmark_dao.dart';
+import 'daos/academy_course_dao.dart';
+import 'daos/academy_progress_dao.dart';
 import 'daos/backup_dao.dart';
 import 'daos/change_log_dao.dart';
 import 'daos/configuration_dao.dart';
@@ -19,12 +29,16 @@ import 'daos/patch_dao.dart';
 import 'daos/pedal_control_dao.dart';
 import 'daos/pedal_dao.dart';
 import 'daos/pedal_replacement_dao.dart';
-import 'daos/pedalboard_dao.dart';
-import 'daos/rig_snapshot_dao.dart';
 import 'daos/scene_dao.dart';
-import 'daos/signal_chain_dao.dart';
-import 'daos/signal_endpoint_dao.dart';
 import 'migrations.dart';
+import 'tables/academy_bookmarks_table.dart';
+import 'tables/academy_courses_table.dart';
+import 'tables/academy_exercise_progress_table.dart';
+import 'tables/academy_exercises_table.dart';
+import 'tables/academy_lessons_table.dart';
+import 'tables/academy_modules_table.dart';
+import 'tables/academy_practice_sessions_table.dart';
+import 'tables/academy_progress_table.dart';
 import 'tables/change_logs_table.dart';
 import 'tables/configuration_values_table.dart';
 import 'tables/configurations_table.dart';
@@ -45,6 +59,20 @@ import 'tables/signal_endpoints_table.dart';
 
 part 'app_database.g.dart';
 
+/// Every table the app has ever shipped, and the accessors that still read them.
+///
+/// The seven rig tables - `pedalboards`, `signal_blocks`, `signal_connections`,
+/// `signal_endpoints`, `rig_snapshots`, `rig_snapshot_entries` and
+/// `rig_snapshot_values` - are declared with no DAO of their own on purpose. The
+/// rigs feature they were built for is gone, but the rows are the user's own
+/// record of how their board was wired and where every knob stood on a night they
+/// played, and dropping a table is not something to do on the same day the screens
+/// for it are taken away. [BackupDao] still carries all seven, so a backup taken
+/// today holds them and one taken before still restores.
+///
+/// Whether they are dropped for good is a decision for a later schema version, and
+/// one that should not be made until there is somewhere for the rows to go first;
+/// see `migrations.dart`.
 @DriftDatabase(
   tables: [
     Pedals,
@@ -64,6 +92,14 @@ part 'app_database.g.dart';
     RigSnapshots,
     RigSnapshotEntries,
     RigSnapshotValues,
+    AcademyCourses,
+    AcademyModules,
+    AcademyLessons,
+    AcademyExercises,
+    AcademyProgress,
+    AcademyExerciseProgress,
+    AcademyPracticeSessions,
+    AcademyBookmarks,
   ],
   daos: [
     PedalDao,
@@ -73,10 +109,9 @@ part 'app_database.g.dart';
     SceneDao,
     ChangeLogDao,
     PedalReplacementDao,
-    PedalboardDao,
-    SignalChainDao,
-    SignalEndpointDao,
-    RigSnapshotDao,
+    AcademyCourseDao,
+    AcademyProgressDao,
+    AcademyBookmarkDao,
     BackupDao,
   ],
 )

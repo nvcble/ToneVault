@@ -42,6 +42,14 @@ void main() {
       'scenes',
       'scenePedals',
       'sceneValues',
+      'academyCourses',
+      'academyModules',
+      'academyLessons',
+      'academyExercises',
+      'academyProgress',
+      'academyExerciseProgress',
+      'academyPracticeSessions',
+      'academyBookmarks',
     ]) {
       tables.remove(table);
     }
@@ -75,9 +83,18 @@ void main() {
     expect(backup.rows.signalBlocks, saved.signalBlocks);
     expect(backup.rows.signalConnections, saved.signalConnections);
     expect(backup.rows.signalEndpoints, saved.signalEndpoints);
-    expect(backup.rows.snapshots, saved.snapshots);
-    expect(backup.rows.snapshotEntries, saved.snapshotEntries);
-    expect(backup.rows.snapshotValues, saved.snapshotValues);
+    expect(backup.rows.patches, saved.patches);
+    expect(backup.rows.scenes, saved.scenes);
+    expect(backup.rows.scenePedals, saved.scenePedals);
+    expect(backup.rows.sceneValues, saved.sceneValues);
+    expect(backup.rows.academyCourses, saved.academyCourses);
+    expect(backup.rows.academyModules, saved.academyModules);
+    expect(backup.rows.academyLessons, saved.academyLessons);
+    expect(backup.rows.academyExercises, saved.academyExercises);
+    expect(backup.rows.academyProgress, saved.academyProgress);
+    expect(backup.rows.academyExerciseProgress, saved.academyExerciseProgress);
+    expect(backup.rows.academyPracticeSessions, saved.academyPracticeSessions);
+    expect(backup.rows.academyBookmarks, saved.academyBookmarks);
   });
 
   test('a date written in the device zone keeps its instant', () async {
@@ -115,12 +132,12 @@ void main() {
   });
 
   test('writes dates as UTC, with the zone on them', () async {
-    final snapshot = tablesOf(file)['snapshots'] as List<dynamic>;
+    final rigs = tablesOf(file)['pedalboards'] as List<dynamic>;
 
     // Readable, and unambiguous: a date with no zone on it is a date nobody can
     // pin down on the other side.
     expect(
-      (snapshot.single as Map<String, dynamic>)['capturedAt'],
+      (rigs.single as Map<String, dynamic>)['createdAt'],
       '2026-08-19T12:00:00.000Z',
     );
   });
@@ -140,10 +157,10 @@ void main() {
       exportedAt: exportedAt,
     );
 
-    // Still all eleven tables, so a vault emptied on purpose restores as empty
-    // rather than being refused as damaged.
+    // Still every table, so a vault emptied on purpose restores as empty rather
+    // than being refused as damaged.
     expect(decodeVaultBackup(empty).rows.pedals, isEmpty);
-    expect(decodeVaultBackup(empty).rows.snapshotValues, isEmpty);
+    expect(decodeVaultBackup(empty).rows.signalEndpoints, isEmpty);
   });
 
   test('refuses a file that is not JSON at all', () async {
@@ -184,11 +201,70 @@ void main() {
     // had arrive empty rather than being guessed at.
     expect(backup.schemaVersion, oldestReadableSchemaVersion);
     expect(backup.rows.pedals, saved.pedals);
-    expect(backup.rows.snapshotValues, saved.snapshotValues);
+    expect(backup.rows.signalBlocks, saved.signalBlocks);
     expect(backup.rows.patches, isEmpty);
     expect(backup.rows.scenes, isEmpty);
     expect(backup.rows.scenePedals, isEmpty);
     expect(backup.rows.sceneValues, isEmpty);
+    expect(backup.rows.academyCourses, isEmpty);
+    expect(backup.rows.academyProgress, isEmpty);
+  });
+
+  test('a file from before the Academy restores the gear in it', () async {
+    // What a phone at v14 wrote: every pedal and every board, and no curriculum,
+    // because there was none to write.
+    final beforeAcademy = edited((document) {
+      document['schemaVersion'] = 14;
+      final tables = document['tables'] as Map<String, dynamic>;
+      for (final table in const [
+        'academyCourses',
+        'academyModules',
+        'academyLessons',
+        'academyExercises',
+        'academyProgress',
+        'academyExerciseProgress',
+        'academyPracticeSessions',
+        'academyBookmarks',
+      ]) {
+        tables.remove(table);
+      }
+    });
+
+    final backup = decodeVaultBackup(beforeAcademy);
+
+    expect(backup.rows.pedals, saved.pedals);
+    expect(backup.rows.patches, saved.patches);
+    // Empty, not absent: a restore writes what the file says, and a player who
+    // had no Academy has done none of it. The seeder puts the curriculum back on
+    // the next launch.
+    expect(backup.rows.academyCourses, isEmpty);
+    expect(backup.rows.academyLessons, isEmpty);
+    expect(backup.rows.academyProgress, isEmpty);
+    expect(backup.rows.academyExerciseProgress, isEmpty);
+    expect(backup.rows.academyPracticeSessions, isEmpty);
+    expect(backup.rows.academyBookmarks, isEmpty);
+  });
+
+  test('a file carrying snapshots restores the rest of it', () async {
+    // What a phone at v13 wrote: the rig it holds is still the rig, and the days
+    // frozen on it have nowhere to go now.
+    final withSnapshots = edited((document) {
+      document['schemaVersion'] = 13;
+      (document['tables'] as Map<String, dynamic>)['snapshots'] = [
+        {
+          'id': 1,
+          'pedalboardId': saved.pedalboards.single.id,
+          'name': 'Easter 2026',
+          'capturedAt': '2026-04-05T09:00:00.000Z',
+        },
+      ];
+    });
+
+    final backup = decodeVaultBackup(withSnapshots);
+
+    expect(backup.rows.pedals, saved.pedals);
+    expect(backup.rows.pedalboards, saved.pedalboards);
+    expect(backup.rows.signalBlocks, saved.signalBlocks);
   });
 
   test('refuses a backup older than any version ever wrote', () async {

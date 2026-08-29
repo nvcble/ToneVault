@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../app/router/routes.dart';
+import '../../academy/widgets/academy_action.dart';
 import '../providers/history_providers.dart';
 import '../widgets/change_list_view.dart';
 
@@ -16,7 +17,10 @@ class HistoryScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
-      appBar: AppBar(title: const Text('History')),
+      appBar: AppBar(
+        title: const Text('History'),
+        actions: const [AcademyAction()],
+      ),
       body: ChangeListView(
         changes: ref.watch(recentHistoryProvider),
         showPedalNames: true,

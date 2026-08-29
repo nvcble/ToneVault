@@ -5,16 +5,17 @@ import 'backup_document.dart';
 
 /// How much is in a vault, in the terms the user thinks in.
 ///
-/// Controls, configuration values and snapshot readings are left out on purpose:
-/// nobody counts their knobs. These three are what a person can check against
-/// their own memory of what they own.
-typedef VaultTally = ({int pedals, int rigs, int snapshots});
+/// Controls and configuration values are left out on purpose: nobody counts
+/// their knobs. Pedals are what a person can check against their own memory of
+/// what they own.
+///
+/// A file still carries the boards of the rigs feature that came before the
+/// Academy, and a restore still puts them back, but they are not counted here:
+/// there is nowhere left in the app to go and look at them, and a number the
+/// user cannot follow up on is a number that only raises questions.
+typedef VaultTally = ({int pedals});
 
-VaultTally tallyVault(VaultRows rows) => (
-  pedals: rows.pedals.length,
-  rigs: rows.pedalboards.length,
-  snapshots: rows.snapshots.length,
-);
+VaultTally tallyVault(VaultRows rows) => (pedals: rows.pedals.length);
 
 /// What a backup holds, for the confirmation asked before it replaces
 /// everything.
@@ -30,8 +31,7 @@ String describeBackup(VaultBackup backup) {
   final tally = tallyVault(backup.rows);
 
   return 'Taken ${formatDateTime(backup.exportedAt)}, with '
-      '${_count(tally.pedals, 'pedal')}, ${_count(tally.rigs, 'rig')} and '
-      '${_count(tally.snapshots, 'snapshot')} in it.'
+      '${_count(tally.pedals, 'pedal')} in it.'
       '${backup.schemaVersion < currentSchemaVersion ? _madeByAnOlderApp : ''}';
 }
 
@@ -43,9 +43,7 @@ const String _madeByAnOlderApp =
 String describeRestored(VaultRows rows) {
   final tally = tallyVault(rows);
 
-  return 'Restored ${_count(tally.pedals, 'pedal')}, '
-      '${_count(tally.rigs, 'rig')} and '
-      '${_count(tally.snapshots, 'snapshot')}.';
+  return 'Restored ${_count(tally.pedals, 'pedal')}.';
 }
 
 /// "1 pedal", "12 pedals", "no pedals" - a backup of an empty vault is a real

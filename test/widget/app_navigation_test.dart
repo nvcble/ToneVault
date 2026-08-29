@@ -18,14 +18,13 @@ void main() {
     await tester.pumpAndSettle();
   }
 
-  testWidgets('bottom bar moves between all five tabs', (tester) async {
+  testWidgets('bottom bar moves between all four tabs', (tester) async {
     await pumpApp(tester);
 
     expect(find.text('Your collection'), findsOneWidget);
 
     for (final (label, expectedBody) in const [
       ('Pedals', 'No pedals yet'),
-      ('Rigs', 'No rigs yet'),
       ('History', 'Nothing logged yet'),
       ('Settings', 'Your gear, kept safe'),
       ('Home', 'Your collection'),

@@ -1,13 +1,22 @@
 import 'package:drift/drift.dart';
 import 'package:tone_vault/core/database/app_database.dart';
+import 'package:tone_vault/core/enums/bookmark_target.dart';
 import 'package:tone_vault/core/enums/change_type.dart';
 import 'package:tone_vault/core/enums/control_type.dart';
+import 'package:tone_vault/core/enums/learning_path.dart';
+import 'package:tone_vault/core/enums/lesson_kind.dart';
+import 'package:tone_vault/core/enums/music_genre.dart';
 import 'package:tone_vault/core/enums/pedal_category.dart';
 import 'package:tone_vault/core/enums/pedal_status.dart';
 import 'package:tone_vault/core/enums/pedal_type.dart';
+import 'package:tone_vault/core/enums/progress_state.dart';
 import 'package:tone_vault/core/enums/signal_block_type.dart';
 import 'package:tone_vault/core/enums/signal_connection_type.dart';
 import 'package:tone_vault/core/enums/signal_destination.dart';
+import 'package:tone_vault/core/enums/skill_level.dart';
+import 'package:tone_vault/core/enums/time_signature.dart';
+
+import 'snapshot_fixture.dart';
 
 /// A vault with one row in every table, for anything that has to handle the
 /// whole database at once.
@@ -258,37 +267,129 @@ Future<void> fillVault(AppDatabase database) async {
         ),
       );
 
-  final snapshotId = await database
-      .into(database.rigSnapshots)
+  await fillSnapshot(
+    database,
+    pedalboardId: pedalboardId,
+    pedalId: drivePedalId,
+    moment: moment,
+  );
+
+  await _fillAcademy(database, moment);
+}
+
+/// A course with a module, a lesson, an exercise, the progress against it - state,
+/// the tick on the exercise and the sitting it was practised in - and a bookmark.
+///
+/// The curriculum is carried by a backup as well as the progress, because progress
+/// points at a lesson by id: a file holding one without the other would credit the
+/// player against whatever lesson happened to be given that id.
+Future<void> _fillAcademy(AppDatabase database, DateTime moment) async {
+  final courseId = await database
+      .into(database.academyCourses)
       .insert(
-        RigSnapshotsCompanion.insert(
-          pedalboardId: pedalboardId,
-          name: 'Easter 2026',
-          notes: const Value('Second service'),
-          capturedAt: moment,
+        AcademyCoursesCompanion.insert(
+          slug: 'rhythm-beginner-first-chords',
+          path: LearningPath.rhythm,
+          level: SkillLevel.beginner,
+          title: 'First Chords',
+          summary: 'Open chords, and changing between them in time.',
+          position: 0,
+          createdAt: moment,
+          updatedAt: moment,
         ),
       );
 
-  final entryId = await database
-      .into(database.rigSnapshotEntries)
+  final moduleId = await database
+      .into(database.academyModules)
       .insert(
-        RigSnapshotEntriesCompanion.insert(
-          snapshotId: snapshotId,
-          pedalId: drivePedalId,
+        AcademyModulesCompanion.insert(
+          courseId: courseId,
+          slug: 'open-chords',
+          title: 'Open Chords',
+          summary: const Value('E minor, A minor, and back again.'),
           position: 0,
-          configurationName: const Value('Worship Lead'),
+          createdAt: moment,
+          updatedAt: moment,
+        ),
+      );
+
+  final lessonId = await database
+      .into(database.academyLessons)
+      .insert(
+        AcademyLessonsCompanion.insert(
+          moduleId: moduleId,
+          slug: 'em-to-am',
+          title: 'Em to Am',
+          kind: LessonKind.technique,
+          genre: const Value(MusicGenre.worship),
+          body: 'Fret it, strum it, listen.',
+          estimatedMinutes: const Value(10),
+          suggestedBpm: const Value(70),
+          timeSignature: const Value(TimeSignature.fourFour),
+          position: 0,
+          createdAt: moment,
+          updatedAt: moment,
+        ),
+      );
+
+  final exerciseId = await database
+      .into(database.academyExercises)
+      .insert(
+        AcademyExercisesCompanion.insert(
+          lessonId: lessonId,
+          title: 'Two bars each',
+          instructions: 'Change on the first beat, every time.',
+          startBpm: 60,
+          targetBpm: 90,
+          timeSignature: TimeSignature.fourFour,
+          position: 0,
+          createdAt: moment,
+          updatedAt: moment,
         ),
       );
 
   await database
-      .into(database.rigSnapshotValues)
+      .into(database.academyExerciseProgress)
       .insert(
-        RigSnapshotValuesCompanion.insert(
-          entryId: entryId,
-          controlName: 'Gain',
-          controlType: ControlType.clock,
-          value: 0.7,
-          displayOrder: 0,
+        AcademyExerciseProgressCompanion.insert(
+          exerciseId: exerciseId,
+          completedAt: moment,
+        ),
+      );
+
+  // The sitting the practice on the progress row was earned in. Both are carried,
+  // because the total is what a screen shows and the sitting is how it was earned.
+  await database
+      .into(database.academyPracticeSessions)
+      .insert(
+        AcademyPracticeSessionsCompanion.insert(
+          lessonId: lessonId,
+          seconds: 900,
+          endedAt: moment,
+        ),
+      );
+
+  await database
+      .into(database.academyProgress)
+      .insert(
+        AcademyProgressCompanion.insert(
+          lessonId: lessonId,
+          state: ProgressState.inProgress,
+          lastOpenedAt: moment,
+          practiceSeconds: const Value(900),
+        ),
+      );
+
+  // A bookmark on a chord rather than a lesson, because that is the one with no
+  // row anywhere to point at.
+  await database
+      .into(database.academyBookmarks)
+      .insert(
+        AcademyBookmarksCompanion.insert(
+          target: BookmarkTarget.chord,
+          targetKey: 'Cmaj7',
+          label: 'C major 7',
+          createdAt: moment,
         ),
       );
 }

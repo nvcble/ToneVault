@@ -1,0 +1,359 @@
+{
+  "formatVersion": 1,
+  "courses": [
+    {
+      "slug": "lead-advanced-lines-that-mean-something",
+      "path": "lead",
+      "level": "advanced",
+      "title": "Lines That Mean Something",
+      "summary": "Three-note-per-string scales, arpeggios through changes, chromatic approach and hybrid picking, and the melodic vocabulary of funk, soul and R&B lead playing.",
+      "modules": [
+        {
+          "slug": "scales-as-material",
+          "title": "Scales as Material, Not Exercises",
+          "summary": "Fingerings that keep up, and knowing which note in them is the point.",
+          "lessons": [
+            {
+              "slug": "three-note-per-string",
+              "title": "Three Notes Per String",
+              "kind": "technique",
+              "estimatedMinutes": 25,
+              "suggestedBpm": 80,
+              "timeSignature": "fourFour",
+              "theoryKeys": [
+                "G major",
+                "E minor"
+              ],
+              "body": "Two-note-per-string shapes are comfortable and slow, because the picking hand crosses strings twice as often. Three notes per string gives a six-note group on every pair of strings and lets the hand move in sextuplets without thinking about it.\n\nThere are seven of these shapes for the major scale, one starting on each degree, and they are the same seven modes you already know.\n\nPractise them in sixes, not in eights. Grouping a three-note-per-string scale in fours is what makes it sound like an exercise; grouping it in sixes is what makes it sound like a line.",
+              "exercises": [
+                {
+                  "title": "Sextuplets across the neck",
+                  "instructions": "One three-note-per-string shape of G major, ascending in groups of six, descending in groups of six, strictly alternate picked.",
+                  "startBpm": 55,
+                  "targetBpm": 120,
+                  "timeSignature": "fourFour"
+                }
+              ],
+              "objective": "Play a three-note-per-string major scale shape in groups of six, up and back down, so the picking hand moves in sextuplets without being told to.",
+              "commonMistakes": [
+                "Grouping the notes in fours, which is what makes a three-note-per-string scale sound like an exercise.",
+                "Seven new shapes learned as seven new scales, when they are the seven modes already known.",
+                "Legato on the way up and picking on the way down, so the two directions never sound alike."
+              ],
+              "practiceTips": [
+                "Count the sextuplets out loud in twos: the accent lands on a different note every group, which is the point.",
+                "Play one shape for a week rather than seven for a day."
+              ],
+              "nextSkill": "Modes Over Changes, Not Over a Drone"
+            },
+            {
+              "slug": "modes-over-real-changes",
+              "title": "Modes Over Changes, Not Over a Drone",
+              "kind": "theory",
+              "estimatedMinutes": 25,
+              "theoryKeys": [
+                "Dm7",
+                "G7",
+                "Cmaj7",
+                "A dorian"
+              ],
+              "body": "A mode over a single held chord is a colour. A mode over a progression is a decision that lasts one bar.\n\nOver **Dm7 G7 Cmaj7** in C, all three chords come from the same seven notes - so the scale does not change and playing \"D Dorian, then G Mixolydian, then C Ionian\" is three names for one thing. What changes is which notes are consonant, and that is the only part worth practising.\n\nSo the useful question is never which mode. It is: over this chord, which note is the third, which is the seventh, and which note do I need to avoid sitting on. Answer that in a bar and modes stop being a subject.",
+              "exercises": [
+                {
+                  "title": "Third and seventh only",
+                  "instructions": "Over Dm7 G7 Cmaj7 Cmaj7, play only the third and seventh of each chord, one bar each, connecting them by step.",
+                  "startBpm": 55,
+                  "targetBpm": 100,
+                  "timeSignature": "fourFour"
+                }
+              ],
+              "objective": "Name the third and the seventh of each chord as it passes, and connect them by step, so a mode becomes a decision that lasts one bar.",
+              "commonMistakes": [
+                "Changing scale at every chord when all three chords come from the same seven notes.",
+                "Asking which mode instead of which note is the third and which is the seventh.",
+                "Sitting on the avoid note, which is the one thing the mode name never tells you."
+              ],
+              "practiceTips": [
+                "Play nothing but thirds and sevenths for a whole chorus. The changes will be audible with two notes a bar.",
+                "Say the interval out loud as you land on it, until the neck stops needing to be worked out."
+              ],
+              "nextSkill": "Harmonic Minor and Borrowed Colour"
+            },
+            {
+              "slug": "harmonic-minor-and-borrowed-colour",
+              "title": "Harmonic Minor and Borrowed Colour",
+              "kind": "theory",
+              "estimatedMinutes": 20,
+              "theoryKeys": [
+                "A harmonic minor",
+                "E7"
+              ],
+              "body": "In a minor key, the five chord is usually a dominant seventh - **E7 in A minor** - and that chord contains a G#, which the natural minor scale does not have.\n\nRaise the seventh of A minor and you have **A harmonic minor**, which fits that chord exactly. The gap between the F and the G# is a step and a half, and that interval is the sound: flamenco, minor-key rock, a good deal of metal, and the last two bars of a minor blues.\n\nUse it where the harmony asks for it - over the five chord - and go back to natural minor elsewhere. Playing harmonic minor over everything is a costume, not a technique.",
+              "exercises": [
+                {
+                  "title": "Only on the five",
+                  "instructions": "Over Am, Dm, E7, Am, play natural minor for the first two bars and harmonic minor over the E7 bar. Resolve to A.",
+                  "startBpm": 60,
+                  "targetBpm": 105,
+                  "timeSignature": "fourFour"
+                }
+              ],
+              "objective": "Play harmonic minor over the five chord of a minor key and natural minor everywhere else, so the raised seventh arrives where the harmony asks for it.",
+              "commonMistakes": [
+                "Harmonic minor over everything, which is a costume rather than a technique.",
+                "Missing the raised seventh over the dominant, which is the only note the chord needed.",
+                "Playing the step-and-a-half as a scale run rather than resolving it upward to the root."
+              ],
+              "practiceTips": [
+                "Four bars of Am, Dm, E7, Am, changing scale for one bar only. Play it until the change is automatic.",
+                "Find the raised seventh in the shape you already improvise in, rather than learning a new fingering for it."
+              ],
+              "nextSkill": "Arpeggios Through a Progression"
+            }
+          ]
+        },
+        {
+          "slug": "through-the-changes",
+          "title": "Through the Changes",
+          "summary": "Arpeggios, chromatic approach, and lines that fit chords moving quickly.",
+          "lessons": [
+            {
+              "slug": "arpeggios-through-a-progression",
+              "title": "Arpeggios Through a Progression",
+              "kind": "technique",
+              "estimatedMinutes": 25,
+              "suggestedBpm": 80,
+              "timeSignature": "fourFour",
+              "theoryKeys": [
+                "Dm7",
+                "G7",
+                "Cmaj7"
+              ],
+              "body": "Take the four notes of each chord and play them as a line, moving to the nearest note of the next chord when the bar turns.\n\nFrom **Dm7** (D F A C) the nearest notes of **G7** (G B D F) are barely anywhere - so end the Dm7 bar on C and let it move a semitone to B. That semitone is the whole of jazz phrasing in miniature.\n\nOnce arpeggios through changes are comfortable, superimpose them: play the arpeggio of the chord's upper structure - Am7 over Cmaj7, Bm7b5 over G7 - and you get every extension without thinking about extensions at all.",
+              "exercises": [
+                {
+                  "title": "Nearest note at the bar line",
+                  "instructions": "Arpeggiate Dm7 G7 Cmaj7 A7, one bar each, always moving to the closest note of the next chord across the bar line.",
+                  "startBpm": 55,
+                  "targetBpm": 110,
+                  "timeSignature": "fourFour"
+                }
+              ],
+              "objective": "Arpeggiate a progression by moving to the nearest note of the next chord across the bar line, and superimpose an upper structure over one chord.",
+              "commonMistakes": [
+                "Restarting each arpeggio from its root, which turns a line into a series of exercises.",
+                "Leaping to the next chord when a semitone would have done it.",
+                "Reaching for extensions by name instead of playing the arpeggio that contains them."
+              ],
+              "practiceTips": [
+                "Practise only the two notes either side of the bar line for a while. That join is the whole skill.",
+                "Try Am7 over Cmaj7 and Bm7b5 over G7, and hear that you played extensions without thinking about any."
+              ],
+              "nextSkill": "Chromatic Approach Notes"
+            },
+            {
+              "slug": "chromatic-approach-notes",
+              "title": "Chromatic Approach Notes",
+              "kind": "theory",
+              "estimatedMinutes": 20,
+              "theoryKeys": [
+                "Cmaj7",
+                "G7"
+              ],
+              "body": "Any note can be made to sound intentional by arriving at it from a semitone away.\n\nThree devices:\n\n- **Approach from below** - play the semitone under a chord tone on the off-beat and land on the chord tone on the beat.\n- **Enclosure** - play a note above and a note below, then the target. Three notes, and the target sounds inevitable.\n- **Delayed resolution** - approach, then leave the target until the next beat. The line hangs.\n\nWhat makes these work is the rhythm, not the notes. Chromatic notes on the beat sound wrong; the same notes an eighth earlier sound like the vocabulary of every horn player you admire.",
+              "exercises": [
+                {
+                  "title": "Enclose the third",
+                  "instructions": "Over Cmaj7 for eight bars, land on E on beat 1 of every bar, enclosing it with F and D#. Then do the same over G7 landing on B.",
+                  "startBpm": 55,
+                  "targetBpm": 100,
+                  "timeSignature": "fourFour"
+                }
+              ],
+              "objective": "Approach a chord tone from a semitone below, enclose it from both sides, and delay the resolution, so a chromatic note sounds intentional.",
+              "commonMistakes": [
+                "Chromatic notes on the beat, which is what makes them sound wrong rather than deliberate.",
+                "Approaching a note that is not a chord tone, so there is nothing for the line to arrive at.",
+                "Adding chromatics everywhere until the key has gone."
+              ],
+              "practiceTips": [
+                "Land the target on beat 1 of every bar for eight bars, changing only how you arrive at it.",
+                "Play the same three notes an eighth earlier and then on the beat, and listen to the difference the rhythm alone makes."
+              ],
+              "nextSkill": "Hybrid Picking, and Where the Sound Comes From"
+            },
+            {
+              "slug": "hybrid-picking-and-attack",
+              "title": "Hybrid Picking, and Where the Sound Comes From",
+              "kind": "technique",
+              "estimatedMinutes": 20,
+              "body": "Hold the pick and use the middle and ring fingers at the same time. Non-adjacent strings become easy, and each note can have a different attack.\n\nThe pick is bright and hard; the flesh of a finger is round and quiet. A line that alternates between them has an accent pattern nothing else produces, which is why funk, country and modern fusion players all arrive at it independently.\n\nPractise the same phrase three ways: all pick, all fingers, hybrid. Then choose. Tone is a decision made by the right hand long before it reaches an amplifier.",
+              "exercises": [
+                {
+                  "title": "One phrase, three attacks",
+                  "instructions": "A four-note phrase across the D, G and high E strings, played all pick, then all fingers, then hybrid, two bars each.",
+                  "startBpm": 60,
+                  "targetBpm": 110,
+                  "timeSignature": "fourFour"
+                }
+              ],
+              "objective": "Play one phrase with the pick, with the fingers, and with both, and choose the attack rather than inherit it.",
+              "commonMistakes": [
+                "Fingers far quieter than the pick, so the line has holes in it.",
+                "Letting go of the pick to use the fingers, which is a different technique.",
+                "Reaching for hybrid picking on adjacent strings, where nothing was gained."
+              ],
+              "practiceTips": [
+                "Two bars each of all pick, all fingers, then hybrid. Same phrase, so the comparison is honest.",
+                "Anchor nothing. The fingers pluck upwards while the wrist keeps doing what it already does."
+              ],
+              "nextSkill": "Taking Lines Off Records"
+            },
+            {
+              "slug": "hearing-intervals-and-licks",
+              "title": "Taking Lines Off Records",
+              "kind": "earTraining",
+              "estimatedMinutes": 25,
+              "theoryKeys": [
+                "A minor 3rd",
+                "A perfect 4th",
+                "A minor 7th"
+              ],
+              "body": "Every player worth listening to learned by copying, and the copying is where the ear is built.\n\nThe method: play four seconds of a line, sing it back before touching the guitar, then find it. Singing first is not optional - it is what forces the ear to hold the shape rather than the fret numbers.\n\nStart with intervals rather than whole solos. Learn to recognise a minor third, a fourth and a minor seventh instantly, and most lines become two or three known shapes joined together.",
+              "exercises": [
+                {
+                  "title": "Sing it, then find it",
+                  "instructions": "Play a two-bar phrase, look away, sing it, then play it back from memory. Ten phrases, none written down.",
+                  "startBpm": 60,
+                  "targetBpm": 90,
+                  "timeSignature": "fourFour"
+                }
+              ],
+              "objective": "Sing a two-bar phrase back before touching the guitar, then find it, so the ear holds the shape rather than the fret numbers.",
+              "commonMistakes": [
+                "Reaching for the guitar first, which teaches the fingers and not the ear.",
+                "Starting with whole solos rather than with intervals.",
+                "Writing the phrase down, which is the memory doing no work."
+              ],
+              "practiceTips": [
+                "Learn a minor third, a fourth and a minor seventh cold. Most lines are two or three known shapes joined up.",
+                "Ten phrases a session, none of them written down, and stop while it is still going well."
+              ],
+              "nextSkill": "Funk: Single-Note Lines"
+            }
+          ]
+        },
+        {
+          "slug": "advanced-lead-styles",
+          "title": "Three Melodic Traditions",
+          "summary": "Funk, soul and R&B lead playing, where a single note choice is the whole part.",
+          "lessons": [
+            {
+              "slug": "funk-single-note-lines",
+              "title": "Funk: Single-Note Lines",
+              "kind": "genre",
+              "genre": "funk",
+              "estimatedMinutes": 25,
+              "suggestedBpm": 100,
+              "timeSignature": "fourFour",
+              "theoryKeys": [
+                "E dorian",
+                "E7"
+              ],
+              "body": "Funk lead is rhythm playing with one note at a time. The line is short, it repeats, and its placement inside the sixteenths is the entire content.\n\nBuild from **E Dorian** and the E minor pentatonic, on the top three strings, muted hard. Write four notes. Now move one of them half a beat and hear the part change completely - that is the actual craft.\n\nGhost notes matter as much as sounded ones. A dead, pitchless click where a note would be keeps the sixteenths audible and makes the notes you do play land.",
+              "exercises": [
+                {
+                  "title": "Four notes, moved",
+                  "instructions": "A four-note figure in E Dorian over one bar, played eight times, then shift one note by a sixteenth and play it eight more.",
+                  "startBpm": 75,
+                  "targetBpm": 115,
+                  "timeSignature": "fourFour"
+                }
+              ],
+              "objective": "Write a four-note figure in dorian, play it eight times, then move one note by a sixteenth and hear the part change completely.",
+              "commonMistakes": [
+                "Adding notes when the part needs the same notes placed differently.",
+                "No ghost notes, so the sixteenths stop being audible between the notes you play.",
+                "Ringing notes. Funk lead is muted hard, and the mute is part of the pitch."
+              ],
+              "practiceTips": [
+                "Count sixteenths out loud and strum the mute where the notes are not. The hand never stops.",
+                "Record the figure and the same figure with one note moved. The second is usually the part."
+              ],
+              "nextSkill": "Soul: Fills That Answer the Singer"
+            },
+            {
+              "slug": "soul-melodic-fills",
+              "title": "Soul: Fills That Answer the Singer",
+              "kind": "genre",
+              "genre": "soul",
+              "estimatedMinutes": 25,
+              "suggestedBpm": 96,
+              "timeSignature": "fourFour",
+              "theoryKeys": [
+                "C major",
+                "A minor pentatonic"
+              ],
+              "body": "In soul music the lead guitar fills the gaps a voice leaves and is silent everywhere else. That is a harder discipline than soloing, because the length of what you play is decided by somebody else.\n\nA fill is two beats long. It starts after the vocal phrase ends and finishes before the next one begins. It usually harmonises in thirds or sixths, and it usually lands on the third of the chord.\n\nPractise against a record with a vocal on it. If you and the singer are ever sounding at the same time, the fill was too long.",
+              "exercises": [
+                {
+                  "title": "Two-beat fills only",
+                  "instructions": "Over C Am F G, play a two-beat fill on beats 3 and 4 of every second bar and nothing anywhere else. Sixteen bars.",
+                  "startBpm": 80,
+                  "targetBpm": 110,
+                  "timeSignature": "fourFour"
+                }
+              ],
+              "objective": "Play two-beat fills in the gaps a vocal leaves and nothing anywhere else, landing on the third of the chord.",
+              "commonMistakes": [
+                "A fill that runs into the next vocal line, which is the one unforgivable mistake in the style.",
+                "Playing between the gaps as well as in them.",
+                "Ending the fill on the root, when the third is what makes it sound like an answer."
+              ],
+              "practiceTips": [
+                "Practise against a record with a voice on it. If you and the singer sound together, the fill was too long.",
+                "Two beats, harmonised in thirds or sixths. Count the two beats before you play them."
+              ],
+              "nextSkill": "R&B: Micro-Bends, Slides and Behind the Beat"
+            },
+            {
+              "slug": "rnb-bends-and-slides",
+              "title": "R&B: Micro-Bends, Slides and Behind the Beat",
+              "kind": "genre",
+              "genre": "rnb",
+              "estimatedMinutes": 25,
+              "suggestedBpm": 80,
+              "timeSignature": "fourFour",
+              "theoryKeys": [
+                "Fmaj9",
+                "Dm9",
+                "F major"
+              ],
+              "body": "R&B lead playing gets its character from what happens between the notes.\n\n**Micro-bends** - push a note up by a quarter tone, less than a fret, so it sits between the major and minor third. That deliberately ambiguous third is the sound.\n\n**Slides into double stops** - arrive at a pair of notes from two frets below, both fingers moving together, and let them ring.\n\nAnd place all of it slightly late. Playing behind the beat with the time still solid takes a click and a lot of patience, and it is what separates the style from a collection of its licks.",
+              "exercises": [
+                {
+                  "title": "Quarter-tone third",
+                  "instructions": "Over an Fmaj9 vamp, play the minor third and bend it up a quarter tone, holding it until the ambiguity is audible. Eight bars, one note a bar.",
+                  "startBpm": 65,
+                  "targetBpm": 90,
+                  "timeSignature": "fourFour"
+                }
+              ],
+              "objective": "Bend a minor third up by a quarter tone and hold it, slide into a double stop from two frets below, and place all of it slightly late.",
+              "commonMistakes": [
+                "Bending the third all the way to major, which resolves the ambiguity the style lives on.",
+                "One finger arriving before the other in a slid double stop.",
+                "Playing behind the beat by losing time rather than by choosing to sit late."
+              ],
+              "practiceTips": [
+                "One note a bar for eight bars, bent a quarter tone and held until the ambiguity is audible.",
+                "Keep the click on. Behind the beat only exists if the beat is still exactly where it was."
+              ],
+              "nextSkill": "Phrasing a solo over a whole song"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

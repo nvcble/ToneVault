@@ -90,12 +90,59 @@ Map<String, dynamic> upgradeBackupTables(
     // recorded the pedals on the board and nothing recorded a bypass. What the
     // edges reached is left unsaid, which needs no filling in - the column is
     // nullable, and null is what an old snapshot recorded.
+    //
+    // Still done, though nothing in the app reads a snapshot any more. A restore
+    // is the only way those rows get back onto a phone, so this is the step that
+    // decides whether they arrive whole or not at all.
     final entries = upgraded['snapshotEntries'];
     if (entries is List) {
       upgraded['snapshotEntries'] = [
         for (final entry in entries.whereType<Map<String, dynamic>>())
           {...entry, 'isEnabled': true},
       ];
+    }
+  }
+
+  // v14 needs no step. The rigs feature went at that version and its tables
+  // stayed, so a file from before it says exactly what a file from after it says.
+
+  if (from < 15) {
+    // v15 added the Academy. A file from before it has no curriculum and no
+    // progress against one, and empty is right for both: the curriculum the app
+    // ships with is seeded on first run, and a player who had no Academy has done
+    // none of it.
+    //
+    // A restore is a replacement, so this does clear the curriculum the phone had
+    // already seeded along with everything else. That is why the seeder checks
+    // whether any course is stored every time the app opens rather than only on a
+    // fresh install: the next launch after such a restore puts the curriculum back.
+    for (final table in const [
+      'academyCourses',
+      'academyModules',
+      'academyLessons',
+      'academyExercises',
+      'academyProgress',
+      'academyBookmarks',
+    ]) {
+      upgraded.putIfAbsent(table, () => const <dynamic>[]);
+    }
+  }
+
+  if (from < 17) {
+    // v17 began recording which exercises the player got through and each sitting of
+    // practice. Empty for both, which is what the migration does to a phone as well:
+    // no file ever written said which exercise was ticked, and the practice in an
+    // older file is a single total with no dates in it, so splitting it into sittings
+    // would be inventing evenings.
+    //
+    // The total itself is on the progress row and comes across untouched, so a
+    // restored lesson still says how long it was practised for - only in one line
+    // rather than in a list.
+    for (final table in const [
+      'academyExerciseProgress',
+      'academyPracticeSessions',
+    ]) {
+      upgraded.putIfAbsent(table, () => const <dynamic>[]);
     }
   }
 

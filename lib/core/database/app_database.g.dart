@@ -8172,6 +8172,4204 @@ class RigSnapshotValuesCompanion extends UpdateCompanion<RigSnapshotValue> {
   }
 }
 
+class $AcademyCoursesTable extends AcademyCourses
+    with TableInfo<$AcademyCoursesTable, AcademyCourse> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $AcademyCoursesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'PRIMARY KEY AUTOINCREMENT',
+    ),
+  );
+  static const VerificationMeta _slugMeta = const VerificationMeta('slug');
+  @override
+  late final GeneratedColumn<String> slug = GeneratedColumn<String>(
+    'slug',
+    aliasedName,
+    false,
+    additionalChecks: GeneratedColumn.checkTextLength(
+      minTextLength: 1,
+      maxTextLength: 80,
+    ),
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  @override
+  late final GeneratedColumnWithTypeConverter<LearningPath, String> path =
+      GeneratedColumn<String>(
+        'path',
+        aliasedName,
+        false,
+        type: DriftSqlType.string,
+        requiredDuringInsert: true,
+      ).withConverter<LearningPath>($AcademyCoursesTable.$converterpath);
+  @override
+  late final GeneratedColumnWithTypeConverter<SkillLevel, String> level =
+      GeneratedColumn<String>(
+        'level',
+        aliasedName,
+        false,
+        type: DriftSqlType.string,
+        requiredDuringInsert: true,
+      ).withConverter<SkillLevel>($AcademyCoursesTable.$converterlevel);
+  static const VerificationMeta _titleMeta = const VerificationMeta('title');
+  @override
+  late final GeneratedColumn<String> title = GeneratedColumn<String>(
+    'title',
+    aliasedName,
+    false,
+    additionalChecks: GeneratedColumn.checkTextLength(
+      minTextLength: 1,
+      maxTextLength: 120,
+    ),
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _summaryMeta = const VerificationMeta(
+    'summary',
+  );
+  @override
+  late final GeneratedColumn<String> summary = GeneratedColumn<String>(
+    'summary',
+    aliasedName,
+    false,
+    additionalChecks: GeneratedColumn.checkTextLength(
+      minTextLength: 1,
+      maxTextLength: 400,
+    ),
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _positionMeta = const VerificationMeta(
+    'position',
+  );
+  @override
+  late final GeneratedColumn<int> position = GeneratedColumn<int>(
+    'position',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _updatedAtMeta = const VerificationMeta(
+    'updatedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
+    'updated_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    slug,
+    path,
+    level,
+    title,
+    summary,
+    position,
+    createdAt,
+    updatedAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'academy_courses';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<AcademyCourse> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('slug')) {
+      context.handle(
+        _slugMeta,
+        slug.isAcceptableOrUnknown(data['slug']!, _slugMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_slugMeta);
+    }
+    if (data.containsKey('title')) {
+      context.handle(
+        _titleMeta,
+        title.isAcceptableOrUnknown(data['title']!, _titleMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_titleMeta);
+    }
+    if (data.containsKey('summary')) {
+      context.handle(
+        _summaryMeta,
+        summary.isAcceptableOrUnknown(data['summary']!, _summaryMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_summaryMeta);
+    }
+    if (data.containsKey('position')) {
+      context.handle(
+        _positionMeta,
+        position.isAcceptableOrUnknown(data['position']!, _positionMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_positionMeta);
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(
+        _updatedAtMeta,
+        updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_updatedAtMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  List<Set<GeneratedColumn>> get uniqueKeys => [
+    {slug},
+  ];
+  @override
+  AcademyCourse map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return AcademyCourse(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      slug: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}slug'],
+      )!,
+      path: $AcademyCoursesTable.$converterpath.fromSql(
+        attachedDatabase.typeMapping.read(
+          DriftSqlType.string,
+          data['${effectivePrefix}path'],
+        )!,
+      ),
+      level: $AcademyCoursesTable.$converterlevel.fromSql(
+        attachedDatabase.typeMapping.read(
+          DriftSqlType.string,
+          data['${effectivePrefix}level'],
+        )!,
+      ),
+      title: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}title'],
+      )!,
+      summary: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}summary'],
+      )!,
+      position: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}position'],
+      )!,
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created_at'],
+      )!,
+      updatedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}updated_at'],
+      )!,
+    );
+  }
+
+  @override
+  $AcademyCoursesTable createAlias(String alias) {
+    return $AcademyCoursesTable(attachedDatabase, alias);
+  }
+
+  static JsonTypeConverter2<LearningPath, String, String> $converterpath =
+      const EnumNameConverter<LearningPath>(LearningPath.values);
+  static JsonTypeConverter2<SkillLevel, String, String> $converterlevel =
+      const EnumNameConverter<SkillLevel>(SkillLevel.values);
+}
+
+class AcademyCourse extends DataClass implements Insertable<AcademyCourse> {
+  final int id;
+
+  /// Stable across imports and across phones. Lower case with hyphens by
+  /// convention, but nothing enforces the shape: it only has to be the same
+  /// string next time.
+  final String slug;
+  final LearningPath path;
+  final SkillLevel level;
+  final String title;
+  final String summary;
+
+  /// Where the course sits among the others at its level. Not unique: two
+  /// courses sharing a position is untidy rather than wrong, and refusing an
+  /// import over it would be refusing a whole file for a cosmetic clash.
+  final int position;
+  final DateTime createdAt;
+  final DateTime updatedAt;
+  const AcademyCourse({
+    required this.id,
+    required this.slug,
+    required this.path,
+    required this.level,
+    required this.title,
+    required this.summary,
+    required this.position,
+    required this.createdAt,
+    required this.updatedAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['slug'] = Variable<String>(slug);
+    {
+      map['path'] = Variable<String>(
+        $AcademyCoursesTable.$converterpath.toSql(path),
+      );
+    }
+    {
+      map['level'] = Variable<String>(
+        $AcademyCoursesTable.$converterlevel.toSql(level),
+      );
+    }
+    map['title'] = Variable<String>(title);
+    map['summary'] = Variable<String>(summary);
+    map['position'] = Variable<int>(position);
+    map['created_at'] = Variable<DateTime>(createdAt);
+    map['updated_at'] = Variable<DateTime>(updatedAt);
+    return map;
+  }
+
+  AcademyCoursesCompanion toCompanion(bool nullToAbsent) {
+    return AcademyCoursesCompanion(
+      id: Value(id),
+      slug: Value(slug),
+      path: Value(path),
+      level: Value(level),
+      title: Value(title),
+      summary: Value(summary),
+      position: Value(position),
+      createdAt: Value(createdAt),
+      updatedAt: Value(updatedAt),
+    );
+  }
+
+  factory AcademyCourse.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return AcademyCourse(
+      id: serializer.fromJson<int>(json['id']),
+      slug: serializer.fromJson<String>(json['slug']),
+      path: $AcademyCoursesTable.$converterpath.fromJson(
+        serializer.fromJson<String>(json['path']),
+      ),
+      level: $AcademyCoursesTable.$converterlevel.fromJson(
+        serializer.fromJson<String>(json['level']),
+      ),
+      title: serializer.fromJson<String>(json['title']),
+      summary: serializer.fromJson<String>(json['summary']),
+      position: serializer.fromJson<int>(json['position']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'slug': serializer.toJson<String>(slug),
+      'path': serializer.toJson<String>(
+        $AcademyCoursesTable.$converterpath.toJson(path),
+      ),
+      'level': serializer.toJson<String>(
+        $AcademyCoursesTable.$converterlevel.toJson(level),
+      ),
+      'title': serializer.toJson<String>(title),
+      'summary': serializer.toJson<String>(summary),
+      'position': serializer.toJson<int>(position),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+      'updatedAt': serializer.toJson<DateTime>(updatedAt),
+    };
+  }
+
+  AcademyCourse copyWith({
+    int? id,
+    String? slug,
+    LearningPath? path,
+    SkillLevel? level,
+    String? title,
+    String? summary,
+    int? position,
+    DateTime? createdAt,
+    DateTime? updatedAt,
+  }) => AcademyCourse(
+    id: id ?? this.id,
+    slug: slug ?? this.slug,
+    path: path ?? this.path,
+    level: level ?? this.level,
+    title: title ?? this.title,
+    summary: summary ?? this.summary,
+    position: position ?? this.position,
+    createdAt: createdAt ?? this.createdAt,
+    updatedAt: updatedAt ?? this.updatedAt,
+  );
+  AcademyCourse copyWithCompanion(AcademyCoursesCompanion data) {
+    return AcademyCourse(
+      id: data.id.present ? data.id.value : this.id,
+      slug: data.slug.present ? data.slug.value : this.slug,
+      path: data.path.present ? data.path.value : this.path,
+      level: data.level.present ? data.level.value : this.level,
+      title: data.title.present ? data.title.value : this.title,
+      summary: data.summary.present ? data.summary.value : this.summary,
+      position: data.position.present ? data.position.value : this.position,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('AcademyCourse(')
+          ..write('id: $id, ')
+          ..write('slug: $slug, ')
+          ..write('path: $path, ')
+          ..write('level: $level, ')
+          ..write('title: $title, ')
+          ..write('summary: $summary, ')
+          ..write('position: $position, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    slug,
+    path,
+    level,
+    title,
+    summary,
+    position,
+    createdAt,
+    updatedAt,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is AcademyCourse &&
+          other.id == this.id &&
+          other.slug == this.slug &&
+          other.path == this.path &&
+          other.level == this.level &&
+          other.title == this.title &&
+          other.summary == this.summary &&
+          other.position == this.position &&
+          other.createdAt == this.createdAt &&
+          other.updatedAt == this.updatedAt);
+}
+
+class AcademyCoursesCompanion extends UpdateCompanion<AcademyCourse> {
+  final Value<int> id;
+  final Value<String> slug;
+  final Value<LearningPath> path;
+  final Value<SkillLevel> level;
+  final Value<String> title;
+  final Value<String> summary;
+  final Value<int> position;
+  final Value<DateTime> createdAt;
+  final Value<DateTime> updatedAt;
+  const AcademyCoursesCompanion({
+    this.id = const Value.absent(),
+    this.slug = const Value.absent(),
+    this.path = const Value.absent(),
+    this.level = const Value.absent(),
+    this.title = const Value.absent(),
+    this.summary = const Value.absent(),
+    this.position = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+  });
+  AcademyCoursesCompanion.insert({
+    this.id = const Value.absent(),
+    required String slug,
+    required LearningPath path,
+    required SkillLevel level,
+    required String title,
+    required String summary,
+    required int position,
+    required DateTime createdAt,
+    required DateTime updatedAt,
+  }) : slug = Value(slug),
+       path = Value(path),
+       level = Value(level),
+       title = Value(title),
+       summary = Value(summary),
+       position = Value(position),
+       createdAt = Value(createdAt),
+       updatedAt = Value(updatedAt);
+  static Insertable<AcademyCourse> custom({
+    Expression<int>? id,
+    Expression<String>? slug,
+    Expression<String>? path,
+    Expression<String>? level,
+    Expression<String>? title,
+    Expression<String>? summary,
+    Expression<int>? position,
+    Expression<DateTime>? createdAt,
+    Expression<DateTime>? updatedAt,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (slug != null) 'slug': slug,
+      if (path != null) 'path': path,
+      if (level != null) 'level': level,
+      if (title != null) 'title': title,
+      if (summary != null) 'summary': summary,
+      if (position != null) 'position': position,
+      if (createdAt != null) 'created_at': createdAt,
+      if (updatedAt != null) 'updated_at': updatedAt,
+    });
+  }
+
+  AcademyCoursesCompanion copyWith({
+    Value<int>? id,
+    Value<String>? slug,
+    Value<LearningPath>? path,
+    Value<SkillLevel>? level,
+    Value<String>? title,
+    Value<String>? summary,
+    Value<int>? position,
+    Value<DateTime>? createdAt,
+    Value<DateTime>? updatedAt,
+  }) {
+    return AcademyCoursesCompanion(
+      id: id ?? this.id,
+      slug: slug ?? this.slug,
+      path: path ?? this.path,
+      level: level ?? this.level,
+      title: title ?? this.title,
+      summary: summary ?? this.summary,
+      position: position ?? this.position,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (slug.present) {
+      map['slug'] = Variable<String>(slug.value);
+    }
+    if (path.present) {
+      map['path'] = Variable<String>(
+        $AcademyCoursesTable.$converterpath.toSql(path.value),
+      );
+    }
+    if (level.present) {
+      map['level'] = Variable<String>(
+        $AcademyCoursesTable.$converterlevel.toSql(level.value),
+      );
+    }
+    if (title.present) {
+      map['title'] = Variable<String>(title.value);
+    }
+    if (summary.present) {
+      map['summary'] = Variable<String>(summary.value);
+    }
+    if (position.present) {
+      map['position'] = Variable<int>(position.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<DateTime>(updatedAt.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('AcademyCoursesCompanion(')
+          ..write('id: $id, ')
+          ..write('slug: $slug, ')
+          ..write('path: $path, ')
+          ..write('level: $level, ')
+          ..write('title: $title, ')
+          ..write('summary: $summary, ')
+          ..write('position: $position, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $AcademyModulesTable extends AcademyModules
+    with TableInfo<$AcademyModulesTable, AcademyModule> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $AcademyModulesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'PRIMARY KEY AUTOINCREMENT',
+    ),
+  );
+  static const VerificationMeta _courseIdMeta = const VerificationMeta(
+    'courseId',
+  );
+  @override
+  late final GeneratedColumn<int> courseId = GeneratedColumn<int>(
+    'course_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES academy_courses (id) ON DELETE CASCADE',
+    ),
+  );
+  static const VerificationMeta _slugMeta = const VerificationMeta('slug');
+  @override
+  late final GeneratedColumn<String> slug = GeneratedColumn<String>(
+    'slug',
+    aliasedName,
+    false,
+    additionalChecks: GeneratedColumn.checkTextLength(
+      minTextLength: 1,
+      maxTextLength: 80,
+    ),
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _titleMeta = const VerificationMeta('title');
+  @override
+  late final GeneratedColumn<String> title = GeneratedColumn<String>(
+    'title',
+    aliasedName,
+    false,
+    additionalChecks: GeneratedColumn.checkTextLength(
+      minTextLength: 1,
+      maxTextLength: 120,
+    ),
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _summaryMeta = const VerificationMeta(
+    'summary',
+  );
+  @override
+  late final GeneratedColumn<String> summary = GeneratedColumn<String>(
+    'summary',
+    aliasedName,
+    true,
+    additionalChecks: GeneratedColumn.checkTextLength(maxTextLength: 400),
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _positionMeta = const VerificationMeta(
+    'position',
+  );
+  @override
+  late final GeneratedColumn<int> position = GeneratedColumn<int>(
+    'position',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _updatedAtMeta = const VerificationMeta(
+    'updatedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
+    'updated_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    courseId,
+    slug,
+    title,
+    summary,
+    position,
+    createdAt,
+    updatedAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'academy_modules';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<AcademyModule> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('course_id')) {
+      context.handle(
+        _courseIdMeta,
+        courseId.isAcceptableOrUnknown(data['course_id']!, _courseIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_courseIdMeta);
+    }
+    if (data.containsKey('slug')) {
+      context.handle(
+        _slugMeta,
+        slug.isAcceptableOrUnknown(data['slug']!, _slugMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_slugMeta);
+    }
+    if (data.containsKey('title')) {
+      context.handle(
+        _titleMeta,
+        title.isAcceptableOrUnknown(data['title']!, _titleMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_titleMeta);
+    }
+    if (data.containsKey('summary')) {
+      context.handle(
+        _summaryMeta,
+        summary.isAcceptableOrUnknown(data['summary']!, _summaryMeta),
+      );
+    }
+    if (data.containsKey('position')) {
+      context.handle(
+        _positionMeta,
+        position.isAcceptableOrUnknown(data['position']!, _positionMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_positionMeta);
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(
+        _updatedAtMeta,
+        updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_updatedAtMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  List<Set<GeneratedColumn>> get uniqueKeys => [
+    {courseId, slug},
+  ];
+  @override
+  AcademyModule map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return AcademyModule(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      courseId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}course_id'],
+      )!,
+      slug: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}slug'],
+      )!,
+      title: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}title'],
+      )!,
+      summary: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}summary'],
+      ),
+      position: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}position'],
+      )!,
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created_at'],
+      )!,
+      updatedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}updated_at'],
+      )!,
+    );
+  }
+
+  @override
+  $AcademyModulesTable createAlias(String alias) {
+    return $AcademyModulesTable(attachedDatabase, alias);
+  }
+}
+
+class AcademyModule extends DataClass implements Insertable<AcademyModule> {
+  final int id;
+  final int courseId;
+  final String slug;
+  final String title;
+  final String? summary;
+  final int position;
+  final DateTime createdAt;
+  final DateTime updatedAt;
+  const AcademyModule({
+    required this.id,
+    required this.courseId,
+    required this.slug,
+    required this.title,
+    this.summary,
+    required this.position,
+    required this.createdAt,
+    required this.updatedAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['course_id'] = Variable<int>(courseId);
+    map['slug'] = Variable<String>(slug);
+    map['title'] = Variable<String>(title);
+    if (!nullToAbsent || summary != null) {
+      map['summary'] = Variable<String>(summary);
+    }
+    map['position'] = Variable<int>(position);
+    map['created_at'] = Variable<DateTime>(createdAt);
+    map['updated_at'] = Variable<DateTime>(updatedAt);
+    return map;
+  }
+
+  AcademyModulesCompanion toCompanion(bool nullToAbsent) {
+    return AcademyModulesCompanion(
+      id: Value(id),
+      courseId: Value(courseId),
+      slug: Value(slug),
+      title: Value(title),
+      summary: summary == null && nullToAbsent
+          ? const Value.absent()
+          : Value(summary),
+      position: Value(position),
+      createdAt: Value(createdAt),
+      updatedAt: Value(updatedAt),
+    );
+  }
+
+  factory AcademyModule.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return AcademyModule(
+      id: serializer.fromJson<int>(json['id']),
+      courseId: serializer.fromJson<int>(json['courseId']),
+      slug: serializer.fromJson<String>(json['slug']),
+      title: serializer.fromJson<String>(json['title']),
+      summary: serializer.fromJson<String?>(json['summary']),
+      position: serializer.fromJson<int>(json['position']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'courseId': serializer.toJson<int>(courseId),
+      'slug': serializer.toJson<String>(slug),
+      'title': serializer.toJson<String>(title),
+      'summary': serializer.toJson<String?>(summary),
+      'position': serializer.toJson<int>(position),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+      'updatedAt': serializer.toJson<DateTime>(updatedAt),
+    };
+  }
+
+  AcademyModule copyWith({
+    int? id,
+    int? courseId,
+    String? slug,
+    String? title,
+    Value<String?> summary = const Value.absent(),
+    int? position,
+    DateTime? createdAt,
+    DateTime? updatedAt,
+  }) => AcademyModule(
+    id: id ?? this.id,
+    courseId: courseId ?? this.courseId,
+    slug: slug ?? this.slug,
+    title: title ?? this.title,
+    summary: summary.present ? summary.value : this.summary,
+    position: position ?? this.position,
+    createdAt: createdAt ?? this.createdAt,
+    updatedAt: updatedAt ?? this.updatedAt,
+  );
+  AcademyModule copyWithCompanion(AcademyModulesCompanion data) {
+    return AcademyModule(
+      id: data.id.present ? data.id.value : this.id,
+      courseId: data.courseId.present ? data.courseId.value : this.courseId,
+      slug: data.slug.present ? data.slug.value : this.slug,
+      title: data.title.present ? data.title.value : this.title,
+      summary: data.summary.present ? data.summary.value : this.summary,
+      position: data.position.present ? data.position.value : this.position,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('AcademyModule(')
+          ..write('id: $id, ')
+          ..write('courseId: $courseId, ')
+          ..write('slug: $slug, ')
+          ..write('title: $title, ')
+          ..write('summary: $summary, ')
+          ..write('position: $position, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    courseId,
+    slug,
+    title,
+    summary,
+    position,
+    createdAt,
+    updatedAt,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is AcademyModule &&
+          other.id == this.id &&
+          other.courseId == this.courseId &&
+          other.slug == this.slug &&
+          other.title == this.title &&
+          other.summary == this.summary &&
+          other.position == this.position &&
+          other.createdAt == this.createdAt &&
+          other.updatedAt == this.updatedAt);
+}
+
+class AcademyModulesCompanion extends UpdateCompanion<AcademyModule> {
+  final Value<int> id;
+  final Value<int> courseId;
+  final Value<String> slug;
+  final Value<String> title;
+  final Value<String?> summary;
+  final Value<int> position;
+  final Value<DateTime> createdAt;
+  final Value<DateTime> updatedAt;
+  const AcademyModulesCompanion({
+    this.id = const Value.absent(),
+    this.courseId = const Value.absent(),
+    this.slug = const Value.absent(),
+    this.title = const Value.absent(),
+    this.summary = const Value.absent(),
+    this.position = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+  });
+  AcademyModulesCompanion.insert({
+    this.id = const Value.absent(),
+    required int courseId,
+    required String slug,
+    required String title,
+    this.summary = const Value.absent(),
+    required int position,
+    required DateTime createdAt,
+    required DateTime updatedAt,
+  }) : courseId = Value(courseId),
+       slug = Value(slug),
+       title = Value(title),
+       position = Value(position),
+       createdAt = Value(createdAt),
+       updatedAt = Value(updatedAt);
+  static Insertable<AcademyModule> custom({
+    Expression<int>? id,
+    Expression<int>? courseId,
+    Expression<String>? slug,
+    Expression<String>? title,
+    Expression<String>? summary,
+    Expression<int>? position,
+    Expression<DateTime>? createdAt,
+    Expression<DateTime>? updatedAt,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (courseId != null) 'course_id': courseId,
+      if (slug != null) 'slug': slug,
+      if (title != null) 'title': title,
+      if (summary != null) 'summary': summary,
+      if (position != null) 'position': position,
+      if (createdAt != null) 'created_at': createdAt,
+      if (updatedAt != null) 'updated_at': updatedAt,
+    });
+  }
+
+  AcademyModulesCompanion copyWith({
+    Value<int>? id,
+    Value<int>? courseId,
+    Value<String>? slug,
+    Value<String>? title,
+    Value<String?>? summary,
+    Value<int>? position,
+    Value<DateTime>? createdAt,
+    Value<DateTime>? updatedAt,
+  }) {
+    return AcademyModulesCompanion(
+      id: id ?? this.id,
+      courseId: courseId ?? this.courseId,
+      slug: slug ?? this.slug,
+      title: title ?? this.title,
+      summary: summary ?? this.summary,
+      position: position ?? this.position,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (courseId.present) {
+      map['course_id'] = Variable<int>(courseId.value);
+    }
+    if (slug.present) {
+      map['slug'] = Variable<String>(slug.value);
+    }
+    if (title.present) {
+      map['title'] = Variable<String>(title.value);
+    }
+    if (summary.present) {
+      map['summary'] = Variable<String>(summary.value);
+    }
+    if (position.present) {
+      map['position'] = Variable<int>(position.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<DateTime>(updatedAt.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('AcademyModulesCompanion(')
+          ..write('id: $id, ')
+          ..write('courseId: $courseId, ')
+          ..write('slug: $slug, ')
+          ..write('title: $title, ')
+          ..write('summary: $summary, ')
+          ..write('position: $position, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $AcademyLessonsTable extends AcademyLessons
+    with TableInfo<$AcademyLessonsTable, AcademyLesson> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $AcademyLessonsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'PRIMARY KEY AUTOINCREMENT',
+    ),
+  );
+  static const VerificationMeta _moduleIdMeta = const VerificationMeta(
+    'moduleId',
+  );
+  @override
+  late final GeneratedColumn<int> moduleId = GeneratedColumn<int>(
+    'module_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES academy_modules (id) ON DELETE CASCADE',
+    ),
+  );
+  static const VerificationMeta _slugMeta = const VerificationMeta('slug');
+  @override
+  late final GeneratedColumn<String> slug = GeneratedColumn<String>(
+    'slug',
+    aliasedName,
+    false,
+    additionalChecks: GeneratedColumn.checkTextLength(
+      minTextLength: 1,
+      maxTextLength: 80,
+    ),
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _titleMeta = const VerificationMeta('title');
+  @override
+  late final GeneratedColumn<String> title = GeneratedColumn<String>(
+    'title',
+    aliasedName,
+    false,
+    additionalChecks: GeneratedColumn.checkTextLength(
+      minTextLength: 1,
+      maxTextLength: 120,
+    ),
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  @override
+  late final GeneratedColumnWithTypeConverter<LessonKind, String> kind =
+      GeneratedColumn<String>(
+        'kind',
+        aliasedName,
+        false,
+        type: DriftSqlType.string,
+        requiredDuringInsert: true,
+      ).withConverter<LessonKind>($AcademyLessonsTable.$converterkind);
+  @override
+  late final GeneratedColumnWithTypeConverter<MusicGenre?, String> genre =
+      GeneratedColumn<String>(
+        'genre',
+        aliasedName,
+        true,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+      ).withConverter<MusicGenre?>($AcademyLessonsTable.$convertergenren);
+  static const VerificationMeta _bodyMeta = const VerificationMeta('body');
+  @override
+  late final GeneratedColumn<String> body = GeneratedColumn<String>(
+    'body',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _objectiveMeta = const VerificationMeta(
+    'objective',
+  );
+  @override
+  late final GeneratedColumn<String> objective = GeneratedColumn<String>(
+    'objective',
+    aliasedName,
+    true,
+    additionalChecks: GeneratedColumn.checkTextLength(maxTextLength: 240),
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _commonMistakesMeta = const VerificationMeta(
+    'commonMistakes',
+  );
+  @override
+  late final GeneratedColumn<String> commonMistakes = GeneratedColumn<String>(
+    'common_mistakes',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _practiceTipsMeta = const VerificationMeta(
+    'practiceTips',
+  );
+  @override
+  late final GeneratedColumn<String> practiceTips = GeneratedColumn<String>(
+    'practice_tips',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _nextSkillMeta = const VerificationMeta(
+    'nextSkill',
+  );
+  @override
+  late final GeneratedColumn<String> nextSkill = GeneratedColumn<String>(
+    'next_skill',
+    aliasedName,
+    true,
+    additionalChecks: GeneratedColumn.checkTextLength(maxTextLength: 160),
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _estimatedMinutesMeta = const VerificationMeta(
+    'estimatedMinutes',
+  );
+  @override
+  late final GeneratedColumn<int> estimatedMinutes = GeneratedColumn<int>(
+    'estimated_minutes',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _suggestedBpmMeta = const VerificationMeta(
+    'suggestedBpm',
+  );
+  @override
+  late final GeneratedColumn<int> suggestedBpm = GeneratedColumn<int>(
+    'suggested_bpm',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  @override
+  late final GeneratedColumnWithTypeConverter<TimeSignature?, String>
+  timeSignature =
+      GeneratedColumn<String>(
+        'time_signature',
+        aliasedName,
+        true,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+      ).withConverter<TimeSignature?>(
+        $AcademyLessonsTable.$convertertimeSignaturen,
+      );
+  static const VerificationMeta _theoryKeysMeta = const VerificationMeta(
+    'theoryKeys',
+  );
+  @override
+  late final GeneratedColumn<String> theoryKeys = GeneratedColumn<String>(
+    'theory_keys',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _positionMeta = const VerificationMeta(
+    'position',
+  );
+  @override
+  late final GeneratedColumn<int> position = GeneratedColumn<int>(
+    'position',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _updatedAtMeta = const VerificationMeta(
+    'updatedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
+    'updated_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    moduleId,
+    slug,
+    title,
+    kind,
+    genre,
+    body,
+    objective,
+    commonMistakes,
+    practiceTips,
+    nextSkill,
+    estimatedMinutes,
+    suggestedBpm,
+    timeSignature,
+    theoryKeys,
+    position,
+    createdAt,
+    updatedAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'academy_lessons';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<AcademyLesson> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('module_id')) {
+      context.handle(
+        _moduleIdMeta,
+        moduleId.isAcceptableOrUnknown(data['module_id']!, _moduleIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_moduleIdMeta);
+    }
+    if (data.containsKey('slug')) {
+      context.handle(
+        _slugMeta,
+        slug.isAcceptableOrUnknown(data['slug']!, _slugMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_slugMeta);
+    }
+    if (data.containsKey('title')) {
+      context.handle(
+        _titleMeta,
+        title.isAcceptableOrUnknown(data['title']!, _titleMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_titleMeta);
+    }
+    if (data.containsKey('body')) {
+      context.handle(
+        _bodyMeta,
+        body.isAcceptableOrUnknown(data['body']!, _bodyMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_bodyMeta);
+    }
+    if (data.containsKey('objective')) {
+      context.handle(
+        _objectiveMeta,
+        objective.isAcceptableOrUnknown(data['objective']!, _objectiveMeta),
+      );
+    }
+    if (data.containsKey('common_mistakes')) {
+      context.handle(
+        _commonMistakesMeta,
+        commonMistakes.isAcceptableOrUnknown(
+          data['common_mistakes']!,
+          _commonMistakesMeta,
+        ),
+      );
+    }
+    if (data.containsKey('practice_tips')) {
+      context.handle(
+        _practiceTipsMeta,
+        practiceTips.isAcceptableOrUnknown(
+          data['practice_tips']!,
+          _practiceTipsMeta,
+        ),
+      );
+    }
+    if (data.containsKey('next_skill')) {
+      context.handle(
+        _nextSkillMeta,
+        nextSkill.isAcceptableOrUnknown(data['next_skill']!, _nextSkillMeta),
+      );
+    }
+    if (data.containsKey('estimated_minutes')) {
+      context.handle(
+        _estimatedMinutesMeta,
+        estimatedMinutes.isAcceptableOrUnknown(
+          data['estimated_minutes']!,
+          _estimatedMinutesMeta,
+        ),
+      );
+    }
+    if (data.containsKey('suggested_bpm')) {
+      context.handle(
+        _suggestedBpmMeta,
+        suggestedBpm.isAcceptableOrUnknown(
+          data['suggested_bpm']!,
+          _suggestedBpmMeta,
+        ),
+      );
+    }
+    if (data.containsKey('theory_keys')) {
+      context.handle(
+        _theoryKeysMeta,
+        theoryKeys.isAcceptableOrUnknown(data['theory_keys']!, _theoryKeysMeta),
+      );
+    }
+    if (data.containsKey('position')) {
+      context.handle(
+        _positionMeta,
+        position.isAcceptableOrUnknown(data['position']!, _positionMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_positionMeta);
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(
+        _updatedAtMeta,
+        updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_updatedAtMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  List<Set<GeneratedColumn>> get uniqueKeys => [
+    {moduleId, slug},
+  ];
+  @override
+  AcademyLesson map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return AcademyLesson(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      moduleId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}module_id'],
+      )!,
+      slug: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}slug'],
+      )!,
+      title: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}title'],
+      )!,
+      kind: $AcademyLessonsTable.$converterkind.fromSql(
+        attachedDatabase.typeMapping.read(
+          DriftSqlType.string,
+          data['${effectivePrefix}kind'],
+        )!,
+      ),
+      genre: $AcademyLessonsTable.$convertergenren.fromSql(
+        attachedDatabase.typeMapping.read(
+          DriftSqlType.string,
+          data['${effectivePrefix}genre'],
+        ),
+      ),
+      body: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}body'],
+      )!,
+      objective: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}objective'],
+      ),
+      commonMistakes: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}common_mistakes'],
+      ),
+      practiceTips: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}practice_tips'],
+      ),
+      nextSkill: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}next_skill'],
+      ),
+      estimatedMinutes: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}estimated_minutes'],
+      ),
+      suggestedBpm: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}suggested_bpm'],
+      ),
+      timeSignature: $AcademyLessonsTable.$convertertimeSignaturen.fromSql(
+        attachedDatabase.typeMapping.read(
+          DriftSqlType.string,
+          data['${effectivePrefix}time_signature'],
+        ),
+      ),
+      theoryKeys: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}theory_keys'],
+      ),
+      position: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}position'],
+      )!,
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created_at'],
+      )!,
+      updatedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}updated_at'],
+      )!,
+    );
+  }
+
+  @override
+  $AcademyLessonsTable createAlias(String alias) {
+    return $AcademyLessonsTable(attachedDatabase, alias);
+  }
+
+  static JsonTypeConverter2<LessonKind, String, String> $converterkind =
+      const EnumNameConverter<LessonKind>(LessonKind.values);
+  static JsonTypeConverter2<MusicGenre, String, String> $convertergenre =
+      const EnumNameConverter<MusicGenre>(MusicGenre.values);
+  static JsonTypeConverter2<MusicGenre?, String?, String?> $convertergenren =
+      JsonTypeConverter2.asNullable($convertergenre);
+  static JsonTypeConverter2<TimeSignature, String, String>
+  $convertertimeSignature = const EnumNameConverter<TimeSignature>(
+    TimeSignature.values,
+  );
+  static JsonTypeConverter2<TimeSignature?, String?, String?>
+  $convertertimeSignaturen = JsonTypeConverter2.asNullable(
+    $convertertimeSignature,
+  );
+}
+
+class AcademyLesson extends DataClass implements Insertable<AcademyLesson> {
+  final int id;
+  final int moduleId;
+  final String slug;
+  final String title;
+  final LessonKind kind;
+
+  /// The style the lesson is about, where it is about one. Most are not: a lesson
+  /// on barre chords belongs to every genre that uses them.
+  final MusicGenre? genre;
+
+  /// Markdown, as the author wrote it. Long: a lesson is the one place in this
+  /// app where a wall of text is the point.
+  final String body;
+
+  /// What the player will be able to do at the end of it, in a sentence.
+  ///
+  /// Nullable, because a lesson written before the app asked for one is still a
+  /// lesson. Shown above the text where it is there, so a player knows what they
+  /// are reading for before they read it.
+  final String? objective;
+
+  /// What players get wrong at this, and what to do instead: two encoded lists in
+  /// the way [theoryKeys] is one. Both are read only under the lesson they belong
+  /// to, so neither is worth a table.
+  final String? commonMistakes;
+  final String? practiceTips;
+
+  /// What this leads to, named rather than linked.
+  ///
+  /// A slug would break the moment a course was re-ordered or re-imported, and what
+  /// a player needs is the name of the thing to learn next - which is findable by
+  /// searching for it, and still true if the curriculum moves it.
+  final String? nextSkill;
+  final int? estimatedMinutes;
+  final int? suggestedBpm;
+  final TimeSignature? timeSignature;
+  final String? theoryKeys;
+  final int position;
+  final DateTime createdAt;
+  final DateTime updatedAt;
+  const AcademyLesson({
+    required this.id,
+    required this.moduleId,
+    required this.slug,
+    required this.title,
+    required this.kind,
+    this.genre,
+    required this.body,
+    this.objective,
+    this.commonMistakes,
+    this.practiceTips,
+    this.nextSkill,
+    this.estimatedMinutes,
+    this.suggestedBpm,
+    this.timeSignature,
+    this.theoryKeys,
+    required this.position,
+    required this.createdAt,
+    required this.updatedAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['module_id'] = Variable<int>(moduleId);
+    map['slug'] = Variable<String>(slug);
+    map['title'] = Variable<String>(title);
+    {
+      map['kind'] = Variable<String>(
+        $AcademyLessonsTable.$converterkind.toSql(kind),
+      );
+    }
+    if (!nullToAbsent || genre != null) {
+      map['genre'] = Variable<String>(
+        $AcademyLessonsTable.$convertergenren.toSql(genre),
+      );
+    }
+    map['body'] = Variable<String>(body);
+    if (!nullToAbsent || objective != null) {
+      map['objective'] = Variable<String>(objective);
+    }
+    if (!nullToAbsent || commonMistakes != null) {
+      map['common_mistakes'] = Variable<String>(commonMistakes);
+    }
+    if (!nullToAbsent || practiceTips != null) {
+      map['practice_tips'] = Variable<String>(practiceTips);
+    }
+    if (!nullToAbsent || nextSkill != null) {
+      map['next_skill'] = Variable<String>(nextSkill);
+    }
+    if (!nullToAbsent || estimatedMinutes != null) {
+      map['estimated_minutes'] = Variable<int>(estimatedMinutes);
+    }
+    if (!nullToAbsent || suggestedBpm != null) {
+      map['suggested_bpm'] = Variable<int>(suggestedBpm);
+    }
+    if (!nullToAbsent || timeSignature != null) {
+      map['time_signature'] = Variable<String>(
+        $AcademyLessonsTable.$convertertimeSignaturen.toSql(timeSignature),
+      );
+    }
+    if (!nullToAbsent || theoryKeys != null) {
+      map['theory_keys'] = Variable<String>(theoryKeys);
+    }
+    map['position'] = Variable<int>(position);
+    map['created_at'] = Variable<DateTime>(createdAt);
+    map['updated_at'] = Variable<DateTime>(updatedAt);
+    return map;
+  }
+
+  AcademyLessonsCompanion toCompanion(bool nullToAbsent) {
+    return AcademyLessonsCompanion(
+      id: Value(id),
+      moduleId: Value(moduleId),
+      slug: Value(slug),
+      title: Value(title),
+      kind: Value(kind),
+      genre: genre == null && nullToAbsent
+          ? const Value.absent()
+          : Value(genre),
+      body: Value(body),
+      objective: objective == null && nullToAbsent
+          ? const Value.absent()
+          : Value(objective),
+      commonMistakes: commonMistakes == null && nullToAbsent
+          ? const Value.absent()
+          : Value(commonMistakes),
+      practiceTips: practiceTips == null && nullToAbsent
+          ? const Value.absent()
+          : Value(practiceTips),
+      nextSkill: nextSkill == null && nullToAbsent
+          ? const Value.absent()
+          : Value(nextSkill),
+      estimatedMinutes: estimatedMinutes == null && nullToAbsent
+          ? const Value.absent()
+          : Value(estimatedMinutes),
+      suggestedBpm: suggestedBpm == null && nullToAbsent
+          ? const Value.absent()
+          : Value(suggestedBpm),
+      timeSignature: timeSignature == null && nullToAbsent
+          ? const Value.absent()
+          : Value(timeSignature),
+      theoryKeys: theoryKeys == null && nullToAbsent
+          ? const Value.absent()
+          : Value(theoryKeys),
+      position: Value(position),
+      createdAt: Value(createdAt),
+      updatedAt: Value(updatedAt),
+    );
+  }
+
+  factory AcademyLesson.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return AcademyLesson(
+      id: serializer.fromJson<int>(json['id']),
+      moduleId: serializer.fromJson<int>(json['moduleId']),
+      slug: serializer.fromJson<String>(json['slug']),
+      title: serializer.fromJson<String>(json['title']),
+      kind: $AcademyLessonsTable.$converterkind.fromJson(
+        serializer.fromJson<String>(json['kind']),
+      ),
+      genre: $AcademyLessonsTable.$convertergenren.fromJson(
+        serializer.fromJson<String?>(json['genre']),
+      ),
+      body: serializer.fromJson<String>(json['body']),
+      objective: serializer.fromJson<String?>(json['objective']),
+      commonMistakes: serializer.fromJson<String?>(json['commonMistakes']),
+      practiceTips: serializer.fromJson<String?>(json['practiceTips']),
+      nextSkill: serializer.fromJson<String?>(json['nextSkill']),
+      estimatedMinutes: serializer.fromJson<int?>(json['estimatedMinutes']),
+      suggestedBpm: serializer.fromJson<int?>(json['suggestedBpm']),
+      timeSignature: $AcademyLessonsTable.$convertertimeSignaturen.fromJson(
+        serializer.fromJson<String?>(json['timeSignature']),
+      ),
+      theoryKeys: serializer.fromJson<String?>(json['theoryKeys']),
+      position: serializer.fromJson<int>(json['position']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'moduleId': serializer.toJson<int>(moduleId),
+      'slug': serializer.toJson<String>(slug),
+      'title': serializer.toJson<String>(title),
+      'kind': serializer.toJson<String>(
+        $AcademyLessonsTable.$converterkind.toJson(kind),
+      ),
+      'genre': serializer.toJson<String?>(
+        $AcademyLessonsTable.$convertergenren.toJson(genre),
+      ),
+      'body': serializer.toJson<String>(body),
+      'objective': serializer.toJson<String?>(objective),
+      'commonMistakes': serializer.toJson<String?>(commonMistakes),
+      'practiceTips': serializer.toJson<String?>(practiceTips),
+      'nextSkill': serializer.toJson<String?>(nextSkill),
+      'estimatedMinutes': serializer.toJson<int?>(estimatedMinutes),
+      'suggestedBpm': serializer.toJson<int?>(suggestedBpm),
+      'timeSignature': serializer.toJson<String?>(
+        $AcademyLessonsTable.$convertertimeSignaturen.toJson(timeSignature),
+      ),
+      'theoryKeys': serializer.toJson<String?>(theoryKeys),
+      'position': serializer.toJson<int>(position),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+      'updatedAt': serializer.toJson<DateTime>(updatedAt),
+    };
+  }
+
+  AcademyLesson copyWith({
+    int? id,
+    int? moduleId,
+    String? slug,
+    String? title,
+    LessonKind? kind,
+    Value<MusicGenre?> genre = const Value.absent(),
+    String? body,
+    Value<String?> objective = const Value.absent(),
+    Value<String?> commonMistakes = const Value.absent(),
+    Value<String?> practiceTips = const Value.absent(),
+    Value<String?> nextSkill = const Value.absent(),
+    Value<int?> estimatedMinutes = const Value.absent(),
+    Value<int?> suggestedBpm = const Value.absent(),
+    Value<TimeSignature?> timeSignature = const Value.absent(),
+    Value<String?> theoryKeys = const Value.absent(),
+    int? position,
+    DateTime? createdAt,
+    DateTime? updatedAt,
+  }) => AcademyLesson(
+    id: id ?? this.id,
+    moduleId: moduleId ?? this.moduleId,
+    slug: slug ?? this.slug,
+    title: title ?? this.title,
+    kind: kind ?? this.kind,
+    genre: genre.present ? genre.value : this.genre,
+    body: body ?? this.body,
+    objective: objective.present ? objective.value : this.objective,
+    commonMistakes: commonMistakes.present
+        ? commonMistakes.value
+        : this.commonMistakes,
+    practiceTips: practiceTips.present ? practiceTips.value : this.practiceTips,
+    nextSkill: nextSkill.present ? nextSkill.value : this.nextSkill,
+    estimatedMinutes: estimatedMinutes.present
+        ? estimatedMinutes.value
+        : this.estimatedMinutes,
+    suggestedBpm: suggestedBpm.present ? suggestedBpm.value : this.suggestedBpm,
+    timeSignature: timeSignature.present
+        ? timeSignature.value
+        : this.timeSignature,
+    theoryKeys: theoryKeys.present ? theoryKeys.value : this.theoryKeys,
+    position: position ?? this.position,
+    createdAt: createdAt ?? this.createdAt,
+    updatedAt: updatedAt ?? this.updatedAt,
+  );
+  AcademyLesson copyWithCompanion(AcademyLessonsCompanion data) {
+    return AcademyLesson(
+      id: data.id.present ? data.id.value : this.id,
+      moduleId: data.moduleId.present ? data.moduleId.value : this.moduleId,
+      slug: data.slug.present ? data.slug.value : this.slug,
+      title: data.title.present ? data.title.value : this.title,
+      kind: data.kind.present ? data.kind.value : this.kind,
+      genre: data.genre.present ? data.genre.value : this.genre,
+      body: data.body.present ? data.body.value : this.body,
+      objective: data.objective.present ? data.objective.value : this.objective,
+      commonMistakes: data.commonMistakes.present
+          ? data.commonMistakes.value
+          : this.commonMistakes,
+      practiceTips: data.practiceTips.present
+          ? data.practiceTips.value
+          : this.practiceTips,
+      nextSkill: data.nextSkill.present ? data.nextSkill.value : this.nextSkill,
+      estimatedMinutes: data.estimatedMinutes.present
+          ? data.estimatedMinutes.value
+          : this.estimatedMinutes,
+      suggestedBpm: data.suggestedBpm.present
+          ? data.suggestedBpm.value
+          : this.suggestedBpm,
+      timeSignature: data.timeSignature.present
+          ? data.timeSignature.value
+          : this.timeSignature,
+      theoryKeys: data.theoryKeys.present
+          ? data.theoryKeys.value
+          : this.theoryKeys,
+      position: data.position.present ? data.position.value : this.position,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('AcademyLesson(')
+          ..write('id: $id, ')
+          ..write('moduleId: $moduleId, ')
+          ..write('slug: $slug, ')
+          ..write('title: $title, ')
+          ..write('kind: $kind, ')
+          ..write('genre: $genre, ')
+          ..write('body: $body, ')
+          ..write('objective: $objective, ')
+          ..write('commonMistakes: $commonMistakes, ')
+          ..write('practiceTips: $practiceTips, ')
+          ..write('nextSkill: $nextSkill, ')
+          ..write('estimatedMinutes: $estimatedMinutes, ')
+          ..write('suggestedBpm: $suggestedBpm, ')
+          ..write('timeSignature: $timeSignature, ')
+          ..write('theoryKeys: $theoryKeys, ')
+          ..write('position: $position, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    moduleId,
+    slug,
+    title,
+    kind,
+    genre,
+    body,
+    objective,
+    commonMistakes,
+    practiceTips,
+    nextSkill,
+    estimatedMinutes,
+    suggestedBpm,
+    timeSignature,
+    theoryKeys,
+    position,
+    createdAt,
+    updatedAt,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is AcademyLesson &&
+          other.id == this.id &&
+          other.moduleId == this.moduleId &&
+          other.slug == this.slug &&
+          other.title == this.title &&
+          other.kind == this.kind &&
+          other.genre == this.genre &&
+          other.body == this.body &&
+          other.objective == this.objective &&
+          other.commonMistakes == this.commonMistakes &&
+          other.practiceTips == this.practiceTips &&
+          other.nextSkill == this.nextSkill &&
+          other.estimatedMinutes == this.estimatedMinutes &&
+          other.suggestedBpm == this.suggestedBpm &&
+          other.timeSignature == this.timeSignature &&
+          other.theoryKeys == this.theoryKeys &&
+          other.position == this.position &&
+          other.createdAt == this.createdAt &&
+          other.updatedAt == this.updatedAt);
+}
+
+class AcademyLessonsCompanion extends UpdateCompanion<AcademyLesson> {
+  final Value<int> id;
+  final Value<int> moduleId;
+  final Value<String> slug;
+  final Value<String> title;
+  final Value<LessonKind> kind;
+  final Value<MusicGenre?> genre;
+  final Value<String> body;
+  final Value<String?> objective;
+  final Value<String?> commonMistakes;
+  final Value<String?> practiceTips;
+  final Value<String?> nextSkill;
+  final Value<int?> estimatedMinutes;
+  final Value<int?> suggestedBpm;
+  final Value<TimeSignature?> timeSignature;
+  final Value<String?> theoryKeys;
+  final Value<int> position;
+  final Value<DateTime> createdAt;
+  final Value<DateTime> updatedAt;
+  const AcademyLessonsCompanion({
+    this.id = const Value.absent(),
+    this.moduleId = const Value.absent(),
+    this.slug = const Value.absent(),
+    this.title = const Value.absent(),
+    this.kind = const Value.absent(),
+    this.genre = const Value.absent(),
+    this.body = const Value.absent(),
+    this.objective = const Value.absent(),
+    this.commonMistakes = const Value.absent(),
+    this.practiceTips = const Value.absent(),
+    this.nextSkill = const Value.absent(),
+    this.estimatedMinutes = const Value.absent(),
+    this.suggestedBpm = const Value.absent(),
+    this.timeSignature = const Value.absent(),
+    this.theoryKeys = const Value.absent(),
+    this.position = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+  });
+  AcademyLessonsCompanion.insert({
+    this.id = const Value.absent(),
+    required int moduleId,
+    required String slug,
+    required String title,
+    required LessonKind kind,
+    this.genre = const Value.absent(),
+    required String body,
+    this.objective = const Value.absent(),
+    this.commonMistakes = const Value.absent(),
+    this.practiceTips = const Value.absent(),
+    this.nextSkill = const Value.absent(),
+    this.estimatedMinutes = const Value.absent(),
+    this.suggestedBpm = const Value.absent(),
+    this.timeSignature = const Value.absent(),
+    this.theoryKeys = const Value.absent(),
+    required int position,
+    required DateTime createdAt,
+    required DateTime updatedAt,
+  }) : moduleId = Value(moduleId),
+       slug = Value(slug),
+       title = Value(title),
+       kind = Value(kind),
+       body = Value(body),
+       position = Value(position),
+       createdAt = Value(createdAt),
+       updatedAt = Value(updatedAt);
+  static Insertable<AcademyLesson> custom({
+    Expression<int>? id,
+    Expression<int>? moduleId,
+    Expression<String>? slug,
+    Expression<String>? title,
+    Expression<String>? kind,
+    Expression<String>? genre,
+    Expression<String>? body,
+    Expression<String>? objective,
+    Expression<String>? commonMistakes,
+    Expression<String>? practiceTips,
+    Expression<String>? nextSkill,
+    Expression<int>? estimatedMinutes,
+    Expression<int>? suggestedBpm,
+    Expression<String>? timeSignature,
+    Expression<String>? theoryKeys,
+    Expression<int>? position,
+    Expression<DateTime>? createdAt,
+    Expression<DateTime>? updatedAt,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (moduleId != null) 'module_id': moduleId,
+      if (slug != null) 'slug': slug,
+      if (title != null) 'title': title,
+      if (kind != null) 'kind': kind,
+      if (genre != null) 'genre': genre,
+      if (body != null) 'body': body,
+      if (objective != null) 'objective': objective,
+      if (commonMistakes != null) 'common_mistakes': commonMistakes,
+      if (practiceTips != null) 'practice_tips': practiceTips,
+      if (nextSkill != null) 'next_skill': nextSkill,
+      if (estimatedMinutes != null) 'estimated_minutes': estimatedMinutes,
+      if (suggestedBpm != null) 'suggested_bpm': suggestedBpm,
+      if (timeSignature != null) 'time_signature': timeSignature,
+      if (theoryKeys != null) 'theory_keys': theoryKeys,
+      if (position != null) 'position': position,
+      if (createdAt != null) 'created_at': createdAt,
+      if (updatedAt != null) 'updated_at': updatedAt,
+    });
+  }
+
+  AcademyLessonsCompanion copyWith({
+    Value<int>? id,
+    Value<int>? moduleId,
+    Value<String>? slug,
+    Value<String>? title,
+    Value<LessonKind>? kind,
+    Value<MusicGenre?>? genre,
+    Value<String>? body,
+    Value<String?>? objective,
+    Value<String?>? commonMistakes,
+    Value<String?>? practiceTips,
+    Value<String?>? nextSkill,
+    Value<int?>? estimatedMinutes,
+    Value<int?>? suggestedBpm,
+    Value<TimeSignature?>? timeSignature,
+    Value<String?>? theoryKeys,
+    Value<int>? position,
+    Value<DateTime>? createdAt,
+    Value<DateTime>? updatedAt,
+  }) {
+    return AcademyLessonsCompanion(
+      id: id ?? this.id,
+      moduleId: moduleId ?? this.moduleId,
+      slug: slug ?? this.slug,
+      title: title ?? this.title,
+      kind: kind ?? this.kind,
+      genre: genre ?? this.genre,
+      body: body ?? this.body,
+      objective: objective ?? this.objective,
+      commonMistakes: commonMistakes ?? this.commonMistakes,
+      practiceTips: practiceTips ?? this.practiceTips,
+      nextSkill: nextSkill ?? this.nextSkill,
+      estimatedMinutes: estimatedMinutes ?? this.estimatedMinutes,
+      suggestedBpm: suggestedBpm ?? this.suggestedBpm,
+      timeSignature: timeSignature ?? this.timeSignature,
+      theoryKeys: theoryKeys ?? this.theoryKeys,
+      position: position ?? this.position,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (moduleId.present) {
+      map['module_id'] = Variable<int>(moduleId.value);
+    }
+    if (slug.present) {
+      map['slug'] = Variable<String>(slug.value);
+    }
+    if (title.present) {
+      map['title'] = Variable<String>(title.value);
+    }
+    if (kind.present) {
+      map['kind'] = Variable<String>(
+        $AcademyLessonsTable.$converterkind.toSql(kind.value),
+      );
+    }
+    if (genre.present) {
+      map['genre'] = Variable<String>(
+        $AcademyLessonsTable.$convertergenren.toSql(genre.value),
+      );
+    }
+    if (body.present) {
+      map['body'] = Variable<String>(body.value);
+    }
+    if (objective.present) {
+      map['objective'] = Variable<String>(objective.value);
+    }
+    if (commonMistakes.present) {
+      map['common_mistakes'] = Variable<String>(commonMistakes.value);
+    }
+    if (practiceTips.present) {
+      map['practice_tips'] = Variable<String>(practiceTips.value);
+    }
+    if (nextSkill.present) {
+      map['next_skill'] = Variable<String>(nextSkill.value);
+    }
+    if (estimatedMinutes.present) {
+      map['estimated_minutes'] = Variable<int>(estimatedMinutes.value);
+    }
+    if (suggestedBpm.present) {
+      map['suggested_bpm'] = Variable<int>(suggestedBpm.value);
+    }
+    if (timeSignature.present) {
+      map['time_signature'] = Variable<String>(
+        $AcademyLessonsTable.$convertertimeSignaturen.toSql(
+          timeSignature.value,
+        ),
+      );
+    }
+    if (theoryKeys.present) {
+      map['theory_keys'] = Variable<String>(theoryKeys.value);
+    }
+    if (position.present) {
+      map['position'] = Variable<int>(position.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<DateTime>(updatedAt.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('AcademyLessonsCompanion(')
+          ..write('id: $id, ')
+          ..write('moduleId: $moduleId, ')
+          ..write('slug: $slug, ')
+          ..write('title: $title, ')
+          ..write('kind: $kind, ')
+          ..write('genre: $genre, ')
+          ..write('body: $body, ')
+          ..write('objective: $objective, ')
+          ..write('commonMistakes: $commonMistakes, ')
+          ..write('practiceTips: $practiceTips, ')
+          ..write('nextSkill: $nextSkill, ')
+          ..write('estimatedMinutes: $estimatedMinutes, ')
+          ..write('suggestedBpm: $suggestedBpm, ')
+          ..write('timeSignature: $timeSignature, ')
+          ..write('theoryKeys: $theoryKeys, ')
+          ..write('position: $position, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $AcademyExercisesTable extends AcademyExercises
+    with TableInfo<$AcademyExercisesTable, AcademyExercise> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $AcademyExercisesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'PRIMARY KEY AUTOINCREMENT',
+    ),
+  );
+  static const VerificationMeta _lessonIdMeta = const VerificationMeta(
+    'lessonId',
+  );
+  @override
+  late final GeneratedColumn<int> lessonId = GeneratedColumn<int>(
+    'lesson_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES academy_lessons (id) ON DELETE CASCADE',
+    ),
+  );
+  static const VerificationMeta _titleMeta = const VerificationMeta('title');
+  @override
+  late final GeneratedColumn<String> title = GeneratedColumn<String>(
+    'title',
+    aliasedName,
+    false,
+    additionalChecks: GeneratedColumn.checkTextLength(
+      minTextLength: 1,
+      maxTextLength: 120,
+    ),
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _instructionsMeta = const VerificationMeta(
+    'instructions',
+  );
+  @override
+  late final GeneratedColumn<String> instructions = GeneratedColumn<String>(
+    'instructions',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _startBpmMeta = const VerificationMeta(
+    'startBpm',
+  );
+  @override
+  late final GeneratedColumn<int> startBpm = GeneratedColumn<int>(
+    'start_bpm',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _targetBpmMeta = const VerificationMeta(
+    'targetBpm',
+  );
+  @override
+  late final GeneratedColumn<int> targetBpm = GeneratedColumn<int>(
+    'target_bpm',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  @override
+  late final GeneratedColumnWithTypeConverter<TimeSignature, String>
+  timeSignature =
+      GeneratedColumn<String>(
+        'time_signature',
+        aliasedName,
+        false,
+        type: DriftSqlType.string,
+        requiredDuringInsert: true,
+      ).withConverter<TimeSignature>(
+        $AcademyExercisesTable.$convertertimeSignature,
+      );
+  static const VerificationMeta _positionMeta = const VerificationMeta(
+    'position',
+  );
+  @override
+  late final GeneratedColumn<int> position = GeneratedColumn<int>(
+    'position',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _updatedAtMeta = const VerificationMeta(
+    'updatedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
+    'updated_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    lessonId,
+    title,
+    instructions,
+    startBpm,
+    targetBpm,
+    timeSignature,
+    position,
+    createdAt,
+    updatedAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'academy_exercises';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<AcademyExercise> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('lesson_id')) {
+      context.handle(
+        _lessonIdMeta,
+        lessonId.isAcceptableOrUnknown(data['lesson_id']!, _lessonIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_lessonIdMeta);
+    }
+    if (data.containsKey('title')) {
+      context.handle(
+        _titleMeta,
+        title.isAcceptableOrUnknown(data['title']!, _titleMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_titleMeta);
+    }
+    if (data.containsKey('instructions')) {
+      context.handle(
+        _instructionsMeta,
+        instructions.isAcceptableOrUnknown(
+          data['instructions']!,
+          _instructionsMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_instructionsMeta);
+    }
+    if (data.containsKey('start_bpm')) {
+      context.handle(
+        _startBpmMeta,
+        startBpm.isAcceptableOrUnknown(data['start_bpm']!, _startBpmMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_startBpmMeta);
+    }
+    if (data.containsKey('target_bpm')) {
+      context.handle(
+        _targetBpmMeta,
+        targetBpm.isAcceptableOrUnknown(data['target_bpm']!, _targetBpmMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_targetBpmMeta);
+    }
+    if (data.containsKey('position')) {
+      context.handle(
+        _positionMeta,
+        position.isAcceptableOrUnknown(data['position']!, _positionMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_positionMeta);
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(
+        _updatedAtMeta,
+        updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_updatedAtMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  List<Set<GeneratedColumn>> get uniqueKeys => [
+    {lessonId, title},
+  ];
+  @override
+  AcademyExercise map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return AcademyExercise(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      lessonId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}lesson_id'],
+      )!,
+      title: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}title'],
+      )!,
+      instructions: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}instructions'],
+      )!,
+      startBpm: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}start_bpm'],
+      )!,
+      targetBpm: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}target_bpm'],
+      )!,
+      timeSignature: $AcademyExercisesTable.$convertertimeSignature.fromSql(
+        attachedDatabase.typeMapping.read(
+          DriftSqlType.string,
+          data['${effectivePrefix}time_signature'],
+        )!,
+      ),
+      position: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}position'],
+      )!,
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created_at'],
+      )!,
+      updatedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}updated_at'],
+      )!,
+    );
+  }
+
+  @override
+  $AcademyExercisesTable createAlias(String alias) {
+    return $AcademyExercisesTable(attachedDatabase, alias);
+  }
+
+  static JsonTypeConverter2<TimeSignature, String, String>
+  $convertertimeSignature = const EnumNameConverter<TimeSignature>(
+    TimeSignature.values,
+  );
+}
+
+class AcademyExercise extends DataClass implements Insertable<AcademyExercise> {
+  final int id;
+  final int lessonId;
+  final String title;
+  final String instructions;
+  final int startBpm;
+  final int targetBpm;
+  final TimeSignature timeSignature;
+  final int position;
+  final DateTime createdAt;
+  final DateTime updatedAt;
+  const AcademyExercise({
+    required this.id,
+    required this.lessonId,
+    required this.title,
+    required this.instructions,
+    required this.startBpm,
+    required this.targetBpm,
+    required this.timeSignature,
+    required this.position,
+    required this.createdAt,
+    required this.updatedAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['lesson_id'] = Variable<int>(lessonId);
+    map['title'] = Variable<String>(title);
+    map['instructions'] = Variable<String>(instructions);
+    map['start_bpm'] = Variable<int>(startBpm);
+    map['target_bpm'] = Variable<int>(targetBpm);
+    {
+      map['time_signature'] = Variable<String>(
+        $AcademyExercisesTable.$convertertimeSignature.toSql(timeSignature),
+      );
+    }
+    map['position'] = Variable<int>(position);
+    map['created_at'] = Variable<DateTime>(createdAt);
+    map['updated_at'] = Variable<DateTime>(updatedAt);
+    return map;
+  }
+
+  AcademyExercisesCompanion toCompanion(bool nullToAbsent) {
+    return AcademyExercisesCompanion(
+      id: Value(id),
+      lessonId: Value(lessonId),
+      title: Value(title),
+      instructions: Value(instructions),
+      startBpm: Value(startBpm),
+      targetBpm: Value(targetBpm),
+      timeSignature: Value(timeSignature),
+      position: Value(position),
+      createdAt: Value(createdAt),
+      updatedAt: Value(updatedAt),
+    );
+  }
+
+  factory AcademyExercise.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return AcademyExercise(
+      id: serializer.fromJson<int>(json['id']),
+      lessonId: serializer.fromJson<int>(json['lessonId']),
+      title: serializer.fromJson<String>(json['title']),
+      instructions: serializer.fromJson<String>(json['instructions']),
+      startBpm: serializer.fromJson<int>(json['startBpm']),
+      targetBpm: serializer.fromJson<int>(json['targetBpm']),
+      timeSignature: $AcademyExercisesTable.$convertertimeSignature.fromJson(
+        serializer.fromJson<String>(json['timeSignature']),
+      ),
+      position: serializer.fromJson<int>(json['position']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'lessonId': serializer.toJson<int>(lessonId),
+      'title': serializer.toJson<String>(title),
+      'instructions': serializer.toJson<String>(instructions),
+      'startBpm': serializer.toJson<int>(startBpm),
+      'targetBpm': serializer.toJson<int>(targetBpm),
+      'timeSignature': serializer.toJson<String>(
+        $AcademyExercisesTable.$convertertimeSignature.toJson(timeSignature),
+      ),
+      'position': serializer.toJson<int>(position),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+      'updatedAt': serializer.toJson<DateTime>(updatedAt),
+    };
+  }
+
+  AcademyExercise copyWith({
+    int? id,
+    int? lessonId,
+    String? title,
+    String? instructions,
+    int? startBpm,
+    int? targetBpm,
+    TimeSignature? timeSignature,
+    int? position,
+    DateTime? createdAt,
+    DateTime? updatedAt,
+  }) => AcademyExercise(
+    id: id ?? this.id,
+    lessonId: lessonId ?? this.lessonId,
+    title: title ?? this.title,
+    instructions: instructions ?? this.instructions,
+    startBpm: startBpm ?? this.startBpm,
+    targetBpm: targetBpm ?? this.targetBpm,
+    timeSignature: timeSignature ?? this.timeSignature,
+    position: position ?? this.position,
+    createdAt: createdAt ?? this.createdAt,
+    updatedAt: updatedAt ?? this.updatedAt,
+  );
+  AcademyExercise copyWithCompanion(AcademyExercisesCompanion data) {
+    return AcademyExercise(
+      id: data.id.present ? data.id.value : this.id,
+      lessonId: data.lessonId.present ? data.lessonId.value : this.lessonId,
+      title: data.title.present ? data.title.value : this.title,
+      instructions: data.instructions.present
+          ? data.instructions.value
+          : this.instructions,
+      startBpm: data.startBpm.present ? data.startBpm.value : this.startBpm,
+      targetBpm: data.targetBpm.present ? data.targetBpm.value : this.targetBpm,
+      timeSignature: data.timeSignature.present
+          ? data.timeSignature.value
+          : this.timeSignature,
+      position: data.position.present ? data.position.value : this.position,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('AcademyExercise(')
+          ..write('id: $id, ')
+          ..write('lessonId: $lessonId, ')
+          ..write('title: $title, ')
+          ..write('instructions: $instructions, ')
+          ..write('startBpm: $startBpm, ')
+          ..write('targetBpm: $targetBpm, ')
+          ..write('timeSignature: $timeSignature, ')
+          ..write('position: $position, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    lessonId,
+    title,
+    instructions,
+    startBpm,
+    targetBpm,
+    timeSignature,
+    position,
+    createdAt,
+    updatedAt,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is AcademyExercise &&
+          other.id == this.id &&
+          other.lessonId == this.lessonId &&
+          other.title == this.title &&
+          other.instructions == this.instructions &&
+          other.startBpm == this.startBpm &&
+          other.targetBpm == this.targetBpm &&
+          other.timeSignature == this.timeSignature &&
+          other.position == this.position &&
+          other.createdAt == this.createdAt &&
+          other.updatedAt == this.updatedAt);
+}
+
+class AcademyExercisesCompanion extends UpdateCompanion<AcademyExercise> {
+  final Value<int> id;
+  final Value<int> lessonId;
+  final Value<String> title;
+  final Value<String> instructions;
+  final Value<int> startBpm;
+  final Value<int> targetBpm;
+  final Value<TimeSignature> timeSignature;
+  final Value<int> position;
+  final Value<DateTime> createdAt;
+  final Value<DateTime> updatedAt;
+  const AcademyExercisesCompanion({
+    this.id = const Value.absent(),
+    this.lessonId = const Value.absent(),
+    this.title = const Value.absent(),
+    this.instructions = const Value.absent(),
+    this.startBpm = const Value.absent(),
+    this.targetBpm = const Value.absent(),
+    this.timeSignature = const Value.absent(),
+    this.position = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+  });
+  AcademyExercisesCompanion.insert({
+    this.id = const Value.absent(),
+    required int lessonId,
+    required String title,
+    required String instructions,
+    required int startBpm,
+    required int targetBpm,
+    required TimeSignature timeSignature,
+    required int position,
+    required DateTime createdAt,
+    required DateTime updatedAt,
+  }) : lessonId = Value(lessonId),
+       title = Value(title),
+       instructions = Value(instructions),
+       startBpm = Value(startBpm),
+       targetBpm = Value(targetBpm),
+       timeSignature = Value(timeSignature),
+       position = Value(position),
+       createdAt = Value(createdAt),
+       updatedAt = Value(updatedAt);
+  static Insertable<AcademyExercise> custom({
+    Expression<int>? id,
+    Expression<int>? lessonId,
+    Expression<String>? title,
+    Expression<String>? instructions,
+    Expression<int>? startBpm,
+    Expression<int>? targetBpm,
+    Expression<String>? timeSignature,
+    Expression<int>? position,
+    Expression<DateTime>? createdAt,
+    Expression<DateTime>? updatedAt,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (lessonId != null) 'lesson_id': lessonId,
+      if (title != null) 'title': title,
+      if (instructions != null) 'instructions': instructions,
+      if (startBpm != null) 'start_bpm': startBpm,
+      if (targetBpm != null) 'target_bpm': targetBpm,
+      if (timeSignature != null) 'time_signature': timeSignature,
+      if (position != null) 'position': position,
+      if (createdAt != null) 'created_at': createdAt,
+      if (updatedAt != null) 'updated_at': updatedAt,
+    });
+  }
+
+  AcademyExercisesCompanion copyWith({
+    Value<int>? id,
+    Value<int>? lessonId,
+    Value<String>? title,
+    Value<String>? instructions,
+    Value<int>? startBpm,
+    Value<int>? targetBpm,
+    Value<TimeSignature>? timeSignature,
+    Value<int>? position,
+    Value<DateTime>? createdAt,
+    Value<DateTime>? updatedAt,
+  }) {
+    return AcademyExercisesCompanion(
+      id: id ?? this.id,
+      lessonId: lessonId ?? this.lessonId,
+      title: title ?? this.title,
+      instructions: instructions ?? this.instructions,
+      startBpm: startBpm ?? this.startBpm,
+      targetBpm: targetBpm ?? this.targetBpm,
+      timeSignature: timeSignature ?? this.timeSignature,
+      position: position ?? this.position,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (lessonId.present) {
+      map['lesson_id'] = Variable<int>(lessonId.value);
+    }
+    if (title.present) {
+      map['title'] = Variable<String>(title.value);
+    }
+    if (instructions.present) {
+      map['instructions'] = Variable<String>(instructions.value);
+    }
+    if (startBpm.present) {
+      map['start_bpm'] = Variable<int>(startBpm.value);
+    }
+    if (targetBpm.present) {
+      map['target_bpm'] = Variable<int>(targetBpm.value);
+    }
+    if (timeSignature.present) {
+      map['time_signature'] = Variable<String>(
+        $AcademyExercisesTable.$convertertimeSignature.toSql(
+          timeSignature.value,
+        ),
+      );
+    }
+    if (position.present) {
+      map['position'] = Variable<int>(position.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<DateTime>(updatedAt.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('AcademyExercisesCompanion(')
+          ..write('id: $id, ')
+          ..write('lessonId: $lessonId, ')
+          ..write('title: $title, ')
+          ..write('instructions: $instructions, ')
+          ..write('startBpm: $startBpm, ')
+          ..write('targetBpm: $targetBpm, ')
+          ..write('timeSignature: $timeSignature, ')
+          ..write('position: $position, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $AcademyProgressTable extends AcademyProgress
+    with TableInfo<$AcademyProgressTable, AcademyProgressRow> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $AcademyProgressTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'PRIMARY KEY AUTOINCREMENT',
+    ),
+  );
+  static const VerificationMeta _lessonIdMeta = const VerificationMeta(
+    'lessonId',
+  );
+  @override
+  late final GeneratedColumn<int> lessonId = GeneratedColumn<int>(
+    'lesson_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES academy_lessons (id) ON DELETE CASCADE',
+    ),
+  );
+  @override
+  late final GeneratedColumnWithTypeConverter<ProgressState, String> state =
+      GeneratedColumn<String>(
+        'state',
+        aliasedName,
+        false,
+        type: DriftSqlType.string,
+        requiredDuringInsert: true,
+      ).withConverter<ProgressState>($AcademyProgressTable.$converterstate);
+  static const VerificationMeta _lastOpenedAtMeta = const VerificationMeta(
+    'lastOpenedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> lastOpenedAt = GeneratedColumn<DateTime>(
+    'last_opened_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _completedAtMeta = const VerificationMeta(
+    'completedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> completedAt = GeneratedColumn<DateTime>(
+    'completed_at',
+    aliasedName,
+    true,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _practiceSecondsMeta = const VerificationMeta(
+    'practiceSeconds',
+  );
+  @override
+  late final GeneratedColumn<int> practiceSeconds = GeneratedColumn<int>(
+    'practice_seconds',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    lessonId,
+    state,
+    lastOpenedAt,
+    completedAt,
+    practiceSeconds,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'academy_progress';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<AcademyProgressRow> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('lesson_id')) {
+      context.handle(
+        _lessonIdMeta,
+        lessonId.isAcceptableOrUnknown(data['lesson_id']!, _lessonIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_lessonIdMeta);
+    }
+    if (data.containsKey('last_opened_at')) {
+      context.handle(
+        _lastOpenedAtMeta,
+        lastOpenedAt.isAcceptableOrUnknown(
+          data['last_opened_at']!,
+          _lastOpenedAtMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_lastOpenedAtMeta);
+    }
+    if (data.containsKey('completed_at')) {
+      context.handle(
+        _completedAtMeta,
+        completedAt.isAcceptableOrUnknown(
+          data['completed_at']!,
+          _completedAtMeta,
+        ),
+      );
+    }
+    if (data.containsKey('practice_seconds')) {
+      context.handle(
+        _practiceSecondsMeta,
+        practiceSeconds.isAcceptableOrUnknown(
+          data['practice_seconds']!,
+          _practiceSecondsMeta,
+        ),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  List<Set<GeneratedColumn>> get uniqueKeys => [
+    {lessonId},
+  ];
+  @override
+  AcademyProgressRow map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return AcademyProgressRow(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      lessonId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}lesson_id'],
+      )!,
+      state: $AcademyProgressTable.$converterstate.fromSql(
+        attachedDatabase.typeMapping.read(
+          DriftSqlType.string,
+          data['${effectivePrefix}state'],
+        )!,
+      ),
+      lastOpenedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}last_opened_at'],
+      )!,
+      completedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}completed_at'],
+      ),
+      practiceSeconds: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}practice_seconds'],
+      )!,
+    );
+  }
+
+  @override
+  $AcademyProgressTable createAlias(String alias) {
+    return $AcademyProgressTable(attachedDatabase, alias);
+  }
+
+  static JsonTypeConverter2<ProgressState, String, String> $converterstate =
+      const EnumNameConverter<ProgressState>(ProgressState.values);
+}
+
+class AcademyProgressRow extends DataClass
+    implements Insertable<AcademyProgressRow> {
+  final int id;
+  final int lessonId;
+  final ProgressState state;
+  final DateTime lastOpenedAt;
+  final DateTime? completedAt;
+
+  /// Time spent with the metronome running on this lesson, in seconds. What turns
+  /// a list of ticks into a practice record.
+  final int practiceSeconds;
+  const AcademyProgressRow({
+    required this.id,
+    required this.lessonId,
+    required this.state,
+    required this.lastOpenedAt,
+    this.completedAt,
+    required this.practiceSeconds,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['lesson_id'] = Variable<int>(lessonId);
+    {
+      map['state'] = Variable<String>(
+        $AcademyProgressTable.$converterstate.toSql(state),
+      );
+    }
+    map['last_opened_at'] = Variable<DateTime>(lastOpenedAt);
+    if (!nullToAbsent || completedAt != null) {
+      map['completed_at'] = Variable<DateTime>(completedAt);
+    }
+    map['practice_seconds'] = Variable<int>(practiceSeconds);
+    return map;
+  }
+
+  AcademyProgressCompanion toCompanion(bool nullToAbsent) {
+    return AcademyProgressCompanion(
+      id: Value(id),
+      lessonId: Value(lessonId),
+      state: Value(state),
+      lastOpenedAt: Value(lastOpenedAt),
+      completedAt: completedAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(completedAt),
+      practiceSeconds: Value(practiceSeconds),
+    );
+  }
+
+  factory AcademyProgressRow.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return AcademyProgressRow(
+      id: serializer.fromJson<int>(json['id']),
+      lessonId: serializer.fromJson<int>(json['lessonId']),
+      state: $AcademyProgressTable.$converterstate.fromJson(
+        serializer.fromJson<String>(json['state']),
+      ),
+      lastOpenedAt: serializer.fromJson<DateTime>(json['lastOpenedAt']),
+      completedAt: serializer.fromJson<DateTime?>(json['completedAt']),
+      practiceSeconds: serializer.fromJson<int>(json['practiceSeconds']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'lessonId': serializer.toJson<int>(lessonId),
+      'state': serializer.toJson<String>(
+        $AcademyProgressTable.$converterstate.toJson(state),
+      ),
+      'lastOpenedAt': serializer.toJson<DateTime>(lastOpenedAt),
+      'completedAt': serializer.toJson<DateTime?>(completedAt),
+      'practiceSeconds': serializer.toJson<int>(practiceSeconds),
+    };
+  }
+
+  AcademyProgressRow copyWith({
+    int? id,
+    int? lessonId,
+    ProgressState? state,
+    DateTime? lastOpenedAt,
+    Value<DateTime?> completedAt = const Value.absent(),
+    int? practiceSeconds,
+  }) => AcademyProgressRow(
+    id: id ?? this.id,
+    lessonId: lessonId ?? this.lessonId,
+    state: state ?? this.state,
+    lastOpenedAt: lastOpenedAt ?? this.lastOpenedAt,
+    completedAt: completedAt.present ? completedAt.value : this.completedAt,
+    practiceSeconds: practiceSeconds ?? this.practiceSeconds,
+  );
+  AcademyProgressRow copyWithCompanion(AcademyProgressCompanion data) {
+    return AcademyProgressRow(
+      id: data.id.present ? data.id.value : this.id,
+      lessonId: data.lessonId.present ? data.lessonId.value : this.lessonId,
+      state: data.state.present ? data.state.value : this.state,
+      lastOpenedAt: data.lastOpenedAt.present
+          ? data.lastOpenedAt.value
+          : this.lastOpenedAt,
+      completedAt: data.completedAt.present
+          ? data.completedAt.value
+          : this.completedAt,
+      practiceSeconds: data.practiceSeconds.present
+          ? data.practiceSeconds.value
+          : this.practiceSeconds,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('AcademyProgressRow(')
+          ..write('id: $id, ')
+          ..write('lessonId: $lessonId, ')
+          ..write('state: $state, ')
+          ..write('lastOpenedAt: $lastOpenedAt, ')
+          ..write('completedAt: $completedAt, ')
+          ..write('practiceSeconds: $practiceSeconds')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    lessonId,
+    state,
+    lastOpenedAt,
+    completedAt,
+    practiceSeconds,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is AcademyProgressRow &&
+          other.id == this.id &&
+          other.lessonId == this.lessonId &&
+          other.state == this.state &&
+          other.lastOpenedAt == this.lastOpenedAt &&
+          other.completedAt == this.completedAt &&
+          other.practiceSeconds == this.practiceSeconds);
+}
+
+class AcademyProgressCompanion extends UpdateCompanion<AcademyProgressRow> {
+  final Value<int> id;
+  final Value<int> lessonId;
+  final Value<ProgressState> state;
+  final Value<DateTime> lastOpenedAt;
+  final Value<DateTime?> completedAt;
+  final Value<int> practiceSeconds;
+  const AcademyProgressCompanion({
+    this.id = const Value.absent(),
+    this.lessonId = const Value.absent(),
+    this.state = const Value.absent(),
+    this.lastOpenedAt = const Value.absent(),
+    this.completedAt = const Value.absent(),
+    this.practiceSeconds = const Value.absent(),
+  });
+  AcademyProgressCompanion.insert({
+    this.id = const Value.absent(),
+    required int lessonId,
+    required ProgressState state,
+    required DateTime lastOpenedAt,
+    this.completedAt = const Value.absent(),
+    this.practiceSeconds = const Value.absent(),
+  }) : lessonId = Value(lessonId),
+       state = Value(state),
+       lastOpenedAt = Value(lastOpenedAt);
+  static Insertable<AcademyProgressRow> custom({
+    Expression<int>? id,
+    Expression<int>? lessonId,
+    Expression<String>? state,
+    Expression<DateTime>? lastOpenedAt,
+    Expression<DateTime>? completedAt,
+    Expression<int>? practiceSeconds,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (lessonId != null) 'lesson_id': lessonId,
+      if (state != null) 'state': state,
+      if (lastOpenedAt != null) 'last_opened_at': lastOpenedAt,
+      if (completedAt != null) 'completed_at': completedAt,
+      if (practiceSeconds != null) 'practice_seconds': practiceSeconds,
+    });
+  }
+
+  AcademyProgressCompanion copyWith({
+    Value<int>? id,
+    Value<int>? lessonId,
+    Value<ProgressState>? state,
+    Value<DateTime>? lastOpenedAt,
+    Value<DateTime?>? completedAt,
+    Value<int>? practiceSeconds,
+  }) {
+    return AcademyProgressCompanion(
+      id: id ?? this.id,
+      lessonId: lessonId ?? this.lessonId,
+      state: state ?? this.state,
+      lastOpenedAt: lastOpenedAt ?? this.lastOpenedAt,
+      completedAt: completedAt ?? this.completedAt,
+      practiceSeconds: practiceSeconds ?? this.practiceSeconds,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (lessonId.present) {
+      map['lesson_id'] = Variable<int>(lessonId.value);
+    }
+    if (state.present) {
+      map['state'] = Variable<String>(
+        $AcademyProgressTable.$converterstate.toSql(state.value),
+      );
+    }
+    if (lastOpenedAt.present) {
+      map['last_opened_at'] = Variable<DateTime>(lastOpenedAt.value);
+    }
+    if (completedAt.present) {
+      map['completed_at'] = Variable<DateTime>(completedAt.value);
+    }
+    if (practiceSeconds.present) {
+      map['practice_seconds'] = Variable<int>(practiceSeconds.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('AcademyProgressCompanion(')
+          ..write('id: $id, ')
+          ..write('lessonId: $lessonId, ')
+          ..write('state: $state, ')
+          ..write('lastOpenedAt: $lastOpenedAt, ')
+          ..write('completedAt: $completedAt, ')
+          ..write('practiceSeconds: $practiceSeconds')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $AcademyExerciseProgressTable extends AcademyExerciseProgress
+    with TableInfo<$AcademyExerciseProgressTable, AcademyExerciseProgressRow> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $AcademyExerciseProgressTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'PRIMARY KEY AUTOINCREMENT',
+    ),
+  );
+  static const VerificationMeta _exerciseIdMeta = const VerificationMeta(
+    'exerciseId',
+  );
+  @override
+  late final GeneratedColumn<int> exerciseId = GeneratedColumn<int>(
+    'exercise_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES academy_exercises (id) ON DELETE CASCADE',
+    ),
+  );
+  static const VerificationMeta _completedAtMeta = const VerificationMeta(
+    'completedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> completedAt = GeneratedColumn<DateTime>(
+    'completed_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [id, exerciseId, completedAt];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'academy_exercise_progress';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<AcademyExerciseProgressRow> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('exercise_id')) {
+      context.handle(
+        _exerciseIdMeta,
+        exerciseId.isAcceptableOrUnknown(data['exercise_id']!, _exerciseIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_exerciseIdMeta);
+    }
+    if (data.containsKey('completed_at')) {
+      context.handle(
+        _completedAtMeta,
+        completedAt.isAcceptableOrUnknown(
+          data['completed_at']!,
+          _completedAtMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_completedAtMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  List<Set<GeneratedColumn>> get uniqueKeys => [
+    {exerciseId},
+  ];
+  @override
+  AcademyExerciseProgressRow map(
+    Map<String, dynamic> data, {
+    String? tablePrefix,
+  }) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return AcademyExerciseProgressRow(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      exerciseId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}exercise_id'],
+      )!,
+      completedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}completed_at'],
+      )!,
+    );
+  }
+
+  @override
+  $AcademyExerciseProgressTable createAlias(String alias) {
+    return $AcademyExerciseProgressTable(attachedDatabase, alias);
+  }
+}
+
+class AcademyExerciseProgressRow extends DataClass
+    implements Insertable<AcademyExerciseProgressRow> {
+  final int id;
+  final int exerciseId;
+  final DateTime completedAt;
+  const AcademyExerciseProgressRow({
+    required this.id,
+    required this.exerciseId,
+    required this.completedAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['exercise_id'] = Variable<int>(exerciseId);
+    map['completed_at'] = Variable<DateTime>(completedAt);
+    return map;
+  }
+
+  AcademyExerciseProgressCompanion toCompanion(bool nullToAbsent) {
+    return AcademyExerciseProgressCompanion(
+      id: Value(id),
+      exerciseId: Value(exerciseId),
+      completedAt: Value(completedAt),
+    );
+  }
+
+  factory AcademyExerciseProgressRow.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return AcademyExerciseProgressRow(
+      id: serializer.fromJson<int>(json['id']),
+      exerciseId: serializer.fromJson<int>(json['exerciseId']),
+      completedAt: serializer.fromJson<DateTime>(json['completedAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'exerciseId': serializer.toJson<int>(exerciseId),
+      'completedAt': serializer.toJson<DateTime>(completedAt),
+    };
+  }
+
+  AcademyExerciseProgressRow copyWith({
+    int? id,
+    int? exerciseId,
+    DateTime? completedAt,
+  }) => AcademyExerciseProgressRow(
+    id: id ?? this.id,
+    exerciseId: exerciseId ?? this.exerciseId,
+    completedAt: completedAt ?? this.completedAt,
+  );
+  AcademyExerciseProgressRow copyWithCompanion(
+    AcademyExerciseProgressCompanion data,
+  ) {
+    return AcademyExerciseProgressRow(
+      id: data.id.present ? data.id.value : this.id,
+      exerciseId: data.exerciseId.present
+          ? data.exerciseId.value
+          : this.exerciseId,
+      completedAt: data.completedAt.present
+          ? data.completedAt.value
+          : this.completedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('AcademyExerciseProgressRow(')
+          ..write('id: $id, ')
+          ..write('exerciseId: $exerciseId, ')
+          ..write('completedAt: $completedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, exerciseId, completedAt);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is AcademyExerciseProgressRow &&
+          other.id == this.id &&
+          other.exerciseId == this.exerciseId &&
+          other.completedAt == this.completedAt);
+}
+
+class AcademyExerciseProgressCompanion
+    extends UpdateCompanion<AcademyExerciseProgressRow> {
+  final Value<int> id;
+  final Value<int> exerciseId;
+  final Value<DateTime> completedAt;
+  const AcademyExerciseProgressCompanion({
+    this.id = const Value.absent(),
+    this.exerciseId = const Value.absent(),
+    this.completedAt = const Value.absent(),
+  });
+  AcademyExerciseProgressCompanion.insert({
+    this.id = const Value.absent(),
+    required int exerciseId,
+    required DateTime completedAt,
+  }) : exerciseId = Value(exerciseId),
+       completedAt = Value(completedAt);
+  static Insertable<AcademyExerciseProgressRow> custom({
+    Expression<int>? id,
+    Expression<int>? exerciseId,
+    Expression<DateTime>? completedAt,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (exerciseId != null) 'exercise_id': exerciseId,
+      if (completedAt != null) 'completed_at': completedAt,
+    });
+  }
+
+  AcademyExerciseProgressCompanion copyWith({
+    Value<int>? id,
+    Value<int>? exerciseId,
+    Value<DateTime>? completedAt,
+  }) {
+    return AcademyExerciseProgressCompanion(
+      id: id ?? this.id,
+      exerciseId: exerciseId ?? this.exerciseId,
+      completedAt: completedAt ?? this.completedAt,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (exerciseId.present) {
+      map['exercise_id'] = Variable<int>(exerciseId.value);
+    }
+    if (completedAt.present) {
+      map['completed_at'] = Variable<DateTime>(completedAt.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('AcademyExerciseProgressCompanion(')
+          ..write('id: $id, ')
+          ..write('exerciseId: $exerciseId, ')
+          ..write('completedAt: $completedAt')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $AcademyPracticeSessionsTable extends AcademyPracticeSessions
+    with TableInfo<$AcademyPracticeSessionsTable, AcademyPracticeSessionRow> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $AcademyPracticeSessionsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'PRIMARY KEY AUTOINCREMENT',
+    ),
+  );
+  static const VerificationMeta _lessonIdMeta = const VerificationMeta(
+    'lessonId',
+  );
+  @override
+  late final GeneratedColumn<int> lessonId = GeneratedColumn<int>(
+    'lesson_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES academy_lessons (id) ON DELETE CASCADE',
+    ),
+  );
+  static const VerificationMeta _secondsMeta = const VerificationMeta(
+    'seconds',
+  );
+  @override
+  late final GeneratedColumn<int> seconds = GeneratedColumn<int>(
+    'seconds',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _endedAtMeta = const VerificationMeta(
+    'endedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> endedAt = GeneratedColumn<DateTime>(
+    'ended_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [id, lessonId, seconds, endedAt];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'academy_practice_sessions';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<AcademyPracticeSessionRow> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('lesson_id')) {
+      context.handle(
+        _lessonIdMeta,
+        lessonId.isAcceptableOrUnknown(data['lesson_id']!, _lessonIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_lessonIdMeta);
+    }
+    if (data.containsKey('seconds')) {
+      context.handle(
+        _secondsMeta,
+        seconds.isAcceptableOrUnknown(data['seconds']!, _secondsMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_secondsMeta);
+    }
+    if (data.containsKey('ended_at')) {
+      context.handle(
+        _endedAtMeta,
+        endedAt.isAcceptableOrUnknown(data['ended_at']!, _endedAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_endedAtMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  AcademyPracticeSessionRow map(
+    Map<String, dynamic> data, {
+    String? tablePrefix,
+  }) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return AcademyPracticeSessionRow(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      lessonId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}lesson_id'],
+      )!,
+      seconds: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}seconds'],
+      )!,
+      endedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}ended_at'],
+      )!,
+    );
+  }
+
+  @override
+  $AcademyPracticeSessionsTable createAlias(String alias) {
+    return $AcademyPracticeSessionsTable(attachedDatabase, alias);
+  }
+}
+
+class AcademyPracticeSessionRow extends DataClass
+    implements Insertable<AcademyPracticeSessionRow> {
+  final int id;
+  final int lessonId;
+
+  /// How long the metronome was counting for, in seconds.
+  final int seconds;
+
+  /// When the player left the metronome, which is when the count was taken.
+  final DateTime endedAt;
+  const AcademyPracticeSessionRow({
+    required this.id,
+    required this.lessonId,
+    required this.seconds,
+    required this.endedAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['lesson_id'] = Variable<int>(lessonId);
+    map['seconds'] = Variable<int>(seconds);
+    map['ended_at'] = Variable<DateTime>(endedAt);
+    return map;
+  }
+
+  AcademyPracticeSessionsCompanion toCompanion(bool nullToAbsent) {
+    return AcademyPracticeSessionsCompanion(
+      id: Value(id),
+      lessonId: Value(lessonId),
+      seconds: Value(seconds),
+      endedAt: Value(endedAt),
+    );
+  }
+
+  factory AcademyPracticeSessionRow.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return AcademyPracticeSessionRow(
+      id: serializer.fromJson<int>(json['id']),
+      lessonId: serializer.fromJson<int>(json['lessonId']),
+      seconds: serializer.fromJson<int>(json['seconds']),
+      endedAt: serializer.fromJson<DateTime>(json['endedAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'lessonId': serializer.toJson<int>(lessonId),
+      'seconds': serializer.toJson<int>(seconds),
+      'endedAt': serializer.toJson<DateTime>(endedAt),
+    };
+  }
+
+  AcademyPracticeSessionRow copyWith({
+    int? id,
+    int? lessonId,
+    int? seconds,
+    DateTime? endedAt,
+  }) => AcademyPracticeSessionRow(
+    id: id ?? this.id,
+    lessonId: lessonId ?? this.lessonId,
+    seconds: seconds ?? this.seconds,
+    endedAt: endedAt ?? this.endedAt,
+  );
+  AcademyPracticeSessionRow copyWithCompanion(
+    AcademyPracticeSessionsCompanion data,
+  ) {
+    return AcademyPracticeSessionRow(
+      id: data.id.present ? data.id.value : this.id,
+      lessonId: data.lessonId.present ? data.lessonId.value : this.lessonId,
+      seconds: data.seconds.present ? data.seconds.value : this.seconds,
+      endedAt: data.endedAt.present ? data.endedAt.value : this.endedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('AcademyPracticeSessionRow(')
+          ..write('id: $id, ')
+          ..write('lessonId: $lessonId, ')
+          ..write('seconds: $seconds, ')
+          ..write('endedAt: $endedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, lessonId, seconds, endedAt);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is AcademyPracticeSessionRow &&
+          other.id == this.id &&
+          other.lessonId == this.lessonId &&
+          other.seconds == this.seconds &&
+          other.endedAt == this.endedAt);
+}
+
+class AcademyPracticeSessionsCompanion
+    extends UpdateCompanion<AcademyPracticeSessionRow> {
+  final Value<int> id;
+  final Value<int> lessonId;
+  final Value<int> seconds;
+  final Value<DateTime> endedAt;
+  const AcademyPracticeSessionsCompanion({
+    this.id = const Value.absent(),
+    this.lessonId = const Value.absent(),
+    this.seconds = const Value.absent(),
+    this.endedAt = const Value.absent(),
+  });
+  AcademyPracticeSessionsCompanion.insert({
+    this.id = const Value.absent(),
+    required int lessonId,
+    required int seconds,
+    required DateTime endedAt,
+  }) : lessonId = Value(lessonId),
+       seconds = Value(seconds),
+       endedAt = Value(endedAt);
+  static Insertable<AcademyPracticeSessionRow> custom({
+    Expression<int>? id,
+    Expression<int>? lessonId,
+    Expression<int>? seconds,
+    Expression<DateTime>? endedAt,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (lessonId != null) 'lesson_id': lessonId,
+      if (seconds != null) 'seconds': seconds,
+      if (endedAt != null) 'ended_at': endedAt,
+    });
+  }
+
+  AcademyPracticeSessionsCompanion copyWith({
+    Value<int>? id,
+    Value<int>? lessonId,
+    Value<int>? seconds,
+    Value<DateTime>? endedAt,
+  }) {
+    return AcademyPracticeSessionsCompanion(
+      id: id ?? this.id,
+      lessonId: lessonId ?? this.lessonId,
+      seconds: seconds ?? this.seconds,
+      endedAt: endedAt ?? this.endedAt,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (lessonId.present) {
+      map['lesson_id'] = Variable<int>(lessonId.value);
+    }
+    if (seconds.present) {
+      map['seconds'] = Variable<int>(seconds.value);
+    }
+    if (endedAt.present) {
+      map['ended_at'] = Variable<DateTime>(endedAt.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('AcademyPracticeSessionsCompanion(')
+          ..write('id: $id, ')
+          ..write('lessonId: $lessonId, ')
+          ..write('seconds: $seconds, ')
+          ..write('endedAt: $endedAt')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $AcademyBookmarksTable extends AcademyBookmarks
+    with TableInfo<$AcademyBookmarksTable, AcademyBookmark> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $AcademyBookmarksTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'PRIMARY KEY AUTOINCREMENT',
+    ),
+  );
+  @override
+  late final GeneratedColumnWithTypeConverter<BookmarkTarget, String> target =
+      GeneratedColumn<String>(
+        'target',
+        aliasedName,
+        false,
+        type: DriftSqlType.string,
+        requiredDuringInsert: true,
+      ).withConverter<BookmarkTarget>($AcademyBookmarksTable.$convertertarget);
+  static const VerificationMeta _targetKeyMeta = const VerificationMeta(
+    'targetKey',
+  );
+  @override
+  late final GeneratedColumn<String> targetKey = GeneratedColumn<String>(
+    'target_key',
+    aliasedName,
+    false,
+    additionalChecks: GeneratedColumn.checkTextLength(
+      minTextLength: 1,
+      maxTextLength: 120,
+    ),
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _labelMeta = const VerificationMeta('label');
+  @override
+  late final GeneratedColumn<String> label = GeneratedColumn<String>(
+    'label',
+    aliasedName,
+    false,
+    additionalChecks: GeneratedColumn.checkTextLength(
+      minTextLength: 1,
+      maxTextLength: 120,
+    ),
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    target,
+    targetKey,
+    label,
+    createdAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'academy_bookmarks';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<AcademyBookmark> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('target_key')) {
+      context.handle(
+        _targetKeyMeta,
+        targetKey.isAcceptableOrUnknown(data['target_key']!, _targetKeyMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_targetKeyMeta);
+    }
+    if (data.containsKey('label')) {
+      context.handle(
+        _labelMeta,
+        label.isAcceptableOrUnknown(data['label']!, _labelMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_labelMeta);
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  List<Set<GeneratedColumn>> get uniqueKeys => [
+    {target, targetKey},
+  ];
+  @override
+  AcademyBookmark map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return AcademyBookmark(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      target: $AcademyBookmarksTable.$convertertarget.fromSql(
+        attachedDatabase.typeMapping.read(
+          DriftSqlType.string,
+          data['${effectivePrefix}target'],
+        )!,
+      ),
+      targetKey: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}target_key'],
+      )!,
+      label: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}label'],
+      )!,
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created_at'],
+      )!,
+    );
+  }
+
+  @override
+  $AcademyBookmarksTable createAlias(String alias) {
+    return $AcademyBookmarksTable(attachedDatabase, alias);
+  }
+
+  static JsonTypeConverter2<BookmarkTarget, String, String> $convertertarget =
+      const EnumNameConverter<BookmarkTarget>(BookmarkTarget.values);
+}
+
+class AcademyBookmark extends DataClass implements Insertable<AcademyBookmark> {
+  final int id;
+  final BookmarkTarget target;
+
+  /// How to find the thing again: a lesson's slug, or a key the theory engine can
+  /// resolve such as `Cmaj7` or `A dorian`.
+  final String targetKey;
+
+  /// What to call it in the list, so a bookmark reads as itself without every
+  /// screen that shows one having to resolve it first.
+  final String label;
+  final DateTime createdAt;
+  const AcademyBookmark({
+    required this.id,
+    required this.target,
+    required this.targetKey,
+    required this.label,
+    required this.createdAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    {
+      map['target'] = Variable<String>(
+        $AcademyBookmarksTable.$convertertarget.toSql(target),
+      );
+    }
+    map['target_key'] = Variable<String>(targetKey);
+    map['label'] = Variable<String>(label);
+    map['created_at'] = Variable<DateTime>(createdAt);
+    return map;
+  }
+
+  AcademyBookmarksCompanion toCompanion(bool nullToAbsent) {
+    return AcademyBookmarksCompanion(
+      id: Value(id),
+      target: Value(target),
+      targetKey: Value(targetKey),
+      label: Value(label),
+      createdAt: Value(createdAt),
+    );
+  }
+
+  factory AcademyBookmark.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return AcademyBookmark(
+      id: serializer.fromJson<int>(json['id']),
+      target: $AcademyBookmarksTable.$convertertarget.fromJson(
+        serializer.fromJson<String>(json['target']),
+      ),
+      targetKey: serializer.fromJson<String>(json['targetKey']),
+      label: serializer.fromJson<String>(json['label']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'target': serializer.toJson<String>(
+        $AcademyBookmarksTable.$convertertarget.toJson(target),
+      ),
+      'targetKey': serializer.toJson<String>(targetKey),
+      'label': serializer.toJson<String>(label),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+    };
+  }
+
+  AcademyBookmark copyWith({
+    int? id,
+    BookmarkTarget? target,
+    String? targetKey,
+    String? label,
+    DateTime? createdAt,
+  }) => AcademyBookmark(
+    id: id ?? this.id,
+    target: target ?? this.target,
+    targetKey: targetKey ?? this.targetKey,
+    label: label ?? this.label,
+    createdAt: createdAt ?? this.createdAt,
+  );
+  AcademyBookmark copyWithCompanion(AcademyBookmarksCompanion data) {
+    return AcademyBookmark(
+      id: data.id.present ? data.id.value : this.id,
+      target: data.target.present ? data.target.value : this.target,
+      targetKey: data.targetKey.present ? data.targetKey.value : this.targetKey,
+      label: data.label.present ? data.label.value : this.label,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('AcademyBookmark(')
+          ..write('id: $id, ')
+          ..write('target: $target, ')
+          ..write('targetKey: $targetKey, ')
+          ..write('label: $label, ')
+          ..write('createdAt: $createdAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, target, targetKey, label, createdAt);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is AcademyBookmark &&
+          other.id == this.id &&
+          other.target == this.target &&
+          other.targetKey == this.targetKey &&
+          other.label == this.label &&
+          other.createdAt == this.createdAt);
+}
+
+class AcademyBookmarksCompanion extends UpdateCompanion<AcademyBookmark> {
+  final Value<int> id;
+  final Value<BookmarkTarget> target;
+  final Value<String> targetKey;
+  final Value<String> label;
+  final Value<DateTime> createdAt;
+  const AcademyBookmarksCompanion({
+    this.id = const Value.absent(),
+    this.target = const Value.absent(),
+    this.targetKey = const Value.absent(),
+    this.label = const Value.absent(),
+    this.createdAt = const Value.absent(),
+  });
+  AcademyBookmarksCompanion.insert({
+    this.id = const Value.absent(),
+    required BookmarkTarget target,
+    required String targetKey,
+    required String label,
+    required DateTime createdAt,
+  }) : target = Value(target),
+       targetKey = Value(targetKey),
+       label = Value(label),
+       createdAt = Value(createdAt);
+  static Insertable<AcademyBookmark> custom({
+    Expression<int>? id,
+    Expression<String>? target,
+    Expression<String>? targetKey,
+    Expression<String>? label,
+    Expression<DateTime>? createdAt,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (target != null) 'target': target,
+      if (targetKey != null) 'target_key': targetKey,
+      if (label != null) 'label': label,
+      if (createdAt != null) 'created_at': createdAt,
+    });
+  }
+
+  AcademyBookmarksCompanion copyWith({
+    Value<int>? id,
+    Value<BookmarkTarget>? target,
+    Value<String>? targetKey,
+    Value<String>? label,
+    Value<DateTime>? createdAt,
+  }) {
+    return AcademyBookmarksCompanion(
+      id: id ?? this.id,
+      target: target ?? this.target,
+      targetKey: targetKey ?? this.targetKey,
+      label: label ?? this.label,
+      createdAt: createdAt ?? this.createdAt,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (target.present) {
+      map['target'] = Variable<String>(
+        $AcademyBookmarksTable.$convertertarget.toSql(target.value),
+      );
+    }
+    if (targetKey.present) {
+      map['target_key'] = Variable<String>(targetKey.value);
+    }
+    if (label.present) {
+      map['label'] = Variable<String>(label.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('AcademyBookmarksCompanion(')
+          ..write('id: $id, ')
+          ..write('target: $target, ')
+          ..write('targetKey: $targetKey, ')
+          ..write('label: $label, ')
+          ..write('createdAt: $createdAt')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
@@ -8199,6 +12397,22 @@ abstract class _$AppDatabase extends GeneratedDatabase {
       $RigSnapshotEntriesTable(this);
   late final $RigSnapshotValuesTable rigSnapshotValues =
       $RigSnapshotValuesTable(this);
+  late final $AcademyCoursesTable academyCourses = $AcademyCoursesTable(this);
+  late final $AcademyModulesTable academyModules = $AcademyModulesTable(this);
+  late final $AcademyLessonsTable academyLessons = $AcademyLessonsTable(this);
+  late final $AcademyExercisesTable academyExercises = $AcademyExercisesTable(
+    this,
+  );
+  late final $AcademyProgressTable academyProgress = $AcademyProgressTable(
+    this,
+  );
+  late final $AcademyExerciseProgressTable academyExerciseProgress =
+      $AcademyExerciseProgressTable(this);
+  late final $AcademyPracticeSessionsTable academyPracticeSessions =
+      $AcademyPracticeSessionsTable(this);
+  late final $AcademyBookmarksTable academyBookmarks = $AcademyBookmarksTable(
+    this,
+  );
   late final Index idxPedalsStatus = Index(
     'idx_pedals_status',
     'CREATE INDEX idx_pedals_status ON pedals (status)',
@@ -8259,6 +12473,26 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     'idx_rig_snapshot_entries_snapshot_position',
     'CREATE INDEX idx_rig_snapshot_entries_snapshot_position ON rig_snapshot_entries (snapshot_id, position)',
   );
+  late final Index idxAcademyCoursesPathLevel = Index(
+    'idx_academy_courses_path_level',
+    'CREATE INDEX idx_academy_courses_path_level ON academy_courses (path, level)',
+  );
+  late final Index idxAcademyModulesCourse = Index(
+    'idx_academy_modules_course',
+    'CREATE INDEX idx_academy_modules_course ON academy_modules (course_id, position)',
+  );
+  late final Index idxAcademyLessonsModule = Index(
+    'idx_academy_lessons_module',
+    'CREATE INDEX idx_academy_lessons_module ON academy_lessons (module_id, position)',
+  );
+  late final Index idxAcademyExercisesLesson = Index(
+    'idx_academy_exercises_lesson',
+    'CREATE INDEX idx_academy_exercises_lesson ON academy_exercises (lesson_id, position)',
+  );
+  late final Index idxAcademyPracticeSessionsLesson = Index(
+    'idx_academy_practice_sessions_lesson',
+    'CREATE INDEX idx_academy_practice_sessions_lesson ON academy_practice_sessions (lesson_id, ended_at)',
+  );
   late final PedalDao pedalDao = PedalDao(this as AppDatabase);
   late final PedalControlDao pedalControlDao = PedalControlDao(
     this as AppDatabase,
@@ -8272,14 +12506,13 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final PedalReplacementDao pedalReplacementDao = PedalReplacementDao(
     this as AppDatabase,
   );
-  late final PedalboardDao pedalboardDao = PedalboardDao(this as AppDatabase);
-  late final SignalChainDao signalChainDao = SignalChainDao(
+  late final AcademyCourseDao academyCourseDao = AcademyCourseDao(
     this as AppDatabase,
   );
-  late final SignalEndpointDao signalEndpointDao = SignalEndpointDao(
+  late final AcademyProgressDao academyProgressDao = AcademyProgressDao(
     this as AppDatabase,
   );
-  late final RigSnapshotDao rigSnapshotDao = RigSnapshotDao(
+  late final AcademyBookmarkDao academyBookmarkDao = AcademyBookmarkDao(
     this as AppDatabase,
   );
   late final BackupDao backupDao = BackupDao(this as AppDatabase);
@@ -8305,6 +12538,14 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     rigSnapshots,
     rigSnapshotEntries,
     rigSnapshotValues,
+    academyCourses,
+    academyModules,
+    academyLessons,
+    academyExercises,
+    academyProgress,
+    academyExerciseProgress,
+    academyPracticeSessions,
+    academyBookmarks,
     idxPedalsStatus,
     idxPedalsName,
     idxPedalsHost,
@@ -8320,6 +12561,11 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     idxSignalConnectionsBoard,
     idxRigSnapshotsBoardCaptured,
     idxRigSnapshotEntriesSnapshotPosition,
+    idxAcademyCoursesPathLevel,
+    idxAcademyModulesCourse,
+    idxAcademyLessonsModule,
+    idxAcademyExercisesLesson,
+    idxAcademyPracticeSessionsLesson,
   ];
   @override
   StreamQueryUpdateRules get streamUpdateRules => const StreamQueryUpdateRules([
@@ -8434,6 +12680,52 @@ abstract class _$AppDatabase extends GeneratedDatabase {
         limitUpdateKind: UpdateKind.delete,
       ),
       result: [TableUpdate('rig_snapshot_values', kind: UpdateKind.delete)],
+    ),
+    WritePropagation(
+      on: TableUpdateQuery.onTableName(
+        'academy_courses',
+        limitUpdateKind: UpdateKind.delete,
+      ),
+      result: [TableUpdate('academy_modules', kind: UpdateKind.delete)],
+    ),
+    WritePropagation(
+      on: TableUpdateQuery.onTableName(
+        'academy_modules',
+        limitUpdateKind: UpdateKind.delete,
+      ),
+      result: [TableUpdate('academy_lessons', kind: UpdateKind.delete)],
+    ),
+    WritePropagation(
+      on: TableUpdateQuery.onTableName(
+        'academy_lessons',
+        limitUpdateKind: UpdateKind.delete,
+      ),
+      result: [TableUpdate('academy_exercises', kind: UpdateKind.delete)],
+    ),
+    WritePropagation(
+      on: TableUpdateQuery.onTableName(
+        'academy_lessons',
+        limitUpdateKind: UpdateKind.delete,
+      ),
+      result: [TableUpdate('academy_progress', kind: UpdateKind.delete)],
+    ),
+    WritePropagation(
+      on: TableUpdateQuery.onTableName(
+        'academy_exercises',
+        limitUpdateKind: UpdateKind.delete,
+      ),
+      result: [
+        TableUpdate('academy_exercise_progress', kind: UpdateKind.delete),
+      ],
+    ),
+    WritePropagation(
+      on: TableUpdateQuery.onTableName(
+        'academy_lessons',
+        limitUpdateKind: UpdateKind.delete,
+      ),
+      result: [
+        TableUpdate('academy_practice_sessions', kind: UpdateKind.delete),
+      ],
     ),
   ]);
   @override
@@ -17957,6 +22249,3440 @@ typedef $$RigSnapshotValuesTableProcessedTableManager =
       RigSnapshotValue,
       PrefetchHooks Function({bool entryId})
     >;
+typedef $$AcademyCoursesTableCreateCompanionBuilder =
+    AcademyCoursesCompanion Function({
+      Value<int> id,
+      required String slug,
+      required LearningPath path,
+      required SkillLevel level,
+      required String title,
+      required String summary,
+      required int position,
+      required DateTime createdAt,
+      required DateTime updatedAt,
+    });
+typedef $$AcademyCoursesTableUpdateCompanionBuilder =
+    AcademyCoursesCompanion Function({
+      Value<int> id,
+      Value<String> slug,
+      Value<LearningPath> path,
+      Value<SkillLevel> level,
+      Value<String> title,
+      Value<String> summary,
+      Value<int> position,
+      Value<DateTime> createdAt,
+      Value<DateTime> updatedAt,
+    });
+
+final class $$AcademyCoursesTableReferences
+    extends BaseReferences<_$AppDatabase, $AcademyCoursesTable, AcademyCourse> {
+  $$AcademyCoursesTableReferences(
+    super.$_db,
+    super.$_table,
+    super.$_typedResult,
+  );
+
+  static MultiTypedResultKey<$AcademyModulesTable, List<AcademyModule>>
+  _academyModulesRefsTable(_$AppDatabase db) => MultiTypedResultKey.fromTable(
+    db.academyModules,
+    aliasName: 'academy_courses__id__academy_modules__course_id',
+  );
+
+  $$AcademyModulesTableProcessedTableManager get academyModulesRefs {
+    final manager = $$AcademyModulesTableTableManager(
+      $_db,
+      $_db.academyModules,
+    ).filter((f) => f.courseId.id.sqlEquals($_itemColumn<int>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(_academyModulesRefsTable($_db));
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+}
+
+class $$AcademyCoursesTableFilterComposer
+    extends Composer<_$AppDatabase, $AcademyCoursesTable> {
+  $$AcademyCoursesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get slug => $composableBuilder(
+    column: $table.slug,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnWithTypeConverterFilters<LearningPath, LearningPath, String> get path =>
+      $composableBuilder(
+        column: $table.path,
+        builder: (column) => ColumnWithTypeConverterFilters(column),
+      );
+
+  ColumnWithTypeConverterFilters<SkillLevel, SkillLevel, String> get level =>
+      $composableBuilder(
+        column: $table.level,
+        builder: (column) => ColumnWithTypeConverterFilters(column),
+      );
+
+  ColumnFilters<String> get title => $composableBuilder(
+    column: $table.title,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get summary => $composableBuilder(
+    column: $table.summary,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get position => $composableBuilder(
+    column: $table.position,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  Expression<bool> academyModulesRefs(
+    Expression<bool> Function($$AcademyModulesTableFilterComposer f) f,
+  ) {
+    final $$AcademyModulesTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.academyModules,
+      getReferencedColumn: (t) => t.courseId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$AcademyModulesTableFilterComposer(
+            $db: $db,
+            $table: $db.academyModules,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+}
+
+class $$AcademyCoursesTableOrderingComposer
+    extends Composer<_$AppDatabase, $AcademyCoursesTable> {
+  $$AcademyCoursesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get slug => $composableBuilder(
+    column: $table.slug,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get path => $composableBuilder(
+    column: $table.path,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get level => $composableBuilder(
+    column: $table.level,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get title => $composableBuilder(
+    column: $table.title,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get summary => $composableBuilder(
+    column: $table.summary,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get position => $composableBuilder(
+    column: $table.position,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$AcademyCoursesTableAnnotationComposer
+    extends Composer<_$AppDatabase, $AcademyCoursesTable> {
+  $$AcademyCoursesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get slug =>
+      $composableBuilder(column: $table.slug, builder: (column) => column);
+
+  GeneratedColumnWithTypeConverter<LearningPath, String> get path =>
+      $composableBuilder(column: $table.path, builder: (column) => column);
+
+  GeneratedColumnWithTypeConverter<SkillLevel, String> get level =>
+      $composableBuilder(column: $table.level, builder: (column) => column);
+
+  GeneratedColumn<String> get title =>
+      $composableBuilder(column: $table.title, builder: (column) => column);
+
+  GeneratedColumn<String> get summary =>
+      $composableBuilder(column: $table.summary, builder: (column) => column);
+
+  GeneratedColumn<int> get position =>
+      $composableBuilder(column: $table.position, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+
+  Expression<T> academyModulesRefs<T extends Object>(
+    Expression<T> Function($$AcademyModulesTableAnnotationComposer a) f,
+  ) {
+    final $$AcademyModulesTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.academyModules,
+      getReferencedColumn: (t) => t.courseId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$AcademyModulesTableAnnotationComposer(
+            $db: $db,
+            $table: $db.academyModules,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+}
+
+class $$AcademyCoursesTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $AcademyCoursesTable,
+          AcademyCourse,
+          $$AcademyCoursesTableFilterComposer,
+          $$AcademyCoursesTableOrderingComposer,
+          $$AcademyCoursesTableAnnotationComposer,
+          $$AcademyCoursesTableCreateCompanionBuilder,
+          $$AcademyCoursesTableUpdateCompanionBuilder,
+          (AcademyCourse, $$AcademyCoursesTableReferences),
+          AcademyCourse,
+          PrefetchHooks Function({bool academyModulesRefs})
+        > {
+  $$AcademyCoursesTableTableManager(
+    _$AppDatabase db,
+    $AcademyCoursesTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$AcademyCoursesTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$AcademyCoursesTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$AcademyCoursesTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<String> slug = const Value.absent(),
+                Value<LearningPath> path = const Value.absent(),
+                Value<SkillLevel> level = const Value.absent(),
+                Value<String> title = const Value.absent(),
+                Value<String> summary = const Value.absent(),
+                Value<int> position = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<DateTime> updatedAt = const Value.absent(),
+              }) => AcademyCoursesCompanion(
+                id: id,
+                slug: slug,
+                path: path,
+                level: level,
+                title: title,
+                summary: summary,
+                position: position,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                required String slug,
+                required LearningPath path,
+                required SkillLevel level,
+                required String title,
+                required String summary,
+                required int position,
+                required DateTime createdAt,
+                required DateTime updatedAt,
+              }) => AcademyCoursesCompanion.insert(
+                id: id,
+                slug: slug,
+                path: path,
+                level: level,
+                title: title,
+                summary: summary,
+                position: position,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable(table),
+                  $$AcademyCoursesTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: ({academyModulesRefs = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [
+                if (academyModulesRefs) db.academyModules,
+              ],
+              addJoins: null,
+              getPrefetchedDataCallback: (items) async {
+                return [
+                  if (academyModulesRefs)
+                    await $_getPrefetchedData<
+                      AcademyCourse,
+                      $AcademyCoursesTable,
+                      AcademyModule
+                    >(
+                      currentTable: table,
+                      referencedTable: $$AcademyCoursesTableReferences
+                          ._academyModulesRefsTable(db),
+                      managerFromTypedResult: (p0) =>
+                          $$AcademyCoursesTableReferences(
+                            db,
+                            table,
+                            p0,
+                          ).academyModulesRefs,
+                      referencedItemsForCurrentItem: (item, referencedItems) =>
+                          referencedItems.where((e) => e.courseId == item.id),
+                      typedResults: items,
+                    ),
+                ];
+              },
+            );
+          },
+        ),
+      );
+}
+
+typedef $$AcademyCoursesTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $AcademyCoursesTable,
+      AcademyCourse,
+      $$AcademyCoursesTableFilterComposer,
+      $$AcademyCoursesTableOrderingComposer,
+      $$AcademyCoursesTableAnnotationComposer,
+      $$AcademyCoursesTableCreateCompanionBuilder,
+      $$AcademyCoursesTableUpdateCompanionBuilder,
+      (AcademyCourse, $$AcademyCoursesTableReferences),
+      AcademyCourse,
+      PrefetchHooks Function({bool academyModulesRefs})
+    >;
+typedef $$AcademyModulesTableCreateCompanionBuilder =
+    AcademyModulesCompanion Function({
+      Value<int> id,
+      required int courseId,
+      required String slug,
+      required String title,
+      Value<String?> summary,
+      required int position,
+      required DateTime createdAt,
+      required DateTime updatedAt,
+    });
+typedef $$AcademyModulesTableUpdateCompanionBuilder =
+    AcademyModulesCompanion Function({
+      Value<int> id,
+      Value<int> courseId,
+      Value<String> slug,
+      Value<String> title,
+      Value<String?> summary,
+      Value<int> position,
+      Value<DateTime> createdAt,
+      Value<DateTime> updatedAt,
+    });
+
+final class $$AcademyModulesTableReferences
+    extends BaseReferences<_$AppDatabase, $AcademyModulesTable, AcademyModule> {
+  $$AcademyModulesTableReferences(
+    super.$_db,
+    super.$_table,
+    super.$_typedResult,
+  );
+
+  static $AcademyCoursesTable _courseIdTable(_$AppDatabase db) => db
+      .academyCourses
+      .createAlias('academy_modules__course_id__academy_courses__id');
+
+  $$AcademyCoursesTableProcessedTableManager get courseId {
+    final $_column = $_itemColumn<int>('course_id')!;
+
+    final manager = $$AcademyCoursesTableTableManager(
+      $_db,
+      $_db.academyCourses,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_courseIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+
+  static MultiTypedResultKey<$AcademyLessonsTable, List<AcademyLesson>>
+  _academyLessonsRefsTable(_$AppDatabase db) => MultiTypedResultKey.fromTable(
+    db.academyLessons,
+    aliasName: 'academy_modules__id__academy_lessons__module_id',
+  );
+
+  $$AcademyLessonsTableProcessedTableManager get academyLessonsRefs {
+    final manager = $$AcademyLessonsTableTableManager(
+      $_db,
+      $_db.academyLessons,
+    ).filter((f) => f.moduleId.id.sqlEquals($_itemColumn<int>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(_academyLessonsRefsTable($_db));
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+}
+
+class $$AcademyModulesTableFilterComposer
+    extends Composer<_$AppDatabase, $AcademyModulesTable> {
+  $$AcademyModulesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get slug => $composableBuilder(
+    column: $table.slug,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get title => $composableBuilder(
+    column: $table.title,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get summary => $composableBuilder(
+    column: $table.summary,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get position => $composableBuilder(
+    column: $table.position,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  $$AcademyCoursesTableFilterComposer get courseId {
+    final $$AcademyCoursesTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.courseId,
+      referencedTable: $db.academyCourses,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$AcademyCoursesTableFilterComposer(
+            $db: $db,
+            $table: $db.academyCourses,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  Expression<bool> academyLessonsRefs(
+    Expression<bool> Function($$AcademyLessonsTableFilterComposer f) f,
+  ) {
+    final $$AcademyLessonsTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.academyLessons,
+      getReferencedColumn: (t) => t.moduleId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$AcademyLessonsTableFilterComposer(
+            $db: $db,
+            $table: $db.academyLessons,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+}
+
+class $$AcademyModulesTableOrderingComposer
+    extends Composer<_$AppDatabase, $AcademyModulesTable> {
+  $$AcademyModulesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get slug => $composableBuilder(
+    column: $table.slug,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get title => $composableBuilder(
+    column: $table.title,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get summary => $composableBuilder(
+    column: $table.summary,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get position => $composableBuilder(
+    column: $table.position,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  $$AcademyCoursesTableOrderingComposer get courseId {
+    final $$AcademyCoursesTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.courseId,
+      referencedTable: $db.academyCourses,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$AcademyCoursesTableOrderingComposer(
+            $db: $db,
+            $table: $db.academyCourses,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$AcademyModulesTableAnnotationComposer
+    extends Composer<_$AppDatabase, $AcademyModulesTable> {
+  $$AcademyModulesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get slug =>
+      $composableBuilder(column: $table.slug, builder: (column) => column);
+
+  GeneratedColumn<String> get title =>
+      $composableBuilder(column: $table.title, builder: (column) => column);
+
+  GeneratedColumn<String> get summary =>
+      $composableBuilder(column: $table.summary, builder: (column) => column);
+
+  GeneratedColumn<int> get position =>
+      $composableBuilder(column: $table.position, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+
+  $$AcademyCoursesTableAnnotationComposer get courseId {
+    final $$AcademyCoursesTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.courseId,
+      referencedTable: $db.academyCourses,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$AcademyCoursesTableAnnotationComposer(
+            $db: $db,
+            $table: $db.academyCourses,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  Expression<T> academyLessonsRefs<T extends Object>(
+    Expression<T> Function($$AcademyLessonsTableAnnotationComposer a) f,
+  ) {
+    final $$AcademyLessonsTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.academyLessons,
+      getReferencedColumn: (t) => t.moduleId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$AcademyLessonsTableAnnotationComposer(
+            $db: $db,
+            $table: $db.academyLessons,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+}
+
+class $$AcademyModulesTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $AcademyModulesTable,
+          AcademyModule,
+          $$AcademyModulesTableFilterComposer,
+          $$AcademyModulesTableOrderingComposer,
+          $$AcademyModulesTableAnnotationComposer,
+          $$AcademyModulesTableCreateCompanionBuilder,
+          $$AcademyModulesTableUpdateCompanionBuilder,
+          (AcademyModule, $$AcademyModulesTableReferences),
+          AcademyModule,
+          PrefetchHooks Function({bool courseId, bool academyLessonsRefs})
+        > {
+  $$AcademyModulesTableTableManager(
+    _$AppDatabase db,
+    $AcademyModulesTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$AcademyModulesTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$AcademyModulesTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$AcademyModulesTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<int> courseId = const Value.absent(),
+                Value<String> slug = const Value.absent(),
+                Value<String> title = const Value.absent(),
+                Value<String?> summary = const Value.absent(),
+                Value<int> position = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<DateTime> updatedAt = const Value.absent(),
+              }) => AcademyModulesCompanion(
+                id: id,
+                courseId: courseId,
+                slug: slug,
+                title: title,
+                summary: summary,
+                position: position,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                required int courseId,
+                required String slug,
+                required String title,
+                Value<String?> summary = const Value.absent(),
+                required int position,
+                required DateTime createdAt,
+                required DateTime updatedAt,
+              }) => AcademyModulesCompanion.insert(
+                id: id,
+                courseId: courseId,
+                slug: slug,
+                title: title,
+                summary: summary,
+                position: position,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable(table),
+                  $$AcademyModulesTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback:
+              ({courseId = false, academyLessonsRefs = false}) {
+                return PrefetchHooks(
+                  db: db,
+                  explicitlyWatchedTables: [
+                    if (academyLessonsRefs) db.academyLessons,
+                  ],
+                  addJoins:
+                      <
+                        T extends TableManagerState<
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic
+                        >
+                      >(state) {
+                        if (courseId) {
+                          state =
+                              state.withJoin(
+                                    currentTable: table,
+                                    currentColumn: table.courseId,
+                                    referencedTable:
+                                        $$AcademyModulesTableReferences
+                                            ._courseIdTable(db),
+                                    referencedColumn:
+                                        $$AcademyModulesTableReferences
+                                            ._courseIdTable(db)
+                                            .id,
+                                  )
+                                  as T;
+                        }
+
+                        return state;
+                      },
+                  getPrefetchedDataCallback: (items) async {
+                    return [
+                      if (academyLessonsRefs)
+                        await $_getPrefetchedData<
+                          AcademyModule,
+                          $AcademyModulesTable,
+                          AcademyLesson
+                        >(
+                          currentTable: table,
+                          referencedTable: $$AcademyModulesTableReferences
+                              ._academyLessonsRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$AcademyModulesTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).academyLessonsRefs,
+                          referencedItemsForCurrentItem:
+                              (item, referencedItems) => referencedItems.where(
+                                (e) => e.moduleId == item.id,
+                              ),
+                          typedResults: items,
+                        ),
+                    ];
+                  },
+                );
+              },
+        ),
+      );
+}
+
+typedef $$AcademyModulesTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $AcademyModulesTable,
+      AcademyModule,
+      $$AcademyModulesTableFilterComposer,
+      $$AcademyModulesTableOrderingComposer,
+      $$AcademyModulesTableAnnotationComposer,
+      $$AcademyModulesTableCreateCompanionBuilder,
+      $$AcademyModulesTableUpdateCompanionBuilder,
+      (AcademyModule, $$AcademyModulesTableReferences),
+      AcademyModule,
+      PrefetchHooks Function({bool courseId, bool academyLessonsRefs})
+    >;
+typedef $$AcademyLessonsTableCreateCompanionBuilder =
+    AcademyLessonsCompanion Function({
+      Value<int> id,
+      required int moduleId,
+      required String slug,
+      required String title,
+      required LessonKind kind,
+      Value<MusicGenre?> genre,
+      required String body,
+      Value<String?> objective,
+      Value<String?> commonMistakes,
+      Value<String?> practiceTips,
+      Value<String?> nextSkill,
+      Value<int?> estimatedMinutes,
+      Value<int?> suggestedBpm,
+      Value<TimeSignature?> timeSignature,
+      Value<String?> theoryKeys,
+      required int position,
+      required DateTime createdAt,
+      required DateTime updatedAt,
+    });
+typedef $$AcademyLessonsTableUpdateCompanionBuilder =
+    AcademyLessonsCompanion Function({
+      Value<int> id,
+      Value<int> moduleId,
+      Value<String> slug,
+      Value<String> title,
+      Value<LessonKind> kind,
+      Value<MusicGenre?> genre,
+      Value<String> body,
+      Value<String?> objective,
+      Value<String?> commonMistakes,
+      Value<String?> practiceTips,
+      Value<String?> nextSkill,
+      Value<int?> estimatedMinutes,
+      Value<int?> suggestedBpm,
+      Value<TimeSignature?> timeSignature,
+      Value<String?> theoryKeys,
+      Value<int> position,
+      Value<DateTime> createdAt,
+      Value<DateTime> updatedAt,
+    });
+
+final class $$AcademyLessonsTableReferences
+    extends BaseReferences<_$AppDatabase, $AcademyLessonsTable, AcademyLesson> {
+  $$AcademyLessonsTableReferences(
+    super.$_db,
+    super.$_table,
+    super.$_typedResult,
+  );
+
+  static $AcademyModulesTable _moduleIdTable(_$AppDatabase db) => db
+      .academyModules
+      .createAlias('academy_lessons__module_id__academy_modules__id');
+
+  $$AcademyModulesTableProcessedTableManager get moduleId {
+    final $_column = $_itemColumn<int>('module_id')!;
+
+    final manager = $$AcademyModulesTableTableManager(
+      $_db,
+      $_db.academyModules,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_moduleIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+
+  static MultiTypedResultKey<$AcademyExercisesTable, List<AcademyExercise>>
+  _academyExercisesRefsTable(_$AppDatabase db) => MultiTypedResultKey.fromTable(
+    db.academyExercises,
+    aliasName: 'academy_lessons__id__academy_exercises__lesson_id',
+  );
+
+  $$AcademyExercisesTableProcessedTableManager get academyExercisesRefs {
+    final manager = $$AcademyExercisesTableTableManager(
+      $_db,
+      $_db.academyExercises,
+    ).filter((f) => f.lessonId.id.sqlEquals($_itemColumn<int>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(
+      _academyExercisesRefsTable($_db),
+    );
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+
+  static MultiTypedResultKey<$AcademyProgressTable, List<AcademyProgressRow>>
+  _academyProgressRefsTable(_$AppDatabase db) => MultiTypedResultKey.fromTable(
+    db.academyProgress,
+    aliasName: 'academy_lessons__id__academy_progress__lesson_id',
+  );
+
+  $$AcademyProgressTableProcessedTableManager get academyProgressRefs {
+    final manager = $$AcademyProgressTableTableManager(
+      $_db,
+      $_db.academyProgress,
+    ).filter((f) => f.lessonId.id.sqlEquals($_itemColumn<int>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(
+      _academyProgressRefsTable($_db),
+    );
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+
+  static MultiTypedResultKey<
+    $AcademyPracticeSessionsTable,
+    List<AcademyPracticeSessionRow>
+  >
+  _academyPracticeSessionsRefsTable(_$AppDatabase db) =>
+      MultiTypedResultKey.fromTable(
+        db.academyPracticeSessions,
+        aliasName: 'academy_lessons__id__academy_practice_sessions__lesson_id',
+      );
+
+  $$AcademyPracticeSessionsTableProcessedTableManager
+  get academyPracticeSessionsRefs {
+    final manager = $$AcademyPracticeSessionsTableTableManager(
+      $_db,
+      $_db.academyPracticeSessions,
+    ).filter((f) => f.lessonId.id.sqlEquals($_itemColumn<int>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(
+      _academyPracticeSessionsRefsTable($_db),
+    );
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+}
+
+class $$AcademyLessonsTableFilterComposer
+    extends Composer<_$AppDatabase, $AcademyLessonsTable> {
+  $$AcademyLessonsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get slug => $composableBuilder(
+    column: $table.slug,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get title => $composableBuilder(
+    column: $table.title,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnWithTypeConverterFilters<LessonKind, LessonKind, String> get kind =>
+      $composableBuilder(
+        column: $table.kind,
+        builder: (column) => ColumnWithTypeConverterFilters(column),
+      );
+
+  ColumnWithTypeConverterFilters<MusicGenre?, MusicGenre, String> get genre =>
+      $composableBuilder(
+        column: $table.genre,
+        builder: (column) => ColumnWithTypeConverterFilters(column),
+      );
+
+  ColumnFilters<String> get body => $composableBuilder(
+    column: $table.body,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get objective => $composableBuilder(
+    column: $table.objective,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get commonMistakes => $composableBuilder(
+    column: $table.commonMistakes,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get practiceTips => $composableBuilder(
+    column: $table.practiceTips,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get nextSkill => $composableBuilder(
+    column: $table.nextSkill,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get estimatedMinutes => $composableBuilder(
+    column: $table.estimatedMinutes,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get suggestedBpm => $composableBuilder(
+    column: $table.suggestedBpm,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnWithTypeConverterFilters<TimeSignature?, TimeSignature, String>
+  get timeSignature => $composableBuilder(
+    column: $table.timeSignature,
+    builder: (column) => ColumnWithTypeConverterFilters(column),
+  );
+
+  ColumnFilters<String> get theoryKeys => $composableBuilder(
+    column: $table.theoryKeys,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get position => $composableBuilder(
+    column: $table.position,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  $$AcademyModulesTableFilterComposer get moduleId {
+    final $$AcademyModulesTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.moduleId,
+      referencedTable: $db.academyModules,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$AcademyModulesTableFilterComposer(
+            $db: $db,
+            $table: $db.academyModules,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  Expression<bool> academyExercisesRefs(
+    Expression<bool> Function($$AcademyExercisesTableFilterComposer f) f,
+  ) {
+    final $$AcademyExercisesTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.academyExercises,
+      getReferencedColumn: (t) => t.lessonId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$AcademyExercisesTableFilterComposer(
+            $db: $db,
+            $table: $db.academyExercises,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+
+  Expression<bool> academyProgressRefs(
+    Expression<bool> Function($$AcademyProgressTableFilterComposer f) f,
+  ) {
+    final $$AcademyProgressTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.academyProgress,
+      getReferencedColumn: (t) => t.lessonId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$AcademyProgressTableFilterComposer(
+            $db: $db,
+            $table: $db.academyProgress,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+
+  Expression<bool> academyPracticeSessionsRefs(
+    Expression<bool> Function($$AcademyPracticeSessionsTableFilterComposer f) f,
+  ) {
+    final $$AcademyPracticeSessionsTableFilterComposer composer =
+        $composerBuilder(
+          composer: this,
+          getCurrentColumn: (t) => t.id,
+          referencedTable: $db.academyPracticeSessions,
+          getReferencedColumn: (t) => t.lessonId,
+          builder:
+              (
+                joinBuilder, {
+                $addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer,
+              }) => $$AcademyPracticeSessionsTableFilterComposer(
+                $db: $db,
+                $table: $db.academyPracticeSessions,
+                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                joinBuilder: joinBuilder,
+                $removeJoinBuilderFromRootComposer:
+                    $removeJoinBuilderFromRootComposer,
+              ),
+        );
+    return f(composer);
+  }
+}
+
+class $$AcademyLessonsTableOrderingComposer
+    extends Composer<_$AppDatabase, $AcademyLessonsTable> {
+  $$AcademyLessonsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get slug => $composableBuilder(
+    column: $table.slug,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get title => $composableBuilder(
+    column: $table.title,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get kind => $composableBuilder(
+    column: $table.kind,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get genre => $composableBuilder(
+    column: $table.genre,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get body => $composableBuilder(
+    column: $table.body,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get objective => $composableBuilder(
+    column: $table.objective,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get commonMistakes => $composableBuilder(
+    column: $table.commonMistakes,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get practiceTips => $composableBuilder(
+    column: $table.practiceTips,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get nextSkill => $composableBuilder(
+    column: $table.nextSkill,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get estimatedMinutes => $composableBuilder(
+    column: $table.estimatedMinutes,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get suggestedBpm => $composableBuilder(
+    column: $table.suggestedBpm,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get timeSignature => $composableBuilder(
+    column: $table.timeSignature,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get theoryKeys => $composableBuilder(
+    column: $table.theoryKeys,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get position => $composableBuilder(
+    column: $table.position,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  $$AcademyModulesTableOrderingComposer get moduleId {
+    final $$AcademyModulesTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.moduleId,
+      referencedTable: $db.academyModules,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$AcademyModulesTableOrderingComposer(
+            $db: $db,
+            $table: $db.academyModules,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$AcademyLessonsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $AcademyLessonsTable> {
+  $$AcademyLessonsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get slug =>
+      $composableBuilder(column: $table.slug, builder: (column) => column);
+
+  GeneratedColumn<String> get title =>
+      $composableBuilder(column: $table.title, builder: (column) => column);
+
+  GeneratedColumnWithTypeConverter<LessonKind, String> get kind =>
+      $composableBuilder(column: $table.kind, builder: (column) => column);
+
+  GeneratedColumnWithTypeConverter<MusicGenre?, String> get genre =>
+      $composableBuilder(column: $table.genre, builder: (column) => column);
+
+  GeneratedColumn<String> get body =>
+      $composableBuilder(column: $table.body, builder: (column) => column);
+
+  GeneratedColumn<String> get objective =>
+      $composableBuilder(column: $table.objective, builder: (column) => column);
+
+  GeneratedColumn<String> get commonMistakes => $composableBuilder(
+    column: $table.commonMistakes,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get practiceTips => $composableBuilder(
+    column: $table.practiceTips,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get nextSkill =>
+      $composableBuilder(column: $table.nextSkill, builder: (column) => column);
+
+  GeneratedColumn<int> get estimatedMinutes => $composableBuilder(
+    column: $table.estimatedMinutes,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get suggestedBpm => $composableBuilder(
+    column: $table.suggestedBpm,
+    builder: (column) => column,
+  );
+
+  GeneratedColumnWithTypeConverter<TimeSignature?, String> get timeSignature =>
+      $composableBuilder(
+        column: $table.timeSignature,
+        builder: (column) => column,
+      );
+
+  GeneratedColumn<String> get theoryKeys => $composableBuilder(
+    column: $table.theoryKeys,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get position =>
+      $composableBuilder(column: $table.position, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+
+  $$AcademyModulesTableAnnotationComposer get moduleId {
+    final $$AcademyModulesTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.moduleId,
+      referencedTable: $db.academyModules,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$AcademyModulesTableAnnotationComposer(
+            $db: $db,
+            $table: $db.academyModules,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  Expression<T> academyExercisesRefs<T extends Object>(
+    Expression<T> Function($$AcademyExercisesTableAnnotationComposer a) f,
+  ) {
+    final $$AcademyExercisesTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.academyExercises,
+      getReferencedColumn: (t) => t.lessonId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$AcademyExercisesTableAnnotationComposer(
+            $db: $db,
+            $table: $db.academyExercises,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+
+  Expression<T> academyProgressRefs<T extends Object>(
+    Expression<T> Function($$AcademyProgressTableAnnotationComposer a) f,
+  ) {
+    final $$AcademyProgressTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.academyProgress,
+      getReferencedColumn: (t) => t.lessonId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$AcademyProgressTableAnnotationComposer(
+            $db: $db,
+            $table: $db.academyProgress,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+
+  Expression<T> academyPracticeSessionsRefs<T extends Object>(
+    Expression<T> Function($$AcademyPracticeSessionsTableAnnotationComposer a)
+    f,
+  ) {
+    final $$AcademyPracticeSessionsTableAnnotationComposer composer =
+        $composerBuilder(
+          composer: this,
+          getCurrentColumn: (t) => t.id,
+          referencedTable: $db.academyPracticeSessions,
+          getReferencedColumn: (t) => t.lessonId,
+          builder:
+              (
+                joinBuilder, {
+                $addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer,
+              }) => $$AcademyPracticeSessionsTableAnnotationComposer(
+                $db: $db,
+                $table: $db.academyPracticeSessions,
+                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                joinBuilder: joinBuilder,
+                $removeJoinBuilderFromRootComposer:
+                    $removeJoinBuilderFromRootComposer,
+              ),
+        );
+    return f(composer);
+  }
+}
+
+class $$AcademyLessonsTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $AcademyLessonsTable,
+          AcademyLesson,
+          $$AcademyLessonsTableFilterComposer,
+          $$AcademyLessonsTableOrderingComposer,
+          $$AcademyLessonsTableAnnotationComposer,
+          $$AcademyLessonsTableCreateCompanionBuilder,
+          $$AcademyLessonsTableUpdateCompanionBuilder,
+          (AcademyLesson, $$AcademyLessonsTableReferences),
+          AcademyLesson,
+          PrefetchHooks Function({
+            bool moduleId,
+            bool academyExercisesRefs,
+            bool academyProgressRefs,
+            bool academyPracticeSessionsRefs,
+          })
+        > {
+  $$AcademyLessonsTableTableManager(
+    _$AppDatabase db,
+    $AcademyLessonsTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$AcademyLessonsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$AcademyLessonsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$AcademyLessonsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<int> moduleId = const Value.absent(),
+                Value<String> slug = const Value.absent(),
+                Value<String> title = const Value.absent(),
+                Value<LessonKind> kind = const Value.absent(),
+                Value<MusicGenre?> genre = const Value.absent(),
+                Value<String> body = const Value.absent(),
+                Value<String?> objective = const Value.absent(),
+                Value<String?> commonMistakes = const Value.absent(),
+                Value<String?> practiceTips = const Value.absent(),
+                Value<String?> nextSkill = const Value.absent(),
+                Value<int?> estimatedMinutes = const Value.absent(),
+                Value<int?> suggestedBpm = const Value.absent(),
+                Value<TimeSignature?> timeSignature = const Value.absent(),
+                Value<String?> theoryKeys = const Value.absent(),
+                Value<int> position = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<DateTime> updatedAt = const Value.absent(),
+              }) => AcademyLessonsCompanion(
+                id: id,
+                moduleId: moduleId,
+                slug: slug,
+                title: title,
+                kind: kind,
+                genre: genre,
+                body: body,
+                objective: objective,
+                commonMistakes: commonMistakes,
+                practiceTips: practiceTips,
+                nextSkill: nextSkill,
+                estimatedMinutes: estimatedMinutes,
+                suggestedBpm: suggestedBpm,
+                timeSignature: timeSignature,
+                theoryKeys: theoryKeys,
+                position: position,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                required int moduleId,
+                required String slug,
+                required String title,
+                required LessonKind kind,
+                Value<MusicGenre?> genre = const Value.absent(),
+                required String body,
+                Value<String?> objective = const Value.absent(),
+                Value<String?> commonMistakes = const Value.absent(),
+                Value<String?> practiceTips = const Value.absent(),
+                Value<String?> nextSkill = const Value.absent(),
+                Value<int?> estimatedMinutes = const Value.absent(),
+                Value<int?> suggestedBpm = const Value.absent(),
+                Value<TimeSignature?> timeSignature = const Value.absent(),
+                Value<String?> theoryKeys = const Value.absent(),
+                required int position,
+                required DateTime createdAt,
+                required DateTime updatedAt,
+              }) => AcademyLessonsCompanion.insert(
+                id: id,
+                moduleId: moduleId,
+                slug: slug,
+                title: title,
+                kind: kind,
+                genre: genre,
+                body: body,
+                objective: objective,
+                commonMistakes: commonMistakes,
+                practiceTips: practiceTips,
+                nextSkill: nextSkill,
+                estimatedMinutes: estimatedMinutes,
+                suggestedBpm: suggestedBpm,
+                timeSignature: timeSignature,
+                theoryKeys: theoryKeys,
+                position: position,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable(table),
+                  $$AcademyLessonsTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback:
+              ({
+                moduleId = false,
+                academyExercisesRefs = false,
+                academyProgressRefs = false,
+                academyPracticeSessionsRefs = false,
+              }) {
+                return PrefetchHooks(
+                  db: db,
+                  explicitlyWatchedTables: [
+                    if (academyExercisesRefs) db.academyExercises,
+                    if (academyProgressRefs) db.academyProgress,
+                    if (academyPracticeSessionsRefs) db.academyPracticeSessions,
+                  ],
+                  addJoins:
+                      <
+                        T extends TableManagerState<
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic
+                        >
+                      >(state) {
+                        if (moduleId) {
+                          state =
+                              state.withJoin(
+                                    currentTable: table,
+                                    currentColumn: table.moduleId,
+                                    referencedTable:
+                                        $$AcademyLessonsTableReferences
+                                            ._moduleIdTable(db),
+                                    referencedColumn:
+                                        $$AcademyLessonsTableReferences
+                                            ._moduleIdTable(db)
+                                            .id,
+                                  )
+                                  as T;
+                        }
+
+                        return state;
+                      },
+                  getPrefetchedDataCallback: (items) async {
+                    return [
+                      if (academyExercisesRefs)
+                        await $_getPrefetchedData<
+                          AcademyLesson,
+                          $AcademyLessonsTable,
+                          AcademyExercise
+                        >(
+                          currentTable: table,
+                          referencedTable: $$AcademyLessonsTableReferences
+                              ._academyExercisesRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$AcademyLessonsTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).academyExercisesRefs,
+                          referencedItemsForCurrentItem:
+                              (item, referencedItems) => referencedItems.where(
+                                (e) => e.lessonId == item.id,
+                              ),
+                          typedResults: items,
+                        ),
+                      if (academyProgressRefs)
+                        await $_getPrefetchedData<
+                          AcademyLesson,
+                          $AcademyLessonsTable,
+                          AcademyProgressRow
+                        >(
+                          currentTable: table,
+                          referencedTable: $$AcademyLessonsTableReferences
+                              ._academyProgressRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$AcademyLessonsTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).academyProgressRefs,
+                          referencedItemsForCurrentItem:
+                              (item, referencedItems) => referencedItems.where(
+                                (e) => e.lessonId == item.id,
+                              ),
+                          typedResults: items,
+                        ),
+                      if (academyPracticeSessionsRefs)
+                        await $_getPrefetchedData<
+                          AcademyLesson,
+                          $AcademyLessonsTable,
+                          AcademyPracticeSessionRow
+                        >(
+                          currentTable: table,
+                          referencedTable: $$AcademyLessonsTableReferences
+                              ._academyPracticeSessionsRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$AcademyLessonsTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).academyPracticeSessionsRefs,
+                          referencedItemsForCurrentItem:
+                              (item, referencedItems) => referencedItems.where(
+                                (e) => e.lessonId == item.id,
+                              ),
+                          typedResults: items,
+                        ),
+                    ];
+                  },
+                );
+              },
+        ),
+      );
+}
+
+typedef $$AcademyLessonsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $AcademyLessonsTable,
+      AcademyLesson,
+      $$AcademyLessonsTableFilterComposer,
+      $$AcademyLessonsTableOrderingComposer,
+      $$AcademyLessonsTableAnnotationComposer,
+      $$AcademyLessonsTableCreateCompanionBuilder,
+      $$AcademyLessonsTableUpdateCompanionBuilder,
+      (AcademyLesson, $$AcademyLessonsTableReferences),
+      AcademyLesson,
+      PrefetchHooks Function({
+        bool moduleId,
+        bool academyExercisesRefs,
+        bool academyProgressRefs,
+        bool academyPracticeSessionsRefs,
+      })
+    >;
+typedef $$AcademyExercisesTableCreateCompanionBuilder =
+    AcademyExercisesCompanion Function({
+      Value<int> id,
+      required int lessonId,
+      required String title,
+      required String instructions,
+      required int startBpm,
+      required int targetBpm,
+      required TimeSignature timeSignature,
+      required int position,
+      required DateTime createdAt,
+      required DateTime updatedAt,
+    });
+typedef $$AcademyExercisesTableUpdateCompanionBuilder =
+    AcademyExercisesCompanion Function({
+      Value<int> id,
+      Value<int> lessonId,
+      Value<String> title,
+      Value<String> instructions,
+      Value<int> startBpm,
+      Value<int> targetBpm,
+      Value<TimeSignature> timeSignature,
+      Value<int> position,
+      Value<DateTime> createdAt,
+      Value<DateTime> updatedAt,
+    });
+
+final class $$AcademyExercisesTableReferences
+    extends
+        BaseReferences<_$AppDatabase, $AcademyExercisesTable, AcademyExercise> {
+  $$AcademyExercisesTableReferences(
+    super.$_db,
+    super.$_table,
+    super.$_typedResult,
+  );
+
+  static $AcademyLessonsTable _lessonIdTable(_$AppDatabase db) => db
+      .academyLessons
+      .createAlias('academy_exercises__lesson_id__academy_lessons__id');
+
+  $$AcademyLessonsTableProcessedTableManager get lessonId {
+    final $_column = $_itemColumn<int>('lesson_id')!;
+
+    final manager = $$AcademyLessonsTableTableManager(
+      $_db,
+      $_db.academyLessons,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_lessonIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+
+  static MultiTypedResultKey<
+    $AcademyExerciseProgressTable,
+    List<AcademyExerciseProgressRow>
+  >
+  _academyExerciseProgressRefsTable(_$AppDatabase db) =>
+      MultiTypedResultKey.fromTable(
+        db.academyExerciseProgress,
+        aliasName:
+            'academy_exercises__id__academy_exercise_progress__exercise_id',
+      );
+
+  $$AcademyExerciseProgressTableProcessedTableManager
+  get academyExerciseProgressRefs {
+    final manager = $$AcademyExerciseProgressTableTableManager(
+      $_db,
+      $_db.academyExerciseProgress,
+    ).filter((f) => f.exerciseId.id.sqlEquals($_itemColumn<int>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(
+      _academyExerciseProgressRefsTable($_db),
+    );
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+}
+
+class $$AcademyExercisesTableFilterComposer
+    extends Composer<_$AppDatabase, $AcademyExercisesTable> {
+  $$AcademyExercisesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get title => $composableBuilder(
+    column: $table.title,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get instructions => $composableBuilder(
+    column: $table.instructions,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get startBpm => $composableBuilder(
+    column: $table.startBpm,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get targetBpm => $composableBuilder(
+    column: $table.targetBpm,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnWithTypeConverterFilters<TimeSignature, TimeSignature, String>
+  get timeSignature => $composableBuilder(
+    column: $table.timeSignature,
+    builder: (column) => ColumnWithTypeConverterFilters(column),
+  );
+
+  ColumnFilters<int> get position => $composableBuilder(
+    column: $table.position,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  $$AcademyLessonsTableFilterComposer get lessonId {
+    final $$AcademyLessonsTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.lessonId,
+      referencedTable: $db.academyLessons,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$AcademyLessonsTableFilterComposer(
+            $db: $db,
+            $table: $db.academyLessons,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  Expression<bool> academyExerciseProgressRefs(
+    Expression<bool> Function($$AcademyExerciseProgressTableFilterComposer f) f,
+  ) {
+    final $$AcademyExerciseProgressTableFilterComposer composer =
+        $composerBuilder(
+          composer: this,
+          getCurrentColumn: (t) => t.id,
+          referencedTable: $db.academyExerciseProgress,
+          getReferencedColumn: (t) => t.exerciseId,
+          builder:
+              (
+                joinBuilder, {
+                $addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer,
+              }) => $$AcademyExerciseProgressTableFilterComposer(
+                $db: $db,
+                $table: $db.academyExerciseProgress,
+                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                joinBuilder: joinBuilder,
+                $removeJoinBuilderFromRootComposer:
+                    $removeJoinBuilderFromRootComposer,
+              ),
+        );
+    return f(composer);
+  }
+}
+
+class $$AcademyExercisesTableOrderingComposer
+    extends Composer<_$AppDatabase, $AcademyExercisesTable> {
+  $$AcademyExercisesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get title => $composableBuilder(
+    column: $table.title,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get instructions => $composableBuilder(
+    column: $table.instructions,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get startBpm => $composableBuilder(
+    column: $table.startBpm,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get targetBpm => $composableBuilder(
+    column: $table.targetBpm,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get timeSignature => $composableBuilder(
+    column: $table.timeSignature,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get position => $composableBuilder(
+    column: $table.position,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  $$AcademyLessonsTableOrderingComposer get lessonId {
+    final $$AcademyLessonsTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.lessonId,
+      referencedTable: $db.academyLessons,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$AcademyLessonsTableOrderingComposer(
+            $db: $db,
+            $table: $db.academyLessons,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$AcademyExercisesTableAnnotationComposer
+    extends Composer<_$AppDatabase, $AcademyExercisesTable> {
+  $$AcademyExercisesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get title =>
+      $composableBuilder(column: $table.title, builder: (column) => column);
+
+  GeneratedColumn<String> get instructions => $composableBuilder(
+    column: $table.instructions,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get startBpm =>
+      $composableBuilder(column: $table.startBpm, builder: (column) => column);
+
+  GeneratedColumn<int> get targetBpm =>
+      $composableBuilder(column: $table.targetBpm, builder: (column) => column);
+
+  GeneratedColumnWithTypeConverter<TimeSignature, String> get timeSignature =>
+      $composableBuilder(
+        column: $table.timeSignature,
+        builder: (column) => column,
+      );
+
+  GeneratedColumn<int> get position =>
+      $composableBuilder(column: $table.position, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+
+  $$AcademyLessonsTableAnnotationComposer get lessonId {
+    final $$AcademyLessonsTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.lessonId,
+      referencedTable: $db.academyLessons,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$AcademyLessonsTableAnnotationComposer(
+            $db: $db,
+            $table: $db.academyLessons,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  Expression<T> academyExerciseProgressRefs<T extends Object>(
+    Expression<T> Function($$AcademyExerciseProgressTableAnnotationComposer a)
+    f,
+  ) {
+    final $$AcademyExerciseProgressTableAnnotationComposer composer =
+        $composerBuilder(
+          composer: this,
+          getCurrentColumn: (t) => t.id,
+          referencedTable: $db.academyExerciseProgress,
+          getReferencedColumn: (t) => t.exerciseId,
+          builder:
+              (
+                joinBuilder, {
+                $addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer,
+              }) => $$AcademyExerciseProgressTableAnnotationComposer(
+                $db: $db,
+                $table: $db.academyExerciseProgress,
+                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                joinBuilder: joinBuilder,
+                $removeJoinBuilderFromRootComposer:
+                    $removeJoinBuilderFromRootComposer,
+              ),
+        );
+    return f(composer);
+  }
+}
+
+class $$AcademyExercisesTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $AcademyExercisesTable,
+          AcademyExercise,
+          $$AcademyExercisesTableFilterComposer,
+          $$AcademyExercisesTableOrderingComposer,
+          $$AcademyExercisesTableAnnotationComposer,
+          $$AcademyExercisesTableCreateCompanionBuilder,
+          $$AcademyExercisesTableUpdateCompanionBuilder,
+          (AcademyExercise, $$AcademyExercisesTableReferences),
+          AcademyExercise,
+          PrefetchHooks Function({
+            bool lessonId,
+            bool academyExerciseProgressRefs,
+          })
+        > {
+  $$AcademyExercisesTableTableManager(
+    _$AppDatabase db,
+    $AcademyExercisesTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$AcademyExercisesTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$AcademyExercisesTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$AcademyExercisesTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<int> lessonId = const Value.absent(),
+                Value<String> title = const Value.absent(),
+                Value<String> instructions = const Value.absent(),
+                Value<int> startBpm = const Value.absent(),
+                Value<int> targetBpm = const Value.absent(),
+                Value<TimeSignature> timeSignature = const Value.absent(),
+                Value<int> position = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<DateTime> updatedAt = const Value.absent(),
+              }) => AcademyExercisesCompanion(
+                id: id,
+                lessonId: lessonId,
+                title: title,
+                instructions: instructions,
+                startBpm: startBpm,
+                targetBpm: targetBpm,
+                timeSignature: timeSignature,
+                position: position,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                required int lessonId,
+                required String title,
+                required String instructions,
+                required int startBpm,
+                required int targetBpm,
+                required TimeSignature timeSignature,
+                required int position,
+                required DateTime createdAt,
+                required DateTime updatedAt,
+              }) => AcademyExercisesCompanion.insert(
+                id: id,
+                lessonId: lessonId,
+                title: title,
+                instructions: instructions,
+                startBpm: startBpm,
+                targetBpm: targetBpm,
+                timeSignature: timeSignature,
+                position: position,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable(table),
+                  $$AcademyExercisesTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback:
+              ({lessonId = false, academyExerciseProgressRefs = false}) {
+                return PrefetchHooks(
+                  db: db,
+                  explicitlyWatchedTables: [
+                    if (academyExerciseProgressRefs) db.academyExerciseProgress,
+                  ],
+                  addJoins:
+                      <
+                        T extends TableManagerState<
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic
+                        >
+                      >(state) {
+                        if (lessonId) {
+                          state =
+                              state.withJoin(
+                                    currentTable: table,
+                                    currentColumn: table.lessonId,
+                                    referencedTable:
+                                        $$AcademyExercisesTableReferences
+                                            ._lessonIdTable(db),
+                                    referencedColumn:
+                                        $$AcademyExercisesTableReferences
+                                            ._lessonIdTable(db)
+                                            .id,
+                                  )
+                                  as T;
+                        }
+
+                        return state;
+                      },
+                  getPrefetchedDataCallback: (items) async {
+                    return [
+                      if (academyExerciseProgressRefs)
+                        await $_getPrefetchedData<
+                          AcademyExercise,
+                          $AcademyExercisesTable,
+                          AcademyExerciseProgressRow
+                        >(
+                          currentTable: table,
+                          referencedTable: $$AcademyExercisesTableReferences
+                              ._academyExerciseProgressRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$AcademyExercisesTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).academyExerciseProgressRefs,
+                          referencedItemsForCurrentItem:
+                              (item, referencedItems) => referencedItems.where(
+                                (e) => e.exerciseId == item.id,
+                              ),
+                          typedResults: items,
+                        ),
+                    ];
+                  },
+                );
+              },
+        ),
+      );
+}
+
+typedef $$AcademyExercisesTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $AcademyExercisesTable,
+      AcademyExercise,
+      $$AcademyExercisesTableFilterComposer,
+      $$AcademyExercisesTableOrderingComposer,
+      $$AcademyExercisesTableAnnotationComposer,
+      $$AcademyExercisesTableCreateCompanionBuilder,
+      $$AcademyExercisesTableUpdateCompanionBuilder,
+      (AcademyExercise, $$AcademyExercisesTableReferences),
+      AcademyExercise,
+      PrefetchHooks Function({bool lessonId, bool academyExerciseProgressRefs})
+    >;
+typedef $$AcademyProgressTableCreateCompanionBuilder =
+    AcademyProgressCompanion Function({
+      Value<int> id,
+      required int lessonId,
+      required ProgressState state,
+      required DateTime lastOpenedAt,
+      Value<DateTime?> completedAt,
+      Value<int> practiceSeconds,
+    });
+typedef $$AcademyProgressTableUpdateCompanionBuilder =
+    AcademyProgressCompanion Function({
+      Value<int> id,
+      Value<int> lessonId,
+      Value<ProgressState> state,
+      Value<DateTime> lastOpenedAt,
+      Value<DateTime?> completedAt,
+      Value<int> practiceSeconds,
+    });
+
+final class $$AcademyProgressTableReferences
+    extends
+        BaseReferences<
+          _$AppDatabase,
+          $AcademyProgressTable,
+          AcademyProgressRow
+        > {
+  $$AcademyProgressTableReferences(
+    super.$_db,
+    super.$_table,
+    super.$_typedResult,
+  );
+
+  static $AcademyLessonsTable _lessonIdTable(_$AppDatabase db) => db
+      .academyLessons
+      .createAlias('academy_progress__lesson_id__academy_lessons__id');
+
+  $$AcademyLessonsTableProcessedTableManager get lessonId {
+    final $_column = $_itemColumn<int>('lesson_id')!;
+
+    final manager = $$AcademyLessonsTableTableManager(
+      $_db,
+      $_db.academyLessons,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_lessonIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+}
+
+class $$AcademyProgressTableFilterComposer
+    extends Composer<_$AppDatabase, $AcademyProgressTable> {
+  $$AcademyProgressTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnWithTypeConverterFilters<ProgressState, ProgressState, String>
+  get state => $composableBuilder(
+    column: $table.state,
+    builder: (column) => ColumnWithTypeConverterFilters(column),
+  );
+
+  ColumnFilters<DateTime> get lastOpenedAt => $composableBuilder(
+    column: $table.lastOpenedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get completedAt => $composableBuilder(
+    column: $table.completedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get practiceSeconds => $composableBuilder(
+    column: $table.practiceSeconds,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  $$AcademyLessonsTableFilterComposer get lessonId {
+    final $$AcademyLessonsTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.lessonId,
+      referencedTable: $db.academyLessons,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$AcademyLessonsTableFilterComposer(
+            $db: $db,
+            $table: $db.academyLessons,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$AcademyProgressTableOrderingComposer
+    extends Composer<_$AppDatabase, $AcademyProgressTable> {
+  $$AcademyProgressTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get state => $composableBuilder(
+    column: $table.state,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get lastOpenedAt => $composableBuilder(
+    column: $table.lastOpenedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get completedAt => $composableBuilder(
+    column: $table.completedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get practiceSeconds => $composableBuilder(
+    column: $table.practiceSeconds,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  $$AcademyLessonsTableOrderingComposer get lessonId {
+    final $$AcademyLessonsTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.lessonId,
+      referencedTable: $db.academyLessons,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$AcademyLessonsTableOrderingComposer(
+            $db: $db,
+            $table: $db.academyLessons,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$AcademyProgressTableAnnotationComposer
+    extends Composer<_$AppDatabase, $AcademyProgressTable> {
+  $$AcademyProgressTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumnWithTypeConverter<ProgressState, String> get state =>
+      $composableBuilder(column: $table.state, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get lastOpenedAt => $composableBuilder(
+    column: $table.lastOpenedAt,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get completedAt => $composableBuilder(
+    column: $table.completedAt,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get practiceSeconds => $composableBuilder(
+    column: $table.practiceSeconds,
+    builder: (column) => column,
+  );
+
+  $$AcademyLessonsTableAnnotationComposer get lessonId {
+    final $$AcademyLessonsTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.lessonId,
+      referencedTable: $db.academyLessons,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$AcademyLessonsTableAnnotationComposer(
+            $db: $db,
+            $table: $db.academyLessons,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$AcademyProgressTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $AcademyProgressTable,
+          AcademyProgressRow,
+          $$AcademyProgressTableFilterComposer,
+          $$AcademyProgressTableOrderingComposer,
+          $$AcademyProgressTableAnnotationComposer,
+          $$AcademyProgressTableCreateCompanionBuilder,
+          $$AcademyProgressTableUpdateCompanionBuilder,
+          (AcademyProgressRow, $$AcademyProgressTableReferences),
+          AcademyProgressRow,
+          PrefetchHooks Function({bool lessonId})
+        > {
+  $$AcademyProgressTableTableManager(
+    _$AppDatabase db,
+    $AcademyProgressTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$AcademyProgressTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$AcademyProgressTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$AcademyProgressTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<int> lessonId = const Value.absent(),
+                Value<ProgressState> state = const Value.absent(),
+                Value<DateTime> lastOpenedAt = const Value.absent(),
+                Value<DateTime?> completedAt = const Value.absent(),
+                Value<int> practiceSeconds = const Value.absent(),
+              }) => AcademyProgressCompanion(
+                id: id,
+                lessonId: lessonId,
+                state: state,
+                lastOpenedAt: lastOpenedAt,
+                completedAt: completedAt,
+                practiceSeconds: practiceSeconds,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                required int lessonId,
+                required ProgressState state,
+                required DateTime lastOpenedAt,
+                Value<DateTime?> completedAt = const Value.absent(),
+                Value<int> practiceSeconds = const Value.absent(),
+              }) => AcademyProgressCompanion.insert(
+                id: id,
+                lessonId: lessonId,
+                state: state,
+                lastOpenedAt: lastOpenedAt,
+                completedAt: completedAt,
+                practiceSeconds: practiceSeconds,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable(table),
+                  $$AcademyProgressTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: ({lessonId = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [],
+              addJoins:
+                  <
+                    T extends TableManagerState<
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic
+                    >
+                  >(state) {
+                    if (lessonId) {
+                      state =
+                          state.withJoin(
+                                currentTable: table,
+                                currentColumn: table.lessonId,
+                                referencedTable:
+                                    $$AcademyProgressTableReferences
+                                        ._lessonIdTable(db),
+                                referencedColumn:
+                                    $$AcademyProgressTableReferences
+                                        ._lessonIdTable(db)
+                                        .id,
+                              )
+                              as T;
+                    }
+
+                    return state;
+                  },
+              getPrefetchedDataCallback: (items) async {
+                return [];
+              },
+            );
+          },
+        ),
+      );
+}
+
+typedef $$AcademyProgressTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $AcademyProgressTable,
+      AcademyProgressRow,
+      $$AcademyProgressTableFilterComposer,
+      $$AcademyProgressTableOrderingComposer,
+      $$AcademyProgressTableAnnotationComposer,
+      $$AcademyProgressTableCreateCompanionBuilder,
+      $$AcademyProgressTableUpdateCompanionBuilder,
+      (AcademyProgressRow, $$AcademyProgressTableReferences),
+      AcademyProgressRow,
+      PrefetchHooks Function({bool lessonId})
+    >;
+typedef $$AcademyExerciseProgressTableCreateCompanionBuilder =
+    AcademyExerciseProgressCompanion Function({
+      Value<int> id,
+      required int exerciseId,
+      required DateTime completedAt,
+    });
+typedef $$AcademyExerciseProgressTableUpdateCompanionBuilder =
+    AcademyExerciseProgressCompanion Function({
+      Value<int> id,
+      Value<int> exerciseId,
+      Value<DateTime> completedAt,
+    });
+
+final class $$AcademyExerciseProgressTableReferences
+    extends
+        BaseReferences<
+          _$AppDatabase,
+          $AcademyExerciseProgressTable,
+          AcademyExerciseProgressRow
+        > {
+  $$AcademyExerciseProgressTableReferences(
+    super.$_db,
+    super.$_table,
+    super.$_typedResult,
+  );
+
+  static $AcademyExercisesTable _exerciseIdTable(_$AppDatabase db) =>
+      db.academyExercises.createAlias(
+        'academy_exercise_progress__exercise_id__academy_exercises__id',
+      );
+
+  $$AcademyExercisesTableProcessedTableManager get exerciseId {
+    final $_column = $_itemColumn<int>('exercise_id')!;
+
+    final manager = $$AcademyExercisesTableTableManager(
+      $_db,
+      $_db.academyExercises,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_exerciseIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+}
+
+class $$AcademyExerciseProgressTableFilterComposer
+    extends Composer<_$AppDatabase, $AcademyExerciseProgressTable> {
+  $$AcademyExerciseProgressTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get completedAt => $composableBuilder(
+    column: $table.completedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  $$AcademyExercisesTableFilterComposer get exerciseId {
+    final $$AcademyExercisesTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.exerciseId,
+      referencedTable: $db.academyExercises,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$AcademyExercisesTableFilterComposer(
+            $db: $db,
+            $table: $db.academyExercises,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$AcademyExerciseProgressTableOrderingComposer
+    extends Composer<_$AppDatabase, $AcademyExerciseProgressTable> {
+  $$AcademyExerciseProgressTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get completedAt => $composableBuilder(
+    column: $table.completedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  $$AcademyExercisesTableOrderingComposer get exerciseId {
+    final $$AcademyExercisesTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.exerciseId,
+      referencedTable: $db.academyExercises,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$AcademyExercisesTableOrderingComposer(
+            $db: $db,
+            $table: $db.academyExercises,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$AcademyExerciseProgressTableAnnotationComposer
+    extends Composer<_$AppDatabase, $AcademyExerciseProgressTable> {
+  $$AcademyExerciseProgressTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get completedAt => $composableBuilder(
+    column: $table.completedAt,
+    builder: (column) => column,
+  );
+
+  $$AcademyExercisesTableAnnotationComposer get exerciseId {
+    final $$AcademyExercisesTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.exerciseId,
+      referencedTable: $db.academyExercises,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$AcademyExercisesTableAnnotationComposer(
+            $db: $db,
+            $table: $db.academyExercises,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$AcademyExerciseProgressTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $AcademyExerciseProgressTable,
+          AcademyExerciseProgressRow,
+          $$AcademyExerciseProgressTableFilterComposer,
+          $$AcademyExerciseProgressTableOrderingComposer,
+          $$AcademyExerciseProgressTableAnnotationComposer,
+          $$AcademyExerciseProgressTableCreateCompanionBuilder,
+          $$AcademyExerciseProgressTableUpdateCompanionBuilder,
+          (
+            AcademyExerciseProgressRow,
+            $$AcademyExerciseProgressTableReferences,
+          ),
+          AcademyExerciseProgressRow,
+          PrefetchHooks Function({bool exerciseId})
+        > {
+  $$AcademyExerciseProgressTableTableManager(
+    _$AppDatabase db,
+    $AcademyExerciseProgressTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$AcademyExerciseProgressTableFilterComposer(
+                $db: db,
+                $table: table,
+              ),
+          createOrderingComposer: () =>
+              $$AcademyExerciseProgressTableOrderingComposer(
+                $db: db,
+                $table: table,
+              ),
+          createComputedFieldComposer: () =>
+              $$AcademyExerciseProgressTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<int> exerciseId = const Value.absent(),
+                Value<DateTime> completedAt = const Value.absent(),
+              }) => AcademyExerciseProgressCompanion(
+                id: id,
+                exerciseId: exerciseId,
+                completedAt: completedAt,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                required int exerciseId,
+                required DateTime completedAt,
+              }) => AcademyExerciseProgressCompanion.insert(
+                id: id,
+                exerciseId: exerciseId,
+                completedAt: completedAt,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable(table),
+                  $$AcademyExerciseProgressTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: ({exerciseId = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [],
+              addJoins:
+                  <
+                    T extends TableManagerState<
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic
+                    >
+                  >(state) {
+                    if (exerciseId) {
+                      state =
+                          state.withJoin(
+                                currentTable: table,
+                                currentColumn: table.exerciseId,
+                                referencedTable:
+                                    $$AcademyExerciseProgressTableReferences
+                                        ._exerciseIdTable(db),
+                                referencedColumn:
+                                    $$AcademyExerciseProgressTableReferences
+                                        ._exerciseIdTable(db)
+                                        .id,
+                              )
+                              as T;
+                    }
+
+                    return state;
+                  },
+              getPrefetchedDataCallback: (items) async {
+                return [];
+              },
+            );
+          },
+        ),
+      );
+}
+
+typedef $$AcademyExerciseProgressTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $AcademyExerciseProgressTable,
+      AcademyExerciseProgressRow,
+      $$AcademyExerciseProgressTableFilterComposer,
+      $$AcademyExerciseProgressTableOrderingComposer,
+      $$AcademyExerciseProgressTableAnnotationComposer,
+      $$AcademyExerciseProgressTableCreateCompanionBuilder,
+      $$AcademyExerciseProgressTableUpdateCompanionBuilder,
+      (AcademyExerciseProgressRow, $$AcademyExerciseProgressTableReferences),
+      AcademyExerciseProgressRow,
+      PrefetchHooks Function({bool exerciseId})
+    >;
+typedef $$AcademyPracticeSessionsTableCreateCompanionBuilder =
+    AcademyPracticeSessionsCompanion Function({
+      Value<int> id,
+      required int lessonId,
+      required int seconds,
+      required DateTime endedAt,
+    });
+typedef $$AcademyPracticeSessionsTableUpdateCompanionBuilder =
+    AcademyPracticeSessionsCompanion Function({
+      Value<int> id,
+      Value<int> lessonId,
+      Value<int> seconds,
+      Value<DateTime> endedAt,
+    });
+
+final class $$AcademyPracticeSessionsTableReferences
+    extends
+        BaseReferences<
+          _$AppDatabase,
+          $AcademyPracticeSessionsTable,
+          AcademyPracticeSessionRow
+        > {
+  $$AcademyPracticeSessionsTableReferences(
+    super.$_db,
+    super.$_table,
+    super.$_typedResult,
+  );
+
+  static $AcademyLessonsTable _lessonIdTable(_$AppDatabase db) => db
+      .academyLessons
+      .createAlias('academy_practice_sessions__lesson_id__academy_lessons__id');
+
+  $$AcademyLessonsTableProcessedTableManager get lessonId {
+    final $_column = $_itemColumn<int>('lesson_id')!;
+
+    final manager = $$AcademyLessonsTableTableManager(
+      $_db,
+      $_db.academyLessons,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_lessonIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+}
+
+class $$AcademyPracticeSessionsTableFilterComposer
+    extends Composer<_$AppDatabase, $AcademyPracticeSessionsTable> {
+  $$AcademyPracticeSessionsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get seconds => $composableBuilder(
+    column: $table.seconds,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get endedAt => $composableBuilder(
+    column: $table.endedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  $$AcademyLessonsTableFilterComposer get lessonId {
+    final $$AcademyLessonsTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.lessonId,
+      referencedTable: $db.academyLessons,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$AcademyLessonsTableFilterComposer(
+            $db: $db,
+            $table: $db.academyLessons,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$AcademyPracticeSessionsTableOrderingComposer
+    extends Composer<_$AppDatabase, $AcademyPracticeSessionsTable> {
+  $$AcademyPracticeSessionsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get seconds => $composableBuilder(
+    column: $table.seconds,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get endedAt => $composableBuilder(
+    column: $table.endedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  $$AcademyLessonsTableOrderingComposer get lessonId {
+    final $$AcademyLessonsTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.lessonId,
+      referencedTable: $db.academyLessons,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$AcademyLessonsTableOrderingComposer(
+            $db: $db,
+            $table: $db.academyLessons,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$AcademyPracticeSessionsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $AcademyPracticeSessionsTable> {
+  $$AcademyPracticeSessionsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<int> get seconds =>
+      $composableBuilder(column: $table.seconds, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get endedAt =>
+      $composableBuilder(column: $table.endedAt, builder: (column) => column);
+
+  $$AcademyLessonsTableAnnotationComposer get lessonId {
+    final $$AcademyLessonsTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.lessonId,
+      referencedTable: $db.academyLessons,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$AcademyLessonsTableAnnotationComposer(
+            $db: $db,
+            $table: $db.academyLessons,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$AcademyPracticeSessionsTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $AcademyPracticeSessionsTable,
+          AcademyPracticeSessionRow,
+          $$AcademyPracticeSessionsTableFilterComposer,
+          $$AcademyPracticeSessionsTableOrderingComposer,
+          $$AcademyPracticeSessionsTableAnnotationComposer,
+          $$AcademyPracticeSessionsTableCreateCompanionBuilder,
+          $$AcademyPracticeSessionsTableUpdateCompanionBuilder,
+          (AcademyPracticeSessionRow, $$AcademyPracticeSessionsTableReferences),
+          AcademyPracticeSessionRow,
+          PrefetchHooks Function({bool lessonId})
+        > {
+  $$AcademyPracticeSessionsTableTableManager(
+    _$AppDatabase db,
+    $AcademyPracticeSessionsTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$AcademyPracticeSessionsTableFilterComposer(
+                $db: db,
+                $table: table,
+              ),
+          createOrderingComposer: () =>
+              $$AcademyPracticeSessionsTableOrderingComposer(
+                $db: db,
+                $table: table,
+              ),
+          createComputedFieldComposer: () =>
+              $$AcademyPracticeSessionsTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<int> lessonId = const Value.absent(),
+                Value<int> seconds = const Value.absent(),
+                Value<DateTime> endedAt = const Value.absent(),
+              }) => AcademyPracticeSessionsCompanion(
+                id: id,
+                lessonId: lessonId,
+                seconds: seconds,
+                endedAt: endedAt,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                required int lessonId,
+                required int seconds,
+                required DateTime endedAt,
+              }) => AcademyPracticeSessionsCompanion.insert(
+                id: id,
+                lessonId: lessonId,
+                seconds: seconds,
+                endedAt: endedAt,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable(table),
+                  $$AcademyPracticeSessionsTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: ({lessonId = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [],
+              addJoins:
+                  <
+                    T extends TableManagerState<
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic
+                    >
+                  >(state) {
+                    if (lessonId) {
+                      state =
+                          state.withJoin(
+                                currentTable: table,
+                                currentColumn: table.lessonId,
+                                referencedTable:
+                                    $$AcademyPracticeSessionsTableReferences
+                                        ._lessonIdTable(db),
+                                referencedColumn:
+                                    $$AcademyPracticeSessionsTableReferences
+                                        ._lessonIdTable(db)
+                                        .id,
+                              )
+                              as T;
+                    }
+
+                    return state;
+                  },
+              getPrefetchedDataCallback: (items) async {
+                return [];
+              },
+            );
+          },
+        ),
+      );
+}
+
+typedef $$AcademyPracticeSessionsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $AcademyPracticeSessionsTable,
+      AcademyPracticeSessionRow,
+      $$AcademyPracticeSessionsTableFilterComposer,
+      $$AcademyPracticeSessionsTableOrderingComposer,
+      $$AcademyPracticeSessionsTableAnnotationComposer,
+      $$AcademyPracticeSessionsTableCreateCompanionBuilder,
+      $$AcademyPracticeSessionsTableUpdateCompanionBuilder,
+      (AcademyPracticeSessionRow, $$AcademyPracticeSessionsTableReferences),
+      AcademyPracticeSessionRow,
+      PrefetchHooks Function({bool lessonId})
+    >;
+typedef $$AcademyBookmarksTableCreateCompanionBuilder =
+    AcademyBookmarksCompanion Function({
+      Value<int> id,
+      required BookmarkTarget target,
+      required String targetKey,
+      required String label,
+      required DateTime createdAt,
+    });
+typedef $$AcademyBookmarksTableUpdateCompanionBuilder =
+    AcademyBookmarksCompanion Function({
+      Value<int> id,
+      Value<BookmarkTarget> target,
+      Value<String> targetKey,
+      Value<String> label,
+      Value<DateTime> createdAt,
+    });
+
+class $$AcademyBookmarksTableFilterComposer
+    extends Composer<_$AppDatabase, $AcademyBookmarksTable> {
+  $$AcademyBookmarksTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnWithTypeConverterFilters<BookmarkTarget, BookmarkTarget, String>
+  get target => $composableBuilder(
+    column: $table.target,
+    builder: (column) => ColumnWithTypeConverterFilters(column),
+  );
+
+  ColumnFilters<String> get targetKey => $composableBuilder(
+    column: $table.targetKey,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get label => $composableBuilder(
+    column: $table.label,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$AcademyBookmarksTableOrderingComposer
+    extends Composer<_$AppDatabase, $AcademyBookmarksTable> {
+  $$AcademyBookmarksTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get target => $composableBuilder(
+    column: $table.target,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get targetKey => $composableBuilder(
+    column: $table.targetKey,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get label => $composableBuilder(
+    column: $table.label,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$AcademyBookmarksTableAnnotationComposer
+    extends Composer<_$AppDatabase, $AcademyBookmarksTable> {
+  $$AcademyBookmarksTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumnWithTypeConverter<BookmarkTarget, String> get target =>
+      $composableBuilder(column: $table.target, builder: (column) => column);
+
+  GeneratedColumn<String> get targetKey =>
+      $composableBuilder(column: $table.targetKey, builder: (column) => column);
+
+  GeneratedColumn<String> get label =>
+      $composableBuilder(column: $table.label, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+}
+
+class $$AcademyBookmarksTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $AcademyBookmarksTable,
+          AcademyBookmark,
+          $$AcademyBookmarksTableFilterComposer,
+          $$AcademyBookmarksTableOrderingComposer,
+          $$AcademyBookmarksTableAnnotationComposer,
+          $$AcademyBookmarksTableCreateCompanionBuilder,
+          $$AcademyBookmarksTableUpdateCompanionBuilder,
+          (
+            AcademyBookmark,
+            BaseReferences<
+              _$AppDatabase,
+              $AcademyBookmarksTable,
+              AcademyBookmark
+            >,
+          ),
+          AcademyBookmark,
+          PrefetchHooks Function()
+        > {
+  $$AcademyBookmarksTableTableManager(
+    _$AppDatabase db,
+    $AcademyBookmarksTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$AcademyBookmarksTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$AcademyBookmarksTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$AcademyBookmarksTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<BookmarkTarget> target = const Value.absent(),
+                Value<String> targetKey = const Value.absent(),
+                Value<String> label = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+              }) => AcademyBookmarksCompanion(
+                id: id,
+                target: target,
+                targetKey: targetKey,
+                label: label,
+                createdAt: createdAt,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                required BookmarkTarget target,
+                required String targetKey,
+                required String label,
+                required DateTime createdAt,
+              }) => AcademyBookmarksCompanion.insert(
+                id: id,
+                target: target,
+                targetKey: targetKey,
+                label: label,
+                createdAt: createdAt,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$AcademyBookmarksTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $AcademyBookmarksTable,
+      AcademyBookmark,
+      $$AcademyBookmarksTableFilterComposer,
+      $$AcademyBookmarksTableOrderingComposer,
+      $$AcademyBookmarksTableAnnotationComposer,
+      $$AcademyBookmarksTableCreateCompanionBuilder,
+      $$AcademyBookmarksTableUpdateCompanionBuilder,
+      (
+        AcademyBookmark,
+        BaseReferences<_$AppDatabase, $AcademyBookmarksTable, AcademyBookmark>,
+      ),
+      AcademyBookmark,
+      PrefetchHooks Function()
+    >;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -17995,4 +25721,26 @@ class $AppDatabaseManager {
       $$RigSnapshotEntriesTableTableManager(_db, _db.rigSnapshotEntries);
   $$RigSnapshotValuesTableTableManager get rigSnapshotValues =>
       $$RigSnapshotValuesTableTableManager(_db, _db.rigSnapshotValues);
+  $$AcademyCoursesTableTableManager get academyCourses =>
+      $$AcademyCoursesTableTableManager(_db, _db.academyCourses);
+  $$AcademyModulesTableTableManager get academyModules =>
+      $$AcademyModulesTableTableManager(_db, _db.academyModules);
+  $$AcademyLessonsTableTableManager get academyLessons =>
+      $$AcademyLessonsTableTableManager(_db, _db.academyLessons);
+  $$AcademyExercisesTableTableManager get academyExercises =>
+      $$AcademyExercisesTableTableManager(_db, _db.academyExercises);
+  $$AcademyProgressTableTableManager get academyProgress =>
+      $$AcademyProgressTableTableManager(_db, _db.academyProgress);
+  $$AcademyExerciseProgressTableTableManager get academyExerciseProgress =>
+      $$AcademyExerciseProgressTableTableManager(
+        _db,
+        _db.academyExerciseProgress,
+      );
+  $$AcademyPracticeSessionsTableTableManager get academyPracticeSessions =>
+      $$AcademyPracticeSessionsTableTableManager(
+        _db,
+        _db.academyPracticeSessions,
+      );
+  $$AcademyBookmarksTableTableManager get academyBookmarks =>
+      $$AcademyBookmarksTableTableManager(_db, _db.academyBookmarks);
 }

@@ -116,8 +116,8 @@ class PatchDao extends DatabaseAccessor<AppDatabase> with _$PatchDaoMixin {
   /// Every scene on one unit, whichever patch it is in.
   ///
   /// The unit's sounds as one flat list, which is how they are chosen from
-  /// outside the patch screens - a rig snapshot asks which scene the unit was on,
-  /// not which patch and then which scene.
+  /// outside the patch screens: what is being asked is which scene the unit is
+  /// on, not which patch and then which scene.
   Stream<List<PatchScene>> watchUnitScenes(int pedalId) =>
       _scenesOn(pedalId).watch().map(_patchScenes);
 

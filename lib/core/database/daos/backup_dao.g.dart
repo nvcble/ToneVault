@@ -26,6 +26,18 @@ mixin _$BackupDaoMixin on DatabaseAccessor<AppDatabase> {
       attachedDatabase.rigSnapshotEntries;
   $RigSnapshotValuesTable get rigSnapshotValues =>
       attachedDatabase.rigSnapshotValues;
+  $AcademyCoursesTable get academyCourses => attachedDatabase.academyCourses;
+  $AcademyModulesTable get academyModules => attachedDatabase.academyModules;
+  $AcademyLessonsTable get academyLessons => attachedDatabase.academyLessons;
+  $AcademyExercisesTable get academyExercises =>
+      attachedDatabase.academyExercises;
+  $AcademyProgressTable get academyProgress => attachedDatabase.academyProgress;
+  $AcademyExerciseProgressTable get academyExerciseProgress =>
+      attachedDatabase.academyExerciseProgress;
+  $AcademyPracticeSessionsTable get academyPracticeSessions =>
+      attachedDatabase.academyPracticeSessions;
+  $AcademyBookmarksTable get academyBookmarks =>
+      attachedDatabase.academyBookmarks;
   BackupDaoManager get managers => BackupDaoManager(this);
 }
 
@@ -86,5 +98,45 @@ class BackupDaoManager {
       $$RigSnapshotValuesTableTableManager(
         _db.attachedDatabase,
         _db.rigSnapshotValues,
+      );
+  $$AcademyCoursesTableTableManager get academyCourses =>
+      $$AcademyCoursesTableTableManager(
+        _db.attachedDatabase,
+        _db.academyCourses,
+      );
+  $$AcademyModulesTableTableManager get academyModules =>
+      $$AcademyModulesTableTableManager(
+        _db.attachedDatabase,
+        _db.academyModules,
+      );
+  $$AcademyLessonsTableTableManager get academyLessons =>
+      $$AcademyLessonsTableTableManager(
+        _db.attachedDatabase,
+        _db.academyLessons,
+      );
+  $$AcademyExercisesTableTableManager get academyExercises =>
+      $$AcademyExercisesTableTableManager(
+        _db.attachedDatabase,
+        _db.academyExercises,
+      );
+  $$AcademyProgressTableTableManager get academyProgress =>
+      $$AcademyProgressTableTableManager(
+        _db.attachedDatabase,
+        _db.academyProgress,
+      );
+  $$AcademyExerciseProgressTableTableManager get academyExerciseProgress =>
+      $$AcademyExerciseProgressTableTableManager(
+        _db.attachedDatabase,
+        _db.academyExerciseProgress,
+      );
+  $$AcademyPracticeSessionsTableTableManager get academyPracticeSessions =>
+      $$AcademyPracticeSessionsTableTableManager(
+        _db.attachedDatabase,
+        _db.academyPracticeSessions,
+      );
+  $$AcademyBookmarksTableTableManager get academyBookmarks =>
+      $$AcademyBookmarksTableTableManager(
+        _db.attachedDatabase,
+        _db.academyBookmarks,
       );
 }

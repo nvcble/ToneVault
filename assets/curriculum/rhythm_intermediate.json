@@ -1,0 +1,494 @@
+{
+  "formatVersion": 1,
+  "courses": [
+    {
+      "slug": "rhythm-intermediate-shapes-and-grooves",
+      "path": "rhythm",
+      "level": "intermediate",
+      "title": "Shapes That Move, Grooves That Sit",
+      "summary": "Barre chords in every key, sixteenth-note strumming, the chords between major and minor, and three styles that live or die by the right hand: country, funk and reggae.",
+      "modules": [
+        {
+          "slug": "movable-shapes",
+          "title": "Shapes That Move",
+          "summary": "Five shapes, twelve keys, no new chords to learn.",
+          "lessons": [
+            {
+              "slug": "barre-chords-e-shape",
+              "title": "The E-Shape Barre",
+              "kind": "technique",
+              "estimatedMinutes": 20,
+              "theoryKeys": [
+                "F",
+                "G",
+                "A"
+              ],
+              "body": "An open E chord uses fingers one, two and three. Play it with fingers two, three and four instead, and the first finger is free to be a capo.\n\nLay it flat across all six strings at fret 1 and you have **F**. At fret 3, **G**. At fret 5, **A**. The shape never changes; only where it sits does.\n\nTwo things make it ring. Roll the first finger slightly onto its bony side rather than the soft pad, and press towards the neck with the arm rather than squeezing with the thumb. If the B string is dead, the roll is what fixes it.",
+              "exercises": [
+                {
+                  "title": "Barre up the neck",
+                  "instructions": "One strum a bar, moving the E-shape barre up one fret per bar from fret 1 to fret 8 and back. Every string has to sound on every bar.",
+                  "startBpm": 45,
+                  "targetBpm": 80,
+                  "timeSignature": "fourFour"
+                }
+              ],
+              "objective": "Play the E-shape barre anywhere on the neck with all six strings sounding, pressing with the arm rather than squeezing with the thumb.",
+              "commonMistakes": [
+                "The soft pad of the first finger across the strings instead of the bony side of it.",
+                "Squeezing with the thumb, which tires the hand out in two bars and still does not work.",
+                "A dead B string, which is the roll of the first finger and almost never strength."
+              ],
+              "practiceTips": [
+                "One strum a bar, moving up one fret at a time, and every string has to sound before the next bar.",
+                "Play the open E with fingers two, three and four for a week, so the first finger is free without thinking."
+              ],
+              "nextSkill": "The A-Shape Barre, and Minor Barres"
+            },
+            {
+              "slug": "barre-chords-a-shape",
+              "title": "The A-Shape Barre, and Minor Barres",
+              "kind": "technique",
+              "estimatedMinutes": 20,
+              "theoryKeys": [
+                "Bb",
+                "C",
+                "Bm",
+                "Dm"
+              ],
+              "body": "The same trick on the A string. An open A played with fingers two, three and four leaves the first finger free: barre fret 1 and you have **Bb**, at fret 3 **C**.\n\nFor the minors, take one note away. **Em shape** barred gives every minor chord on the low E string - Fm at fret 1, Gm at fret 3. **Am shape** barred gives them on the A string - Bm at fret 2, Dm at fret 5.\n\nFour shapes: major and minor, rooted on E or on A. Between them they play every triad in every key, and knowing the note names on those two strings is the whole map.",
+              "exercises": [
+                {
+                  "title": "Any chord, two seconds",
+                  "instructions": "Name a chord at random - Db, F#m, Eb - and play it as a barre within two clicks. Alternate between E-string and A-string roots.",
+                  "startBpm": 40,
+                  "targetBpm": 60,
+                  "timeSignature": "fourFour"
+                }
+              ],
+              "objective": "Play any major or minor chord as a barre within two clicks, rooted on the E string or the A string.",
+              "commonMistakes": [
+                "Learning the four shapes but not the note names on the E and A strings, which is the actual map.",
+                "Barring all five strings of the A shape with one finger before the hand is ready for it.",
+                "Reaching for the E-string root every time, when the A string is often two frets away."
+              ],
+              "practiceTips": [
+                "Name a chord at random and play it as a barre within two clicks. Alternate which string the root is on.",
+                "Four shapes cover every triad in every key. Practise the naming, not more shapes."
+              ],
+              "nextSkill": "CAGED: One Chord in Five Places"
+            },
+            {
+              "slug": "caged-and-the-fretboard",
+              "title": "CAGED: One Chord in Five Places",
+              "kind": "theory",
+              "estimatedMinutes": 20,
+              "theoryKeys": [
+                "C",
+                "A",
+                "G",
+                "E",
+                "D"
+              ],
+              "body": "The five open shapes **C A G E D** are the only major shapes on the guitar. Every barre chord is one of them moved, and they sit in that order up the neck.\n\nTake C major. There is the open C shape. Move up and the A shape gives C at fret 3, the G shape gives C at fret 5, the E shape at fret 8, the D shape at fret 10 - and then the C shape again at fret 12, an octave up.\n\nThis is worth more than a shortcut for chords. It tells you where the notes of a chord are anywhere on the neck, which is what you need the moment you stop strumming and start choosing which three strings to play.",
+              "exercises": [
+                {
+                  "title": "One chord, five shapes",
+                  "instructions": "Play G major as all five CAGED shapes up the neck, one per bar, then back down. Say which shape you are in as you play it.",
+                  "startBpm": 40,
+                  "targetBpm": 70,
+                  "timeSignature": "fourFour"
+                }
+              ],
+              "objective": "Play one major chord in all five CAGED shapes up the neck and name the shape you are in as you play it.",
+              "commonMistakes": [
+                "Learning CAGED as five more chords rather than as where the notes of one chord are.",
+                "Skipping the G and D shapes because they are awkward, which is where the map breaks.",
+                "Playing the shapes in the wrong order. C A G E D is the order they sit in up the neck."
+              ],
+              "practiceTips": [
+                "Say the shape name out loud as you play it, so the neck stops being a set of frets.",
+                "Once the five are known, play only three strings of each. That is what the shapes are really for."
+              ],
+              "nextSkill": "The Capo, and Playing in the Singer's Key"
+            },
+            {
+              "slug": "capo-and-transposing",
+              "title": "The Capo, and Playing in the Singer's Key",
+              "kind": "concept",
+              "estimatedMinutes": 15,
+              "theoryKeys": [
+                "G",
+                "Bb",
+                "Eb"
+              ],
+              "body": "A capo does not make a song easier. It makes open shapes available in a key that has none.\n\nThe arithmetic is one fret, one semitone. Open shapes in G with a capo at fret 3 sound in **Bb**. The same shapes at fret 5 sound in **C**. You still think and count in G; the audience hears Bb.\n\nThis is how two guitars stay out of each other's way: one plays barre chords in the sounding key, the other capos and plays open shapes. Same chords, different registers, and the arrangement suddenly has depth.",
+              "exercises": [
+                {
+                  "title": "Same song, three capos",
+                  "instructions": "Play G, C, D, Em open. Then capo 2, then capo 4, playing the same shapes. Name the sounding key each time before you start.",
+                  "startBpm": 70,
+                  "targetBpm": 100,
+                  "timeSignature": "fourFour"
+                }
+              ],
+              "objective": "Play open shapes behind a capo and name the sounding key before you start, so a song can move to the key a singer needs.",
+              "commonMistakes": [
+                "Counting the capo as anything other than one fret to one semitone.",
+                "Naming the shape rather than the sounding key when calling the song to a band.",
+                "Both guitarists capoing to the same fret, which puts two parts in one register."
+              ],
+              "practiceTips": [
+                "Play the same four shapes at the nut, at fret 2 and at fret 4, naming the sounding key each time.",
+                "One guitar in barre chords, the other capoed in open shapes. Same chords, and the arrangement gains depth."
+              ],
+              "nextSkill": "Counting in Sixteenths"
+            }
+          ]
+        },
+        {
+          "slug": "the-right-hand-in-sixteenths",
+          "title": "The Right Hand in Sixteenths",
+          "summary": "Where groove actually comes from.",
+          "lessons": [
+            {
+              "slug": "sixteenth-note-strumming",
+              "title": "Counting in Sixteenths",
+              "kind": "practice",
+              "estimatedMinutes": 20,
+              "suggestedBpm": 70,
+              "timeSignature": "fourFour",
+              "body": "Count **one e and a, two e and a**. Sixteen even strums a bar, down on the numbers and the ands, up on the es and the as.\n\nAs with eighths, you do not add strums - you keep the hand moving through all sixteen and miss the strings where the pattern is silent. The difference is that at sixteenth speed the hand has to be relaxed or it locks up inside two bars.\n\nStart at 60 BPM. Sixteenths at 60 are the same hand speed as eighths at 120, which you can already play.",
+              "exercises": [
+                {
+                  "title": "Sixteen a bar, then thin them out",
+                  "instructions": "Four bars of all sixteen strums on Am. Then four bars missing the strings on every e. Then four missing every a. The arm motion never changes.",
+                  "startBpm": 55,
+                  "targetBpm": 95,
+                  "timeSignature": "fourFour"
+                }
+              ],
+              "objective": "Keep the hand moving through all sixteen strums of a bar and thin the pattern out by missing strings, staying relaxed.",
+              "commonMistakes": [
+                "A tense arm, which locks up inside two bars at sixteenth speed.",
+                "Stopping the hand where the pattern is silent instead of missing the strings.",
+                "Starting fast. Sixteenths at 60 are the same hand speed as eighths at 120."
+              ],
+              "practiceTips": [
+                "Count one e and a, two e and a out loud. The es and the as are the up-strums.",
+                "All sixteen, then the same bar with the es missed, then with the as missed. The arm never changes."
+              ],
+              "nextSkill": "Palm Muting and Dynamics"
+            },
+            {
+              "slug": "palm-muting-and-dynamics",
+              "title": "Palm Muting and Dynamics",
+              "kind": "technique",
+              "estimatedMinutes": 15,
+              "suggestedBpm": 90,
+              "timeSignature": "fourFour",
+              "body": "Rest the side of the picking hand lightly on the strings near the bridge. The chord still sounds; it just stops early and loses its ring. Lift the hand and it opens up again.\n\nThat is a volume knob you can move on any beat, and it is how a rhythm part builds a song without anyone changing what they play. Verse muted, chorus open, and the chorus sounds twice as big.\n\nPractise moving between muted and open **on a beat you choose in advance**, not whenever your hand happens to drift.",
+              "exercises": [
+                {
+                  "title": "Verse, chorus, verse",
+                  "instructions": "Two bars palm-muted, two bars open, on repeat over C and G. The change lands exactly on beat 1.",
+                  "startBpm": 70,
+                  "targetBpm": 120,
+                  "timeSignature": "fourFour"
+                }
+              ],
+              "objective": "Move between muted and open on a beat chosen in advance, so a part can build a song without anyone playing anything new.",
+              "commonMistakes": [
+                "The hand drifting on and off the strings rather than changing where you decided.",
+                "Muting so hard the chord stops sounding at all.",
+                "Playing the open section louder as well as open, so there is nothing left for the next lift."
+              ],
+              "practiceTips": [
+                "Two bars muted, two open, with the change landing exactly on beat 1.",
+                "Verse muted, chorus open. The chorus will sound twice as big for nothing."
+              ],
+              "nextSkill": "Syncopation: Landing Off the Beat"
+            },
+            {
+              "slug": "syncopation-and-pushed-chords",
+              "title": "Syncopation: Landing Off the Beat",
+              "kind": "practice",
+              "estimatedMinutes": 20,
+              "suggestedBpm": 80,
+              "timeSignature": "fourFour",
+              "body": "A chord that arrives on the **and of 4** instead of on the 1 pulls the whole bar forward. That is syncopation, and it is most of what makes a part feel like it is going somewhere.\n\nTry it: play the change half a beat early and hold it through the bar line. Nothing else changes. The song leans.\n\nThe hard part is not playing it - it is not drifting afterwards. Keep counting the beats you are not playing on, or the pushed chord quietly becomes the new beat 1 and the band follows you into the wrong bar.",
+              "exercises": [
+                {
+                  "title": "Push the change",
+                  "instructions": "Two bars of C, two bars of F, with each change landing on the and of 4 of the bar before. Count out loud through the push.",
+                  "startBpm": 60,
+                  "targetBpm": 110,
+                  "timeSignature": "fourFour"
+                }
+              ],
+              "objective": "Land a chord change on the and of 4 and hold it through the bar line without drifting afterwards.",
+              "commonMistakes": [
+                "Letting the pushed chord become the new beat 1, which takes the band into the wrong bar.",
+                "Pushing the strumming pattern as well as the change, so nothing is anchored.",
+                "Stopping the count during the push."
+              ],
+              "practiceTips": [
+                "Count out loud through the push, including the beats you do not play on.",
+                "Play the change half a beat early and change nothing else. The lean is the whole effect."
+              ],
+              "nextSkill": "Sus2, Sus4 and Add9"
+            }
+          ]
+        },
+        {
+          "slug": "chords-with-more-to-say",
+          "title": "Chords With More to Say",
+          "summary": "What sits between major and minor.",
+          "lessons": [
+            {
+              "slug": "sus-and-add-chords",
+              "title": "Sus2, Sus4 and Add9",
+              "kind": "theory",
+              "estimatedMinutes": 20,
+              "theoryKeys": [
+                "Dsus4",
+                "Asus2",
+                "Cadd9"
+              ],
+              "body": "A major chord is **1 3 5**. The third is what makes it major. Take it out and replace it with the note above or below, and the chord loses its opinion.\n\n- **sus4** - the third goes up a semitone or two to the fourth. Tense, wants to fall back.\n- **sus2** - the third drops to the second. Open, floating.\n- **add9** - the third stays and the ninth is added on top. Shimmer, no tension.\n\nOn D, add the little finger at fret 3 of the high E for **Dsus4** and lift it off. That one movement is on more records than any chord in this lesson.",
+              "exercises": [
+                {
+                  "title": "Suspend and resolve",
+                  "instructions": "One bar D, one bar Dsus4, back to D. Then the same with A and Asus2. The suspension lands on beat 1 and resolves on beat 3.",
+                  "startBpm": 60,
+                  "targetBpm": 110,
+                  "timeSignature": "fourFour"
+                }
+              ],
+              "objective": "Suspend a chord and resolve it on a chosen beat, hearing the difference between sus4, sus2 and add9.",
+              "commonMistakes": [
+                "Leaving a sus4 unresolved, when the tension is the reason to have played it.",
+                "Calling an add9 a sus2. The third is still there in one of them.",
+                "Adding the little finger and taking the first finger off with it."
+              ],
+              "practiceTips": [
+                "One bar D, one bar Dsus4, back to D, with the suspension landing on beat 1 and resolving on beat 3.",
+                "Add and lift the little finger on the high E of a D chord. That one movement is on a great many records."
+              ],
+              "nextSkill": "Sevenths, and When to Use Which"
+            },
+            {
+              "slug": "sevenths-in-rhythm-playing",
+              "title": "Sevenths, and When to Use Which",
+              "kind": "theory",
+              "estimatedMinutes": 20,
+              "theoryKeys": [
+                "Cmaj7",
+                "Am7",
+                "G7"
+              ],
+              "body": "Stack one more note on a triad and you get a seventh chord. Which seventh decides everything.\n\n- **maj7** (1 3 5 7) - soft, still, slightly wistful. Sits on the I or the IV.\n- **m7** (1 b3 5 b7) - the plainest chord in popular music. Sits on the ii, iii or vi.\n- **7** (1 3 5 b7), the dominant - restless, pulls to the chord a fourth above. Sits on the V, and everywhere in blues.\n\nA plain triad says the chord. A seventh says what the chord is doing next. When a progression feels stiff, it is usually because every chord is a triad and none of them is leaning anywhere.",
+              "exercises": [
+                {
+                  "title": "ii V I in three keys",
+                  "instructions": "Dm7, G7, Cmaj7, one bar each. Then the same in F and in G. Let the G7 sound restless and the Cmaj7 settle.",
+                  "startBpm": 60,
+                  "targetBpm": 100,
+                  "timeSignature": "fourFour"
+                }
+              ],
+              "objective": "Choose between maj7, m7 and a dominant seventh by what the chord has to do next, and play a ii V I in three keys.",
+              "commonMistakes": [
+                "A dominant seventh on the I chord, which is blues if you meant it and a wrong chord if you did not.",
+                "Every chord a triad, which is why a stiff progression is stiff.",
+                "Learning the shapes without hearing which one is restless and which one settles."
+              ],
+              "practiceTips": [
+                "Dm7, G7, Cmaj7, one bar each, then the same in F and in G. Let the G7 be restless.",
+                "Ask what the chord is doing next. That answers which seventh far faster than a formula."
+              ],
+              "nextSkill": "Numbers Instead of Names"
+            },
+            {
+              "slug": "nashville-numbers",
+              "title": "Numbers Instead of Names",
+              "kind": "theory",
+              "estimatedMinutes": 15,
+              "theoryKeys": [
+                "G",
+                "C",
+                "D",
+                "Em"
+              ],
+              "body": "Number the chords of a key instead of naming them and a song becomes portable.\n\nIn G major: **G is 1, Am is 2, Bm is 3, C is 4, D is 5, Em is 6**. So G, D, Em, C is **1 5 6 4** - and 1 5 6 4 in any key is the same song. In C that is C, G, Am, F.\n\nThis is the Nashville Number System, and it is how a session is called on the stand: \"1 5 6 4, capo 2, out on the 4\". Learn to hear the numbers and a change of key stops being a transposition job and becomes a different set of shapes for something you already know.",
+              "exercises": [
+                {
+                  "title": "1 5 6 4 in four keys",
+                  "instructions": "Play 1 5 6 4, one bar each, in G, then C, then D, then A. Say the numbers, not the chord names, as you play.",
+                  "startBpm": 65,
+                  "targetBpm": 110,
+                  "timeSignature": "fourFour"
+                }
+              ],
+              "objective": "Play 1 5 6 4 in four keys, saying the numbers rather than the chord names.",
+              "commonMistakes": [
+                "Translating to letters in your head, which is the work the numbers exist to remove.",
+                "Numbering the shapes you play rather than the chords of the sounding key when a capo is on.",
+                "Forgetting that 2, 3 and 6 are minor in a major key."
+              ],
+              "practiceTips": [
+                "Say the numbers out loud while playing. It is the only way they become what you hear.",
+                "Number the last three songs you learned. Two of them will turn out to be the same progression."
+              ],
+              "nextSkill": "The Circle of Fifths, and Why Songs Move That Way"
+            },
+            {
+              "slug": "circle-of-fifths-for-rhythm",
+              "title": "The Circle of Fifths, and Why Songs Move That Way",
+              "kind": "theory",
+              "estimatedMinutes": 20,
+              "theoryKeys": [
+                "C major",
+                "G major",
+                "F major",
+                "A minor"
+              ],
+              "body": "Twelve keys in a ring, each a fifth from the last: **C G D A E B F# Db Ab Eb Bb F**, and back to C. Going clockwise adds a sharp each time, going anticlockwise adds a flat, which is the whole of key signatures in one sentence.\n\nTwo things a rhythm player gets out of it straight away.\n\n**Neighbours share chords.** C, G and F sit next to each other, and the chords of C major are nearly the chords of G major - one note moves. That is why a song can slip into the next key over without anything sounding wrong, and why a capo two frets up feels like the same song rather than a new one.\n\n**Movement anticlockwise sounds like resolution.** D to G to C is each chord falling a fifth into the next, and it is the strongest sound in the music - the 5 to 1 of a cadence, extended. A cycle of fifths turnaround is that movement used to get back to the top of a form.\n\nThe **relative minor** sits inside each key: A minor has the same seven notes and the same key signature as C major, so the circle is drawn twice - the majors on the outside and their relative minors on an inner ring, a minor third below each one. Same notes, different home.\n\nThe Theory browser has this as a wheel you can turn, and changing key there changes every list on every tab.",
+              "exercises": [
+                {
+                  "title": "Round the circle, four bars each",
+                  "instructions": "Play 1 5 6 4 in C, then in F, then Bb, then Eb - four bars a key, moving anticlockwise round the circle without stopping. Then do it clockwise from C to G to D to A.",
+                  "startBpm": 60,
+                  "targetBpm": 100,
+                  "timeSignature": "fourFour"
+                }
+              ],
+              "objective": "Move a progression anticlockwise round the circle of fifths without stopping, and name the relative minor of each key you pass through.",
+              "commonMistakes": [
+                "Learning the ring as a diagram rather than as which keys are neighbours.",
+                "Confusing the two directions: clockwise adds a sharp, anticlockwise adds a flat.",
+                "Treating the relative minor as a different key, when it has the same seven notes and the same signature."
+              ],
+              "practiceTips": [
+                "Four bars a key, moving anticlockwise, then the same clockwise. The change of key is the exercise.",
+                "Turn the wheel in the Theory browser and watch every list change with it."
+              ],
+              "nextSkill": "Country: Boom-Chick"
+            }
+          ]
+        },
+        {
+          "slug": "intermediate-styles",
+          "title": "Three Grooves to Live In",
+          "summary": "Country, funk and reggae: same chords, three completely different right hands.",
+          "lessons": [
+            {
+              "slug": "country-boom-chick",
+              "title": "Country: Boom-Chick",
+              "kind": "genre",
+              "genre": "country",
+              "estimatedMinutes": 25,
+              "suggestedBpm": 110,
+              "timeSignature": "fourFour",
+              "theoryKeys": [
+                "G",
+                "C",
+                "D"
+              ],
+              "body": "Country rhythm guitar splits the bar in two. The bass note on beats 1 and 3, the rest of the chord on 2 and 4. **Boom, chick, boom, chick.**\n\nOn G: low E string for the boom on beat 1, the top three strings for the chick on 2, the D string for the boom on 3, top strings again on 4. Alternating the bass between the root and the fifth is what gives it the walk.\n\nAdd a bass run between chords - on the way from G to C, walk up the low strings through A and B - and you are playing the part two guitarists have played on every honky-tonk record ever made.",
+              "exercises": [
+                {
+                  "title": "Boom-chick with a walk-up",
+                  "instructions": "Two bars of G, two of C, two of D, two of G, boom-chick throughout, with a walking bass note leading into each change.",
+                  "startBpm": 80,
+                  "targetBpm": 140,
+                  "timeSignature": "fourFour"
+                }
+              ],
+              "objective": "Play boom-chick with the bass alternating between the root and the fifth, and walk the bass into each chord change.",
+              "commonMistakes": [
+                "Strumming the whole chord on the boom, which loses the split that makes the groove.",
+                "The same bass note every time, so nothing walks.",
+                "A bass run that arrives a beat late and steps on the new chord."
+              ],
+              "practiceTips": [
+                "Bass on 1 and 3, top strings on 2 and 4. Say boom chick out loud until the hand does it alone.",
+                "Practise the walk-up on its own, so it always finishes on the beat the chord changes."
+              ],
+              "nextSkill": "Funk: the Sixteenth-Note Chuck"
+            },
+            {
+              "slug": "funk-sixteenth-chucks",
+              "title": "Funk: the Sixteenth-Note Chuck",
+              "kind": "genre",
+              "genre": "funk",
+              "estimatedMinutes": 25,
+              "suggestedBpm": 100,
+              "timeSignature": "fourFour",
+              "theoryKeys": [
+                "E9",
+                "Am7"
+              ],
+              "body": "Funk guitar is a percussion part that happens to have notes in it.\n\nThe hand strums all sixteen sixteenths of the bar and the fretting hand decides which ones are heard. Relax the left hand and you get a dry **chuck** with no pitch; press and a chord speaks. The pattern is not in the strumming arm - it is in the pressing.\n\nUse small chords, two or three strings, high up. **E9** and **Am7** on the top four are the sound. And leave beat 1 alone sometimes: the space where the chord is not is what makes the next one land.",
+              "exercises": [
+                {
+                  "title": "Chuck and speak",
+                  "instructions": "Sixteen strums a bar on E9, with the chord only sounding on the a of 2 and on 4. Everything else is a muted chuck. Do not let the arm stop.",
+                  "startBpm": 70,
+                  "targetBpm": 110,
+                  "timeSignature": "fourFour"
+                }
+              ],
+              "objective": "Strum all sixteen sixteenths and let the fretting hand decide which ones are heard, so the pattern lives in the pressing.",
+              "commonMistakes": [
+                "Putting the pattern in the strumming arm, which stops the groove dead.",
+                "Big chords low down, when funk wants two or three strings high up.",
+                "Filling beat 1 every bar, when the space is what makes the next chord land."
+              ],
+              "practiceTips": [
+                "Sixteen strums a bar with the chord speaking only on the a of 2 and on 4. Everything else is a chuck.",
+                "Relax the fretting hand rather than lifting it. The chuck should have no pitch in it at all."
+              ],
+              "nextSkill": "Reggae: the Skank and the One Drop"
+            },
+            {
+              "slug": "reggae-skank-and-one-drop",
+              "title": "Reggae: the Skank and the One Drop",
+              "kind": "genre",
+              "genre": "reggae",
+              "estimatedMinutes": 25,
+              "suggestedBpm": 75,
+              "timeSignature": "fourFour",
+              "theoryKeys": [
+                "Am",
+                "Dm",
+                "E7"
+              ],
+              "body": "Reggae rhythm guitar plays where the beat is not. A short, clipped chord on **every and** - the upbeats - and silence on the numbers.\n\nThe chord is choked: strum it and lift the fretting fingers immediately so it lasts almost no time at all. Use the top three or four strings only; the low end belongs to the bass and nobody else.\n\nIn a **one drop**, the drummer leaves beat 1 empty and lands on 3. Your part does not change, but knowing where the drum is not tells you why the groove feels like it is falling forward and being caught.",
+              "exercises": [
+                {
+                  "title": "Upbeats only",
+                  "instructions": "Am for two bars, Dm for two, chopping on the and of every beat and nothing else. Each chord must be shorter than you think.",
+                  "startBpm": 60,
+                  "targetBpm": 95,
+                  "timeSignature": "fourFour"
+                }
+              ],
+              "objective": "Chop a choked chord on every upbeat and nothing on the numbers, keeping the low strings out of it entirely.",
+              "commonMistakes": [
+                "Chords that ring on. A skank is shorter than almost everyone first plays it.",
+                "Playing the low strings, which is where the bass lives.",
+                "Drifting onto the numbers, so the upbeats become the beat."
+              ],
+              "practiceTips": [
+                "Strum and lift the fretting fingers immediately, so the chord is choked rather than muted afterwards.",
+                "Know where the drum is not. In a one drop, beat 1 is empty and the kick lands on 3."
+              ],
+              "nextSkill": "Playing with a drummer and a bass player"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

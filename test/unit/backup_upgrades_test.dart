@@ -141,28 +141,38 @@ void main() {
     expect(upgradeBackupTables(atV10(), from: 11)['signalEndpoints'], isEmpty);
   });
 
-  test('a snapshot from before bypass was recorded reads as switched on', () {
+  test('a file from before sittings keeps the hours it recorded', () {
+    final tables = upgradeBackupTables({
+      'pedals': const <dynamic>[],
+      'academyProgress': [
+        {'id': 1, 'lessonId': 1, 'practiceSeconds': 5400},
+      ],
+    }, from: 16);
+
+    // Empty for both new tables, the same as the migration does to a phone: no file
+    // ever written said which exercise was ticked, and a total with no dates in it
+    // cannot be split into evenings without inventing them. The total itself comes
+    // across untouched, so a restored lesson still says how long it was practised.
+    expect(tables['academyExerciseProgress'], isEmpty);
+    expect(tables['academyPracticeSessions'], isEmpty);
+    final progress = (tables['academyProgress'] as List<dynamic>)
+        .cast<Map<String, dynamic>>();
+    expect(progress.single['practiceSeconds'], 5400);
+  });
+
+  test('the snapshots of an older file are left where they are', () {
     final tables = upgradeBackupTables({
       ...atV10(),
       'snapshots': [
         {'id': 1, 'pedalboardId': 1, 'name': 'Easter 2026'},
       ],
-      'snapshotEntries': [
-        {'id': 5, 'snapshotId': 1, 'pedalId': 1, 'position': 0},
-      ],
     }, from: 12);
 
-    // The same value the migration gives a row already on a phone: a snapshot
-    // recorded the pedals on the board, and nothing recorded a bypass. Without it
-    // the row would not decode at all, the column being one a row must carry.
-    final entries = (tables['snapshotEntries'] as List<dynamic>)
-        .cast<Map<String, dynamic>>();
-    expect(entries.single['isEnabled'], isTrue);
-    expect(entries.single['position'], 0);
-    // The snapshot itself needs nothing filling in: where the rig reached is left
-    // unsaid, and a nullable column reads a missing key as exactly that.
+    // Nothing decodes them now, so there is nothing to bring forward: the rows
+    // stay in the file, unread, rather than being rewritten for a table the app
+    // no longer has.
     final snapshots = (tables['snapshots'] as List<dynamic>)
         .cast<Map<String, dynamic>>();
-    expect(snapshots.single.containsKey('endpointSummary'), isFalse);
+    expect(snapshots.single['name'], 'Easter 2026');
   });
 }

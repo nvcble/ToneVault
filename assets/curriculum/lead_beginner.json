@@ -1,0 +1,283 @@
+{
+  "formatVersion": 1,
+  "courses": [
+    {
+      "slug": "lead-beginner-foundations",
+      "path": "lead",
+      "level": "beginner",
+      "title": "Foundations of Lead Guitar",
+      "summary": "One note at a time, played in time and in tune. Picking, the first position of the fretboard, the minor pentatonic shape and the phrasing that turns notes into a line.",
+      "modules": [
+        {
+          "slug": "the-picking-hand",
+          "title": "The Picking Hand",
+          "summary": "Lead playing is a right-hand skill long before it is a left-hand one.",
+          "lessons": [
+            {
+              "slug": "holding-the-pick",
+              "title": "Holding the Pick",
+              "kind": "technique",
+              "estimatedMinutes": 10,
+              "body": "Hold the pick between the side of the first finger and the pad of the thumb, with a few millimetres showing. Firm enough that it does not rotate, loose enough that the wrist can stay relaxed.\n\nThe movement comes from the wrist. If the forearm is moving, everything above about 100 BPM will be a fight.\n\nRest the heel of the hand lightly on the strings you are not playing. That mute is not optional in lead playing - it is what stops the other five strings ringing along with your line.",
+              "objective": "Hold a pick so it cannot rotate and drive it from the wrist, so that nothing you play above 100 BPM turns into a fight with your own hand.",
+              "commonMistakes": [
+                "Gripping so hard that the forearm takes over the movement from the wrist.",
+                "Too much pick showing, so it catches on the string instead of crossing it.",
+                "Leaving the strings you are not playing to ring, because the heel of the hand is off them."
+              ],
+              "practiceTips": [
+                "Play four bars, then stop and check that the wrist is still the only thing moving.",
+                "Watch the pick rather than the fretting hand. If it has rotated, the grip slipped."
+              ],
+              "nextSkill": "Alternate Picking"
+            },
+            {
+              "slug": "alternate-picking",
+              "title": "Alternate Picking",
+              "kind": "technique",
+              "estimatedMinutes": 20,
+              "suggestedBpm": 60,
+              "timeSignature": "fourFour",
+              "body": "Down, up, down, up, without exception. Not because a down-up rule is beautiful, but because it makes the hand's motion continuous and therefore predictable at speed.\n\nStart on the low E string, one finger per fret, frets 5 6 7 8. Down on 5, up on 6, down on 7, up on 8. Then come back: down on 8, up on 7, and so on.\n\nEvery note the same length and the same volume. That is the whole exercise, and it is the difference between fast and merely frantic.",
+              "exercises": [
+                {
+                  "title": "One finger per fret",
+                  "instructions": "Frets 5 to 8 on each string, up and back down, strictly alternate picked. One note per click, then two notes per click.",
+                  "startBpm": 50,
+                  "targetBpm": 120,
+                  "timeSignature": "fourFour"
+                }
+              ],
+              "objective": "Pick down-up through four frets on one string with every note the same length and the same volume, from 50 BPM up to 120.",
+              "commonMistakes": [
+                "Two downstrokes in a row when crossing to the next string.",
+                "Downstrokes louder than upstrokes, which is the hand digging in on the way down.",
+                "Drifting faster as the exercise goes on instead of trusting the click."
+              ],
+              "practiceTips": [
+                "One note per click before two notes per click, and stay there until nothing wavers.",
+                "Record thirty seconds and listen back for whether the upstrokes are quieter."
+              ],
+              "nextSkill": "Landing on the Beat"
+            },
+            {
+              "slug": "playing-in-time",
+              "title": "Landing on the Beat",
+              "kind": "practice",
+              "estimatedMinutes": 15,
+              "suggestedBpm": 70,
+              "timeSignature": "fourFour",
+              "body": "A lead line that is not in time is not a lead line. Before anything else, get used to notes landing exactly on a click.\n\nPlay one note on beat 1 of each bar and nothing else. Listen for whether you hear one sound or two - two means you are early or late.\n\nThen two notes a bar, on 1 and 3. Then four, on every beat. Then eight. Each step is the same skill at half the spacing, and the eighth notes will expose whichever one you skipped.",
+              "exercises": [
+                {
+                  "title": "Halving the spacing",
+                  "instructions": "Four bars of one note per bar, four of two, four of four, four of eight. Same note throughout. Stop the moment you hear two sounds instead of one.",
+                  "startBpm": 60,
+                  "targetBpm": 100,
+                  "timeSignature": "fourFour"
+                }
+              ],
+              "objective": "Land a note exactly on a click at one, two, four and eight notes to the bar, hearing one sound rather than two.",
+              "commonMistakes": [
+                "Rushing the eighth notes. They arrive early long before they sound wrong.",
+                "Listening to the guitar instead of to the click.",
+                "Moving on to the next spacing before the one before it is clean."
+              ],
+              "practiceTips": [
+                "Count out loud. A note played while you are counting is rarely early.",
+                "Turn the click up until it is louder than the guitar, not the other way round."
+              ],
+              "nextSkill": "The Minor Pentatonic, Shape One"
+            }
+          ]
+        },
+        {
+          "slug": "first-position-and-pentatonic",
+          "title": "First Shapes",
+          "summary": "The one scale shape that will get you through your first year.",
+          "lessons": [
+            {
+              "slug": "minor-pentatonic-shape-one",
+              "title": "The Minor Pentatonic, Shape One",
+              "kind": "theory",
+              "estimatedMinutes": 20,
+              "theoryKeys": [
+                "A minor pentatonic"
+              ],
+              "body": "Five notes. In A minor that is **A C D E G**, and at the fifth fret it forms the most-played shape on the instrument. Two notes on every string:\n\n- Low E: frets **5** and 8\n- A: frets 5 and 7\n- D: frets 5 and 7\n- G: frets 5 and 7\n- B: frets 5 and 8\n- High E: frets **5** and 8\n\nThe wider gap falls on the outer pairs. The root A sits under the first finger on the low E and again on the high E, which are the two frets marked in bold.\n\nMove the whole shape to fret 3 and it is G minor pentatonic. Nothing about the shape changes. That is what a movable shape means, and it is why this one is worth knowing cold.",
+              "exercises": [
+                {
+                  "title": "Shape one, up and down",
+                  "instructions": "Two notes per click, ascending then descending, strictly alternate picked. Say the root note name out loud each time you pass it.",
+                  "startBpm": 50,
+                  "targetBpm": 110,
+                  "timeSignature": "fourFour"
+                }
+              ],
+              "objective": "Play shape one of the minor pentatonic anywhere on the neck, and name the key you are in while you play it.",
+              "commonMistakes": [
+                "Learning the frets rather than the shape, so it does not move to another key.",
+                "Losing the root: the shape gets played and the key it is in is forgotten.",
+                "Abandoning one finger per fret on the outer strings, which is where the gap widens."
+              ],
+              "practiceTips": [
+                "Say the root note out loud every time you pass it.",
+                "Play it at the third fret and the eighth as well as the fifth. Same shape, three keys."
+              ],
+              "nextSkill": "Why Five Notes Work"
+            },
+            {
+              "slug": "why-five-notes",
+              "title": "Why Five Notes Work",
+              "kind": "concept",
+              "estimatedMinutes": 15,
+              "theoryKeys": [
+                "A minor",
+                "A minor pentatonic"
+              ],
+              "body": "The natural minor scale has seven notes: **A B C D E F G**. The minor pentatonic is that scale with two taken out - the second (B) and the sixth (F).\n\nThose two are the notes most likely to clash with a chord underneath. Remove them and almost every remaining note sits comfortably over almost every chord in the key. That is not a rule of taste; it is why a beginner can improvise over a whole song with one shape and sound fine.\n\nLater you put B and F back deliberately, for the tension they create. First you learn what the safe five sound like.",
+              "objective": "Say which two notes the minor pentatonic leaves out of the natural minor scale, and why leaving them out is what makes it safe.",
+              "commonMistakes": [
+                "Treating the pentatonic as a separate scale rather than the minor scale with two notes taken out.",
+                "Assuming the two missing notes are wrong notes. They are the tense ones, saved for later."
+              ],
+              "practiceTips": [
+                "Play the natural minor and then the pentatonic over the same chord, and listen for what the two missing notes did.",
+                "Put the sixth back in once, deliberately, and hear where it wants to go."
+              ],
+              "nextSkill": "Bends and Vibrato"
+            },
+            {
+              "slug": "bends-and-vibrato",
+              "title": "Bends and Vibrato",
+              "kind": "technique",
+              "estimatedMinutes": 20,
+              "body": "This is where notes start sounding like a voice.\n\n**Vibrato** - fret the note with the third finger, then rock the whole hand from the wrist so the string rises and falls in pitch. Slow and wide beats fast and nervous almost every time.\n\n**Bending** - push the string across the fretboard with the third finger, supported by the first and second behind it. Push until the pitch matches the note two frets up, then check by playing that fret. Most bends that sound wrong are simply short.\n\nBend the G and B strings first; they give way most easily.",
+              "exercises": [
+                {
+                  "title": "Bend and check",
+                  "instructions": "Play fret 7 on the G string, then bend fret 5 up to match it. One bend every two bars, checking the target note in between.",
+                  "startBpm": 50,
+                  "targetBpm": 80,
+                  "timeSignature": "fourFour"
+                }
+              ],
+              "objective": "Bend a note up to a pitch you have checked, and add vibrato that is slow and wide rather than fast and nervous.",
+              "commonMistakes": [
+                "Short bends. The note never reaches the pitch it was aiming at.",
+                "Bending with one finger unsupported, which runs out of strength halfway up.",
+                "Vibrato from the fingertip rather than the wrist, which comes out as a shiver."
+              ],
+              "practiceTips": [
+                "Play the target fret first, then bend up to it. Every time, until you stop needing to.",
+                "Bend the G and B strings before the wound ones. They give way most easily."
+              ],
+              "nextSkill": "Phrases Need Space"
+            }
+          ]
+        },
+        {
+          "slug": "making-a-phrase",
+          "title": "Making a Phrase",
+          "summary": "Turning a scale into something worth listening to.",
+          "lessons": [
+            {
+              "slug": "phrases-need-space",
+              "title": "Phrases Need Space",
+              "kind": "concept",
+              "estimatedMinutes": 15,
+              "body": "A phrase is a short idea with silence on both sides of it. Two bars of notes and two bars of nothing is a better solo than four bars of notes, and it is the single fastest improvement available to a beginner.\n\nSing a line first, then play it. Whatever you can sing is already the right length, because singing forces you to breathe.\n\nPlay three notes. Stop. Listen to the bar you left empty. Then answer what you played.",
+              "exercises": [
+                {
+                  "title": "Two bars on, two off",
+                  "instructions": "Improvise in A minor pentatonic for two bars, then rest for exactly two bars. Do not fill the gap. Eight repetitions.",
+                  "startBpm": 70,
+                  "targetBpm": 100,
+                  "timeSignature": "fourFour"
+                }
+              ],
+              "objective": "Play a two-bar phrase and leave the next two bars empty, so that a solo is made of ideas rather than of notes.",
+              "commonMistakes": [
+                "Filling the rest. This is the hardest habit in lead playing to break.",
+                "Phrases longer than a breath, which is the length singing would have given you.",
+                "Starting every phrase on beat 1 of the bar."
+              ],
+              "practiceTips": [
+                "Sing the line before you play it. Whatever you can sing is already the right length.",
+                "Count the empty bars out loud, so they feel like part of the music rather than a gap."
+              ],
+              "nextSkill": "Blues: Your First Licks"
+            },
+            {
+              "slug": "blues-first-licks",
+              "title": "Blues: Your First Licks",
+              "kind": "genre",
+              "genre": "blues",
+              "estimatedMinutes": 25,
+              "suggestedBpm": 80,
+              "timeSignature": "fourFour",
+              "theoryKeys": [
+                "A minor pentatonic",
+                "A7"
+              ],
+              "body": "Blues lead playing is a vocabulary of short figures, repeated and varied. Three to start, all in shape one at the fifth fret:\n\n1. **The call** - B string fret 8, bend fret 5 on the G string up a tone, land on the A at fret 5 of the high E.\n2. **The repeat** - play the call three times and end the third one differently. That is a whole chorus.\n3. **The turnaround** - walk down the low E from fret 5 in the last two bars to land back on the root.\n\nPlay them over a shuffle in A. Then play them slower. A blues lick is made of timing far more than notes.",
+              "exercises": [
+                {
+                  "title": "Call, call, answer",
+                  "instructions": "Play the call lick in bars 1 and 2, again in bars 3 and 4, then something different in bars 5 and 6, resting in bars 7 and 8.",
+                  "startBpm": 60,
+                  "targetBpm": 100,
+                  "timeSignature": "fourFour"
+                }
+              ],
+              "objective": "Play three blues figures in shape one and build a chorus out of them: call, call, then an answer that ends somewhere else.",
+              "commonMistakes": [
+                "Playing the licks faster than the shuffle underneath, which loses the swing.",
+                "Ending the third repeat the same way as the first two, so nothing was answered.",
+                "Bending the tone bend only a semitone and leaving the note sour."
+              ],
+              "practiceTips": [
+                "Play each lick at half the tempo you can manage. A blues lick is made of timing.",
+                "Learn the turnaround on its own, so the last two bars never take you by surprise."
+              ],
+              "nextSkill": "Rock: Riffs and Repetition"
+            },
+            {
+              "slug": "rock-riffs-and-repetition",
+              "title": "Rock: Riffs and Repetition",
+              "kind": "genre",
+              "genre": "rock",
+              "estimatedMinutes": 20,
+              "suggestedBpm": 110,
+              "timeSignature": "fourFour",
+              "theoryKeys": [
+                "E minor pentatonic"
+              ],
+              "body": "A rock riff is a phrase played so many times that it becomes the song. It lives on the low strings, it is usually built from the minor pentatonic, and it is almost always shorter than you would expect.\n\nTake E minor pentatonic at the open position and write yourself four notes over one bar. Play it eight times. If it is still interesting on the eighth, it is a riff.\n\nAccent the first note of each repetition. A riff without an accent is a scale exercise.",
+              "exercises": [
+                {
+                  "title": "Eight times without drifting",
+                  "instructions": "A one-bar riff in E minor pentatonic, eight times, accenting beat 1. Same tempo, same notes, same volume at the end as at the start.",
+                  "startBpm": 80,
+                  "targetBpm": 140,
+                  "timeSignature": "fourFour"
+                }
+              ],
+              "objective": "Write a one-bar riff from E minor pentatonic and play it eight times without drifting in tempo, volume or notes.",
+              "commonMistakes": [
+                "No accent on beat 1, which turns a riff back into a scale exercise.",
+                "Adding a note on every repeat until the riff has gone.",
+                "Getting louder as the repeats go on rather than tighter."
+              ],
+              "practiceTips": [
+                "Four notes is plenty. If it is dull by the eighth pass, change the notes rather than the number of them.",
+                "Mute the low strings with the picking hand between accents, so each repeat starts from silence."
+              ],
+              "nextSkill": "The minor pentatonic across the whole neck"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

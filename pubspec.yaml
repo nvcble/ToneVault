@@ -43,6 +43,14 @@ dependencies:
   image_picker: ^1.2.0
   path_provider: ^2.1.6
 
+  # Sound: the chords the ear training plays, and the metronome's click.
+  #
+  # Both are generated rather than recorded - the app builds a WAV in memory from
+  # the notes the theory engine worked out - so there are no audio assets to ship
+  # and any chord in any key can be played. audioplayers is only asked to play a
+  # file, which is the one thing every platform it supports agrees on.
+  audioplayers: ^6.5.1
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -51,3 +59,10 @@ dev_dependencies:
   drift_dev: ^2.34.5
 flutter:
   uses-material-design: true
+
+  assets:
+    # The curriculum the Academy ships with, one file per learning path. Shipped as
+    # data rather than written into Dart so a course can be corrected without a
+    # code change, and read through the same importer a user's own file goes
+    # through.
+    - assets/curriculum/

@@ -25,10 +25,7 @@ void main() {
   Pedalboard rig(int id) =>
       Pedalboard(id: id, name: 'Rig $id', createdAt: moment, updatedAt: moment);
 
-  RigSnapshot snapshot(int id) =>
-      RigSnapshot(id: id, pedalboardId: 1, name: 'Day $id', capturedAt: moment);
-
-  VaultRows vaultOf({int pedals = 0, int rigs = 0, int snapshots = 0}) => (
+  VaultRows vaultOf({int pedals = 0, int rigs = 0}) => (
     pedals: [for (var id = 1; id <= pedals; id++) pedal(id)],
     controls: const [],
     configurations: const [],
@@ -43,9 +40,17 @@ void main() {
     signalBlocks: const [],
     signalConnections: const [],
     signalEndpoints: const [],
-    snapshots: [for (var id = 1; id <= snapshots; id++) snapshot(id)],
+    snapshots: const [],
     snapshotEntries: const [],
     snapshotValues: const [],
+    academyCourses: const [],
+    academyModules: const [],
+    academyLessons: const [],
+    academyExercises: const [],
+    academyProgress: const [],
+    academyExerciseProgress: const [],
+    academyPracticeSessions: const [],
+    academyBookmarks: const [],
   );
 
   VaultBackup backupOf(VaultRows rows, {int? schemaVersion}) => (
@@ -57,64 +62,58 @@ void main() {
   );
 
   test('counts what a person would count', () async {
-    final tally = tallyVault(vaultOf(pedals: 12, rigs: 3, snapshots: 5));
+    final tally = tallyVault(vaultOf(pedals: 12));
 
-    expect(tally, (pedals: 12, rigs: 3, snapshots: 5));
+    expect(tally, (pedals: 12));
+  });
+
+  test('leaves the boards of the old rigs feature out of the count', () async {
+    // The file still carries them and a restore still puts them back, but there
+    // is nowhere left in the app to go and look at them, so a number here would
+    // only raise a question the user cannot follow up on.
+    expect(
+      describeBackup(backupOf(vaultOf(pedals: 12, rigs: 3))),
+      isNot(contains('rig')),
+    );
   });
 
   test('describes a backup by its date and what is in it', () async {
-    final described = describeBackup(
-      backupOf(vaultOf(pedals: 12, rigs: 3, snapshots: 5)),
-    );
+    final described = describeBackup(backupOf(vaultOf(pedals: 12)));
 
-    expect(
-      described,
-      'Taken 2026-08-20 07:15, with 12 pedals, 3 rigs and 5 snapshots in it.',
-    );
+    expect(described, 'Taken 2026-08-20 07:15, with 12 pedals in it.');
   });
 
   test('counts of one read as one', () async {
-    final described = describeBackup(
-      backupOf(vaultOf(pedals: 1, rigs: 1, snapshots: 1)),
-    );
+    final described = describeBackup(backupOf(vaultOf(pedals: 1)));
 
-    expect(
-      described,
-      'Taken 2026-08-20 07:15, with 1 pedal, 1 rig and 1 snapshot in it.',
-    );
+    expect(described, 'Taken 2026-08-20 07:15, with 1 pedal in it.');
   });
 
   test('a backup of an empty vault says so in words', () async {
     // "0 pedals" reads like a fault; an empty backup is a real thing to have.
     expect(
       describeBackup(backupOf(vaultOf())),
-      'Taken 2026-08-20 07:15, with no pedals, no rigs and no snapshots in it.',
+      'Taken 2026-08-20 07:15, with no pedals in it.',
     );
   });
 
   test('says when a file was made by an older version', () async {
     final described = describeBackup(
-      backupOf(
-        vaultOf(pedals: 12, rigs: 3, snapshots: 5),
-        schemaVersion: currentSchemaVersion - 1,
-      ),
+      backupOf(vaultOf(pedals: 12), schemaVersion: currentSchemaVersion - 1),
     );
 
     // It will restore, but the parts of the app that came after it come back
     // empty, and finding that out after the vault is replaced is too late.
     expect(
       described,
-      'Taken 2026-08-20 07:15, with 12 pedals, 3 rigs and 5 snapshots in it. '
+      'Taken 2026-08-20 07:15, with 12 pedals in it. '
       'It was made by an older version of ToneVault, so parts of the app added '
       'since then come back empty.',
     );
   });
 
   test('reports what a finished restore put in place', () async {
-    expect(
-      describeRestored(vaultOf(pedals: 12, rigs: 1)),
-      'Restored 12 pedals, 1 rig and no snapshots.',
-    );
+    expect(describeRestored(vaultOf(pedals: 12)), 'Restored 12 pedals.');
   });
 
   test('names a backup file for the day it was taken', () async {

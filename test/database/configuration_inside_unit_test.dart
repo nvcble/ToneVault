@@ -5,16 +5,13 @@ import 'package:tone_vault/core/database/daos/pedal_control_dao.dart';
 import 'package:tone_vault/core/enums/control_type.dart';
 import 'package:tone_vault/core/enums/pedal_category.dart';
 import 'package:tone_vault/core/enums/pedal_type.dart';
-import 'package:tone_vault/core/enums/signal_block_type.dart';
 import 'package:tone_vault/core/errors/app_failure.dart';
 import 'package:tone_vault/features/configurations/data/configuration_draft.dart';
 import 'package:tone_vault/features/configurations/providers/configuration_editor.dart';
 import 'package:tone_vault/features/controls/data/control_draft.dart';
 import 'package:tone_vault/features/controls/data/control_repository.dart';
-import 'package:tone_vault/features/pedalboards/data/pedalboard_draft.dart';
 import 'package:tone_vault/features/pedals/data/pedal_draft.dart';
 import 'package:tone_vault/features/pedals/data/pedal_repository.dart';
-import 'package:tone_vault/features/snapshots/data/snapshot_draft.dart';
 import '../support/repositories.dart';
 
 /// A configuration of a multi-effects unit, which reaches the controls of the
@@ -207,36 +204,5 @@ void main() {
       {for (final value in values) value.controlId: value.value},
       {driveId: 0.5},
     );
-  });
-
-  test('a snapshot freezes the whole scene, not just the unit', () async {
-    final rigId = await pedalboardRepository(
-      database,
-    ).createPedalboard(const PedalboardDraft(name: 'Hybrid Worship Rig'));
-    await signalChainRepository(database).addBlock(
-      pedalboardId: rigId,
-      blockType: SignalBlockType.multiEffect,
-      pedalId: unitId,
-    );
-    await configurationValueRepository(
-      database,
-    ).setValue(configurationId: sceneId, controlId: driveId, value: 0.75);
-
-    final snapshotId = await rigSnapshotRepository(database, clock: () => now)
-        .captureSnapshot(
-          rigId,
-          const SnapshotDraft(name: 'Easter 2026'),
-          configurationChoices: {unitId: sceneId},
-        );
-
-    // The unit is the only thing on the rig, so without the patch's controls the
-    // record of that day would be a name and nothing else.
-    final entries = await database.rigSnapshotDao
-        .watchEntries(snapshotId)
-        .first;
-    final readings = entries.single.values;
-    expect(entries.single.entry.configurationName, 'Chorus scene');
-    expect(readings.map((reading) => reading.controlName), contains('Drive'));
-    expect(readings.map((reading) => reading.value), contains(0.75));
   });
 }

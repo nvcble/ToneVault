@@ -8,10 +8,9 @@ import 'package:tone_vault/core/enums/change_type.dart';
 import 'package:tone_vault/core/errors/app_failure.dart';
 import 'package:tone_vault/features/history/providers/history_providers.dart';
 import 'package:tone_vault/features/history/widgets/change_tile.dart';
-import 'package:tone_vault/features/pedalboards/providers/pedalboard_providers.dart';
 import 'package:tone_vault/features/pedals/providers/pedal_providers.dart';
 
-/// The rest of the home tab: what changed lately, and the two buttons that get
+/// The rest of the home tab: what changed lately, and the button that gets
 /// something into an empty collection.
 void main() {
   PedalChange change(int id) => (
@@ -38,9 +37,6 @@ void main() {
         overrides: [
           pedalListProvider.overrideWith(
             (ref) => Stream<List<Pedal>>.value(const []),
-          ),
-          pedalboardListProvider.overrideWith(
-            (ref) => Stream<List<Pedalboard>>.value(const []),
           ),
           recentHistoryProvider.overrideWith(
             (ref) => changes ?? Stream<List<PedalChange>>.value(const []),
@@ -115,14 +111,5 @@ void main() {
     // The form's own title, rather than its save button, which sits below the
     // fold on a window this short.
     expect(find.widgetWithText(AppBar, 'Add pedal'), findsOne);
-  });
-
-  testWidgets('building a rig starts from the home tab', (tester) async {
-    await pumpHome(tester);
-
-    await tester.tap(find.widgetWithText(OutlinedButton, 'Build a rig'));
-    await tester.pumpAndSettle();
-
-    expect(find.widgetWithText(AppBar, 'Add rig'), findsOne);
   });
 }

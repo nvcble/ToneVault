@@ -101,7 +101,7 @@ void main() {
     // Everything, not just the pedals: this is the file they will restore from.
     final backup = decodeVaultBackup(sent!.contents);
     expect(backup.rows.pedals, hasLength(4));
-    expect(backup.rows.snapshotValues, hasLength(1));
+    expect(backup.rows.signalEndpoints, hasLength(1));
   });
 
   testWidgets('a share sheet that will not open says so', (tester) async {
@@ -128,9 +128,7 @@ void main() {
     expect(find.text('Replace everything?'), findsOne);
     // The particular file, so the user is agreeing to a known day of gear.
     expect(
-      find.textContaining(
-        'Taken 2026-08-20 07:15, with 4 pedals, 1 rig and 1 snapshot in it.',
-      ),
+      find.textContaining('Taken 2026-08-20 07:15, with 4 pedals in it.'),
       findsOne,
     );
     expect(find.textContaining('cannot be undone'), findsOne);
@@ -154,7 +152,7 @@ void main() {
 
     // Four, because a pedal inside a multi-effects unit is a pedal in the vault:
     // it was bought, it can be replaced, and a restore has to bring it back.
-    expect(find.text('Restored 4 pedals, 1 rig and 1 snapshot.'), findsOne);
+    expect(find.text('Restored 4 pedals.'), findsOne);
     // Replaced, not merged: the pedal bought since is gone with the rest.
     expect(await pedalNames(), [
       'Caline PureSky',

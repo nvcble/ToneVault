@@ -7,6 +7,7 @@ import '../../../app/theme/app_spacing.dart';
 import '../../../core/database/app_database.dart';
 import '../../../shared/widgets/empty_state.dart';
 import '../../../shared/widgets/failure_snack_bar.dart';
+import '../../academy/widgets/academy_action.dart';
 import '../data/pedal_filter.dart';
 import '../providers/pedal_filter_providers.dart';
 import '../providers/pedal_providers.dart';
@@ -20,7 +21,10 @@ class PedalsScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Pedals')),
+      appBar: AppBar(
+        title: const Text('Pedals'),
+        actions: const [AcademyAction()],
+      ),
       floatingActionButton: FloatingActionButton(
         onPressed: () => context.go(Routes.pedalNew),
         tooltip: 'Add pedal',

@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-/// Shell around the five top-level tabs.
+/// Shell around the four top-level tabs.
+///
+/// Four rather than five: the Academy is reached from the header of whichever
+/// tab the user is on, not from a destination of its own. A bar of five reads as
+/// a list to work through, and the Academy is somewhere you go and come back
+/// from rather than a part of the collection to keep an eye on.
 class AppScaffold extends StatelessWidget {
   const AppScaffold({required this.navigationShell, super.key});
 
@@ -26,11 +31,6 @@ class AppScaffold extends StatelessWidget {
             label: 'Home',
           ),
           NavigationDestination(icon: Icon(Icons.tune), label: 'Pedals'),
-          NavigationDestination(
-            icon: Icon(Icons.dashboard_outlined),
-            selectedIcon: Icon(Icons.dashboard),
-            label: 'Rigs',
-          ),
           NavigationDestination(icon: Icon(Icons.history), label: 'History'),
           NavigationDestination(
             icon: Icon(Icons.settings_outlined),

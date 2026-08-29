@@ -57,7 +57,7 @@ void main() {
     );
     expect(backup.exportedAt, exportedAt);
     expect(backup.rows.pedals, saved.pedals);
-    expect(backup.rows.snapshotValues, saved.snapshotValues);
+    expect(backup.rows.signalEndpoints, saved.signalEndpoints);
   });
 
   test('restoring puts the vault back the way the file has it', () async {
@@ -82,8 +82,8 @@ void main() {
     final rows = await database.backupDao.readEverything();
     expect(rows.pedals, saved.pedals);
     expect(rows.pedalboards, saved.pedalboards);
-    expect(rows.snapshots, saved.snapshots);
-    expect(rows.snapshotValues, saved.snapshotValues);
+    expect(rows.signalBlocks, saved.signalBlocks);
+    expect(rows.signalEndpoints, saved.signalEndpoints);
   });
 
   test('restoring a backup of an empty vault empties the vault', () async {
@@ -100,7 +100,7 @@ void main() {
     final rows = await database.backupDao.readEverything();
     expect(rows.pedals, isEmpty);
     expect(rows.pedalboards, isEmpty);
-    expect(rows.snapshots, isEmpty);
+    expect(rows.signalBlocks, isEmpty);
   });
 
   test('a file from an older version restores what it does hold', () async {
@@ -122,7 +122,7 @@ void main() {
 
     final rows = await database.backupDao.readEverything();
     expect(rows.pedals, saved.pedals);
-    expect(rows.snapshotValues, saved.snapshotValues);
+    expect(rows.signalEndpoints, saved.signalEndpoints);
 
     // The unit comes back with nothing switched on in it, and the patches that
     // were in the vault a moment ago are gone: a restore is the whole vault
@@ -142,7 +142,7 @@ void main() {
 
   test('a backup whose rows do not hang together changes nothing', () async {
     // Every table present, so the file reads: the pedals are simply gone from
-    // under the controls, configurations and snapshots that name them.
+    // under the controls, configurations and chain blocks that name them.
     final orphaned = edited((tables) => tables['pedals'] = <dynamic>[]);
     final backup = repository.readBackup(orphaned);
 
@@ -154,6 +154,6 @@ void main() {
     final rows = await database.backupDao.readEverything();
     expect(rows.pedals, saved.pedals);
     expect(rows.controls, saved.controls);
-    expect(rows.snapshotValues, saved.snapshotValues);
+    expect(rows.signalEndpoints, saved.signalEndpoints);
   });
 }

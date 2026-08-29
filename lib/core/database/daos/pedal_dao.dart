@@ -2,6 +2,7 @@ import 'package:drift/drift.dart';
 
 import '../app_database.dart';
 import '../tables/pedals_table.dart';
+import '../tables/signal_blocks_table.dart';
 
 part 'pedal_dao.g.dart';
 
@@ -9,7 +10,9 @@ part 'pedal_dao.g.dart';
 ///
 /// Timestamps, validation and error translation belong to `PedalRepository`;
 /// this class only reads and writes rows.
-@DriftAccessor(tables: [Pedals])
+///
+/// `signal_blocks` is here for one reason: see [deletePedal].
+@DriftAccessor(tables: [Pedals, SignalBlocks])
 class PedalDao extends DatabaseAccessor<AppDatabase> with _$PedalDaoMixin {
   PedalDao(super.attachedDatabase);
 
@@ -65,10 +68,29 @@ class PedalDao extends DatabaseAccessor<AppDatabase> with _$PedalDaoMixin {
     return changedRows > 0;
   }
 
-  Future<bool> deletePedal(int pedalId) async {
-    final deletedRows = await (delete(
-      pedals,
-    )..where((row) => row.id.equals(pedalId))).go();
-    return deletedRows > 0;
+  /// Returns whether a row matched [pedalId].
+  ///
+  /// Any place this pedal held in an old rig's chain goes with it. Those rows
+  /// reference pedals with ON DELETE RESTRICT, and the screens that could once
+  /// take a pedal off a board are gone, so leaving them would make a pedal that
+  /// was ever on a rig impossible to delete for good. The rows are kept for
+  /// their record of how a board was wired, which is a record of the board and
+  /// not of the pedal; deleting whichever cables and sockets referred to this
+  /// block is left to the foreign keys, which already cascade.
+  ///
+  /// One transaction, so a pedal is never left with its chain rows cleared and
+  /// itself still there.
+  Future<bool> deletePedal(int pedalId) {
+    return transaction(() async {
+      await (delete(
+        signalBlocks,
+      )..where((row) => row.pedalId.equals(pedalId))).go();
+
+      final deletedRows = await (delete(
+        pedals,
+      )..where((row) => row.id.equals(pedalId))).go();
+
+      return deletedRows > 0;
+    });
   }
 }

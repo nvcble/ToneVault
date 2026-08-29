@@ -1,4 +1,7 @@
 import 'package:tone_vault/core/database/app_database.dart';
+import 'package:tone_vault/core/database/daos/academy_bookmark_dao.dart';
+import 'package:tone_vault/core/database/daos/academy_course_dao.dart';
+import 'package:tone_vault/core/database/daos/academy_progress_dao.dart';
 import 'package:tone_vault/core/database/daos/backup_dao.dart';
 import 'package:tone_vault/core/database/daos/change_log_dao.dart';
 import 'package:tone_vault/core/database/daos/configuration_dao.dart';
@@ -6,11 +9,12 @@ import 'package:tone_vault/core/database/daos/patch_dao.dart';
 import 'package:tone_vault/core/database/daos/pedal_control_dao.dart';
 import 'package:tone_vault/core/database/daos/pedal_dao.dart';
 import 'package:tone_vault/core/database/daos/pedal_replacement_dao.dart';
-import 'package:tone_vault/core/database/daos/pedalboard_dao.dart';
-import 'package:tone_vault/core/database/daos/rig_snapshot_dao.dart';
 import 'package:tone_vault/core/database/daos/scene_dao.dart';
-import 'package:tone_vault/core/database/daos/signal_chain_dao.dart';
-import 'package:tone_vault/core/database/daos/signal_endpoint_dao.dart';
+import 'package:tone_vault/features/academy/data/bookmark_repository.dart';
+import 'package:tone_vault/features/academy/data/curriculum_exporter.dart';
+import 'package:tone_vault/features/academy/data/curriculum_importer.dart';
+import 'package:tone_vault/features/academy/data/curriculum_repository.dart';
+import 'package:tone_vault/features/academy/data/progress_repository.dart';
 import 'package:tone_vault/features/backup/data/backup_repository.dart';
 import 'package:tone_vault/features/configurations/data/configuration_repository.dart';
 import 'package:tone_vault/features/configurations/data/configuration_value_repository.dart';
@@ -21,14 +25,8 @@ import 'package:tone_vault/features/patches/data/scene_duplicator.dart';
 import 'package:tone_vault/features/patches/data/scene_pedal_repository.dart';
 import 'package:tone_vault/features/patches/data/scene_repository.dart';
 import 'package:tone_vault/features/patches/data/scene_value_repository.dart';
-import 'package:tone_vault/features/pedalboards/data/pedalboard_repository.dart';
-import 'package:tone_vault/features/pedalboards/data/signal_chain_repository.dart';
-import 'package:tone_vault/features/pedalboards/data/signal_endpoint_repository.dart';
-import 'package:tone_vault/features/pedalboards/data/signal_routing_repository.dart';
 import 'package:tone_vault/features/pedals/data/pedal_repository.dart';
 import 'package:tone_vault/features/replacements/data/replacement_repository.dart';
-import 'package:tone_vault/features/snapshots/data/rig_snapshot_repository.dart';
-import 'package:tone_vault/features/snapshots/data/snapshot_settings.dart';
 
 /// Repositories wired to one in-memory database, the way the providers wire them
 /// to the real one.
@@ -89,80 +87,6 @@ ReplacementRepository replacementRepository(
     PedalDao(database),
     changeLog ?? changeLogRepository(database, clock: clock),
     clock: clock,
-  );
-}
-
-/// The one repository that records no history: a rig is a grouping of pedals,
-/// not something that happened to one.
-PedalboardRepository pedalboardRepository(
-  AppDatabase database, {
-  DateTime Function()? clock,
-}) {
-  return PedalboardRepository(PedalboardDao(database), clock: clock);
-}
-
-/// The blocks of a rig's chain: three accessors, because a block is checked
-/// against the rig it is on and the pedal it holds before it is written.
-SignalChainRepository signalChainRepository(
-  AppDatabase database, {
-  DateTime Function()? clock,
-}) {
-  return SignalChainRepository(
-    SignalChainDao(database),
-    PedalboardDao(database),
-    PedalDao(database),
-    clock: clock,
-  );
-}
-
-/// The cables between blocks, which is all a rig needs for parallel routing.
-SignalRoutingRepository signalRoutingRepository(
-  AppDatabase database, {
-  DateTime Function()? clock,
-}) {
-  return SignalRoutingRepository(
-    SignalChainDao(database),
-    PedalboardDao(database),
-    clock: clock,
-  );
-}
-
-/// What the edges of a rig reach, which is where a chain stops being the app's
-/// business and becomes an amp, a desk or a pair of headphones.
-SignalEndpointRepository signalEndpointRepository(
-  AppDatabase database, {
-  DateTime Function()? clock,
-}) {
-  return SignalEndpointRepository(
-    SignalEndpointDao(database),
-    SignalChainDao(database),
-    PedalboardDao(database),
-    clock: clock,
-  );
-}
-
-RigSnapshotRepository rigSnapshotRepository(
-  AppDatabase database, {
-  DateTime Function()? clock,
-}) {
-  return RigSnapshotRepository(
-    RigSnapshotDao(database),
-    PedalboardDao(database),
-    SignalChainDao(database),
-    snapshotSettings(database),
-    clock: clock,
-  );
-}
-
-/// What a pedal on the rig was set to: a configuration of its own, or a scene of
-/// one of a unit's patches. Four accessors, which is why capture does not read
-/// them itself.
-SnapshotSettings snapshotSettings(AppDatabase database) {
-  return SnapshotSettings(
-    ConfigurationDao(database),
-    PedalControlDao(database),
-    PatchDao(database),
-    SceneDao(database),
   );
 }
 
@@ -244,6 +168,40 @@ SceneDuplicator sceneDuplicator(
     changeLog ?? changeLogRepository(database, clock: clock),
     clock: clock,
   );
+}
+
+/// The Academy's three, which record no history: the change log is the story of
+/// the user's gear, and a lesson opened is not part of it.
+CurriculumRepository curriculumRepository(AppDatabase database) {
+  return CurriculumRepository(AcademyCourseDao(database));
+}
+
+CurriculumImporter curriculumImporter(
+  AppDatabase database, {
+  DateTime Function()? clock,
+}) {
+  return CurriculumImporter(AcademyCourseDao(database), clock: clock);
+}
+
+CurriculumExporter curriculumExporter(
+  AppDatabase database, {
+  DateTime Function()? clock,
+}) {
+  return CurriculumExporter(AcademyCourseDao(database), clock: clock);
+}
+
+ProgressRepository progressRepository(
+  AppDatabase database, {
+  DateTime Function()? clock,
+}) {
+  return ProgressRepository(AcademyProgressDao(database), clock: clock);
+}
+
+BookmarkRepository bookmarkRepository(
+  AppDatabase database, {
+  DateTime Function()? clock,
+}) {
+  return BookmarkRepository(AcademyBookmarkDao(database), clock: clock);
 }
 
 SceneValueRepository sceneValueRepository(

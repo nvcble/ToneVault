@@ -1,0 +1,355 @@
+{
+  "formatVersion": 1,
+  "courses": [
+    {
+      "slug": "rhythm-professional-on-the-stand",
+      "path": "rhythm",
+      "level": "professional",
+      "title": "On the Stand",
+      "summary": "What is asked of a working rhythm guitarist: jazz comping, reharmonisation, chord melody, reading and transposing a chart at sight, and holding an arrangement together for a band and a room.",
+      "modules": [
+        {
+          "slug": "comping",
+          "title": "Comping",
+          "summary": "Accompanying a soloist without getting in the way of one.",
+          "lessons": [
+            {
+              "slug": "four-to-the-bar",
+              "title": "Four to the Bar",
+              "kind": "genre",
+              "genre": "jazz",
+              "estimatedMinutes": 25,
+              "suggestedBpm": 140,
+              "timeSignature": "fourFour",
+              "theoryKeys": [
+                "Bb",
+                "Eb",
+                "F7"
+              ],
+              "body": "The oldest job in the trade: one chord on every beat, three notes at most, no ringing, dead even.\n\nUse **shell voicings on the low strings**, cut each one short with the fretting hand, and never let a chord last into the next beat. The part is a pulse with harmony in it, and a big band sits on top of it.\n\nWhat makes it good is unglamorous. The tempo does not move, the volume does not move, and the top voice steps rather than jumps from chord to chord. Two hours of this is worth more than any voicing you could learn instead.",
+              "exercises": [
+                {
+                  "title": "Rhythm changes, four to the bar",
+                  "instructions": "Comp thirty-two bars of a rhythm changes progression in Bb, one chord per beat, every chord clipped, keeping the top voice within four frets.",
+                  "startBpm": 100,
+                  "targetBpm": 220,
+                  "timeSignature": "fourFour"
+                }
+              ],
+              "objective": "Comp thirty-two bars at one clipped chord per beat, dead even in tempo and volume, with the top voice stepping rather than jumping.",
+              "commonMistakes": [
+                "Chords ringing into the next beat, which turns a pulse into a wash.",
+                "The volume creeping up as the chorus goes on.",
+                "Jumping the top voice between chords, which is what makes comping sound like shapes."
+              ],
+              "practiceTips": [
+                "Cut each chord short with the fretting hand rather than the picking hand.",
+                "Keep the whole thirty-two bars inside four frets. Two hours of this beats any voicing you could learn instead."
+              ],
+              "nextSkill": "Drop 2 and Rootless Voicings"
+            },
+            {
+              "slug": "drop-two-and-rootless-voicings",
+              "title": "Drop 2 and Rootless Voicings",
+              "kind": "theory",
+              "estimatedMinutes": 25,
+              "theoryKeys": [
+                "Cmaj7",
+                "Am7",
+                "D7",
+                "G7"
+              ],
+              "body": "Take a four-note chord stacked in thirds and drop the second voice from the top down an octave. That is a **drop 2** voicing, and it is why guitar chords on adjacent string sets sit where they do.\n\nEach seventh chord has four drop 2 inversions on each string set. Learn them on the middle four strings first: that register cuts through a band without fighting the bass or the vocal.\n\nRootless voicings are the same shapes read differently. A **Cmaj7 drop 2 without its root** is an Em triad; play it over an F in the bass and it is Fmaj9. One shape, several chords, decided by what the bass player does - which is the actual working economy of comping.",
+              "exercises": [
+                {
+                  "title": "Inversions on one string set",
+                  "instructions": "Play all four drop 2 inversions of Cmaj7, then Am7, D7 and G7, on the middle four strings, one per bar, without leaving a five-fret span.",
+                  "startBpm": 50,
+                  "targetBpm": 90,
+                  "timeSignature": "fourFour"
+                }
+              ],
+              "objective": "Play all four drop 2 inversions of a seventh chord on the middle four strings without leaving a five-fret span.",
+              "commonMistakes": [
+                "Learning the shapes without knowing which note is on top, which is what inversions are for.",
+                "Practising them on every string set at once instead of owning the middle four.",
+                "Playing the root when the bass player already has it."
+              ],
+              "practiceTips": [
+                "One inversion a bar, four chords in a row, and never let the hand leave the position.",
+                "Read the same shape two ways: a rootless Cmaj7 is an Em triad, and over an F bass it is Fmaj9."
+              ],
+              "nextSkill": "Reharmonisation: Tritone Subs and Backdoor Turns"
+            },
+            {
+              "slug": "reharmonisation",
+              "title": "Reharmonisation: Tritone Subs and Backdoor Turns",
+              "kind": "theory",
+              "estimatedMinutes": 30,
+              "theoryKeys": [
+                "G7",
+                "Db7",
+                "Bb7",
+                "Cmaj7"
+              ],
+              "body": "A chord can be replaced by another that does the same job, and the two most useful replacements are both about the tritone.\n\n**Tritone substitution** - **Db7** shares its third and seventh with **G7**, swapped over. So Db7 resolves to Cmaj7 as convincingly as G7 does, and the bass moves down a semitone instead of down a fifth.\n\n**The backdoor** - **Bb7** to **Cmaj7**, borrowed from the parallel minor. Softer than a dominant, and everywhere in gospel and in standards.\n\nUse either one **on the second pass**, not the first. Reharmonisation is a comment on something the listener already knows, and a comment on something they have not heard yet is just a wrong chord.",
+              "exercises": [
+                {
+                  "title": "Second time around",
+                  "instructions": "Comp a ii V I in C for eight bars as written, then eight bars replacing the G7 with Db7, then eight using the backdoor Bb7.",
+                  "startBpm": 60,
+                  "targetBpm": 120,
+                  "timeSignature": "fourFour"
+                }
+              ],
+              "objective": "Replace a dominant with its tritone substitute and with the backdoor dominant, and keep both for the second pass.",
+              "commonMistakes": [
+                "Reharmonising the first time through, when the listener has nothing to hear it against.",
+                "Substituting without the third and seventh in the voicing, which is what makes the swap work.",
+                "Changing the melody to fit the substitution rather than the other way round."
+              ],
+              "practiceTips": [
+                "Eight bars as written, eight with the tritone sub, eight with the backdoor. In that order, every time.",
+                "Play the two chords back to back and find the two notes they share. That is the whole device."
+              ],
+              "nextSkill": "Chord Melody: Being the Whole Band"
+            },
+            {
+              "slug": "chord-melody",
+              "title": "Chord Melody: Being the Whole Band",
+              "kind": "technique",
+              "estimatedMinutes": 30,
+              "theoryKeys": [
+                "F",
+                "Bb",
+                "C7"
+              ],
+              "body": "Put the tune in the top voice and the harmony underneath it, and one guitar plays a whole song alone.\n\nThe method is mechanical. Find the melody note. Decide which chord is under it. Choose a voicing of that chord whose highest note **is** the melody note. Add a bass note if the hand can reach one. Move on.\n\nMost of the work is choosing which inversion puts the melody on top, which is exactly what the drop 2 shapes are for. Harmonise eight bars of a tune you know well, slowly, and you will have learned more about voicings than a book of them teaches.",
+              "exercises": [
+                {
+                  "title": "Melody on top",
+                  "instructions": "Harmonise the first eight bars of a standard in F, one chord per melody note, playing it as slowly as needed to keep the melody the highest note throughout.",
+                  "startBpm": 40,
+                  "targetBpm": 70,
+                  "timeSignature": "fourFour"
+                }
+              ],
+              "objective": "Harmonise eight bars of a tune so the melody note is the highest note of every chord, adding a bass note where the hand reaches.",
+              "commonMistakes": [
+                "A voicing whose top note is not the melody, which buries the tune inside the chord.",
+                "Playing it up to tempo before the voicings are chosen.",
+                "Reaching for a bass note at the cost of the melody note."
+              ],
+              "practiceTips": [
+                "Melody note first, then the chord under it, then the inversion that puts the melody on top.",
+                "Go as slowly as it takes. This is a choosing exercise, not a playing one."
+              ],
+              "nextSkill": "Charts, Repeats and Road Maps"
+            }
+          ]
+        },
+        {
+          "slug": "reading-and-transposing",
+          "title": "Reading, Transposing, Following",
+          "summary": "The parts of the job that happen before anybody plays a note.",
+          "lessons": [
+            {
+              "slug": "charts-and-road-maps",
+              "title": "Charts, Repeats and Road Maps",
+              "kind": "concept",
+              "estimatedMinutes": 20,
+              "body": "A chart is a map of the form, not a transcription of a part. Reading one fluently means never being surprised about where you are.\n\nWhat to sort out before the count-in: how many bars in each section, where the repeats end, what happens on the last time, whether there is a modulation, and how the song finishes. Mark the surprises and ignore everything else.\n\nCount bars in fours by feel, keep a finger on the chart if you need to, and know one bar ahead what is coming. A player who is right about the form and vague about the voicings is useful. The reverse is not.",
+              "exercises": [
+                {
+                  "title": "Form out loud",
+                  "instructions": "Set a click and count a thirty-two bar form out loud in sections - eight, eight, bridge, eight - four times through without losing your place.",
+                  "startBpm": 80,
+                  "targetBpm": 140,
+                  "timeSignature": "fourFour"
+                }
+              ],
+              "objective": "Read a chart as a map of the form, knowing one bar ahead what is coming and never being lost about where you are.",
+              "commonMistakes": [
+                "Reading the voicings and not the form, which is the wrong half of the chart.",
+                "Marking everything, so the surprises are hidden among the obvious.",
+                "Counting bars one at a time rather than in fours by feel."
+              ],
+              "practiceTips": [
+                "Before the count-in: section lengths, where the repeats end, the last time, any modulation, and the ending.",
+                "Count a thirty-two bar form out loud in sections, four times through, before you play a note of it."
+              ],
+              "nextSkill": "Transposing at Sight"
+            },
+            {
+              "slug": "transposing-at-sight",
+              "title": "Transposing at Sight",
+              "kind": "practice",
+              "estimatedMinutes": 25,
+              "theoryKeys": [
+                "G",
+                "Bb",
+                "Db"
+              ],
+              "body": "\"It's in Db tonight.\" You have four seconds.\n\nThe way through is numbers rather than names. If you know the song as **1 5 6 4**, the key is a matter of where you start, not what you recall. Chart in numbers, hear in numbers, and any key is the same song.\n\nTwo practical routes on a guitar: move the shapes and read the roots off the low E and A strings, or capo and keep the shapes. Both are legitimate; a working player can do either without discussion.\n\nPractise by playing a song you know in all twelve keys, one after another, with a click running throughout.",
+              "exercises": [
+                {
+                  "title": "Twelve keys, no stopping",
+                  "instructions": "Play a 1 6 4 5 loop for four bars in each of the twelve keys, moving up in semitones, without a break between keys.",
+                  "startBpm": 60,
+                  "targetBpm": 110,
+                  "timeSignature": "fourFour"
+                }
+              ],
+              "objective": "Play a song you know in all twelve keys against a running click, either moving the shapes or capoing.",
+              "commonMistakes": [
+                "Recalling chord names instead of numbers, which is what makes a new key a job.",
+                "Stopping the click between keys, which is exactly the moment being practised.",
+                "Only ever transposing one way. A working player can move the shapes or capo without discussion."
+              ],
+              "practiceTips": [
+                "Chart in numbers and hear in numbers. Then the key is where you start, not what you remember.",
+                "Four bars a key, up in semitones, no break. Twelve keys is about a minute."
+              ],
+              "nextSkill": "Playing to a Click, and to Tracks"
+            },
+            {
+              "slug": "playing-to-a-click-and-tracks",
+              "title": "Playing to a Click, and to Tracks",
+              "kind": "practice",
+              "estimatedMinutes": 20,
+              "suggestedBpm": 100,
+              "timeSignature": "fourFour",
+              "body": "In a studio and on most modern stages you are inside a click, not near it.\n\nThe skill is not following the click - it is being unbothered by it. That means playing on top of it, behind it or dead centre **on purpose**, and not drifting when a section is busy.\n\nTest yourself honestly: record two minutes against a click, then mute the click and listen. Everything you hear that flams was you. Fix the busiest bar first, because that is where time always goes.",
+              "exercises": [
+                {
+                  "title": "Two minutes, then listen back",
+                  "instructions": "Play a two-minute rhythm part to a click, recorded. Listen back with the click muted and mark every bar that drifted.",
+                  "startBpm": 90,
+                  "targetBpm": 130,
+                  "timeSignature": "fourFour"
+                }
+              ],
+              "objective": "Play two minutes to a click, then listen back with the click muted and mark every bar that drifted.",
+              "commonMistakes": [
+                "Following the click instead of being unbothered by it.",
+                "Drifting in the busiest bar, which is where time always goes.",
+                "Sitting late or early by accident rather than on purpose."
+              ],
+              "practiceTips": [
+                "Record it. Everything that flams when the click is muted was you, and nothing else will tell you so.",
+                "Fix the busiest bar first, then play the whole two minutes again."
+              ],
+              "nextSkill": "Worship: Leading From the Guitar"
+            }
+          ]
+        },
+        {
+          "slug": "leading-a-band",
+          "title": "Holding It Together",
+          "summary": "What the guitarist does when the arrangement is their responsibility.",
+          "lessons": [
+            {
+              "slug": "worship-leading-from-the-guitar",
+              "title": "Worship: Leading From the Guitar",
+              "kind": "genre",
+              "genre": "worship",
+              "estimatedMinutes": 30,
+              "suggestedBpm": 76,
+              "timeSignature": "fourFour",
+              "theoryKeys": [
+                "A",
+                "E",
+                "F#m",
+                "D"
+              ],
+              "body": "In a service the guitar often decides what happens next, and does it without announcing it.\n\nThree things to be able to do without preparation: **drop the band to nothing and bring it back**, **hold a two-chord vamp under speech for as long as it takes**, and **move the key up a tone because the singer is straining**.\n\nDynamics are the instrument here. Take the picking hand off the strings entirely, then come back with a muted eighth pattern, then open it - the room follows that far more reliably than any cue you can give.\n\nAnd learn to end. A song that stops together sounds rehearsed even when nothing was.",
+              "exercises": [
+                {
+                  "title": "Four dynamic levels",
+                  "instructions": "Over a vamp in A, play four eight-bar sections: silent but in time, muted eighths, open strumming, and full. Each change lands on beat 1.",
+                  "startBpm": 66,
+                  "targetBpm": 90,
+                  "timeSignature": "fourFour"
+                }
+              ],
+              "objective": "Move a vamp through four dynamic levels with each change landing on beat 1, so the band follows without being told.",
+              "commonMistakes": [
+                "Changing dynamic in the middle of a section, where nobody can follow it.",
+                "Getting louder by playing more notes rather than opening the hand up.",
+                "No ending. A song that stops together sounds rehearsed even when nothing was."
+              ],
+              "practiceTips": [
+                "Silent but in time, muted eighths, open, full. Eight bars each, changes on beat 1.",
+                "Practise holding a two-chord vamp under speech for as long as it takes, without drifting or building."
+              ],
+              "nextSkill": "Gospel: Modulations and the Shout"
+            },
+            {
+              "slug": "gospel-modulations-and-shout",
+              "title": "Gospel: Modulations and the Shout",
+              "kind": "genre",
+              "genre": "gospel",
+              "estimatedMinutes": 30,
+              "suggestedBpm": 92,
+              "timeSignature": "fourFour",
+              "theoryKeys": [
+                "Ab",
+                "A",
+                "Bb",
+                "Eb7"
+              ],
+              "body": "Gospel moves keys mid-song, often up a semitone, and often with no warning beyond a look.\n\nThe usual mechanism is a dominant: to go from Ab to A, play **E7** for a beat or two and land. To go up a tone, use the new key's five. Have both in your hands in every key, because you will be asked to do it while playing something else.\n\nThe **shout** section is a fast two-chord or four-chord loop under a drum groove, at a tempo that only works if your right hand is already relaxed. It is where all the muting, the passing chords and the endurance from the advanced course get spent at once.",
+              "exercises": [
+                {
+                  "title": "Up a semitone on a look",
+                  "instructions": "Vamp eight bars in Ab, modulate to A through its dominant in one bar, eight bars there, then to Bb. Do not stop the groove for the change.",
+                  "startBpm": 70,
+                  "targetBpm": 120,
+                  "timeSignature": "fourFour"
+                }
+              ],
+              "objective": "Modulate up a semitone and up a tone through the new key dominant in one bar, without stopping the groove.",
+              "commonMistakes": [
+                "Stopping the groove for the change, which is the one thing the modulation must not do.",
+                "Knowing the move in one key only, when it will be asked for in whichever key you are in.",
+                "A tense right hand going into the shout, which will not last the section."
+              ],
+              "practiceTips": [
+                "Eight bars, one bar of the new key dominant, eight bars. Loop it up through three keys.",
+                "Practise the shout tempo relaxed and quiet first. Endurance is a right-hand habit, not effort."
+              ],
+              "nextSkill": "Two Guitars in One Arrangement"
+            },
+            {
+              "slug": "two-guitars-and-arrangement",
+              "title": "Two Guitars in One Arrangement",
+              "kind": "concept",
+              "estimatedMinutes": 20,
+              "body": "Two guitarists playing the same part is one guitarist, twice as loud and half as clear. The fix is register and rhythm, not volume.\n\nDivide the work: one plays low and sparse, the other high and rhythmic. One holds chords, the other chops. One takes the capo. Whoever is not carrying the groove leaves space, and both decide **before** the downbeat, not during.\n\nThe same logic applies to keys, to a piano, and to a track playing behind you. Ask what frequency range and what part of the bar is already occupied, and take what is left. That question, asked honestly, is most of what makes a professional easy to work with.",
+              "exercises": [
+                {
+                  "title": "Play the other part",
+                  "instructions": "Record a low, sparse rhythm part over a four-chord loop, then play a high, chopped part against the recording without doubling anything in it.",
+                  "startBpm": 80,
+                  "targetBpm": 120,
+                  "timeSignature": "fourFour"
+                }
+              ],
+              "objective": "Play a part that fits against a recorded one without doubling anything in it, dividing the work by register and rhythm.",
+              "commonMistakes": [
+                "Two guitars playing the same part, which is one guitar twice as loud and half as clear.",
+                "Sorting it out during the song instead of before the downbeat.",
+                "Fixing an overcrowded arrangement with volume."
+              ],
+              "practiceTips": [
+                "Record a low, sparse part and play a high, chopped one against it. Then swap.",
+                "Ask what frequency range and what part of the bar is already taken, and play what is left."
+              ],
+              "nextSkill": "Musical direction of a whole set"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

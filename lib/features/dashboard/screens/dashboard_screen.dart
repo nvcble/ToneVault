@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import '../../../app/router/routes.dart';
 import '../../../app/theme/app_spacing.dart';
 import '../../../shared/widgets/section_label.dart';
+import '../../academy/widgets/academy_action.dart';
 import '../../history/providers/history_providers.dart';
 import '../providers/dashboard_providers.dart';
 import '../widgets/collection_tally_row.dart';
@@ -19,7 +20,10 @@ class DashboardScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
-      appBar: AppBar(title: const Text('ToneVault')),
+      appBar: AppBar(
+        title: const Text('ToneVault'),
+        actions: const [AcademyAction()],
+      ),
       body: ListView(
         padding: const EdgeInsets.only(bottom: AppSpacing.md),
         children: [
@@ -29,15 +33,11 @@ class DashboardScreen extends ConsumerWidget {
             child: CollectionTallyRow(
               tally: ref.watch(collectionTallyProvider),
               onOpenPedals: () => context.go(Routes.pedals),
-              onOpenRigs: () => context.go(Routes.rigs),
             ),
           ),
-          // Above the timeline: on an empty collection these are the only things
-          // worth doing, and on a full one they are still the shortest way in.
-          DashboardActions(
-            onAddPedal: () => context.go(Routes.pedalNew),
-            onBuildRig: () => context.go(Routes.rigNew),
-          ),
+          // Above the timeline: on an empty collection this is the only thing
+          // worth doing, and on a full one it is still the shortest way in.
+          DashboardActions(onAddPedal: () => context.go(Routes.pedalNew)),
           const SectionLabel('Lately'),
           LatestChanges(
             changes: ref.watch(recentHistoryProvider),

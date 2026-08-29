@@ -13,7 +13,6 @@ import 'package:tone_vault/features/configurations/data/configuration_draft.dart
 import 'package:tone_vault/features/controls/data/control_draft.dart';
 import 'package:tone_vault/features/history/data/change_entry.dart';
 import 'package:tone_vault/features/patches/data/patch_draft.dart';
-import 'package:tone_vault/features/pedalboards/data/pedalboard_draft.dart';
 import 'package:tone_vault/features/pedals/data/pedal_draft.dart';
 import '../support/repositories.dart';
 import '../support/v1_database.dart';
@@ -109,30 +108,48 @@ void main() {
     expect(await schemaFor(db, 'pedalboard_slots'), isEmpty);
   });
 
-  test('the snapshot tables are created exactly as fresh ones are', () async {
-    const tables = [
+  test('a new install still builds the snapshot tables', () async {
+    // Not because anything in the app writes them - nothing does - but because a
+    // backup file carries them, and a table the phone does not have is a table a
+    // restore cannot put its rows into. A user moving to a new phone gets their
+    // recorded rigs back only if this holds.
+    final fresh = AppDatabase(NativeDatabase.memory());
+    addTearDown(fresh.close);
+
+    for (final table in const [
       'rig_snapshots',
       'rig_snapshot_entries',
       'rig_snapshot_values',
-    ];
-
-    // One at a time: two live databases at once only earn a drift warning.
-    final fresh = AppDatabase(NativeDatabase.memory());
-    final expected = <String, List<String>>{
-      for (final table in tables) table: await schemaFor(fresh, table),
-    };
-    await fresh.close();
-
-    final upgraded = openV1Database();
-    addTearDown(upgraded.close);
-
-    for (final table in tables) {
-      expect(
-        await schemaFor(upgraded, table),
-        expected[table],
-        reason: '$table differs between an upgraded phone and a new install',
-      );
+    ]) {
+      expect(await schemaFor(fresh, table), isNotEmpty, reason: table);
     }
+  });
+
+  test('taking rigs out of the app does not take the snapshots', () async {
+    // The whole point of leaving the tables standing. No screen and no repository
+    // reads these rows any more, which is exactly why they are read here through
+    // the tables themselves: the user recorded which pedals were on the board and
+    // where every knob stood on a night they played, and an upgrade that dropped
+    // the tables would take that away with nowhere to get it back from.
+    final db = openV9SnapshotDatabase();
+    addTearDown(db.close);
+
+    final snapshot = (await db.select(db.rigSnapshots).get()).single;
+    final entry = (await db.select(db.rigSnapshotEntries).get()).single;
+    final reading = (await db.select(db.rigSnapshotValues).get()).single;
+
+    expect(snapshot.name, 'Easter 2026');
+    expect(snapshot.pedalboardId, 1);
+    expect(snapshot.capturedAt, DateTime.utc(2026, 4, 5, 9));
+    expect(entry.snapshotId, snapshot.id);
+    expect(entry.configurationName, 'Worship Clean');
+    // What v13 added, filled in by that step rather than left null: a snapshot
+    // taken before the app recorded a bypass recorded the pedals that were on.
+    expect(entry.isEnabled, isTrue);
+    expect(reading.entryId, entry.id);
+    expect(reading.controlName, 'Volume');
+    expect(reading.controlType, ControlType.clock);
+    expect(reading.value, 0.75);
   });
 
   test('the patch tables are created exactly as fresh ones are', () async {
@@ -155,6 +172,52 @@ void main() {
         reason: '$table differs between an upgraded phone and a new install',
       );
     }
+  });
+
+  test('the academy tables are created exactly as fresh ones are', () async {
+    const tables = [
+      'academy_courses',
+      'academy_modules',
+      'academy_lessons',
+      'academy_exercises',
+      'academy_progress',
+      'academy_exercise_progress',
+      'academy_practice_sessions',
+      'academy_bookmarks',
+    ];
+
+    // One at a time: two live databases at once only earn a drift warning.
+    final fresh = AppDatabase(NativeDatabase.memory());
+    final expected = <String, List<String>>{
+      for (final table in tables) table: await schemaFor(fresh, table),
+    };
+    await fresh.close();
+
+    final upgraded = openV1Database();
+    addTearDown(upgraded.close);
+
+    for (final table in tables) {
+      expect(
+        await schemaFor(upgraded, table),
+        expected[table],
+        reason: '$table differs between an upgraded phone and a new install',
+      );
+    }
+  });
+
+  test('the academy arrives without touching the gear already stored', () async {
+    // The whole promise of the v15 step: six new tables and nothing else. A
+    // player who upgrades into the Academy still has every pedal, control and
+    // history entry they had before it.
+    final db = openV1Database();
+    addTearDown(db.close);
+
+    expect((await db.pedalDao.watchPedals().first).single.name, 'PureSky');
+    expect((await db.pedalControlDao.controlsOf(1)).single.name, 'Volume');
+    expect(await db.changeLogDao.entriesOf(1), hasLength(1));
+    // And the Academy is empty, because the curriculum is seeded from the assets
+    // on the next launch rather than written into the upgrade.
+    expect(await db.select(db.academyCourses).get(), isEmpty);
   });
 
   test('an upgraded database can hold a patch', () async {
@@ -207,91 +270,44 @@ void main() {
     expect((await db.sceneDao.valuesOf(sceneId)).single.value, 0.75);
   });
 
-  test('an upgraded database can hold a snapshot', () async {
-    final db = openV1Database();
-    addTearDown(db.close);
-
-    final rigId = await pedalboardRepository(
-      db,
-    ).createPedalboard(const PedalboardDraft(name: 'Hybrid Worship Rig'));
-    final snapshotId = await db.rigSnapshotDao.insertSnapshot(
-      RigSnapshotsCompanion.insert(
-        pedalboardId: rigId,
-        name: 'Easter 2026',
-        capturedAt: DateTime.utc(2026, 4, 5),
-      ),
-    );
-    // Pedal 1 is the one already stored in the v1 fixture.
-    await db.rigSnapshotDao.insertEntry(
-      RigSnapshotEntriesCompanion.insert(
-        snapshotId: snapshotId,
-        pedalId: 1,
-        position: 0,
-      ),
-    );
-
-    final entries = await db.rigSnapshotDao.watchEntries(snapshotId).first;
-    expect(entries.single.pedal.name, 'PureSky');
-  });
-
-  test('an upgraded database can hold a rig chain', () async {
-    final db = openV1Database();
-    addTearDown(db.close);
-
-    final rigId = await pedalboardRepository(
-      db,
-    ).createPedalboard(const PedalboardDraft(name: 'Hybrid Worship Rig'));
-    final repository = signalChainRepository(db);
-    // Pedal 1 is the one already stored in the v1 fixture.
-    await repository.addBlock(
-      pedalboardId: rigId,
-      blockType: SignalBlockType.overdrive,
-      pedalId: 1,
-    );
-    await repository.addBlock(
-      pedalboardId: rigId,
-      blockType: SignalBlockType.delay,
-    );
-
-    final chain = await repository.watchChain(rigId).first;
-    expect(chain.map((entry) => entry.pedal?.name), ['PureSky', null]);
-    expect(chain.map((entry) => entry.block.position), [0, 1]);
-  });
-
-  test('the slots already on a phone come back as blocks', () async {
+  test('the board a phone already had is still on it', () async {
+    // The rigs feature is gone and there is no screen and no repository left to
+    // read these rows through, which is exactly why they are read here through
+    // the table itself. They are the user's own record of how a board was wired,
+    // and an upgrade that quietly emptied it would be an upgrade that took
+    // something away. Ids are kept, so anything already pointing at a slot finds
+    // the block it became.
     final db = openV10ChainDatabase();
     addTearDown(db.close);
 
-    final chain = await signalChainRepository(db).watchChain(1).first;
+    final blocks = await db.select(db.signalBlocks).get();
 
-    // Ids are kept, so anything already pointing at a slot finds the block it
-    // became, and the order the user put them in is the order they come back.
-    expect(chain.map((entry) => entry.block.id), [7, 8, 9]);
-    expect(chain.map((entry) => entry.pedal?.name), [
-      'NS-2',
-      'PureSky',
-      'Line Selector',
-    ]);
-    // The type is read off the pedal's category: under the same name where there
-    // is one, under the block's name where they differ, and as a plain custom
-    // block where the category is no kind of effect at all.
-    expect(chain.map((entry) => entry.block.blockType), [
+    expect(blocks.map((block) => block.id), [7, 8, 9]);
+    expect(blocks.map((block) => block.pedalId), [2, 1, 3]);
+    expect(blocks.map((block) => block.blockType), [
       SignalBlockType.gate,
       SignalBlockType.overdrive,
       SignalBlockType.custom,
     ]);
-    // A slot said the pedal was on the board, and nothing recorded a bypass
-    // before now.
-    expect(chain.every((entry) => entry.block.isEnabled), isTrue);
   });
 
-  test('a carried-over chain has no cables and reads as one line', () async {
+  test('a pedal that held a place on an old board can be deleted', () async {
+    // Blocks reference pedals with ON DELETE RESTRICT, and there is no screen
+    // left that could take a pedal off a board first, so a pedal that was ever
+    // on one would otherwise be impossible to delete for good.
     final db = openV10ChainDatabase();
     addTearDown(db.close);
 
-    // A plain chain writes no connection at all: position order is the whole
-    // answer until the user wires something in parallel.
-    expect(await db.signalChainDao.connectionsOf(1), isEmpty);
+    await pedalRepository(db).deletePedal(1);
+
+    // Ordered by name, as the pedals tab streams them: Line Selector, NS-2.
+    expect((await db.pedalDao.watchPedals().first).map((row) => row.name), [
+      'Line Selector',
+      'NS-2',
+    ]);
+    // The block went with it. What is left is still the record of the board.
+    final blocks = await db.select(db.signalBlocks).get();
+    expect(blocks.map((block) => block.id), [7, 9]);
   });
 
   test('an upgraded database can hold a pedal inside a unit', () async {

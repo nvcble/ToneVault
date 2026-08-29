@@ -163,7 +163,7 @@ void main() {
           isA<AppFailure>().having(
             (failure) => failure.message,
             'message',
-            contains('change its status'),
+            contains('Change its status'),
           ),
         ),
       );

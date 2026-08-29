@@ -1,0 +1,451 @@
+{
+  "formatVersion": 1,
+  "courses": [
+    {
+      "slug": "lead-intermediate-off-the-shape",
+      "path": "lead",
+      "level": "intermediate",
+      "title": "Getting Off One Shape",
+      "summary": "The whole neck instead of one box: five pentatonic positions, the blues scale, the major scale, legato and double stops, and solos that follow the chords rather than ignore them.",
+      "modules": [
+        {
+          "slug": "the-whole-neck",
+          "title": "The Whole Neck",
+          "summary": "Five positions of one scale, and the joins between them.",
+          "lessons": [
+            {
+              "slug": "five-pentatonic-positions",
+              "title": "The Other Four Positions",
+              "kind": "theory",
+              "estimatedMinutes": 25,
+              "theoryKeys": [
+                "A minor pentatonic"
+              ],
+              "body": "The five notes of A minor pentatonic - **A C D E G** - are everywhere on the neck, not only at fret 5. There are five two-note-per-string shapes, and together they cover the fretboard end to end.\n\nStarting from shape one at fret 5, each following shape begins where the last one's higher notes were: shape two around fret 8, shape three around fret 10, shape four around fret 12, shape five around fret 3 - which is shape one's shape an octave down.\n\nLearn them as one continuous field of notes with joins in it, not as five separate boxes. The test is whether you can start a line in one position and finish it in another without stopping to find your way.",
+              "exercises": [
+                {
+                  "title": "Up one, down the next",
+                  "instructions": "Ascend shape one, descend shape two, ascend shape three, and so on to the top of the neck and back. Two notes per click, alternate picked.",
+                  "startBpm": 45,
+                  "targetBpm": 100,
+                  "timeSignature": "fourFour"
+                }
+              ],
+              "objective": "Play all five positions of one minor pentatonic scale, and start a line in one of them and finish it in another without stopping to find your way.",
+              "commonMistakes": [
+                "Learning five boxes rather than one field of notes, so the joins between them are blank.",
+                "Only ever starting a position from its lowest note, which is not where a line arrives.",
+                "Practising the shapes and then improvising in shape one anyway."
+              ],
+              "practiceTips": [
+                "Ascend one shape and descend the next, all the way up the neck and back, so the joins get as much work as the shapes.",
+                "Name the root of every shape as you enter it. Five shapes, one key, one note to hold on to."
+              ],
+              "nextSkill": "Sliding Between Positions"
+            },
+            {
+              "slug": "connecting-positions",
+              "title": "Sliding Between Positions",
+              "kind": "technique",
+              "estimatedMinutes": 20,
+              "theoryKeys": [
+                "A minor pentatonic"
+              ],
+              "body": "Nobody who sounds good changes position at a bar line. They change **inside a phrase**, on a slide, and the join is what you hear as fluency.\n\nThree ways across:\n\n- **Slide** - play the note, slide the finger up to the same note in the next shape. One sound, two positions.\n- **The unison** - many notes exist on two adjacent strings; use the higher string's version to arrive already in the next shape.\n- **The stretch** - reach one fret out of the box with the fourth finger and come back inside it.\n\nPick one join and use it in every line for a week. It becomes a habit long before it becomes a decision.",
+              "exercises": [
+                {
+                  "title": "Two positions, one phrase",
+                  "instructions": "Improvise four-bar phrases that start in shape one and end in shape two, joined by a slide. Do not stop between the phrases.",
+                  "startBpm": 60,
+                  "targetBpm": 100,
+                  "timeSignature": "fourFour"
+                }
+              ],
+              "objective": "Change position inside a phrase rather than at a bar line, using a slide, a unison or a stretch, so the join is heard as fluency.",
+              "commonMistakes": [
+                "Waiting for the bar line to move, which is what makes a solo sound like an exercise.",
+                "Sliding to a note that is not in the next shape, so the arrival is a guess.",
+                "Learning all three joins at once and owning none of them."
+              ],
+              "practiceTips": [
+                "Take one join and use it in every line for a week. It becomes a habit long before it becomes a decision.",
+                "Play four-bar phrases that must start in shape one and end in shape two. The rule does the teaching."
+              ],
+              "nextSkill": "Adding the Flat Five"
+            },
+            {
+              "slug": "the-blues-scale",
+              "title": "Adding the Flat Five",
+              "kind": "theory",
+              "estimatedMinutes": 15,
+              "theoryKeys": [
+                "A blues scale"
+              ],
+              "body": "The blues scale is the minor pentatonic with one note added: the **flat fifth**. In A that is Eb, and in shape one it sits at fret 6 of the A string and fret 8 of the D.\n\nIt is the most unstable note in the scale, which is the point. Passed through quickly it sounds like blues. Held, it sounds like a mistake.\n\nUse it going somewhere - from the fourth up to the fifth, or sliding down from the fifth to the fourth. The flat five is a doorway, not a room.",
+              "exercises": [
+                {
+                  "title": "Through, not on",
+                  "instructions": "Improvise in A blues scale, playing the flat five only as a passing note between the fourth and fifth. Never land a phrase on it.",
+                  "startBpm": 60,
+                  "targetBpm": 110,
+                  "timeSignature": "fourFour"
+                }
+              ],
+              "objective": "Use the flat fifth as a passing note between the fourth and the fifth, so that it sounds like blues rather than like a mistake.",
+              "commonMistakes": [
+                "Landing a phrase on the flat five and holding it. It is a doorway, not a room.",
+                "Adding the flat five to five positions at once instead of to the one you actually improvise in.",
+                "Playing it slowly, which is exactly what makes it sound wrong."
+              ],
+              "practiceTips": [
+                "Improvise a whole chorus in which the flat five may only be passed through, never landed on.",
+                "Approach it twice: up from the fourth, and sliding down from the fifth. They are two different sounds."
+              ],
+              "nextSkill": "The Major Scale, Dorian and Mixolydian"
+            },
+            {
+              "slug": "major-scale-and-two-modes",
+              "title": "The Major Scale, Dorian and Mixolydian",
+              "kind": "theory",
+              "estimatedMinutes": 25,
+              "theoryKeys": [
+                "G major",
+                "A dorian",
+                "D mixolydian"
+              ],
+              "body": "Seven notes, in a pattern of tones and semitones: **T T S T T T S**. That is the major scale, and every mode is the same notes started from a different one.\n\nTwo of them earn their keep immediately:\n\n- **Dorian** - a minor scale with a raised sixth. Minor, but not sad; the sound of a great deal of funk, soul and jazz-inflected rock.\n- **Mixolydian** - a major scale with a flattened seventh. Major, but not polite; the sound of blues-rock and country lead lines.\n\nPlay G major from fret 3 on the low E, then play the same notes from A, then from D. Nothing moves under your fingers and the whole character changes. That is what a mode is, and it is why chasing separate fingerings for each one is wasted effort.",
+              "exercises": [
+                {
+                  "title": "One shape, three centres",
+                  "instructions": "Play the G major scale, then improvise short phrases resolving to A, then to D. Same notes each time; let the resolution do the work.",
+                  "startBpm": 55,
+                  "targetBpm": 100,
+                  "timeSignature": "fourFour"
+                }
+              ],
+              "objective": "Play one major scale shape and resolve phrases to three different notes in it, hearing dorian and mixolydian come out of the same fingering.",
+              "commonMistakes": [
+                "Hunting for a separate fingering for each mode, which is effort spent on nothing.",
+                "Playing the notes without resolving to the new centre, so every mode sounds like the major scale it came from.",
+                "Naming a mode by its formula and never hearing what its one changed note does."
+              ],
+              "practiceTips": [
+                "Play the scale, then improvise short phrases ending on A, then on D. Same notes; let the resolution do the work.",
+                "Learn the one interval that matters in each: dorian raises the sixth, mixolydian flattens the seventh."
+              ],
+              "nextSkill": "Hammer-Ons, Pull-Offs and Legato"
+            }
+          ]
+        },
+        {
+          "slug": "hands-that-keep-up",
+          "title": "Hands That Keep Up",
+          "summary": "The techniques that make lines flow instead of being picked out one at a time.",
+          "lessons": [
+            {
+              "slug": "legato-hammers-and-pulls",
+              "title": "Hammer-Ons, Pull-Offs and Legato",
+              "kind": "technique",
+              "estimatedMinutes": 20,
+              "suggestedBpm": 70,
+              "timeSignature": "fourFour",
+              "body": "A note does not need to be picked to sound. Hammer a finger down onto the string and it speaks; pull a finger off sideways and the lower note speaks.\n\nHammer-ons and pull-offs give you two things: speed without a faster picking hand, and a smoothness picking cannot imitate. Their weakness is volume, so practise them **as loudly as the picked notes around them**, which takes more attack than you expect at first.\n\nPick the first note of each string and hammer or pull the rest. That is legato, and it is half of most rock vocabulary.",
+              "exercises": [
+                {
+                  "title": "One pick, three notes",
+                  "instructions": "In A minor pentatonic shape one, pick only the first note on each string and hammer or pull the second. Match the volume of every note.",
+                  "startBpm": 60,
+                  "targetBpm": 120,
+                  "timeSignature": "fourFour"
+                }
+              ],
+              "objective": "Sound a hammer-on and a pull-off as loudly as the picked notes around them, so a legato line comes out even rather than lumpy.",
+              "commonMistakes": [
+                "Quiet hammered notes, which is the whole reason legato lines sound weak.",
+                "Pulling the finger straight up instead of sideways, so the lower note never speaks.",
+                "Fingers landing away from the fret, which buzzes at exactly the speed you were aiming for."
+              ],
+              "practiceTips": [
+                "Pick only the first note on each string and hammer or pull the rest, then check the volume of every note.",
+                "Practise it unplugged for a minute. If it can be heard acoustically, it is loud enough plugged in."
+              ],
+              "nextSkill": "Bends That Are Actually in Tune"
+            },
+            {
+              "slug": "bends-in-tune",
+              "title": "Bends That Are Actually in Tune",
+              "kind": "technique",
+              "estimatedMinutes": 20,
+              "body": "Most bends heard on stage are flat. The ear notices, even when the listener cannot say why.\n\nFour bends worth owning separately:\n\n- **Full tone** - two frets up. The workhorse.\n- **Semitone** - one fret. The blues bend on the third.\n- **Tone and a half** - three frets, usually on the G string.\n- **Pre-bend** - bend first, silently, then pick and release down to pitch.\n\nCheck every one against the fretted note it is aiming at, and check it after two minutes of playing when the hand is tired, because that is when it goes short.",
+              "exercises": [
+                {
+                  "title": "Four bends, checked",
+                  "instructions": "One bend every two bars: semitone, tone, tone and a half, pre-bend and release. Play the target fret in the bar between each.",
+                  "startBpm": 50,
+                  "targetBpm": 80,
+                  "timeSignature": "fourFour"
+                }
+              ],
+              "objective": "Bend a semitone, a tone, a tone and a half and a pre-bend to pitch, and keep them in tune once the hand is tired.",
+              "commonMistakes": [
+                "Bending flat without hearing it, which is what most bends played on a stage do.",
+                "Checking bends only at the start of a session, when the hand is fresh.",
+                "The same amount of push for every string, when the wound ones need far more."
+              ],
+              "practiceTips": [
+                "Play the fretted target note in the bar between each bend. The comparison is the exercise.",
+                "Support the bending finger with the two behind it and turn the wrist, rather than pushing with the fingertip."
+              ],
+              "nextSkill": "Two Notes at Once"
+            },
+            {
+              "slug": "double-stops",
+              "title": "Two Notes at Once",
+              "kind": "technique",
+              "estimatedMinutes": 20,
+              "theoryKeys": [
+                "A",
+                "D"
+              ],
+              "body": "A double stop is two notes played together, and it is how a single guitar sounds like two.\n\nThirds and sixths on adjacent or split string pairs are the useful ones. Harmonise a line in thirds and it reads as country or soul; in sixths it reads as Motown; in fourths, stacked off the pentatonic, it reads as rock.\n\nBend the lower note of a pair while the upper one stays put and you have the sound that ends a thousand blues choruses.",
+              "exercises": [
+                {
+                  "title": "Thirds up the pair",
+                  "instructions": "Harmonise the A major scale in thirds on the G and B strings, two notes per click, up and back down.",
+                  "startBpm": 50,
+                  "targetBpm": 95,
+                  "timeSignature": "fourFour"
+                }
+              ],
+              "objective": "Harmonise a line in thirds and in sixths, and bend the lower note of a pair while the upper note stays where it is.",
+              "commonMistakes": [
+                "Uneven volume between the two notes, so one of them is really a mistake being held down.",
+                "Bending both notes of the pair, which loses the whole effect.",
+                "Thirds everywhere. Sixths and fourths are different styles, not decoration."
+              ],
+              "practiceTips": [
+                "Work one string pair at a time, up and back down the scale, before using double stops in a line.",
+                "Pick them with the pick and middle finger rather than strumming across, so nothing between them sounds."
+              ],
+              "nextSkill": "Arpeggios Where the Chords Are"
+            }
+          ]
+        },
+        {
+          "slug": "playing-the-chords",
+          "title": "Playing the Chords, Not the Key",
+          "summary": "The step from a scale that fits to notes that mean something.",
+          "lessons": [
+            {
+              "slug": "arpeggios-from-caged",
+              "title": "Arpeggios Where the Chords Are",
+              "kind": "theory",
+              "estimatedMinutes": 25,
+              "theoryKeys": [
+                "C arpeggio",
+                "Am arpeggio",
+                "F arpeggio",
+                "G arpeggio"
+              ],
+              "body": "An arpeggio is a chord played one note at a time. Every chord shape you know is already an arpeggio fingering: hold the shape, pick the notes separately, and you have the notes of that chord in that position.\n\nThis is what the CAGED shapes are for in lead playing. A solo over C, Am, F, G that uses each chord's own notes as it passes tracks the harmony instead of floating above it - and it does not require a new scale, only knowing where the chord you are on lives.\n\nStart by finding the **third** of each chord in the position you are already in. That one note is what tells the listener the chord changed.",
+              "exercises": [
+                {
+                  "title": "Follow the change",
+                  "instructions": "Over C, Am, F, G, one bar each, play only notes from the current chord's arpeggio. Land on its third on beat 1 of every bar.",
+                  "startBpm": 55,
+                  "targetBpm": 95,
+                  "timeSignature": "fourFour"
+                }
+              ],
+              "objective": "Find the third of each chord as it passes, in the position you are already in, so a solo tracks the harmony instead of floating above it.",
+              "commonMistakes": [
+                "Learning new arpeggio shapes rather than using the chord shapes already known.",
+                "Playing the chord tones in order every time, which sounds like an exercise and not a line.",
+                "Missing the change entirely, which is what happens when the third is not found."
+              ],
+              "practiceTips": [
+                "One bar per chord, nothing but that chord notes, landing on its third on beat 1. Then loosen it.",
+                "Say the name of the chord out loud as it arrives, until you stop needing to look."
+              ],
+              "nextSkill": "Target Notes"
+            },
+            {
+              "slug": "target-notes-and-resolution",
+              "title": "Target Notes",
+              "kind": "concept",
+              "estimatedMinutes": 15,
+              "body": "Decide where a phrase is going to end before you start it. That is the difference between improvising and wandering.\n\nA phrase that lands on the root sounds finished. On the third, warm and unfinished. On the fifth, open. On the seventh, it demands another phrase.\n\nSo choose. Play four bars ending on the third, then four ending on the root, and hear how the second one closes the door. Whatever happens in the middle matters far less than most players believe.",
+              "exercises": [
+                {
+                  "title": "Named endings",
+                  "instructions": "Improvise four-bar phrases, saying out loud before each one whether it will end on the root, third or fifth. Hit what you named.",
+                  "startBpm": 60,
+                  "targetBpm": 100,
+                  "timeSignature": "fourFour"
+                }
+              ],
+              "objective": "Decide where a phrase will end before you start playing it, and land on the note you named.",
+              "commonMistakes": [
+                "Deciding afterwards, which is wandering with a good ending attached.",
+                "Ending every phrase on the root, so nothing ever asks for another phrase.",
+                "Believing the middle of a phrase matters more than where it lands."
+              ],
+              "practiceTips": [
+                "Say the target out loud before each four bars: root, third or fifth. Then hit it.",
+                "Play the same four bars three times, changing only the last note, and listen to what that alone does."
+              ],
+              "nextSkill": "Blues: Soloing Over the Twelve Bars"
+            }
+          ]
+        },
+        {
+          "slug": "intermediate-lead-styles",
+          "title": "Four Styles of Line",
+          "summary": "Blues over changes, country double stops, a pop solo someone can hum, and a reggae line that leaves the beat alone.",
+          "lessons": [
+            {
+              "slug": "blues-over-the-changes",
+              "title": "Blues: Soloing Over the Twelve Bars",
+              "kind": "genre",
+              "genre": "blues",
+              "estimatedMinutes": 25,
+              "suggestedBpm": 90,
+              "timeSignature": "fourFour",
+              "theoryKeys": [
+                "A7",
+                "D7",
+                "E7",
+                "A blues scale"
+              ],
+              "body": "The twelve-bar form in A: four bars of **A7**, two of **D7**, two of A7, one of **E7**, one of D7, two of A7.\n\nOne scale over the whole thing is where everyone starts and where too many stop. The next step is to move one note as the chords move: over D7 reach for its third, F#, and over E7 reach for its third, G#. Neither is in A minor pentatonic, and both are why a chorus can sound like it knows what the band is doing.\n\nSame licks, one note changed at the change. That is intermediate blues playing in a sentence.",
+              "exercises": [
+                {
+                  "title": "One note at the change",
+                  "instructions": "Play a twelve-bar chorus in A, using A minor pentatonic but adding F# over the D7 bars and G# over the E7 bar.",
+                  "startBpm": 70,
+                  "targetBpm": 120,
+                  "timeSignature": "fourFour"
+                }
+              ],
+              "objective": "Play a twelve-bar chorus in A that moves one note as the chords move, reaching for F# over the D7 bars and G# over the E7.",
+              "commonMistakes": [
+                "One scale over the whole form, which is where everybody starts and too many stop.",
+                "Reaching for the new note a bar late, when the change has already gone.",
+                "Using both added notes everywhere rather than over the chord that wants them."
+              ],
+              "practiceTips": [
+                "Play the twelve bars with nothing but the two added notes in their own bars, so the ear learns where they belong.",
+                "Count the form out loud. A blues chorus goes wrong at bar nine more often than anywhere else."
+              ],
+              "nextSkill": "Country: Double Stops and Chicken Pickin'"
+            },
+            {
+              "slug": "country-double-stops-and-chicken-picking",
+              "title": "Country: Double Stops and Chicken Pickin'",
+              "kind": "genre",
+              "genre": "country",
+              "estimatedMinutes": 25,
+              "suggestedBpm": 110,
+              "timeSignature": "fourFour",
+              "theoryKeys": [
+                "G major",
+                "G mixolydian"
+              ],
+              "body": "Country lead is major, precise and percussive. Its two signatures are double stops in thirds and sixths, and a snapped attack that comes from the fingers rather than the pick.\n\nFor **chicken pickin'**, pick a note downwards and pluck the next with the middle finger, muting with the palm so the notes come out clipped and popping. Alternating pick and finger like that lets you jump strings at speed without the pick having to cross them.\n\nBend into the double stops from a semitone below on the G string. That slippery arrival is the pedal-steel sound every country guitarist is imitating.",
+              "exercises": [
+                {
+                  "title": "Pick, pluck, mute",
+                  "instructions": "Over G, alternate pick and middle finger across the B and high E strings, palm muted, two notes per click, adding a semitone bend into every other pair.",
+                  "startBpm": 70,
+                  "targetBpm": 130,
+                  "timeSignature": "fourFour"
+                }
+              ],
+              "objective": "Alternate the pick and the middle finger with the palm muted so the notes come out clipped, and bend into double stops from a semitone below.",
+              "commonMistakes": [
+                "Letting the notes ring, which loses the snap that makes it country.",
+                "Bending the whole double stop rather than sliding into it from below on the G string.",
+                "Minor pentatonic licks over a major key, called country because they were played fast."
+              ],
+              "practiceTips": [
+                "Practise pick-then-finger on two strings only, muted, until the two attacks sound the same.",
+                "Slow it right down. This at 60 BPM is a technique; at 140 with no mute it is noise."
+              ],
+              "nextSkill": "Pop: a Solo Someone Can Hum"
+            },
+            {
+              "slug": "pop-a-solo-someone-can-hum",
+              "title": "Pop: a Solo Someone Can Hum",
+              "kind": "genre",
+              "genre": "pop",
+              "estimatedMinutes": 20,
+              "suggestedBpm": 100,
+              "timeSignature": "fourFour",
+              "theoryKeys": [
+                "C major",
+                "A minor"
+              ],
+              "body": "A pop solo is a second vocal. It is eight bars long, it uses about seven notes, and the listener should be able to sing it back after one hearing.\n\nWrite it rather than improvise it. Sing a melody over the chorus chords, find those notes on the neck, and then play only those - no extra runs on the way to them.\n\nThe discipline is subtraction. Every time you are tempted to add a flourish, hold the note longer instead. Vibrato and a well-placed bend will carry more of the tune than another six notes.",
+              "exercises": [
+                {
+                  "title": "Eight bars, sung first",
+                  "instructions": "Over C, G, Am, F, sing an eight-bar melody, then play exactly that and nothing more. Repeat it identically three times.",
+                  "startBpm": 80,
+                  "targetBpm": 110,
+                  "timeSignature": "fourFour"
+                }
+              ],
+              "objective": "Write an eight-bar solo of about seven notes that a listener can sing back after one hearing, and play it identically three times.",
+              "commonMistakes": [
+                "Improvising it instead of writing it, so there is nothing to remember.",
+                "A run on the way to the melody note, which is the one thing that stops it being singable.",
+                "Playing it differently every time, so the hook never becomes one."
+              ],
+              "practiceTips": [
+                "Sing the melody over the chords first, and only then find it on the neck.",
+                "Every time you want to add a flourish, hold the note longer instead."
+              ],
+              "nextSkill": "Reggae: Melody in the Gaps"
+            },
+            {
+              "slug": "reggae-melody-in-the-gaps",
+              "title": "Reggae: Melody in the Gaps",
+              "kind": "genre",
+              "genre": "reggae",
+              "estimatedMinutes": 20,
+              "suggestedBpm": 75,
+              "timeSignature": "fourFour",
+              "theoryKeys": [
+                "A minor pentatonic",
+                "A dorian",
+                "Am7",
+                "D7"
+              ],
+              "body": "Reggae lead is the opposite of a solo. The rhythm guitar is already on the offbeat and the drums have left beat one open, so a line that fills the bar takes the space the groove is made of.\n\nThree things make it sound right:\n\n- **Start late.** Come in on the second half of beat two, or on beat three, and let the bar end before you do. What you leave out is heard.\n- **Play a hook, not a phrase.** Two bars, four or five notes, repeated the whole way through the section - the way an organ or a melodica states a line. Reggae lead is a countermelody somebody could whistle, and it does not develop.\n- **Slide in, and bend a little.** Arrive from a fret below rather than landing straight on the note, and keep bends under a semitone. The pitch moving slowly is most of the feel.\n\nThe notes are A minor pentatonic with the sixth borrowed from **A dorian** - F# over the Am7 is the whole colour of a skank turning sweet. Sit slightly behind the click, never in front of it.",
+              "exercises": [
+                {
+                  "title": "Two bars, four notes, no beat one",
+                  "instructions": "Over Am7 to D7, write a two-bar hook of no more than five notes that never plays on beat one, slide into at least one of them, and repeat it identically for sixteen bars.",
+                  "startBpm": 60,
+                  "targetBpm": 85,
+                  "timeSignature": "fourFour"
+                }
+              ],
+              "objective": "Write a two-bar hook of five notes or fewer that never plays on beat one, and repeat it unchanged for sixteen bars.",
+              "commonMistakes": [
+                "Filling the bar, which takes away the space the groove is made of.",
+                "Developing the hook. A reggae line states itself and stays stated.",
+                "Playing ahead of the click. This sits slightly behind it, never in front."
+              ],
+              "practiceTips": [
+                "Come in on the second half of beat two, or on beat three, and stop before the bar ends.",
+                "Slide into at least one note from a fret below, and keep every bend under a semitone."
+              ],
+              "nextSkill": "Soloing over a key change"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

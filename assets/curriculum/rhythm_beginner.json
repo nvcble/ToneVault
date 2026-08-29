@@ -1,0 +1,421 @@
+{
+  "formatVersion": 1,
+  "courses": [
+    {
+      "slug": "rhythm-beginner-foundations",
+      "path": "rhythm",
+      "level": "beginner",
+      "title": "Foundations of Rhythm Guitar",
+      "summary": "Tune up, fret cleanly, learn the first open chords and play them in time. By the end of this course you can hold a three-chord song together on your own.",
+      "modules": [
+        {
+          "slug": "setup-and-tuning",
+          "title": "Setting Up and Tuning",
+          "summary": "The things that make everything after them sound right.",
+          "lessons": [
+            {
+              "slug": "standard-tuning",
+              "title": "Standard Tuning",
+              "kind": "concept",
+              "estimatedMinutes": 10,
+              "body": "The six strings of a guitar in standard tuning are, from the thickest to the thinnest, **E A D G B E**.\n\nFive of the six gaps are a fourth - five frets. The gap between the G and the B string is a third - four frets. That one exception is why chord shapes look lopsided, and it is worth knowing now rather than being puzzled by later.\n\nTune the low E first against a reference, then tune each string to the one below it: fret 5 of the low E sounds the open A, fret 5 of the A sounds the open D, fret 5 of the D sounds the open G, **fret 4** of the G sounds the open B, and fret 5 of the B sounds the high E.",
+              "theoryKeys": [],
+              "objective": "Name the six open strings and tune the guitar to itself, knowing that the gap between the G and B strings is the one exception.",
+              "commonMistakes": [
+                "Using fret 5 on the G string, when the B string is tuned from fret 4.",
+                "Tuning up to a note and stopping there. Come from below every time, so the string settles.",
+                "Tuning each string to the one before it and never checking back against a reference."
+              ],
+              "practiceTips": [
+                "Tune the low E to a reference first. Every other string is then only as right as that one.",
+                "Play the two strings together and listen for the wobble to slow down and stop."
+              ],
+              "nextSkill": "Naming What You Are Holding"
+            },
+            {
+              "slug": "naming-the-fretboard",
+              "title": "Naming What You Are Holding",
+              "kind": "concept",
+              "estimatedMinutes": 10,
+              "body": "There are twelve notes, and then they start again an octave higher.\n\n**A A# B C C# D D# E F F# G G#**\n\nOne fret is one of those steps. B to C and E to F have no fret between them - no sharp, no flat, they are neighbours. Every other pair does.\n\nThat is the whole naming system. The low E string at fret 3 is G because E, F, F#, G is three steps. You do not need to memorise the fretboard; you need to be able to work out any note on it in a couple of seconds, and the rest comes from use.",
+              "objective": "Work out the name of any note on the neck in a couple of seconds, using the twelve names and the two pairs with no fret between them.",
+              "commonMistakes": [
+                "Trying to memorise the whole fretboard instead of learning to count to a note.",
+                "Forgetting that B to C and E to F are neighbours, which puts every note after them wrong.",
+                "Counting from the open string every time rather than from the nearest fret marker."
+              ],
+              "practiceTips": [
+                "Pick a random fret and name it out loud before checking. Twenty a day is enough.",
+                "Learn the notes on the low E and A strings first. Most chords and riffs are named from those two."
+              ],
+              "nextSkill": "Fretting Cleanly"
+            },
+            {
+              "slug": "fretting-cleanly",
+              "title": "Fretting Cleanly",
+              "kind": "technique",
+              "estimatedMinutes": 15,
+              "body": "A buzzing chord is almost never a strength problem.\n\n1. Put the fingertip just behind the fret, not in the middle of the gap.\n2. Press with the tip, nail out of the way, knuckle bent.\n3. Keep the thumb behind the neck rather than hooked over the top of it.\n4. Play each string of the chord one at a time and fix the one that buzzes.\n\nThat last step is the lesson. Strumming the whole chord and hoping tells you something is wrong; picking string by string tells you which finger to move.",
+              "exercises": [
+                {
+                  "title": "One string at a time",
+                  "instructions": "Hold an Em. On each click, pick the next string down, low to high, then back up. Every note has to ring. Slow down until it does.",
+                  "startBpm": 50,
+                  "targetBpm": 90,
+                  "timeSignature": "fourFour"
+                }
+              ],
+              "objective": "Hold a chord and pick it one string at a time with every note ringing, finding the finger that buzzes rather than guessing at it.",
+              "commonMistakes": [
+                "Pressing harder, when the finger is in the middle of the gap instead of just behind the fret.",
+                "A flat finger with the nail in the way, which mutes the string next to it.",
+                "The thumb hooked over the top of the neck, which pulls the fingers out of shape."
+              ],
+              "practiceTips": [
+                "Strumming and hoping tells you something is wrong; picking string by string tells you which finger to move.",
+                "Slow the click down until every note rings. Speed here is not the thing being practised."
+              ],
+              "nextSkill": "Em and Am"
+            }
+          ]
+        },
+        {
+          "slug": "first-open-chords",
+          "title": "The First Open Chords",
+          "summary": "Six shapes that between them play a very large number of songs.",
+          "lessons": [
+            {
+              "slug": "em-and-am",
+              "title": "Em and Am",
+              "kind": "technique",
+              "estimatedMinutes": 15,
+              "suggestedBpm": 60,
+              "timeSignature": "fourFour",
+              "theoryKeys": [
+                "Em",
+                "Am"
+              ],
+              "body": "Start here because these two are nearly the same shape moved across one string.\n\n**Em** - second finger on the A string at fret 2, third finger on the D string at fret 2. Strum all six.\n\n**Am** - the same two fingers move up one string each, and the first finger takes the B string at fret 1. Strum five, from the A string down.\n\nPractise changing between them by moving the pair together as one block instead of placing each finger separately.",
+              "objective": "Play Em and Am cleanly and change between them by moving the two fingers together as one block.",
+              "commonMistakes": [
+                "Placing each finger separately, which makes an easy change into a slow one.",
+                "Strumming six strings on Am, when it starts from the A string.",
+                "Lifting the whole hand off the neck between the two shapes."
+              ],
+              "practiceTips": [
+                "Move the pair as one block and let the first finger arrive last.",
+                "Change without strumming, twenty times, watching only the fingers."
+              ],
+              "nextSkill": "C and G"
+            },
+            {
+              "slug": "c-and-g",
+              "title": "C and G",
+              "kind": "technique",
+              "estimatedMinutes": 15,
+              "theoryKeys": [
+                "C",
+                "G"
+              ],
+              "body": "**C** - first finger B string fret 1, second finger D string fret 2, third finger A string fret 3. Strum five.\n\n**G** - second finger A string fret 2, first finger low E fret 3 (some players use the third), third and fourth fingers on the B and high E at fret 3. Strum all six.\n\nThese two are the awkward change of the beginner repertoire, because almost nothing stays put between them. Find the one finger that moves least and lead with it.",
+              "exercises": [
+                {
+                  "title": "C to G, one bar each",
+                  "instructions": "One strum on beat 1 of each bar, then silence. All the time in the world to move. Only raise the tempo when you arrive early every time.",
+                  "startBpm": 50,
+                  "targetBpm": 100,
+                  "timeSignature": "fourFour"
+                }
+              ],
+              "objective": "Play C and G cleanly and find the finger that moves least between them, so the change can be led with it.",
+              "commonMistakes": [
+                "Building the shape from the first finger up, when the third finger has the furthest to travel.",
+                "Strumming six strings on C, which sounds the wrong bass note.",
+                "Raising the tempo before you arrive early, which practises being late."
+              ],
+              "practiceTips": [
+                "One strum on beat 1 of each bar and silence after it. All the time in the world to move.",
+                "Only raise the tempo when you are arriving early. Arriving exactly on time will not survive a faster click."
+              ],
+              "nextSkill": "D, and the Art of Changing"
+            },
+            {
+              "slug": "d-and-g-and-changing",
+              "title": "D, and the Art of Changing",
+              "kind": "technique",
+              "estimatedMinutes": 20,
+              "theoryKeys": [
+                "D",
+                "G",
+                "A"
+              ],
+              "body": "**D** - first finger G string fret 2, third finger B string fret 3, second finger high E fret 2. Strum four, from the D string down.\n\nNow the part that actually makes you a rhythm player: **you change on the beat, not after it**.\n\nLift the old shape on the last half-beat of the bar and let a little air in. A change that arrives on time with a gap before it sounds like music. A change that arrives late sounds like a mistake, even when every note is right.",
+              "exercises": [
+                {
+                  "title": "G D A, two beats each",
+                  "instructions": "Strum on beats 1 and 3, change every two beats. Keep the strumming hand moving through the change.",
+                  "startBpm": 55,
+                  "targetBpm": 110,
+                  "timeSignature": "fourFour"
+                }
+              ],
+              "objective": "Change chord on the beat rather than after it, lifting the old shape on the last half-beat so there is air before the change.",
+              "commonMistakes": [
+                "Holding the old chord until the beat it has to leave, so the new one is always late.",
+                "Stopping the strumming hand during the change, which stops the song.",
+                "Strumming six strings on D. It starts from the D string."
+              ],
+              "practiceTips": [
+                "Keep the strumming hand moving through the change even when it hits nothing.",
+                "A change that arrives on time with a gap before it sounds like music. Practise the gap."
+              ],
+              "nextSkill": "Four Down-Strums"
+            }
+          ]
+        },
+        {
+          "slug": "strumming-and-time",
+          "title": "Strumming and Time",
+          "summary": "The hand that keeps the song moving.",
+          "lessons": [
+            {
+              "slug": "down-strums-in-four",
+              "title": "Four Down-Strums",
+              "kind": "practice",
+              "estimatedMinutes": 10,
+              "suggestedBpm": 70,
+              "timeSignature": "fourFour",
+              "body": "One down-strum on every beat. That is a real strumming pattern and a great many records use it.\n\nStrum from the wrist, not the elbow. Keep the arm moving at a constant speed and let the pick pass through the strings on the way. The evenness is the point; volume is not.",
+              "exercises": [
+                {
+                  "title": "Four to the bar",
+                  "instructions": "Em for four bars, Am for four bars, one down-strum per beat. Count out loud: one two three four.",
+                  "startBpm": 60,
+                  "targetBpm": 120,
+                  "timeSignature": "fourFour"
+                }
+              ],
+              "objective": "Play one even down-strum on every beat for eight bars, from the wrist, at a constant speed.",
+              "commonMistakes": [
+                "Strumming from the elbow, which cannot stay even for long.",
+                "Playing louder rather than more evenly. The evenness is the whole exercise.",
+                "Speeding up in the bar where the chord changes."
+              ],
+              "practiceTips": [
+                "Count one two three four out loud. It is very hard to drift while counting.",
+                "Let the arm move at a constant speed and the pick pass through the strings on the way."
+              ],
+              "nextSkill": "Down, Up, and the \"And\""
+            },
+            {
+              "slug": "down-up-and-the-and",
+              "title": "Down, Up, and the \"And\"",
+              "kind": "practice",
+              "estimatedMinutes": 20,
+              "suggestedBpm": 70,
+              "timeSignature": "fourFour",
+              "body": "Count **one and two and three and four and**. The numbers are down-strums, the ands are up-strums, and the hand never stops moving.\n\nTo play a pattern, you do not add strums - you take them away. Keep the hand swinging through all eight and simply miss the strings where the pattern is silent.\n\nThe classic first pattern: **D  DU  UDU** - down, down-up, up-down-up. Missing the strings on the up after beat 2 is what gives it its lift.",
+              "exercises": [
+                {
+                  "title": "Hand never stops",
+                  "instructions": "Eight even strums a bar on Am, then play the same bar missing the strings on the \"and\" of 2. The arm keeps the same motion in both.",
+                  "startBpm": 55,
+                  "targetBpm": 100,
+                  "timeSignature": "fourFour"
+                }
+              ],
+              "objective": "Keep the hand swinging through all eight strums a bar and make a pattern by missing the strings, not by stopping.",
+              "commonMistakes": [
+                "Stopping the hand where the pattern is silent, which is what makes patterns feel impossible.",
+                "Adding strums to build a pattern instead of taking them away.",
+                "Up-strums much louder than down-strums, or missing three strings on the way back."
+              ],
+              "practiceTips": [
+                "Play all eight strums first, then play the same bar missing the strings on the and of 2. Same motion both times.",
+                "Count one and two and three and four and out loud, and let the ands be the up-strums."
+              ],
+              "nextSkill": "Counting in Three"
+            },
+            {
+              "slug": "three-four-time",
+              "title": "Counting in Three",
+              "kind": "practice",
+              "estimatedMinutes": 10,
+              "suggestedBpm": 90,
+              "timeSignature": "threeFour",
+              "body": "Not everything is in four. A waltz, a great many hymns and a fair share of ballads count in three.\n\nSet the metronome to 3/4 and hear where the accent lands: **ONE** two three, **ONE** two three. Strum down on the one and down-up on two and three.\n\nPlaying in three is not harder than playing in four. It only feels that way until you have spent ten minutes in it.",
+              "exercises": [
+                {
+                  "title": "Waltz on G and D",
+                  "instructions": "Two bars of G, two bars of D, in 3/4. Accent the first beat of every bar with a slightly fuller strum.",
+                  "startBpm": 70,
+                  "targetBpm": 130,
+                  "timeSignature": "threeFour"
+                }
+              ],
+              "objective": "Play in 3/4 with the accent on beat one, so a waltz, a hymn or a ballad in three feels no harder than four.",
+              "commonMistakes": [
+                "Counting four and hoping, which lands the accent in a different place every bar.",
+                "Accenting beat one by strumming harder rather than by strumming more strings.",
+                "Leaving the metronome in 4/4, so nothing tells you where the bar starts."
+              ],
+              "practiceTips": [
+                "Say ONE two three out loud with the emphasis where it belongs.",
+                "Spend ten unbroken minutes in three. That is usually all it takes for it to stop feeling strange."
+              ],
+              "nextSkill": "Pop: the Three-Chord Song"
+            }
+          ]
+        },
+        {
+          "slug": "beginner-styles",
+          "title": "First Taste of Styles",
+          "summary": "The same six chords, played the way three different kinds of music play them.",
+          "lessons": [
+            {
+              "slug": "pop-three-chord-song",
+              "title": "Pop: the Three-Chord Song",
+              "kind": "genre",
+              "genre": "pop",
+              "estimatedMinutes": 20,
+              "suggestedBpm": 100,
+              "timeSignature": "fourFour",
+              "theoryKeys": [
+                "G",
+                "C",
+                "D"
+              ],
+              "body": "**G  C  D** and back to G. Four bars each, or two bars each, or one - the chords barely change and the arrangement does everything.\n\nPop rhythm guitar is mostly restraint. Play fewer strings than you can, leave the low strings to the bass, and keep the strum consistent from the first chorus to the last.\n\nWhen the song lifts, do not strum harder. Strum more often.",
+              "exercises": [
+                {
+                  "title": "G C D, one bar each",
+                  "instructions": "Loop G, C, D, G with the down-down-up-up-down-up pattern. Keep the volume identical in every bar.",
+                  "startBpm": 80,
+                  "targetBpm": 120,
+                  "timeSignature": "fourFour"
+                }
+              ],
+              "objective": "Loop G, C and D with one strumming pattern and keep the volume identical from the first bar to the last.",
+              "commonMistakes": [
+                "Strumming harder when the song lifts, instead of strumming more often.",
+                "Playing all six strings all the time and getting in the way of the bass.",
+                "Changing the pattern every four bars, which is the opposite of what the style wants."
+              ],
+              "practiceTips": [
+                "Play fewer strings than you can. Restraint is most of pop rhythm guitar.",
+                "Record one minute and listen for whether the last chorus is louder than the first."
+              ],
+              "nextSkill": "Rock: Power Chords"
+            },
+            {
+              "slug": "rock-power-chords",
+              "title": "Rock: Power Chords",
+              "kind": "genre",
+              "genre": "rock",
+              "estimatedMinutes": 20,
+              "suggestedBpm": 120,
+              "timeSignature": "fourFour",
+              "theoryKeys": [
+                "E5",
+                "A5",
+                "D5"
+              ],
+              "body": "Two notes: the root and the fifth. First finger on the root, third finger two frets up on the next string. Nothing else.\n\nA power chord is neither major nor minor, which is exactly why rock leans on it - it fits over anything and it does not fight the singer.\n\nMute the strings you are not playing with the side of the picking hand. Rock rhythm playing is as much about the silence between the chords as the chords.",
+              "exercises": [
+                {
+                  "title": "Eighth-note drive",
+                  "instructions": "E5 for a bar, G5 for a bar, A5 for a bar, back to E5. Eight down-strums a bar, palm resting lightly on the strings.",
+                  "startBpm": 80,
+                  "targetBpm": 160,
+                  "timeSignature": "fourFour"
+                }
+              ],
+              "objective": "Play a two-note power chord with the strings around it muted, driving eight down-strums a bar without the other strings sounding.",
+              "commonMistakes": [
+                "Letting the strings above the chord ring, which turns a power chord into a mess.",
+                "Adding a third note. Two notes is what makes it fit over anything.",
+                "Losing the palm mute the moment the tempo rises."
+              ],
+              "practiceTips": [
+                "Rest the side of the picking hand on the strings you are not playing, and keep it there.",
+                "The silence between the chords is as much of the part as the chords."
+              ],
+              "nextSkill": "Worship: the Two-Chord Vamp"
+            },
+            {
+              "slug": "worship-two-chord-vamp",
+              "title": "Worship: the Two-Chord Vamp",
+              "kind": "genre",
+              "genre": "worship",
+              "estimatedMinutes": 20,
+              "suggestedBpm": 72,
+              "timeSignature": "fourFour",
+              "theoryKeys": [
+                "G",
+                "Em",
+                "C",
+                "D"
+              ],
+              "body": "Worship guitar is played under a room full of people singing, and its job is to be unmissable and uninteresting at the same time.\n\nTake **G** and **Em**, two bars each, and stay there for two minutes. Then swap to **C** and **D**. What you are practising is not the chords - it is holding a tempo without drifting while your attention is somewhere else.\n\nLet chords ring into each other. A held chord with the strumming hand nearly still carries a congregation better than a busy one.",
+              "exercises": [
+                {
+                  "title": "Two minutes, no drift",
+                  "instructions": "G for two bars, Em for two bars, on repeat. Play for two full minutes without looking at the fretboard, staying exactly with the click.",
+                  "startBpm": 66,
+                  "targetBpm": 84,
+                  "timeSignature": "fourFour"
+                }
+              ],
+              "objective": "Hold a two-chord vamp for two full minutes without drifting from the click or looking at the fretboard.",
+              "commonMistakes": [
+                "Drifting the moment your attention goes somewhere else, which is exactly what the exercise is testing.",
+                "Getting busier because two chords for two minutes feels dull.",
+                "Cutting each chord off rather than letting it ring into the next."
+              ],
+              "practiceTips": [
+                "Keep the strumming hand nearly still. A held chord carries a room better than a busy one.",
+                "Look away from the neck. Being unmissable and uninteresting at once is the skill."
+              ],
+              "nextSkill": "Blues: the Shuffle Feel"
+            },
+            {
+              "slug": "blues-shuffle-first-steps",
+              "title": "Blues: the Shuffle Feel",
+              "kind": "genre",
+              "genre": "blues",
+              "estimatedMinutes": 20,
+              "suggestedBpm": 80,
+              "timeSignature": "fourFour",
+              "theoryKeys": [
+                "A7",
+                "D7",
+                "E7"
+              ],
+              "body": "A shuffle is a long-short division of every beat: **one-and-a, two-and-a**, and you play on the one and the a.\n\nOn the A string, hold fret 2 with the first finger and alternate between fret 4 and fret 5 with the third and fourth. Long-short, long-short. That two-note figure is most of blues rhythm guitar.\n\nThe chords are **A7, D7 and E7** - dominant sevenths, all three of them, which is a thing that happens nowhere else in music and is the sound of the blues.",
+              "exercises": [
+                {
+                  "title": "Shuffle on A",
+                  "instructions": "Four bars of the A shuffle figure. Count one-and-a two-and-a out loud until the long-short is even.",
+                  "startBpm": 60,
+                  "targetBpm": 110,
+                  "timeSignature": "fourFour"
+                }
+              ],
+              "objective": "Play the two-note shuffle figure on the A string with an even long-short division of every beat.",
+              "commonMistakes": [
+                "An even division rather than long-short, which turns a shuffle into eighth notes.",
+                "The long-short getting shorter as the tempo rises.",
+                "Letting the fourth finger note ring over the next one instead of releasing it."
+              ],
+              "practiceTips": [
+                "Count one-and-a two-and-a out loud until the long and the short are the same every beat.",
+                "Play four bars of nothing but the figure before adding any chord changes to it."
+              ],
+              "nextSkill": "The twelve-bar form"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

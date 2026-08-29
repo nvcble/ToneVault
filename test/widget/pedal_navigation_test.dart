@@ -80,8 +80,8 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
-          // The app opens on the home tab, which reads the pedals, the rigs and
-          // the timeline before the pedals tab is ever tapped.
+          // The app opens on the home tab, which reads the pedals and the
+          // timeline before the pedals tab is ever tapped.
           ...homeStreamOverrides(pedals: [shown], changes: [change]),
           pedalProvider(pedal.id).overrideWith((ref) => Stream.value(shown)),
           // Read only when the pedal is a multi-effects unit, whose Patch tab
@@ -299,6 +299,8 @@ void main() {
     // Nesting the detail route inside the shell branch is what keeps the tabs
     // reachable without backing out first.
     expect(find.byType(NavigationBar), findsOne);
-    expect(find.text('Rigs'), findsOne);
+    // Settings rather than History: the detail screen has a History tab of its
+    // own, and the point here is the bar, not the word.
+    expect(find.text('Settings'), findsOne);
   });
 }

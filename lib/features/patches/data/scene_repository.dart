@@ -35,9 +35,9 @@ class SceneRepository {
 
   /// Every scene on one unit, whichever patch it is in, each with its patch.
   ///
-  /// For the places a scene is chosen from outside the patch screens: a rig
-  /// snapshot asks which scene the unit was on, and the two-level walk down to it
-  /// would be two questions for one answer.
+  /// For the places a scene is chosen from outside the patch screens, where what
+  /// is asked is which scene the unit is on: the two-level walk down to it would
+  /// be two questions for one answer.
   Stream<List<PatchScene>> watchUnitScenes(int pedalId) =>
       _dao.watchUnitScenes(pedalId);
 

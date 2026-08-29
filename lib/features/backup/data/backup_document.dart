@@ -63,6 +63,14 @@ String encodeVaultBackup(VaultRows rows, {required DateTime exportedAt}) {
       'snapshots': _encode(rows.snapshots),
       'snapshotEntries': _encode(rows.snapshotEntries),
       'snapshotValues': _encode(rows.snapshotValues),
+      'academyCourses': _encode(rows.academyCourses),
+      'academyModules': _encode(rows.academyModules),
+      'academyLessons': _encode(rows.academyLessons),
+      'academyExercises': _encode(rows.academyExercises),
+      'academyProgress': _encode(rows.academyProgress),
+      'academyExerciseProgress': _encode(rows.academyExerciseProgress),
+      'academyPracticeSessions': _encode(rows.academyPracticeSessions),
+      'academyBookmarks': _encode(rows.academyBookmarks),
     },
   };
 
@@ -159,6 +167,34 @@ VaultRows _rows(Map<String, dynamic> tables) => (
     RigSnapshotEntry.fromJson,
   ),
   snapshotValues: _decode(tables, 'snapshotValues', RigSnapshotValue.fromJson),
+  academyCourses: _decode(tables, 'academyCourses', AcademyCourse.fromJson),
+  academyModules: _decode(tables, 'academyModules', AcademyModule.fromJson),
+  academyLessons: _decode(tables, 'academyLessons', AcademyLesson.fromJson),
+  academyExercises: _decode(
+    tables,
+    'academyExercises',
+    AcademyExercise.fromJson,
+  ),
+  academyProgress: _decode(
+    tables,
+    'academyProgress',
+    AcademyProgressRow.fromJson,
+  ),
+  academyExerciseProgress: _decode(
+    tables,
+    'academyExerciseProgress',
+    AcademyExerciseProgressRow.fromJson,
+  ),
+  academyPracticeSessions: _decode(
+    tables,
+    'academyPracticeSessions',
+    AcademyPracticeSessionRow.fromJson,
+  ),
+  academyBookmarks: _decode(
+    tables,
+    'academyBookmarks',
+    AcademyBookmark.fromJson,
+  ),
 );
 
 /// One table's rows, read through the data class drift generated for it.

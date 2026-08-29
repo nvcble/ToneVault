@@ -1,6 +1,14 @@
 import 'package:drift/drift.dart';
 
 import '../app_database.dart';
+import '../tables/academy_bookmarks_table.dart';
+import '../tables/academy_courses_table.dart';
+import '../tables/academy_exercise_progress_table.dart';
+import '../tables/academy_exercises_table.dart';
+import '../tables/academy_lessons_table.dart';
+import '../tables/academy_modules_table.dart';
+import '../tables/academy_practice_sessions_table.dart';
+import '../tables/academy_progress_table.dart';
 import '../tables/change_logs_table.dart';
 import '../tables/configuration_values_table.dart';
 import '../tables/configurations_table.dart';
@@ -25,6 +33,20 @@ part 'backup_dao.g.dart';
 ///
 /// The fields are declared parent before child, which is the order foreign keys
 /// allow them to be written in.
+///
+/// The Academy's courses, modules, lessons and exercises are in here as well as
+/// the progress against them, even though the curriculum ships with the app and is
+/// the same on every install of it. It makes the file bigger than it strictly has
+/// to be. The alternative is worse: progress points at a lesson by id, and a phone
+/// that seeded its curriculum in a different order would give the same id to a
+/// different lesson, so a restore of progress alone would credit the player for
+/// lessons they never opened. Carrying the lessons too means the ids in the file
+/// and the ids they refer to arrive together and still agree.
+///
+/// The rig tables are still in here for the opposite reason: nothing in the app
+/// reads them any more, so this is the only way left to get those rows off the
+/// phone or back onto one. Leaving them out would make the next backup the moment
+/// the user's boards and snapshots quietly stopped being kept.
 typedef VaultRows = ({
   List<Pedal> pedals,
   List<PedalControl> controls,
@@ -43,6 +65,14 @@ typedef VaultRows = ({
   List<RigSnapshot> snapshots,
   List<RigSnapshotEntry> snapshotEntries,
   List<RigSnapshotValue> snapshotValues,
+  List<AcademyCourse> academyCourses,
+  List<AcademyModule> academyModules,
+  List<AcademyLesson> academyLessons,
+  List<AcademyExercise> academyExercises,
+  List<AcademyProgressRow> academyProgress,
+  List<AcademyExerciseProgressRow> academyExerciseProgress,
+  List<AcademyPracticeSessionRow> academyPracticeSessions,
+  List<AcademyBookmark> academyBookmarks,
 });
 
 /// Reads and replaces the whole vault, for backup and restore.
@@ -70,6 +100,14 @@ typedef VaultRows = ({
     RigSnapshots,
     RigSnapshotEntries,
     RigSnapshotValues,
+    AcademyCourses,
+    AcademyModules,
+    AcademyLessons,
+    AcademyExercises,
+    AcademyProgress,
+    AcademyExerciseProgress,
+    AcademyPracticeSessions,
+    AcademyBookmarks,
   ],
 )
 class BackupDao extends DatabaseAccessor<AppDatabase> with _$BackupDaoMixin {
@@ -97,6 +135,14 @@ class BackupDao extends DatabaseAccessor<AppDatabase> with _$BackupDaoMixin {
         snapshots: await select(rigSnapshots).get(),
         snapshotEntries: await select(rigSnapshotEntries).get(),
         snapshotValues: await select(rigSnapshotValues).get(),
+        academyCourses: await select(academyCourses).get(),
+        academyModules: await select(academyModules).get(),
+        academyLessons: await select(academyLessons).get(),
+        academyExercises: await select(academyExercises).get(),
+        academyProgress: await select(academyProgress).get(),
+        academyExerciseProgress: await select(academyExerciseProgress).get(),
+        academyPracticeSessions: await select(academyPracticeSessions).get(),
+        academyBookmarks: await select(academyBookmarks).get(),
       ),
     );
   }
@@ -139,6 +185,14 @@ class BackupDao extends DatabaseAccessor<AppDatabase> with _$BackupDaoMixin {
         batch.insertAll(rigSnapshots, rows.snapshots);
         batch.insertAll(rigSnapshotEntries, rows.snapshotEntries);
         batch.insertAll(rigSnapshotValues, rows.snapshotValues);
+        batch.insertAll(academyCourses, rows.academyCourses);
+        batch.insertAll(academyModules, rows.academyModules);
+        batch.insertAll(academyLessons, rows.academyLessons);
+        batch.insertAll(academyExercises, rows.academyExercises);
+        batch.insertAll(academyProgress, rows.academyProgress);
+        batch.insertAll(academyExerciseProgress, rows.academyExerciseProgress);
+        batch.insertAll(academyPracticeSessions, rows.academyPracticeSessions);
+        batch.insertAll(academyBookmarks, rows.academyBookmarks);
       });
     });
   }
@@ -146,6 +200,14 @@ class BackupDao extends DatabaseAccessor<AppDatabase> with _$BackupDaoMixin {
   /// Child before parent, the reverse of the write order, so no delete is
   /// refused by a row still pointing at what it is deleting.
   Future<void> _deleteEverything() async {
+    await delete(academyBookmarks).go();
+    await delete(academyPracticeSessions).go();
+    await delete(academyExerciseProgress).go();
+    await delete(academyProgress).go();
+    await delete(academyExercises).go();
+    await delete(academyLessons).go();
+    await delete(academyModules).go();
+    await delete(academyCourses).go();
     await delete(rigSnapshotValues).go();
     await delete(rigSnapshotEntries).go();
     await delete(rigSnapshots).go();

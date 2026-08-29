@@ -46,8 +46,7 @@ class _BackupTileState extends ConsumerState<BackupTile> {
       leading: const Icon(Icons.backup_outlined),
       title: const Text('Back up everything'),
       subtitle: const Text(
-        'Save your pedals, settings, history, rigs and snapshots to a file you '
-        'keep.',
+        'Save your pedals, settings and history to a file you keep.',
       ),
       trailing: _isWorking
           ? const SizedBox.square(
