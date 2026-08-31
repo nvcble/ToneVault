@@ -155,7 +155,7 @@ void main() {
     await tester.pumpAndSettle();
 
     // The tab is named in the route rather than counted, so the wheel is what opens
-    // even though it is the sixth tab of six.
+    // even though it is the last tab of seven.
     expect(find.byType(CircleOfFifthsWheel), findsOne);
     expect(find.text('The chords of C major'), findsNothing);
   });

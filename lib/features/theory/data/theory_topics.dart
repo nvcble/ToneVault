@@ -55,6 +55,18 @@ final List<TheoryTopic> theoryTopics = [
     ],
   ),
   TheoryTopic(
+    title: 'CAGED shapes',
+    blurb: 'One chord in the five shapes that climb the neck.',
+    route: Routes.academyTheoryTab(TheoryTab.caged),
+    keywords: const [
+      'caged',
+      'moveable shapes',
+      'barre',
+      'up the neck',
+      'shape rotation',
+    ],
+  ),
+  TheoryTopic(
     title: 'Nashville numbers',
     blurb: 'Chords called by where they sit, in any key.',
     route: Routes.academyTheoryNashville,
@@ -86,7 +98,7 @@ final List<TheoryTopic> theoryTopics = [
   ),
   TheoryTopic(
     title: 'Circle of fifths',
-    blurb: 'How keys sit next to each other, and why songs move.',
+    blurb: 'Combine notes into a chord, and the way round onto it.',
     route: Routes.academyTheoryTab(TheoryTab.circle),
     keywords: const [
       'key signatures',
@@ -94,6 +106,8 @@ final List<TheoryTopic> theoryTopics = [
       'sharps',
       'flats',
       'fifths',
+      'name a chord',
+      'what chord is this',
     ],
   ),
   TheoryTopic(

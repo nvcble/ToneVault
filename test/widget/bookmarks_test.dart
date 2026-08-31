@@ -35,8 +35,13 @@ void main() {
     await tester.pumpAndSettle();
   }
 
+  /// The theory browser has more tabs than a phone's width, so the bar scrolls and a
+  /// late tab is brought into view before it is tapped - as a player would have to.
   Future<void> openTab(WidgetTester tester, String tab) async {
-    await tester.tap(find.text(tab));
+    final found = find.text(tab);
+    await tester.ensureVisible(found);
+    await tester.pumpAndSettle();
+    await tester.tap(found);
     await tester.pumpAndSettle();
   }
 

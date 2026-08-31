@@ -8,31 +8,31 @@ import 'package:tone_vault/core/values/tempo_range.dart';
 import 'package:tone_vault/features/metronome/data/metronome_settings.dart';
 import 'package:tone_vault/features/metronome/data/tap_tempo.dart';
 
-/// The bar the metronome loops, and the tempo a player taps into it.
+/// The bars the metronome counts with, and the tempo a player taps into them.
 ///
 /// Both are arithmetic: the file is as long as the bar it counts, and a tap tempo is
 /// the gaps between taps. A clock is handed in so a test can tap at exactly ninety.
 void main() {
   group('a bar of clicks', () {
-    test('is exactly as long as its beats, so the loop stays in time', () {
-      final bytes = wavOfBar(signature: TimeSignature.fourFour, bpm: 120);
+    test('is exactly as long as its beats, so the count stays in time', () {
+      final bytes = wavOfBars(signature: TimeSignature.fourFour, bpm: 120);
 
       // Four beats of half a second, at two bytes a sample.
       expect(bytes.length, 44 + 2 * 2 * defaultSampleRate);
     });
 
     test('counts a compound signature in the unit it is written in', () {
-      final six = wavOfBar(signature: TimeSignature.sixEight, bpm: 120);
-      final three = wavOfBar(signature: TimeSignature.threeFour, bpm: 120);
+      final six = wavOfBars(signature: TimeSignature.sixEight, bpm: 120);
+      final three = wavOfBars(signature: TimeSignature.threeFour, bpm: 120);
 
       // Six eighth-note clicks, not two dotted-quarter ones: twice the bar of three.
-      expect(_clicks(six, TimeSignature.sixEight), 6);
+      expect(_clicks(six, TimeSignature.sixEight.beats), 6);
       expect(six.length - 44, 2 * (three.length - 44));
     });
 
     test('accents the first beat, and only that one', () {
-      final bytes = wavOfBar(signature: TimeSignature.fourFour, bpm: 120);
-      final peaks = _peaks(bytes, TimeSignature.fourFour);
+      final bytes = wavOfBars(signature: TimeSignature.fourFour, bpm: 120);
+      final peaks = _peaks(bytes, TimeSignature.fourFour.beats);
 
       expect(peaks, hasLength(4));
       expect(peaks.first, greaterThan(0));
@@ -43,27 +43,44 @@ void main() {
     });
 
     test('and leaves them all the same when it is turned off', () {
-      final bytes = wavOfBar(
+      final bytes = wavOfBars(
         signature: TimeSignature.fourFour,
         bpm: 120,
         accentFirst: false,
       );
 
-      expect(_peaks(bytes, TimeSignature.fourFour).toSet(), hasLength(1));
+      expect(_peaks(bytes, TimeSignature.fourFour.beats).toSet(), hasLength(1));
     });
 
     test('has a click on every beat at both ends of the range', () {
       for (final bpm in const [minBpm, maxBpm]) {
         for (final signature in TimeSignature.values) {
-          final bytes = wavOfBar(signature: signature, bpm: bpm);
+          final bytes = wavOfBars(signature: signature, bpm: bpm);
 
           expect(
-            _clicks(bytes, signature),
+            _clicks(bytes, signature.beats),
             signature.beats,
             reason: '${signature.label} at $bpm',
           );
         }
       }
+    });
+
+    test('and a stretch of bars is that bar over again, accent and all', () {
+      const signature = TimeSignature.threeFour;
+      const bars = 3;
+      final one = wavOfBars(signature: signature, bpm: 120);
+      final stretch = wavOfBars(signature: signature, bpm: 120, bars: bars);
+      final beats = signature.beats * bars;
+
+      expect(stretch.length - 44, bars * (one.length - 44));
+      expect(_clicks(stretch, beats), beats);
+
+      // Each bar's downbeat is the accented one, so a stretch that is started again
+      // does not move the accent off the beat it belongs on.
+      final peaks = _peaks(stretch, beats);
+      expect({peaks[0], peaks[3], peaks[6]}, hasLength(1));
+      expect(peaks[0], isNot(peaks[1]));
     });
   });
 
@@ -167,20 +184,20 @@ void main() {
   });
 }
 
-/// How many beats of the bar have a click on them.
-int _clicks(Uint8List bytes, TimeSignature signature) =>
-    _peaks(bytes, signature).where((peak) => peak > 1000).length;
+/// How many of the [beats] have a click on them.
+int _clicks(Uint8List bytes, int beats) =>
+    _peaks(bytes, beats).where((peak) => peak > 1000).length;
 
 /// The loudest sample of each beat, which is what its click is heard as.
 ///
-/// The bar is exactly its beats long, so a beat is one equal slice of it - and a beat
+/// The file is exactly its beats long, so a beat is one equal slice of it - and a beat
 /// whose slice is silent had no click on it.
-List<int> _peaks(Uint8List bytes, TimeSignature signature) {
+List<int> _peaks(Uint8List bytes, int beats) {
   final data = bytes.buffer.asByteData();
-  final each = ((bytes.length - 44) ~/ 2) ~/ signature.beats;
+  final each = ((bytes.length - 44) ~/ 2) ~/ beats;
 
   return [
-    for (var beat = 0; beat < signature.beats; beat++)
+    for (var beat = 0; beat < beats; beat++)
       [
         for (var index = 0; index < each; index++)
           data.getInt16(44 + (beat * each + index) * 2, Endian.little).abs(),

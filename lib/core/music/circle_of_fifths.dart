@@ -1,3 +1,6 @@
+import 'chord.dart';
+import 'chord_family.dart';
+import 'chord_type.dart';
 import 'interval.dart';
 import 'pitch_class.dart';
 import 'scale.dart';
@@ -64,4 +67,42 @@ List<Scale> cycleOfFourths(ScaleType type, {PitchClass? from}) {
 int fifthsBetween(PitchClass from, PitchClass to) {
   final distance = (from.intervalTo(to) * 7) % 12;
   return distance > 6 ? 12 - distance : distance;
+}
+
+/// The twelve notes clockwise from C, which is the circle as every chart draws it.
+List<PitchClass> circleNotes() => [
+  for (var step = 0; step < 12; step++) fifthsFrom(PitchClass(0), step),
+];
+
+/// The chords that walk round the circle onto [target]: [steps] of them above it, each a
+/// fifth above the next, and the target itself last.
+///
+/// This is the circle heard rather than drawn. Every change falls a fifth, which is the
+/// strongest move harmony has, and three steps of it in a major key is vi-ii-V-I - the
+/// progression underneath more songs than any other.
+///
+/// Each step is the seventh chord the target's own key has on that note, and a dominant
+/// seventh where the step comes from outside the key. That is what a player would put
+/// there, and it keeps every change a fifth instead of breaking the circle to stay
+/// diatonic.
+List<Chord> circleOnto(Chord target, {int steps = 3}) {
+  final family = ChordFamily(
+    Scale(target.root, target.type.isMinor ? ScaleType.minor : ScaleType.major),
+  );
+
+  return [
+    for (var step = steps; step > 0; step--)
+      _seventhOn(family, fifthsFrom(target.root, step)) ??
+          Chord(fifthsFrom(target.root, step), ChordType.dominantSeventh),
+    target,
+  ];
+}
+
+Chord? _seventhOn(ChordFamily family, PitchClass root) {
+  for (final diatonic in family.chords) {
+    if (diatonic.triad.root == root) {
+      return diatonic.seventh;
+    }
+  }
+  return null;
 }

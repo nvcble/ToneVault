@@ -1,7 +1,9 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/music/caged.dart';
 import '../../../core/music/chord.dart';
 import '../../../core/music/chord_family.dart';
+import '../../../core/music/chord_naming.dart';
 import '../../../core/music/chord_type.dart';
 import '../../../core/music/chord_voicing.dart';
 import '../../../core/music/circle_of_fifths.dart';
@@ -121,11 +123,42 @@ final Provider<KeyFacts> theoryKeyFactsProvider = Provider<KeyFacts>(
   (ref) => KeyFacts.of(ref.watch(theoryKeyProvider)),
 );
 
-/// The twelve keys clockwise by fifths from C, which is the circle as it is drawn.
-final Provider<List<Scale>> circleKeysProvider = Provider<List<Scale>>((ref) {
-  final type = ref.watch(theoryKeyProvider).type;
-  return [
-    for (var step = 0; step < 12; step++)
-      Scale(fifthsFrom(PitchClass(0), step), type),
-  ];
-});
+/// The chord the CAGED tab is holding: the triad on the chosen degree of the key.
+///
+/// The triad rather than the seventh, because CAGED is taught on triads - and the same
+/// degree the substitutions tab is asking about, so a player who was thinking about the
+/// five chord is still thinking about it when they go looking for its shapes.
+final Provider<Chord?> theoryTriadProvider = Provider<Chord?>(
+  (ref) => ChordFamily(
+    ref.watch(theoryKeyProvider),
+  ).chordOn(ref.watch(theoryDegreeProvider))?.triad,
+);
+
+/// That chord in each of the five shapes, lowest on the neck first.
+final Provider<List<ChordVoicing>> cagedVoicingsProvider =
+    Provider<List<ChordVoicing>>((ref) {
+      final chord = ref.watch(theoryTriadProvider);
+      return chord == null ? const [] : cagedVoicings(chord);
+    });
+
+/// The notes a player has pressed together on the circle, in the order they pressed them.
+///
+/// A list rather than a set, because the order is what says which note is underneath: C E
+/// A pressed from the C is a player building on C, and the same three pressed from the A
+/// is a player building A minor. Empty is the resting state - the wheel is a circle of
+/// keys until somebody combines notes on it.
+final StateProvider<List<PitchClass>> combinedNotesProvider =
+    StateProvider<List<PitchClass>>((ref) => const []);
+
+/// What those notes spell, the one built on the first note pressed first, or empty where
+/// they spell nothing with a name.
+final Provider<List<Chord>> combinedChordsProvider = Provider<List<Chord>>(
+  (ref) => chordsOfNotes(ref.watch(combinedNotesProvider)),
+);
+
+/// The way round the circle onto the chord they spell.
+final Provider<List<Chord>> combinedProgressionProvider =
+    Provider<List<Chord>>((ref) {
+      final chords = ref.watch(combinedChordsProvider);
+      return chords.isEmpty ? const [] : circleOnto(chords.first);
+    });

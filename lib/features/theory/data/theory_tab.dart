@@ -1,4 +1,4 @@
-/// The six views of a key the theory browser offers, in the order they are shown.
+/// The seven views of a key the theory browser offers, in the order they are shown.
 ///
 /// Named rather than counted, because they are linked to from outside: a dashboard
 /// shortcut to the modes and a search result about the circle of fifths both have to say
@@ -7,6 +7,7 @@
 enum TheoryTab {
   chords,
   shapes,
+  caged,
   scales,
   progressions,
   substitutions,
@@ -15,6 +16,7 @@ enum TheoryTab {
   String get label => switch (this) {
     TheoryTab.chords => 'Chords',
     TheoryTab.shapes => 'Shapes',
+    TheoryTab.caged => 'CAGED',
     TheoryTab.scales => 'Scales',
     TheoryTab.progressions => 'Progressions',
     TheoryTab.substitutions => 'Substitutions',

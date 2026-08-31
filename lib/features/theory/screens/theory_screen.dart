@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../../app/router/routes.dart';
 import '../data/theory_tab.dart';
+import '../widgets/caged_shapes.dart';
 import '../widgets/chord_family_table.dart';
 import '../widgets/chord_library.dart';
 import '../widgets/circle_of_fifths_wheel.dart';
@@ -11,11 +12,11 @@ import '../widgets/progression_list.dart';
 import '../widgets/scale_explorer.dart';
 import '../widgets/substitution_list.dart';
 
-/// The theory browser: one key, looked at six ways.
+/// The theory browser: one key, looked at seven ways.
 ///
-/// The key picker sits above the tabs rather than inside one of them, because the six
-/// views are six answers to the same question and a player moving between them is
-/// asking about the key they are already in. Changing key changes all six at once.
+/// The key picker sits above the tabs rather than inside one of them, because the seven
+/// views are seven answers to the same question and a player moving between them is
+/// asking about the key they are already in. Changing key changes all seven at once.
 ///
 /// Nothing here is stored. Every list on every tab is worked out from the key by the
 /// engine in `lib/core/music`, so there is no theory content to keep up to date and no
@@ -60,6 +61,7 @@ class TheoryScreen extends StatelessWidget {
                 children: [
                   ChordFamilyTable(),
                   ChordLibrary(),
+                  CagedShapes(),
                   ScaleExplorer(),
                   ProgressionList(),
                   SubstitutionList(),

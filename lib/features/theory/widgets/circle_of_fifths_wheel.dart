@@ -4,24 +4,33 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../app/theme/app_spacing.dart';
+import '../../../core/music/circle_of_fifths.dart';
+import '../../../core/music/pitch_class.dart';
 import '../../../core/music/scale.dart';
 import '../data/key_facts.dart';
 import '../providers/theory_providers.dart';
+import 'circle_combination_card.dart';
 import 'circle_key_card.dart';
 
 /// The circle of fifths, as something to press rather than something to read.
 ///
-/// Twelve keys, each a fifth clockwise from the last, and tapping one is how the whole
-/// browser changes key: the wheel is the fastest way to get to a key, and using it that
-/// way is also the lesson. Keys next to each other on it share six of their seven notes,
-/// which is why a song moves between neighbours without anybody feeling it happen.
+/// Twelve notes, each a fifth clockwise from the last. Pressing them does two things at
+/// once, because for a player they are one thing: the notes stack up into a chord that is
+/// named underneath, and the browser changes key to whatever they built. A player pressing
+/// one note is choosing a key the fast way; a player pressing three is asking what they
+/// have got, in the key it is read in.
+///
+/// The circle itself is the lesson either way. Notes next to each other on it are the
+/// chords that follow each other in songs, and keys next to each other share six of their
+/// seven notes - which is why a song moves between neighbours without anybody feeling it.
 class CircleOfFifthsWheel extends ConsumerWidget {
   const CircleOfFifthsWheel({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final keys = ref.watch(circleKeysProvider);
-    final chosen = ref.watch(theoryKeyProvider);
+    final notes = circleNotes();
+    final picked = ref.watch(combinedNotesProvider);
+    final key = ref.watch(theoryKeyProvider);
     final facts = ref.watch(theoryKeyFactsProvider);
 
     return ListView(
@@ -31,14 +40,14 @@ class CircleOfFifthsWheel extends ConsumerWidget {
           aspectRatio: 1,
           child: Stack(
             children: [
-              for (var index = 0; index < keys.length; index++)
+              for (var index = 0; index < notes.length; index++)
                 Align(
-                  alignment: _at(index, keys.length),
-                  child: _KeyDot(
-                    scale: keys[index],
-                    chosen: keys[index] == chosen,
-                    onTap: () => ref.read(theoryKeyProvider.notifier).state =
-                        keys[index],
+                  alignment: _at(index, notes.length),
+                  child: _NoteDot(
+                    note: notes[index],
+                    picked: picked.contains(notes[index]),
+                    isKey: notes[index] == key.root,
+                    onTap: () => _press(ref, notes[index]),
                   ),
                 ),
               Center(child: _Middle(facts: facts)),
@@ -46,6 +55,8 @@ class CircleOfFifthsWheel extends ConsumerWidget {
           ),
         ),
         const SizedBox(height: AppSpacing.md),
+        const CircleCombinationCard(),
+        const SizedBox(height: AppSpacing.sm),
         const CircleKeyCard(),
         const SizedBox(height: AppSpacing.sm),
         _Neighbours(facts: facts),
@@ -59,17 +70,52 @@ class CircleOfFifthsWheel extends ConsumerWidget {
     final angle = 2 * pi * index / count;
     return Alignment(sin(angle), -cos(angle));
   }
+
+  /// A note pressed: into the combination or out of it again, and the key follows whatever
+  /// the combination now spells.
+  ///
+  /// The root of the chord they built, or the note itself where there is no chord yet -
+  /// either way the key ends up where the player is looking. Which flavour it is stays
+  /// with the picker above the tabs, because major or minor is a decision about the music
+  /// and not something three notes can settle.
+  void _press(WidgetRef ref, PitchClass note) {
+    final notes = ref.read(combinedNotesProvider);
+    ref.read(combinedNotesProvider.notifier).state = notes.contains(note)
+        ? [
+            for (final picked in notes)
+              if (picked != note) picked,
+          ]
+        : [...notes, note];
+
+    final chords = ref.read(combinedChordsProvider);
+    final picked = ref.read(combinedNotesProvider);
+    final root = chords.isNotEmpty
+        ? chords.first.root
+        : (picked.length == 1 ? picked.single : null);
+
+    if (root != null) {
+      final key = ref.read(theoryKeyProvider);
+      ref.read(theoryKeyProvider.notifier).state = Scale(root, key.type);
+    }
+  }
 }
 
-class _KeyDot extends StatelessWidget {
-  const _KeyDot({
-    required this.scale,
-    required this.chosen,
+class _NoteDot extends StatelessWidget {
+  const _NoteDot({
+    required this.note,
+    required this.picked,
+    required this.isKey,
     required this.onTap,
   });
 
-  final Scale scale;
-  final bool chosen;
+  final PitchClass note;
+
+  /// Whether it is one of the notes being combined.
+  final bool picked;
+
+  /// Whether it is the note the browser's key is read from.
+  final bool isKey;
+
   final VoidCallback onTap;
 
   @override
@@ -85,23 +131,25 @@ class _KeyDot extends StatelessWidget {
         alignment: Alignment.center,
         decoration: BoxDecoration(
           shape: BoxShape.circle,
-          color: chosen ? scheme.primary : scheme.surfaceContainerHighest,
-          border: Border.all(color: scheme.outlineVariant),
+          color: picked ? scheme.primary : scheme.surfaceContainerHighest,
+          // The key is ringed rather than filled, so a note can be both the key and part
+          // of the chord being built without the two saying the same thing.
+          border: Border.all(
+            color: isKey ? scheme.primary : scheme.outlineVariant,
+            width: isKey ? 2 : 1,
+          ),
         ),
         child: Text(
-          _label,
+          // Each note spelled the way it is usually written rather than the way the key
+          // spells it: this is the whole circle, and the flat side of it reads as flats
+          // on every chart a player has seen.
+          note.name(flats: note.prefersFlats),
           style: Theme.of(context).textTheme.labelLarge?.copyWith(
-            color: chosen ? scheme.onPrimary : scheme.onSurface,
+            color: picked ? scheme.onPrimary : scheme.onSurface,
           ),
         ),
       ),
     );
-  }
-
-  /// The root as this key spells it, with an `m` where the key is minor: `Bb`, `Am`.
-  String get _label {
-    final root = scale.root.name(flats: scale.prefersFlats);
-    return scale.type.isMinorSounding ? '${root}m' : root;
   }
 }
 

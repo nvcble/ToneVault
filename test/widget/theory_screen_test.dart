@@ -5,7 +5,7 @@ import 'package:tone_vault/app/theme/app_theme.dart';
 import 'package:tone_vault/features/theory/screens/theory_screen.dart';
 import 'package:tone_vault/features/theory/widgets/circle_of_fifths_wheel.dart';
 
-/// The theory browser: one key, and five views that all follow it.
+/// The theory browser: one key, and seven views that all follow it.
 ///
 /// Nothing is stubbed. There is no database and no audio behind this screen - every list
 /// on it is worked out from the key by the engine, so what a test sets up is the key.
@@ -19,13 +19,40 @@ void main() {
     await tester.pumpAndSettle();
   }
 
-  /// Six tabs are more than a phone's width, so the bar scrolls and the last of them has
-  /// to be brought into view before it can be tapped - as a player would have to.
+  /// Seven tabs are more than a phone's width, so the bar scrolls and the last of them
+  /// has to be brought into view before it can be tapped - as a player would have to.
   Future<void> openTab(WidgetTester tester, String label) async {
     final tab = find.text(label);
     await tester.ensureVisible(tab);
     await tester.pumpAndSettle();
     await tester.tap(tab);
+    await tester.pumpAndSettle();
+  }
+
+  /// The wheel is square and as wide as the screen, so half its dots are below the fold
+  /// and a note is brought into view before it is pressed. Named inside the wheel because
+  /// the key picker above the tabs spells the same twelve notes.
+  Future<void> press(WidgetTester tester, String note) async {
+    final dot = find.descendant(
+      of: find.byType(CircleOfFifthsWheel),
+      matching: find.text(note),
+    );
+    await tester.ensureVisible(dot);
+    await tester.pumpAndSettle();
+    await tester.tap(dot);
+    await tester.pumpAndSettle();
+  }
+
+  /// Scrolls the wheel's own list, rather than the tab bar, until [target] is on screen.
+  Future<void> scrollWheel(WidgetTester tester, Finder target) async {
+    await tester.scrollUntilVisible(
+      target,
+      300,
+      scrollable: find.descendant(
+        of: find.byType(CircleOfFifthsWheel),
+        matching: find.byType(Scrollable),
+      ),
+    );
     await tester.pumpAndSettle();
   }
 
@@ -91,6 +118,66 @@ void main() {
     expect(find.text('A minor'), findsOne);
     expect(find.text('C   Dm   Em   F   G   Am   Bdim'), findsOne);
     expect(find.text('I   ii   iii   IV   V   vi   vii°'), findsOne);
+  });
+
+  testWidgets('the circle names the notes combined on it', (tester) async {
+    await pump(tester);
+    await openTab(tester, 'Circle');
+
+    for (final note in const ['C', 'E', 'G']) {
+      await press(tester, note);
+    }
+
+    // The chord is worked out from the notes, and the way onto it from the chord: three
+    // dots pressed on a wheel end up as vi-ii-V-I without anything having been listed.
+    await scrollWheel(tester, find.text('C   E   G'));
+    expect(find.text('Am7   Dm7   G7   C'), findsOne);
+  });
+
+  testWidgets('and a chord built on it takes the key with it', (tester) async {
+    await pump(tester);
+    await openTab(tester, 'Circle');
+
+    for (final note in const ['A', 'C', 'E']) {
+      await press(tester, note);
+    }
+
+    // Read in A minor, so the step that comes from outside the key arrives as the
+    // dominant seventh a player would put there rather than as something diatonic.
+    await scrollWheel(tester, find.text('A   C   E'));
+    expect(find.text('F#7   Bm7b5   Em7   Am'), findsOne);
+
+    // The root of what they built is the key the rest of the browser reads in. Which
+    // flavour stays with the picker above the tabs, because three notes cannot settle it.
+    await openTab(tester, 'Chords');
+
+    expect(find.text('The chords of A major'), findsOne);
+  });
+
+  testWidgets('the caged tab is one chord in the five shapes that climb the neck', (
+    tester,
+  ) async {
+    await pump(tester);
+    await openTab(tester, 'CAGED');
+
+    expect(find.text('C up the neck'), findsOne);
+    expect(find.text('C  →  A  →  G  →  E  →  D'), findsOne);
+    expect(find.text('C shape'), findsOne);
+  });
+
+  testWidgets('and follows whichever chord of the key is asked about', (
+    tester,
+  ) async {
+    await pump(tester);
+    await openTab(tester, 'CAGED');
+
+    await tester.tap(find.widgetWithText(ChoiceChip, 'vi'));
+    await tester.pumpAndSettle();
+
+    // Three of the five, because that is how many shapes a minor chord is held in, and
+    // the rotation starts where this root falls rather than at the C.
+    expect(find.text('Am up the neck'), findsOne);
+    expect(find.text('A  →  E  →  D'), findsOne);
   });
 
   testWidgets('the scales tab puts every mode on the key\'s root', (
