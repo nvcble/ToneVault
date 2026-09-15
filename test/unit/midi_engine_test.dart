@@ -8,6 +8,7 @@ import 'package:tone_vault/core/midi/midi_feature.dart';
 import 'package:tone_vault/core/midi/midi_log_entry.dart';
 import 'package:tone_vault/core/midi/midi_message.dart';
 import 'package:tone_vault/core/midi/midi_parameter_definition.dart';
+import 'package:tone_vault/core/midi/midi_request_failure.dart';
 import 'package:tone_vault/core/midi/midi_support_level.dart';
 import 'package:tone_vault/core/midi/midi_transport_type.dart';
 import 'package:tone_vault/core/midi/patch_selection_defaults.dart';
@@ -123,7 +124,27 @@ void main() {
     final entry = await logged;
     expect(entry.direction, MidiDirection.outgoing);
     expect(entry.message, same(message));
+    expect(entry.failure, isNull);
     expect(transport.sent, [message]);
+  });
+
+  test('logs a refused send with the reason instead of logging nothing', () async {
+    // Never connected, so the transport refuses. A capture that showed only
+    // successful sends made "nothing was ever tried" and "every attempt was
+    // refused" look identical, which is what stalled diagnosing a failing
+    // capture-all run against real hardware.
+    final engine = MidiEngine();
+    final transport = FakeMidiTransport(endpoints: const [_endpoint]);
+    engine.attach(profile: _profile, transportBuilder: () => transport);
+
+    final logged = engine.log.first;
+    const message = ControlChangeMessage(channel: 0, controller: 80, value: 1);
+    await expectLater(engine.send(message), throwsA(isA<StateError>()));
+
+    final entry = await logged;
+    expect(entry.direction, MidiDirection.outgoing);
+    expect(entry.failure, contains('while disconnected'));
+    expect(transport.sent, isEmpty);
   });
 
   test('logs a message the transport reports as incoming', () async {
@@ -208,5 +229,57 @@ void main() {
 
     expect(transport.disposed, isTrue);
     expect(engine.profile, isNull);
+  });
+
+  group('request', () {
+    test('sends the request, then resolves with the first matching reply', () async {
+      final engine = MidiEngine();
+      final transport = FakeMidiTransport(endpoints: const [_endpoint]);
+      engine.attach(profile: _profile, transportBuilder: () => transport);
+      await engine.connect(_endpoint);
+
+      const request = ProgramChangeMessage(channel: 0, program: 9);
+      const reply = ControlChangeMessage(channel: 0, controller: 80, value: 1);
+
+      final future = engine.request(request, matches: (m) => m is ControlChangeMessage);
+      await Future<void>.delayed(Duration.zero);
+      transport.receive(reply);
+
+      expect(await future, same(reply));
+      expect(transport.sent, [request]);
+    });
+
+    test('ignores non-matching replies and keeps waiting for one that matches', () async {
+      final engine = MidiEngine();
+      final transport = FakeMidiTransport(endpoints: const [_endpoint]);
+      engine.attach(profile: _profile, transportBuilder: () => transport);
+      await engine.connect(_endpoint);
+
+      const reply = ControlChangeMessage(channel: 0, controller: 80, value: 2);
+      final future = engine.request(
+        const ProgramChangeMessage(channel: 0, program: 0),
+        matches: (m) => m is ControlChangeMessage && m.value == 2,
+      );
+      await Future<void>.delayed(Duration.zero);
+      transport.receive(const NoteMessage(channel: 0, note: 1, velocity: 1, isNoteOn: true));
+      transport.receive(reply);
+
+      expect(await future, same(reply));
+    });
+
+    test('throws MidiRequestTimedOut when nothing matching arrives in time', () async {
+      final engine = MidiEngine();
+      final transport = FakeMidiTransport(endpoints: const [_endpoint]);
+      engine.attach(profile: _profile, transportBuilder: () => transport);
+      await engine.connect(_endpoint);
+
+      final future = engine.request(
+        const ProgramChangeMessage(channel: 0, program: 0),
+        matches: (_) => false,
+        timeout: const Duration(milliseconds: 20),
+      );
+
+      await expectLater(future, throwsA(isA<MidiRequestTimedOut>()));
+    });
   });
 }

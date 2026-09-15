@@ -13660,7 +13660,9 @@ class MidiPatchProgramNumber extends DataClass
   final int id;
   final int patchId;
 
-  /// Counted from 1, matching the number a user reads off the device itself.
+  /// Counted from 0, the same as the Program Change value sent on the wire -
+  /// `buildPatchSelectionMessages` sends this number unchanged. A device's
+  /// first slot is 0 and its last is 127.
   final int programNumber;
   final DateTime updatedAt;
   const MidiPatchProgramNumber({
@@ -14658,6 +14660,614 @@ class MidiPatchRecentsCompanion extends UpdateCompanion<MidiPatchRecent> {
   }
 }
 
+class $MidiPresetCapturesTable extends MidiPresetCaptures
+    with TableInfo<$MidiPresetCapturesTable, MidiPresetCapture> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $MidiPresetCapturesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'PRIMARY KEY AUTOINCREMENT',
+    ),
+  );
+  static const VerificationMeta _pedalIdMeta = const VerificationMeta(
+    'pedalId',
+  );
+  @override
+  late final GeneratedColumn<int> pedalId = GeneratedColumn<int>(
+    'pedal_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES pedals (id) ON DELETE CASCADE',
+    ),
+  );
+  static const VerificationMeta _deviceProfileIdMeta = const VerificationMeta(
+    'deviceProfileId',
+  );
+  @override
+  late final GeneratedColumn<String> deviceProfileId = GeneratedColumn<String>(
+    'device_profile_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _programNumberMeta = const VerificationMeta(
+    'programNumber',
+  );
+  @override
+  late final GeneratedColumn<int> programNumber = GeneratedColumn<int>(
+    'program_number',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _rawSysExMeta = const VerificationMeta(
+    'rawSysEx',
+  );
+  @override
+  late final GeneratedColumn<Uint8List> rawSysEx = GeneratedColumn<Uint8List>(
+    'raw_sys_ex',
+    aliasedName,
+    false,
+    type: DriftSqlType.blob,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _decodedNameMeta = const VerificationMeta(
+    'decodedName',
+  );
+  @override
+  late final GeneratedColumn<String> decodedName = GeneratedColumn<String>(
+    'decoded_name',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _decodedSummaryJsonMeta =
+      const VerificationMeta('decodedSummaryJson');
+  @override
+  late final GeneratedColumn<String> decodedSummaryJson =
+      GeneratedColumn<String>(
+        'decoded_summary_json',
+        aliasedName,
+        true,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+      );
+  static const VerificationMeta _firmwareLabelMeta = const VerificationMeta(
+    'firmwareLabel',
+  );
+  @override
+  late final GeneratedColumn<String> firmwareLabel = GeneratedColumn<String>(
+    'firmware_label',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _capturedAtMeta = const VerificationMeta(
+    'capturedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> capturedAt = GeneratedColumn<DateTime>(
+    'captured_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    pedalId,
+    deviceProfileId,
+    programNumber,
+    rawSysEx,
+    decodedName,
+    decodedSummaryJson,
+    firmwareLabel,
+    capturedAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'midi_preset_captures';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<MidiPresetCapture> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('pedal_id')) {
+      context.handle(
+        _pedalIdMeta,
+        pedalId.isAcceptableOrUnknown(data['pedal_id']!, _pedalIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_pedalIdMeta);
+    }
+    if (data.containsKey('device_profile_id')) {
+      context.handle(
+        _deviceProfileIdMeta,
+        deviceProfileId.isAcceptableOrUnknown(
+          data['device_profile_id']!,
+          _deviceProfileIdMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_deviceProfileIdMeta);
+    }
+    if (data.containsKey('program_number')) {
+      context.handle(
+        _programNumberMeta,
+        programNumber.isAcceptableOrUnknown(
+          data['program_number']!,
+          _programNumberMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_programNumberMeta);
+    }
+    if (data.containsKey('raw_sys_ex')) {
+      context.handle(
+        _rawSysExMeta,
+        rawSysEx.isAcceptableOrUnknown(data['raw_sys_ex']!, _rawSysExMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_rawSysExMeta);
+    }
+    if (data.containsKey('decoded_name')) {
+      context.handle(
+        _decodedNameMeta,
+        decodedName.isAcceptableOrUnknown(
+          data['decoded_name']!,
+          _decodedNameMeta,
+        ),
+      );
+    }
+    if (data.containsKey('decoded_summary_json')) {
+      context.handle(
+        _decodedSummaryJsonMeta,
+        decodedSummaryJson.isAcceptableOrUnknown(
+          data['decoded_summary_json']!,
+          _decodedSummaryJsonMeta,
+        ),
+      );
+    }
+    if (data.containsKey('firmware_label')) {
+      context.handle(
+        _firmwareLabelMeta,
+        firmwareLabel.isAcceptableOrUnknown(
+          data['firmware_label']!,
+          _firmwareLabelMeta,
+        ),
+      );
+    }
+    if (data.containsKey('captured_at')) {
+      context.handle(
+        _capturedAtMeta,
+        capturedAt.isAcceptableOrUnknown(data['captured_at']!, _capturedAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_capturedAtMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  List<Set<GeneratedColumn>> get uniqueKeys => [
+    {pedalId, programNumber},
+  ];
+  @override
+  MidiPresetCapture map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return MidiPresetCapture(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      pedalId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}pedal_id'],
+      )!,
+      deviceProfileId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}device_profile_id'],
+      )!,
+      programNumber: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}program_number'],
+      )!,
+      rawSysEx: attachedDatabase.typeMapping.read(
+        DriftSqlType.blob,
+        data['${effectivePrefix}raw_sys_ex'],
+      )!,
+      decodedName: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}decoded_name'],
+      ),
+      decodedSummaryJson: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}decoded_summary_json'],
+      ),
+      firmwareLabel: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}firmware_label'],
+      ),
+      capturedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}captured_at'],
+      )!,
+    );
+  }
+
+  @override
+  $MidiPresetCapturesTable createAlias(String alias) {
+    return $MidiPresetCapturesTable(attachedDatabase, alias);
+  }
+}
+
+class MidiPresetCapture extends DataClass
+    implements Insertable<MidiPresetCapture> {
+  final int id;
+  final int pedalId;
+
+  /// Which device profile's protocol this capture should be read with, e.g.
+  /// "nux_mg30_v5" - never assumed from context, since a unit could in
+  /// principle be relinked to a different profile later.
+  final String deviceProfileId;
+  final int programNumber;
+  final Uint8List rawSysEx;
+
+  /// The decoder's best-effort name, or null if that field did not decode.
+  final String? decodedName;
+
+  /// The rest of what the decoder produced, as JSON - kept as one column
+  /// rather than a table per field, since which fields exist depends on the
+  /// decoder version that produced this row.
+  final String? decodedSummaryJson;
+
+  /// What this capture's firmware identify response said, if anything - not
+  /// assumed to be the profile's own [firmwareVersion] label.
+  final String? firmwareLabel;
+  final DateTime capturedAt;
+  const MidiPresetCapture({
+    required this.id,
+    required this.pedalId,
+    required this.deviceProfileId,
+    required this.programNumber,
+    required this.rawSysEx,
+    this.decodedName,
+    this.decodedSummaryJson,
+    this.firmwareLabel,
+    required this.capturedAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['pedal_id'] = Variable<int>(pedalId);
+    map['device_profile_id'] = Variable<String>(deviceProfileId);
+    map['program_number'] = Variable<int>(programNumber);
+    map['raw_sys_ex'] = Variable<Uint8List>(rawSysEx);
+    if (!nullToAbsent || decodedName != null) {
+      map['decoded_name'] = Variable<String>(decodedName);
+    }
+    if (!nullToAbsent || decodedSummaryJson != null) {
+      map['decoded_summary_json'] = Variable<String>(decodedSummaryJson);
+    }
+    if (!nullToAbsent || firmwareLabel != null) {
+      map['firmware_label'] = Variable<String>(firmwareLabel);
+    }
+    map['captured_at'] = Variable<DateTime>(capturedAt);
+    return map;
+  }
+
+  MidiPresetCapturesCompanion toCompanion(bool nullToAbsent) {
+    return MidiPresetCapturesCompanion(
+      id: Value(id),
+      pedalId: Value(pedalId),
+      deviceProfileId: Value(deviceProfileId),
+      programNumber: Value(programNumber),
+      rawSysEx: Value(rawSysEx),
+      decodedName: decodedName == null && nullToAbsent
+          ? const Value.absent()
+          : Value(decodedName),
+      decodedSummaryJson: decodedSummaryJson == null && nullToAbsent
+          ? const Value.absent()
+          : Value(decodedSummaryJson),
+      firmwareLabel: firmwareLabel == null && nullToAbsent
+          ? const Value.absent()
+          : Value(firmwareLabel),
+      capturedAt: Value(capturedAt),
+    );
+  }
+
+  factory MidiPresetCapture.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return MidiPresetCapture(
+      id: serializer.fromJson<int>(json['id']),
+      pedalId: serializer.fromJson<int>(json['pedalId']),
+      deviceProfileId: serializer.fromJson<String>(json['deviceProfileId']),
+      programNumber: serializer.fromJson<int>(json['programNumber']),
+      rawSysEx: serializer.fromJson<Uint8List>(json['rawSysEx']),
+      decodedName: serializer.fromJson<String?>(json['decodedName']),
+      decodedSummaryJson: serializer.fromJson<String?>(
+        json['decodedSummaryJson'],
+      ),
+      firmwareLabel: serializer.fromJson<String?>(json['firmwareLabel']),
+      capturedAt: serializer.fromJson<DateTime>(json['capturedAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'pedalId': serializer.toJson<int>(pedalId),
+      'deviceProfileId': serializer.toJson<String>(deviceProfileId),
+      'programNumber': serializer.toJson<int>(programNumber),
+      'rawSysEx': serializer.toJson<Uint8List>(rawSysEx),
+      'decodedName': serializer.toJson<String?>(decodedName),
+      'decodedSummaryJson': serializer.toJson<String?>(decodedSummaryJson),
+      'firmwareLabel': serializer.toJson<String?>(firmwareLabel),
+      'capturedAt': serializer.toJson<DateTime>(capturedAt),
+    };
+  }
+
+  MidiPresetCapture copyWith({
+    int? id,
+    int? pedalId,
+    String? deviceProfileId,
+    int? programNumber,
+    Uint8List? rawSysEx,
+    Value<String?> decodedName = const Value.absent(),
+    Value<String?> decodedSummaryJson = const Value.absent(),
+    Value<String?> firmwareLabel = const Value.absent(),
+    DateTime? capturedAt,
+  }) => MidiPresetCapture(
+    id: id ?? this.id,
+    pedalId: pedalId ?? this.pedalId,
+    deviceProfileId: deviceProfileId ?? this.deviceProfileId,
+    programNumber: programNumber ?? this.programNumber,
+    rawSysEx: rawSysEx ?? this.rawSysEx,
+    decodedName: decodedName.present ? decodedName.value : this.decodedName,
+    decodedSummaryJson: decodedSummaryJson.present
+        ? decodedSummaryJson.value
+        : this.decodedSummaryJson,
+    firmwareLabel: firmwareLabel.present
+        ? firmwareLabel.value
+        : this.firmwareLabel,
+    capturedAt: capturedAt ?? this.capturedAt,
+  );
+  MidiPresetCapture copyWithCompanion(MidiPresetCapturesCompanion data) {
+    return MidiPresetCapture(
+      id: data.id.present ? data.id.value : this.id,
+      pedalId: data.pedalId.present ? data.pedalId.value : this.pedalId,
+      deviceProfileId: data.deviceProfileId.present
+          ? data.deviceProfileId.value
+          : this.deviceProfileId,
+      programNumber: data.programNumber.present
+          ? data.programNumber.value
+          : this.programNumber,
+      rawSysEx: data.rawSysEx.present ? data.rawSysEx.value : this.rawSysEx,
+      decodedName: data.decodedName.present
+          ? data.decodedName.value
+          : this.decodedName,
+      decodedSummaryJson: data.decodedSummaryJson.present
+          ? data.decodedSummaryJson.value
+          : this.decodedSummaryJson,
+      firmwareLabel: data.firmwareLabel.present
+          ? data.firmwareLabel.value
+          : this.firmwareLabel,
+      capturedAt: data.capturedAt.present
+          ? data.capturedAt.value
+          : this.capturedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('MidiPresetCapture(')
+          ..write('id: $id, ')
+          ..write('pedalId: $pedalId, ')
+          ..write('deviceProfileId: $deviceProfileId, ')
+          ..write('programNumber: $programNumber, ')
+          ..write('rawSysEx: $rawSysEx, ')
+          ..write('decodedName: $decodedName, ')
+          ..write('decodedSummaryJson: $decodedSummaryJson, ')
+          ..write('firmwareLabel: $firmwareLabel, ')
+          ..write('capturedAt: $capturedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    pedalId,
+    deviceProfileId,
+    programNumber,
+    $driftBlobEquality.hash(rawSysEx),
+    decodedName,
+    decodedSummaryJson,
+    firmwareLabel,
+    capturedAt,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is MidiPresetCapture &&
+          other.id == this.id &&
+          other.pedalId == this.pedalId &&
+          other.deviceProfileId == this.deviceProfileId &&
+          other.programNumber == this.programNumber &&
+          $driftBlobEquality.equals(other.rawSysEx, this.rawSysEx) &&
+          other.decodedName == this.decodedName &&
+          other.decodedSummaryJson == this.decodedSummaryJson &&
+          other.firmwareLabel == this.firmwareLabel &&
+          other.capturedAt == this.capturedAt);
+}
+
+class MidiPresetCapturesCompanion extends UpdateCompanion<MidiPresetCapture> {
+  final Value<int> id;
+  final Value<int> pedalId;
+  final Value<String> deviceProfileId;
+  final Value<int> programNumber;
+  final Value<Uint8List> rawSysEx;
+  final Value<String?> decodedName;
+  final Value<String?> decodedSummaryJson;
+  final Value<String?> firmwareLabel;
+  final Value<DateTime> capturedAt;
+  const MidiPresetCapturesCompanion({
+    this.id = const Value.absent(),
+    this.pedalId = const Value.absent(),
+    this.deviceProfileId = const Value.absent(),
+    this.programNumber = const Value.absent(),
+    this.rawSysEx = const Value.absent(),
+    this.decodedName = const Value.absent(),
+    this.decodedSummaryJson = const Value.absent(),
+    this.firmwareLabel = const Value.absent(),
+    this.capturedAt = const Value.absent(),
+  });
+  MidiPresetCapturesCompanion.insert({
+    this.id = const Value.absent(),
+    required int pedalId,
+    required String deviceProfileId,
+    required int programNumber,
+    required Uint8List rawSysEx,
+    this.decodedName = const Value.absent(),
+    this.decodedSummaryJson = const Value.absent(),
+    this.firmwareLabel = const Value.absent(),
+    required DateTime capturedAt,
+  }) : pedalId = Value(pedalId),
+       deviceProfileId = Value(deviceProfileId),
+       programNumber = Value(programNumber),
+       rawSysEx = Value(rawSysEx),
+       capturedAt = Value(capturedAt);
+  static Insertable<MidiPresetCapture> custom({
+    Expression<int>? id,
+    Expression<int>? pedalId,
+    Expression<String>? deviceProfileId,
+    Expression<int>? programNumber,
+    Expression<Uint8List>? rawSysEx,
+    Expression<String>? decodedName,
+    Expression<String>? decodedSummaryJson,
+    Expression<String>? firmwareLabel,
+    Expression<DateTime>? capturedAt,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (pedalId != null) 'pedal_id': pedalId,
+      if (deviceProfileId != null) 'device_profile_id': deviceProfileId,
+      if (programNumber != null) 'program_number': programNumber,
+      if (rawSysEx != null) 'raw_sys_ex': rawSysEx,
+      if (decodedName != null) 'decoded_name': decodedName,
+      if (decodedSummaryJson != null)
+        'decoded_summary_json': decodedSummaryJson,
+      if (firmwareLabel != null) 'firmware_label': firmwareLabel,
+      if (capturedAt != null) 'captured_at': capturedAt,
+    });
+  }
+
+  MidiPresetCapturesCompanion copyWith({
+    Value<int>? id,
+    Value<int>? pedalId,
+    Value<String>? deviceProfileId,
+    Value<int>? programNumber,
+    Value<Uint8List>? rawSysEx,
+    Value<String?>? decodedName,
+    Value<String?>? decodedSummaryJson,
+    Value<String?>? firmwareLabel,
+    Value<DateTime>? capturedAt,
+  }) {
+    return MidiPresetCapturesCompanion(
+      id: id ?? this.id,
+      pedalId: pedalId ?? this.pedalId,
+      deviceProfileId: deviceProfileId ?? this.deviceProfileId,
+      programNumber: programNumber ?? this.programNumber,
+      rawSysEx: rawSysEx ?? this.rawSysEx,
+      decodedName: decodedName ?? this.decodedName,
+      decodedSummaryJson: decodedSummaryJson ?? this.decodedSummaryJson,
+      firmwareLabel: firmwareLabel ?? this.firmwareLabel,
+      capturedAt: capturedAt ?? this.capturedAt,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (pedalId.present) {
+      map['pedal_id'] = Variable<int>(pedalId.value);
+    }
+    if (deviceProfileId.present) {
+      map['device_profile_id'] = Variable<String>(deviceProfileId.value);
+    }
+    if (programNumber.present) {
+      map['program_number'] = Variable<int>(programNumber.value);
+    }
+    if (rawSysEx.present) {
+      map['raw_sys_ex'] = Variable<Uint8List>(rawSysEx.value);
+    }
+    if (decodedName.present) {
+      map['decoded_name'] = Variable<String>(decodedName.value);
+    }
+    if (decodedSummaryJson.present) {
+      map['decoded_summary_json'] = Variable<String>(decodedSummaryJson.value);
+    }
+    if (firmwareLabel.present) {
+      map['firmware_label'] = Variable<String>(firmwareLabel.value);
+    }
+    if (capturedAt.present) {
+      map['captured_at'] = Variable<DateTime>(capturedAt.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('MidiPresetCapturesCompanion(')
+          ..write('id: $id, ')
+          ..write('pedalId: $pedalId, ')
+          ..write('deviceProfileId: $deviceProfileId, ')
+          ..write('programNumber: $programNumber, ')
+          ..write('rawSysEx: $rawSysEx, ')
+          ..write('decodedName: $decodedName, ')
+          ..write('decodedSummaryJson: $decodedSummaryJson, ')
+          ..write('firmwareLabel: $firmwareLabel, ')
+          ..write('capturedAt: $capturedAt')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
@@ -14718,6 +15328,8 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final $MidiPatchRecentsTable midiPatchRecents = $MidiPatchRecentsTable(
     this,
   );
+  late final $MidiPresetCapturesTable midiPresetCaptures =
+      $MidiPresetCapturesTable(this);
   late final Index idxPedalsStatus = Index(
     'idx_pedals_status',
     'CREATE INDEX idx_pedals_status ON pedals (status)',
@@ -14846,6 +15458,9 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final MidiPatchRecentDao midiPatchRecentDao = MidiPatchRecentDao(
     this as AppDatabase,
   );
+  late final MidiPresetCaptureDao midiPresetCaptureDao = MidiPresetCaptureDao(
+    this as AppDatabase,
+  );
   late final BackupDao backupDao = BackupDao(this as AppDatabase);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
@@ -14884,6 +15499,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     midiSceneNumbers,
     midiPatchFavorites,
     midiPatchRecents,
+    midiPresetCaptures,
     idxPedalsStatus,
     idxPedalsName,
     idxPedalsHost,
@@ -15096,6 +15712,13 @@ abstract class _$AppDatabase extends GeneratedDatabase {
         limitUpdateKind: UpdateKind.delete,
       ),
       result: [TableUpdate('midi_patch_recents', kind: UpdateKind.delete)],
+    ),
+    WritePropagation(
+      on: TableUpdateQuery.onTableName(
+        'pedals',
+        limitUpdateKind: UpdateKind.delete,
+      ),
+      result: [TableUpdate('midi_preset_captures', kind: UpdateKind.delete)],
     ),
   ]);
   @override
@@ -15343,6 +15966,27 @@ final class $$PedalsTableReferences
 
     final cache = $_typedResult.readTableOrNull(
       _midiDeviceLinksRefsTable($_db),
+    );
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+
+  static MultiTypedResultKey<$MidiPresetCapturesTable, List<MidiPresetCapture>>
+  _midiPresetCapturesRefsTable(_$AppDatabase db) =>
+      MultiTypedResultKey.fromTable(
+        db.midiPresetCaptures,
+        aliasName: 'pedals__id__midi_preset_captures__pedal_id',
+      );
+
+  $$MidiPresetCapturesTableProcessedTableManager get midiPresetCapturesRefs {
+    final manager = $$MidiPresetCapturesTableTableManager(
+      $_db,
+      $_db.midiPresetCaptures,
+    ).filter((f) => f.pedalId.id.sqlEquals($_itemColumn<int>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(
+      _midiPresetCapturesRefsTable($_db),
     );
     return ProcessedTableManager(
       manager.$state.copyWith(prefetchedData: cache),
@@ -15687,6 +16331,31 @@ class $$PedalsTableFilterComposer
           }) => $$MidiDeviceLinksTableFilterComposer(
             $db: $db,
             $table: $db.midiDeviceLinks,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+
+  Expression<bool> midiPresetCapturesRefs(
+    Expression<bool> Function($$MidiPresetCapturesTableFilterComposer f) f,
+  ) {
+    final $$MidiPresetCapturesTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.midiPresetCaptures,
+      getReferencedColumn: (t) => t.pedalId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$MidiPresetCapturesTableFilterComposer(
+            $db: $db,
+            $table: $db.midiPresetCaptures,
             $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
             joinBuilder: joinBuilder,
             $removeJoinBuilderFromRootComposer:
@@ -16115,6 +16784,32 @@ class $$PedalsTableAnnotationComposer
     );
     return f(composer);
   }
+
+  Expression<T> midiPresetCapturesRefs<T extends Object>(
+    Expression<T> Function($$MidiPresetCapturesTableAnnotationComposer a) f,
+  ) {
+    final $$MidiPresetCapturesTableAnnotationComposer composer =
+        $composerBuilder(
+          composer: this,
+          getCurrentColumn: (t) => t.id,
+          referencedTable: $db.midiPresetCaptures,
+          getReferencedColumn: (t) => t.pedalId,
+          builder:
+              (
+                joinBuilder, {
+                $addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer,
+              }) => $$MidiPresetCapturesTableAnnotationComposer(
+                $db: $db,
+                $table: $db.midiPresetCaptures,
+                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                joinBuilder: joinBuilder,
+                $removeJoinBuilderFromRootComposer:
+                    $removeJoinBuilderFromRootComposer,
+              ),
+        );
+    return f(composer);
+  }
 }
 
 class $$PedalsTableTableManager
@@ -16142,6 +16837,7 @@ class $$PedalsTableTableManager
             bool signalBlocksRefs,
             bool rigSnapshotEntriesRefs,
             bool midiDeviceLinksRefs,
+            bool midiPresetCapturesRefs,
           })
         > {
   $$PedalsTableTableManager(_$AppDatabase db, $PedalsTable table)
@@ -16236,6 +16932,7 @@ class $$PedalsTableTableManager
                 signalBlocksRefs = false,
                 rigSnapshotEntriesRefs = false,
                 midiDeviceLinksRefs = false,
+                midiPresetCapturesRefs = false,
               }) {
                 return PrefetchHooks(
                   db: db,
@@ -16250,6 +16947,7 @@ class $$PedalsTableTableManager
                     if (signalBlocksRefs) db.signalBlocks,
                     if (rigSnapshotEntriesRefs) db.rigSnapshotEntries,
                     if (midiDeviceLinksRefs) db.midiDeviceLinks,
+                    if (midiPresetCapturesRefs) db.midiPresetCaptures,
                   ],
                   addJoins:
                       <
@@ -16491,6 +17189,27 @@ class $$PedalsTableTableManager
                               ),
                           typedResults: items,
                         ),
+                      if (midiPresetCapturesRefs)
+                        await $_getPrefetchedData<
+                          Pedal,
+                          $PedalsTable,
+                          MidiPresetCapture
+                        >(
+                          currentTable: table,
+                          referencedTable: $$PedalsTableReferences
+                              ._midiPresetCapturesRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$PedalsTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).midiPresetCapturesRefs,
+                          referencedItemsForCurrentItem:
+                              (item, referencedItems) => referencedItems.where(
+                                (e) => e.pedalId == item.id,
+                              ),
+                          typedResults: items,
+                        ),
                     ];
                   },
                 );
@@ -16523,6 +17242,7 @@ typedef $$PedalsTableProcessedTableManager =
         bool signalBlocksRefs,
         bool rigSnapshotEntriesRefs,
         bool midiDeviceLinksRefs,
+        bool midiPresetCapturesRefs,
       })
     >;
 typedef $$PedalControlsTableCreateCompanionBuilder =
@@ -30508,6 +31228,421 @@ typedef $$MidiPatchRecentsTableProcessedTableManager =
       MidiPatchRecent,
       PrefetchHooks Function({bool patchId})
     >;
+typedef $$MidiPresetCapturesTableCreateCompanionBuilder =
+    MidiPresetCapturesCompanion Function({
+      Value<int> id,
+      required int pedalId,
+      required String deviceProfileId,
+      required int programNumber,
+      required Uint8List rawSysEx,
+      Value<String?> decodedName,
+      Value<String?> decodedSummaryJson,
+      Value<String?> firmwareLabel,
+      required DateTime capturedAt,
+    });
+typedef $$MidiPresetCapturesTableUpdateCompanionBuilder =
+    MidiPresetCapturesCompanion Function({
+      Value<int> id,
+      Value<int> pedalId,
+      Value<String> deviceProfileId,
+      Value<int> programNumber,
+      Value<Uint8List> rawSysEx,
+      Value<String?> decodedName,
+      Value<String?> decodedSummaryJson,
+      Value<String?> firmwareLabel,
+      Value<DateTime> capturedAt,
+    });
+
+final class $$MidiPresetCapturesTableReferences
+    extends
+        BaseReferences<
+          _$AppDatabase,
+          $MidiPresetCapturesTable,
+          MidiPresetCapture
+        > {
+  $$MidiPresetCapturesTableReferences(
+    super.$_db,
+    super.$_table,
+    super.$_typedResult,
+  );
+
+  static $PedalsTable _pedalIdTable(_$AppDatabase db) =>
+      db.pedals.createAlias('midi_preset_captures__pedal_id__pedals__id');
+
+  $$PedalsTableProcessedTableManager get pedalId {
+    final $_column = $_itemColumn<int>('pedal_id')!;
+
+    final manager = $$PedalsTableTableManager(
+      $_db,
+      $_db.pedals,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_pedalIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+}
+
+class $$MidiPresetCapturesTableFilterComposer
+    extends Composer<_$AppDatabase, $MidiPresetCapturesTable> {
+  $$MidiPresetCapturesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get deviceProfileId => $composableBuilder(
+    column: $table.deviceProfileId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get programNumber => $composableBuilder(
+    column: $table.programNumber,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<Uint8List> get rawSysEx => $composableBuilder(
+    column: $table.rawSysEx,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get decodedName => $composableBuilder(
+    column: $table.decodedName,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get decodedSummaryJson => $composableBuilder(
+    column: $table.decodedSummaryJson,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get firmwareLabel => $composableBuilder(
+    column: $table.firmwareLabel,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get capturedAt => $composableBuilder(
+    column: $table.capturedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  $$PedalsTableFilterComposer get pedalId {
+    final $$PedalsTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.pedalId,
+      referencedTable: $db.pedals,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$PedalsTableFilterComposer(
+            $db: $db,
+            $table: $db.pedals,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$MidiPresetCapturesTableOrderingComposer
+    extends Composer<_$AppDatabase, $MidiPresetCapturesTable> {
+  $$MidiPresetCapturesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get deviceProfileId => $composableBuilder(
+    column: $table.deviceProfileId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get programNumber => $composableBuilder(
+    column: $table.programNumber,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<Uint8List> get rawSysEx => $composableBuilder(
+    column: $table.rawSysEx,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get decodedName => $composableBuilder(
+    column: $table.decodedName,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get decodedSummaryJson => $composableBuilder(
+    column: $table.decodedSummaryJson,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get firmwareLabel => $composableBuilder(
+    column: $table.firmwareLabel,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get capturedAt => $composableBuilder(
+    column: $table.capturedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  $$PedalsTableOrderingComposer get pedalId {
+    final $$PedalsTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.pedalId,
+      referencedTable: $db.pedals,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$PedalsTableOrderingComposer(
+            $db: $db,
+            $table: $db.pedals,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$MidiPresetCapturesTableAnnotationComposer
+    extends Composer<_$AppDatabase, $MidiPresetCapturesTable> {
+  $$MidiPresetCapturesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get deviceProfileId => $composableBuilder(
+    column: $table.deviceProfileId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get programNumber => $composableBuilder(
+    column: $table.programNumber,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<Uint8List> get rawSysEx =>
+      $composableBuilder(column: $table.rawSysEx, builder: (column) => column);
+
+  GeneratedColumn<String> get decodedName => $composableBuilder(
+    column: $table.decodedName,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get decodedSummaryJson => $composableBuilder(
+    column: $table.decodedSummaryJson,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get firmwareLabel => $composableBuilder(
+    column: $table.firmwareLabel,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get capturedAt => $composableBuilder(
+    column: $table.capturedAt,
+    builder: (column) => column,
+  );
+
+  $$PedalsTableAnnotationComposer get pedalId {
+    final $$PedalsTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.pedalId,
+      referencedTable: $db.pedals,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$PedalsTableAnnotationComposer(
+            $db: $db,
+            $table: $db.pedals,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$MidiPresetCapturesTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $MidiPresetCapturesTable,
+          MidiPresetCapture,
+          $$MidiPresetCapturesTableFilterComposer,
+          $$MidiPresetCapturesTableOrderingComposer,
+          $$MidiPresetCapturesTableAnnotationComposer,
+          $$MidiPresetCapturesTableCreateCompanionBuilder,
+          $$MidiPresetCapturesTableUpdateCompanionBuilder,
+          (MidiPresetCapture, $$MidiPresetCapturesTableReferences),
+          MidiPresetCapture,
+          PrefetchHooks Function({bool pedalId})
+        > {
+  $$MidiPresetCapturesTableTableManager(
+    _$AppDatabase db,
+    $MidiPresetCapturesTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$MidiPresetCapturesTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$MidiPresetCapturesTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$MidiPresetCapturesTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<int> pedalId = const Value.absent(),
+                Value<String> deviceProfileId = const Value.absent(),
+                Value<int> programNumber = const Value.absent(),
+                Value<Uint8List> rawSysEx = const Value.absent(),
+                Value<String?> decodedName = const Value.absent(),
+                Value<String?> decodedSummaryJson = const Value.absent(),
+                Value<String?> firmwareLabel = const Value.absent(),
+                Value<DateTime> capturedAt = const Value.absent(),
+              }) => MidiPresetCapturesCompanion(
+                id: id,
+                pedalId: pedalId,
+                deviceProfileId: deviceProfileId,
+                programNumber: programNumber,
+                rawSysEx: rawSysEx,
+                decodedName: decodedName,
+                decodedSummaryJson: decodedSummaryJson,
+                firmwareLabel: firmwareLabel,
+                capturedAt: capturedAt,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                required int pedalId,
+                required String deviceProfileId,
+                required int programNumber,
+                required Uint8List rawSysEx,
+                Value<String?> decodedName = const Value.absent(),
+                Value<String?> decodedSummaryJson = const Value.absent(),
+                Value<String?> firmwareLabel = const Value.absent(),
+                required DateTime capturedAt,
+              }) => MidiPresetCapturesCompanion.insert(
+                id: id,
+                pedalId: pedalId,
+                deviceProfileId: deviceProfileId,
+                programNumber: programNumber,
+                rawSysEx: rawSysEx,
+                decodedName: decodedName,
+                decodedSummaryJson: decodedSummaryJson,
+                firmwareLabel: firmwareLabel,
+                capturedAt: capturedAt,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable(table),
+                  $$MidiPresetCapturesTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: ({pedalId = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [],
+              addJoins:
+                  <
+                    T extends TableManagerState<
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic
+                    >
+                  >(state) {
+                    if (pedalId) {
+                      state =
+                          state.withJoin(
+                                currentTable: table,
+                                currentColumn: table.pedalId,
+                                referencedTable:
+                                    $$MidiPresetCapturesTableReferences
+                                        ._pedalIdTable(db),
+                                referencedColumn:
+                                    $$MidiPresetCapturesTableReferences
+                                        ._pedalIdTable(db)
+                                        .id,
+                              )
+                              as T;
+                    }
+
+                    return state;
+                  },
+              getPrefetchedDataCallback: (items) async {
+                return [];
+              },
+            );
+          },
+        ),
+      );
+}
+
+typedef $$MidiPresetCapturesTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $MidiPresetCapturesTable,
+      MidiPresetCapture,
+      $$MidiPresetCapturesTableFilterComposer,
+      $$MidiPresetCapturesTableOrderingComposer,
+      $$MidiPresetCapturesTableAnnotationComposer,
+      $$MidiPresetCapturesTableCreateCompanionBuilder,
+      $$MidiPresetCapturesTableUpdateCompanionBuilder,
+      (MidiPresetCapture, $$MidiPresetCapturesTableReferences),
+      MidiPresetCapture,
+      PrefetchHooks Function({bool pedalId})
+    >;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -30592,4 +31727,6 @@ class $AppDatabaseManager {
       $$MidiPatchFavoritesTableTableManager(_db, _db.midiPatchFavorites);
   $$MidiPatchRecentsTableTableManager get midiPatchRecents =>
       $$MidiPatchRecentsTableTableManager(_db, _db.midiPatchRecents);
+  $$MidiPresetCapturesTableTableManager get midiPresetCaptures =>
+      $$MidiPresetCapturesTableTableManager(_db, _db.midiPresetCaptures);
 }

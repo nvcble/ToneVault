@@ -37,13 +37,18 @@ class PedalDao extends DatabaseAccessor<AppDatabase> with _$PedalDaoMixin {
   }
 
   /// The pedals inside [hostPedalId], in the order they are named.
-  Stream<List<Pedal>> watchComponentPedals(int hostPedalId) {
-    return (select(pedals)
-          ..where((row) => row.hostPedalId.equals(hostPedalId))
-          ..orderBy([
-            (row) => OrderingTerm.asc(row.name.collate(Collate.noCase)),
-          ]))
-        .watch();
+  Stream<List<Pedal>> watchComponentPedals(int hostPedalId) =>
+      _componentPedalsQuery(hostPedalId).watch();
+
+  /// The same rows as [watchComponentPedals], read once rather than
+  /// subscribed to - for a one-off computation, such as a preset import, that
+  /// has no reason to keep listening afterwards.
+  Future<List<Pedal>> componentPedals(int hostPedalId) => _componentPedalsQuery(hostPedalId).get();
+
+  SimpleSelectStatement<$PedalsTable, Pedal> _componentPedalsQuery(int hostPedalId) {
+    return select(pedals)
+      ..where((row) => row.hostPedalId.equals(hostPedalId))
+      ..orderBy([(row) => OrderingTerm.asc(row.name.collate(Collate.noCase))]);
   }
 
   Stream<Pedal?> watchPedal(int pedalId) {

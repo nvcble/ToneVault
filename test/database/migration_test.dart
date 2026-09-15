@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:tone_vault/core/database/app_database.dart';
@@ -16,6 +18,7 @@ import 'package:tone_vault/features/patches/data/patch_draft.dart';
 import 'package:tone_vault/features/pedals/data/pedal_draft.dart';
 import '../support/repositories.dart';
 import '../support/v1_database.dart';
+import '../support/v21_database.dart';
 
 /// What an upgrade does to a database that was already on a phone.
 ///
@@ -541,6 +544,98 @@ void main() {
 
     expect(await db.midiPatchFavoriteDao.watchFavoritePatchIds().first, {patchId});
     expect((await db.midiPatchRecentDao.watchRecents().first).single.patchId, patchId);
+  });
+
+  test('the preset capture table is created exactly as a fresh one is', () async {
+    const tables = ['midi_preset_captures'];
+
+    // One at a time: two live databases at once only earn a drift warning.
+    final fresh = AppDatabase(NativeDatabase.memory());
+    final expected = <String, List<String>>{
+      for (final table in tables) table: await schemaFor(fresh, table),
+    };
+    await fresh.close();
+
+    final upgraded = openV1Database();
+    addTearDown(upgraded.close);
+
+    for (final table in tables) {
+      expect(
+        await schemaFor(upgraded, table),
+        expected[table],
+        reason: '$table differs between an upgraded phone and a new install',
+      );
+    }
+  });
+
+  test('an upgraded database can hold a raw preset capture', () async {
+    final db = openV1Database();
+    addTearDown(db.close);
+    final unitId = await pedalRepository(db).createPedal(
+      const PedalDraft(
+        name: 'Valeton GP-200',
+        type: PedalType.digital,
+        category: PedalCategory.multiEffects,
+      ),
+    );
+
+    await db.midiPresetCaptureDao.upsertCapture(
+      pedalId: unitId,
+      deviceProfileId: 'nux_mg30_v5',
+      programNumber: 5,
+      rawSysEx: Uint8List.fromList([0xF0, 0x43, 0x58, 0xF7]),
+      decodedName: 'Worship Lead',
+      capturedAt: DateTime.utc(2026, 9),
+    );
+
+    final captures = await db.midiPresetCaptureDao.watchCaptures(unitId).first;
+    expect(captures.single.decodedName, 'Worship Lead');
+    expect(captures.single.rawSysEx, [0xF0, 0x43, 0x58, 0xF7]);
+  });
+
+  test('program numbers shift down to keep the same physical slot', () async {
+    final db = openV21ProgramNumberDatabase();
+    addTearDown(db.close);
+
+    final numbered = await db.midiPatchProgramNumberDao
+        .watchNumberedPatches(1)
+        .first;
+
+    // Slot 1 under the old counting and slot 0 under the new one are the same
+    // Program Change 0, because the sender no longer subtracts one.
+    expect(
+      numbered.map((row) => (row.patch.name, row.programNumber)),
+      [('Worship Clean', 0), ('Core Lead', 21), ('Ambient', 127)],
+    );
+  });
+
+  test('an upgraded database can hold the first slot of all', () async {
+    final db = openV21ProgramNumberDatabase();
+    addTearDown(db.close);
+
+    // 0 is what the old CHECK rejected, so importing a unit's first preset was
+    // impossible until the table was rebuilt.
+    await db.midiPatchProgramNumberDao.upsertNumber(
+      patchId: 2,
+      programNumber: 0,
+      updatedAt: DateTime.utc(2026, 9),
+    );
+
+    expect((await db.midiPatchProgramNumberDao.findNumber(2))!.programNumber, 0);
+  });
+
+  test('the renumbered table matches a freshly created one', () async {
+    // One at a time: two live databases at once only earn a drift warning.
+    final fresh = AppDatabase(NativeDatabase.memory());
+    final expected = await schemaFor(fresh, 'midi_patch_program_numbers');
+    await fresh.close();
+
+    final upgraded = openV21ProgramNumberDatabase();
+    addTearDown(upgraded.close);
+
+    // Including the CHECK: a rebuild that left the old range behind would let
+    // an upgraded phone reject a number a new install accepts.
+    expect(await schemaFor(upgraded, 'midi_patch_program_numbers'), expected);
   });
 
   test(

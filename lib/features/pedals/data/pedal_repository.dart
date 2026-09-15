@@ -33,6 +33,10 @@ class PedalRepository {
   Stream<List<Pedal>> watchComponentPedals(int hostPedalId) =>
       _dao.watchComponentPedals(hostPedalId);
 
+  /// A one-off read of [watchComponentPedals], for a computation that just
+  /// needs the current pedals rather than to keep watching them.
+  Future<List<Pedal>> componentPedals(int hostPedalId) => _dao.componentPedals(hostPedalId);
+
   Stream<Pedal?> watchPedal(int pedalId) => _dao.watchPedal(pedalId);
 
   Future<int> createPedal(PedalDraft draft) async {

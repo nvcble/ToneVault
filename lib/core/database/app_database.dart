@@ -31,6 +31,7 @@ import 'daos/midi_patch_favorite_dao.dart';
 import 'daos/midi_patch_program_number_dao.dart';
 import 'daos/midi_patch_recent_dao.dart';
 import 'daos/midi_patch_selection_settings_dao.dart';
+import 'daos/midi_preset_capture_dao.dart';
 import 'daos/midi_scene_number_dao.dart';
 import 'daos/patch_dao.dart';
 import 'daos/pedal_control_dao.dart';
@@ -55,6 +56,7 @@ import 'tables/midi_patch_favorites_table.dart';
 import 'tables/midi_patch_program_numbers_table.dart';
 import 'tables/midi_patch_recents_table.dart';
 import 'tables/midi_patch_selection_settings_table.dart';
+import 'tables/midi_preset_captures_table.dart';
 import 'tables/midi_scene_numbers_table.dart';
 import 'tables/patches_table.dart';
 import 'tables/pedal_controls_table.dart';
@@ -121,6 +123,7 @@ part 'app_database.g.dart';
     MidiSceneNumbers,
     MidiPatchFavorites,
     MidiPatchRecents,
+    MidiPresetCaptures,
   ],
   daos: [
     PedalDao,
@@ -140,6 +143,7 @@ part 'app_database.g.dart';
     MidiSceneNumberDao,
     MidiPatchFavoriteDao,
     MidiPatchRecentDao,
+    MidiPresetCaptureDao,
     BackupDao,
   ],
 )

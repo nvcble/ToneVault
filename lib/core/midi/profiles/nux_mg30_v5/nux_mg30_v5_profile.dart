@@ -56,14 +56,22 @@ class NuxMg30V5Profile extends MidiDeviceProfile {
   @override
   List<MidiBlockDefinition> get blockDefinitions => nuxMg30V5BlockDefinitions;
 
-  /// Bank Select MSB (CC 0) set to 0, then a plain Program Change - a
-  /// candidate from general MIDI convention and outside research, not from
-  /// either confirmed MG-30 source. Untested against hardware: see
-  /// [MidiSupportLevel.needsHardwareVerification].
+  /// A plain Program Change (0-127), with no Bank Select at all.
+  ///
+  /// Not from either confirmed V5 source: this is what the GPL-3.0 community
+  /// project `mg30-controller` sends
+  /// (`_sendProgramChangeCommand` in its `device.dart`) against a real MG-30
+  /// on firmware v4.0.3 - `[0xC0, programNo]`, nothing else. All 128 patches
+  /// fit in one Program Change byte, so a Bank Select would be superfluous
+  /// even if harmless. That project also implies the 32-bank x 4-letter
+  /// ("01A".."32D") numbering the MIDI module brief describes: bank =
+  /// `programNo ~/ 4 + 1`, letter from `programNo % 4` (see its `utils.dart`).
+  ///
+  /// Still untested against this app's own hardware, and confirmed only on
+  /// v4.0.3 firmware, not V5 - see [MidiSupportLevel.needsHardwareVerification].
   @override
   PatchSelectionDefaults get patchSelectionDefaults => const PatchSelectionDefaults(
-    usesBankSelect: true,
-    bankSelectMsb: 0,
+    usesBankSelect: false,
     verificationStatus: MidiSupportLevel.needsHardwareVerification,
   );
 }

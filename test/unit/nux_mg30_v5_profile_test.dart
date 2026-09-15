@@ -40,7 +40,12 @@ void main() {
         profile.supportLevelOf(MidiFeature.signalChainEditing),
         MidiSupportLevel.unsupported,
       );
-      expect(profile.supportLevelOf(MidiFeature.patchTransfer), MidiSupportLevel.unknown);
+      // Partial, not unknown: reading a slot's dump is verified against the
+      // real unit, while decoding most of it and writing one back are not.
+      expect(
+        profile.supportLevelOf(MidiFeature.patchTransfer),
+        MidiSupportLevel.partiallySupported,
+      );
       expect(profile.supportLevelOf(MidiFeature.irManagement), MidiSupportLevel.partiallySupported);
     });
 
@@ -48,12 +53,12 @@ void main() {
       expect(profile.parameterDefinitions, hasLength(86));
     });
 
-    test('offers a Bank Select + Program Change candidate, marked unverified', () {
+    test('offers a plain Program Change candidate, marked unverified', () {
       final defaults = profile.patchSelectionDefaults;
 
       expect(defaults, isNotNull);
-      expect(defaults.usesBankSelect, isTrue);
-      expect(defaults.bankSelectMsb, 0);
+      expect(defaults.usesBankSelect, isFalse);
+      expect(defaults.bankSelectMsb, isNull);
       expect(defaults.bankSelectLsb, isNull);
       expect(defaults.verificationStatus, MidiSupportLevel.needsHardwareVerification);
     });

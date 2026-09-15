@@ -171,6 +171,28 @@ void main() {
     expect(summary.failures.single.programNumber, 2);
   });
 
+  test('countOverwrites counts by program number, not by name', () async {
+    const first = ImportedPreset(programNumber: 1, name: 'Existing', confidence: MidiSupportLevel.unknown);
+    final service = presetImportService(database, const _FakeTransferService([first]));
+    await service.importPresets(unitId: unitId, presets: [first], resolveDuplicate: _alwaysSkip);
+
+    const incoming = [
+      ImportedPreset(programNumber: 1, name: 'Different Name', confidence: MidiSupportLevel.unknown),
+      ImportedPreset(programNumber: 2, name: 'New Slot', confidence: MidiSupportLevel.unknown),
+    ];
+
+    expect(await service.countOverwrites(unitId, incoming), 1);
+  });
+
+  test('countOverwrites is 0 and nothing changes before importPresets runs', () async {
+    const first = ImportedPreset(programNumber: 1, name: 'Existing', confidence: MidiSupportLevel.unknown);
+    final service = presetImportService(database, const _FakeTransferService([first]));
+
+    expect(await service.countOverwrites(unitId, [first]), 0);
+    final numbered = await midiPatchProgramRepository(database).numberedPatches(unitId);
+    expect(numbered, isEmpty);
+  });
+
   test('fetchPresets reports progress as MockNuxMg30V5PresetTransferService reads each preset', () async {
     final service = presetImportService(
       database,

@@ -12,11 +12,11 @@ const _defaults = PatchSelectionDefaults(
 
 void main() {
   group('buildPatchSelectionMessages', () {
-    test('sends Bank Select MSB then Program Change for patch 1', () {
+    test('sends Bank Select MSB then Program Change for patch 0', () {
       final messages = buildPatchSelectionMessages(
         defaults: _defaults,
         channel: 0,
-        patchNumber: 1,
+        patchNumber: 0,
       );
 
       expect(messages, hasLength(2));
@@ -26,14 +26,24 @@ void main() {
       expect(messages[1].toBytes(), [0xC0, 0]);
     });
 
-    test('counts patches from 1, sending patch 21 as Program Change 20', () {
+    test('counts patches from 0, so the number is the Program Change value', () {
       final messages = buildPatchSelectionMessages(
         defaults: _defaults,
         channel: 0,
         patchNumber: 21,
       );
 
-      expect(messages.last.toBytes(), [0xC0, 20]);
+      expect(messages.last.toBytes(), [0xC0, 21]);
+    });
+
+    test('sends the last patch of all as Program Change 127', () {
+      final messages = buildPatchSelectionMessages(
+        defaults: _defaults,
+        channel: 0,
+        patchNumber: 127,
+      );
+
+      expect(messages.last.toBytes(), [0xC0, 127]);
     });
 
     test('sends only Program Change when Bank Select is turned off', () {

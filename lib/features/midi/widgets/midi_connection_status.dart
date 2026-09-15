@@ -22,7 +22,14 @@ class MidiConnectionStatus extends StatelessWidget {
 
     return Row(
       children: [
-        Icon(Icons.circle, size: 12, color: color),
+        if (snapshot.isBusy)
+          const SizedBox(
+            width: 12,
+            height: 12,
+            child: CircularProgressIndicator(strokeWidth: 2),
+          )
+        else
+          Icon(Icons.circle, size: 12, color: color),
         const SizedBox(width: AppSpacing.sm),
         Text(snapshot.errorMessage ?? snapshot.state.label),
       ],

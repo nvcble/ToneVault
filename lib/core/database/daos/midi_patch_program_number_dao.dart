@@ -20,23 +20,27 @@ class MidiPatchProgramNumberDao extends DatabaseAccessor<AppDatabase>
   ///
   /// A patch with no number is left out: there is nothing to cycle to for
   /// one that has never been told which of the device's slots it is.
-  Stream<List<NumberedPatch>> watchNumberedPatches(int pedalId) {
-    return (select(midiPatchProgramNumbers).join([
-          innerJoin(patches, patches.id.equalsExp(midiPatchProgramNumbers.patchId)),
-        ])
-          ..where(patches.pedalId.equals(pedalId))
-          ..orderBy([OrderingTerm.asc(midiPatchProgramNumbers.programNumber)]))
-        .watch()
-        .map(
-          (rows) => [
-            for (final row in rows)
-              (
-                patch: row.readTable(patches),
-                programNumber: row.readTable(midiPatchProgramNumbers).programNumber,
-              ),
-          ],
-        );
+  Stream<List<NumberedPatch>> watchNumberedPatches(int pedalId) =>
+      _numberedPatchesQuery(pedalId).watch().map(_toNumberedPatches);
+
+  /// The same rows as [watchNumberedPatches], read once rather than
+  /// subscribed to - for a one-off computation that has no reason to keep
+  /// listening afterwards.
+  Future<List<NumberedPatch>> numberedPatches(int pedalId) async =>
+      _toNumberedPatches(await _numberedPatchesQuery(pedalId).get());
+
+  JoinedSelectStatement<Object?, Object?> _numberedPatchesQuery(int pedalId) {
+    return select(midiPatchProgramNumbers).join([
+      innerJoin(patches, patches.id.equalsExp(midiPatchProgramNumbers.patchId)),
+    ])
+      ..where(patches.pedalId.equals(pedalId))
+      ..orderBy([OrderingTerm.asc(midiPatchProgramNumbers.programNumber)]);
   }
+
+  List<NumberedPatch> _toNumberedPatches(List<TypedResult> rows) => [
+    for (final row in rows)
+      (patch: row.readTable(patches), programNumber: row.readTable(midiPatchProgramNumbers).programNumber),
+  ];
 
   Stream<MidiPatchProgramNumber?> watchNumber(int patchId) {
     return (select(

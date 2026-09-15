@@ -14,12 +14,18 @@ class FakeMidiTransport implements MidiTransport {
     List<MidiEndpoint> endpoints = const [],
     this.failScan = false,
     this.connectFailure,
+    this.scanDelay,
   }) : endpoints = List.of(endpoints);
 
   /// Mutable, so a test can simulate a device being plugged in after [scan]
   /// last ran - see [triggerAvailabilityChange].
   final List<MidiEndpoint> endpoints;
   final bool failScan;
+
+  /// How long [scan] waits before returning - simulates a platform call that
+  /// never (or slowly) resolves, such as an Android USB permission prompt
+  /// nobody answered.
+  final Duration? scanDelay;
 
   /// Thrown by [connect] instead of succeeding, when set.
   final MidiConnectionFailure? connectFailure;
@@ -49,6 +55,9 @@ class FakeMidiTransport implements MidiTransport {
 
   @override
   Future<List<MidiEndpoint>> scan() async {
+    if (scanDelay != null) {
+      await Future<void>.delayed(scanDelay!);
+    }
     if (failScan) {
       throw StateError('Scan failed.');
     }

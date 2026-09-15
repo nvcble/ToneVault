@@ -11,6 +11,7 @@ import 'package:tone_vault/core/database/daos/midi_patch_favorite_dao.dart';
 import 'package:tone_vault/core/database/daos/midi_patch_program_number_dao.dart';
 import 'package:tone_vault/core/database/daos/midi_patch_recent_dao.dart';
 import 'package:tone_vault/core/database/daos/midi_patch_selection_settings_dao.dart';
+import 'package:tone_vault/core/database/daos/midi_preset_capture_dao.dart';
 import 'package:tone_vault/core/database/daos/midi_scene_number_dao.dart';
 import 'package:tone_vault/core/database/daos/patch_dao.dart';
 import 'package:tone_vault/core/database/daos/pedal_control_dao.dart';
@@ -34,6 +35,7 @@ import 'package:tone_vault/features/midi/data/midi_parameter_mapping_repository.
 import 'package:tone_vault/features/midi/data/midi_patch_favorite_repository.dart';
 import 'package:tone_vault/features/midi/data/midi_patch_program_repository.dart';
 import 'package:tone_vault/features/midi/data/midi_patch_recent_repository.dart';
+import 'package:tone_vault/features/midi/data/midi_preset_capture_repository.dart';
 import 'package:tone_vault/features/midi/data/midi_scene_number_repository.dart';
 import 'package:tone_vault/features/midi/data/patch_control_controller.dart';
 import 'package:tone_vault/features/midi/data/patch_selection_repository.dart';
@@ -256,6 +258,10 @@ MidiPatchFavoriteRepository midiPatchFavoriteRepository(AppDatabase database) {
 
 MidiPatchRecentRepository midiPatchRecentRepository(AppDatabase database) {
   return MidiPatchRecentRepository(MidiPatchRecentDao(database));
+}
+
+MidiPresetCaptureRepository midiPresetCaptureRepository(AppDatabase database) {
+  return MidiPresetCaptureRepository(MidiPresetCaptureDao(database));
 }
 
 /// A patch-control controller wired the way the provider wires it, for tests

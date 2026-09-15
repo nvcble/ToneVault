@@ -9,10 +9,11 @@ import '../../midi_support_level.dart';
 const Map<MidiFeature, MidiSupportLevel> nuxMg30V5Capabilities = {
   // Neither the V5 chart nor the QuickTone Custom MIDI screen has a row for
   // changing which patch is loaded. `NuxMg30V5Profile.patchSelectionDefaults`
-  // carries a Bank Select + Program Change candidate from general MIDI
-  // convention and outside research, but nothing about it - not the CC
-  // numbers, not the bank value, not whether the MG-30 answers to Program
-  // Change at all - has been tried against real hardware.
+  // now carries a plain-Program-Change candidate corroborated by the GPL-3.0
+  // `mg30-controller` reference project (confirmed only on its own firmware,
+  // v4.0.3) rather than either confirmed V5 source. Whether V5 answers to
+  // Program Change the same way - and whether `PC 0` really is "01A" on this
+  // specific unit - has not been tried against real hardware.
   MidiFeature.patchSelection: MidiSupportLevel.needsHardwareVerification,
 
   // CC 80 ("Scene") is a real, named row in both confirmed sources, so scene
@@ -45,9 +46,12 @@ const Map<MidiFeature, MidiSupportLevel> nuxMg30V5Capabilities = {
   // not as an oversight.
   MidiFeature.signalChainEditing: MidiSupportLevel.unsupported,
 
-  // No CC for writing the current state into a patch slot, and no SysEx
-  // documented at all.
-  MidiFeature.patchTransfer: MidiSupportLevel.unknown,
+  // Reading works: `NuxMg30V5SysEx.getPresetDataRequest` has been verified
+  // against a physical V5, which answers with the slot's full dump. Only the
+  // slot number and patch name decode reliably out of it so far, and writing a
+  // patch back is still undocumented and deliberately unimplemented - so this
+  // is partial, not supported.
+  MidiFeature.patchTransfer: MidiSupportLevel.partiallySupported,
 
   // IR CC 9 selects one of 25 factory slots, which the chart confirms.
   // Managing IR files themselves - loading a user's own impulse response -

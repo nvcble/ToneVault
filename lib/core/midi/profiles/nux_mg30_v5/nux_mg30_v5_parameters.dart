@@ -87,6 +87,11 @@ const List<MidiParameterDefinition> nuxMg30V5GlobalParameters = [
     messageType: MidiParameterMessageType.controlChange,
     ccNumber: 79,
   ),
+  // CC 80 is what this app's own V5 chart transcription names for Scene.
+  // Flagged rather than changed: the GPL-3.0 `mg30-controller` reference
+  // project reads Scene from CC 79 (0x4F) instead on its firmware
+  // (v4.0.3, see its `device.dart`) - a real conflict between the two
+  // sources, unresolved until tried against this app's own V5 unit.
   MidiParameterDefinition(
     name: 'Scene',
     min: 0,

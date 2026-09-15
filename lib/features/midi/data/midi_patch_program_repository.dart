@@ -15,9 +15,16 @@ class MidiPatchProgramRepository {
   Stream<List<NumberedPatch>> watchNumberedPatches(int pedalId) =>
       _dao.watchNumberedPatches(pedalId);
 
+  /// A one-off read of [watchNumberedPatches], for a computation that just
+  /// needs the current numbers rather than to keep watching them.
+  Future<List<NumberedPatch>> numberedPatches(int pedalId) => _dao.numberedPatches(pedalId);
+
   Future<void> setNumber({required int patchId, required int programNumber}) async {
-    if (programNumber < 1 || programNumber > 128) {
-      throw const AppFailure('A patch number has to be between 1 and 128.');
+    // 0-127, not 1-128: a program number is the Program Change value sent on
+    // the wire, and the device's first slot is 0. The old range rejected slot
+    // 0 outright, so importing the very first preset off a unit always failed.
+    if (programNumber < 0 || programNumber > 127) {
+      throw const AppFailure('A patch number has to be between 0 and 127.');
     }
 
     return guardFailure(

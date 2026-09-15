@@ -4,8 +4,7 @@ import '../../../app/theme/app_spacing.dart';
 import '../../../core/midi/patch_selection_defaults.dart';
 
 /// The Bank Select / Program Change strategy a patch load will use, and the
-/// controls to change it - NUX's own MG-30 V5 chart has nothing for patch
-/// selection, so this is a candidate to test rather than a confirmed setting.
+/// controls to change it.
 class PatchSelectionSettingsCard extends StatelessWidget {
   const PatchSelectionSettingsCard({
     required this.defaults,
@@ -34,16 +33,6 @@ class PatchSelectionSettingsCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Row(
-              children: [
-                const Icon(Icons.warning_amber_outlined),
-                const SizedBox(width: AppSpacing.sm),
-                Expanded(
-                  child: Text(defaults.verificationStatus.label),
-                ),
-              ],
-            ),
-            const SizedBox(height: AppSpacing.sm),
             SwitchListTile(
               contentPadding: EdgeInsets.zero,
               title: const Text('Send Bank Select first'),

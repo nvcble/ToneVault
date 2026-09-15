@@ -15,10 +15,10 @@ const _endpoint = MidiEndpoint(id: 'dev-1', name: 'MG-30', type: MidiTransportTy
 /// Builds a controller whose engine already has [transport] attached, so the
 /// controller's own attach call is the no-op branch and never reaches
 /// `transportFor` - which would otherwise build a real `UsbMidiTransport`.
-MidiConnectionController _controllerWith(FakeMidiTransport transport) {
+MidiConnectionController _controllerWith(FakeMidiTransport transport, {Duration? scanTimeout}) {
   final engine = MidiEngine();
   engine.attach(profile: _profile, transportBuilder: () => transport);
-  return MidiConnectionController(_profile, engine);
+  return MidiConnectionController(_profile, engine, scanTimeout: scanTimeout);
 }
 
 void main() {
@@ -118,6 +118,37 @@ void main() {
     await pumpEventQueue();
 
     expect(controller.state.hasDetectedDevice, isTrue);
+  });
+
+  test('isBusy is set while connecting and cleared once it settles', () async {
+    final controller = _controllerWith(FakeMidiTransport(endpoints: const [_endpoint]));
+    addTearDown(controller.dispose);
+    await pumpEventQueue();
+
+    final connecting = controller.connect();
+    expect(controller.state.isBusy, isTrue);
+    await connecting;
+
+    expect(controller.state.isBusy, isFalse);
+  });
+
+  test('a scan that never resolves surfaces as a timeout, not a stuck spinner', () async {
+    final controller = _controllerWith(
+      FakeMidiTransport(scanDelay: const Duration(seconds: 30)),
+      scanTimeout: const Duration(milliseconds: 20),
+    );
+    addTearDown(controller.dispose);
+
+    // A real Timer backs `.timeout()`, so waiting for actual wall-clock time
+    // to pass - not just draining the microtask queue - is what proves the
+    // timeout fires rather than the scan silently hanging forever.
+    await Future<void>.delayed(const Duration(milliseconds: 50));
+
+    expect(controller.state.isBusy, isFalse);
+    expect(
+      controller.state.errorMessage,
+      contains('Timed out looking for MIDI devices'),
+    );
   });
 
   test('disconnect returns to the disconnected state', () async {

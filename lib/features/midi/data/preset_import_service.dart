@@ -52,6 +52,16 @@ class PresetImportService {
   Future<List<ImportedPreset>> fetchPresets({void Function(int completed, int total)? onProgress}) =>
       _transfer.importAllPresets(onProgress: onProgress);
 
+  /// How many of [presets] would replace a patch already on [unitId] at the
+  /// same program number - what an "Overwrite All" confirmation needs before
+  /// the user commits to it, without changing anything yet.
+  Future<int> countOverwrites(int unitId, List<ImportedPreset> presets) async {
+    final existingNumbers = {
+      for (final numbered in await _programs.numberedPatches(unitId)) numbered.programNumber,
+    };
+    return presets.where((preset) => existingNumbers.contains(preset.programNumber)).length;
+  }
+
   /// Imports [presets] onto [unitId], calling [resolveDuplicate] whenever an
   /// already-imported patch holds the incoming preset's program number.
   ///
@@ -63,11 +73,10 @@ class PresetImportService {
     required Future<PresetImportDecision> Function(ImportedPreset incoming, Patch existing) resolveDuplicate,
   }) async {
     final existingByNumber = {
-      for (final numbered in await _programs.watchNumberedPatches(unitId).first)
-        numbered.programNumber: numbered.patch,
+      for (final numbered in await _programs.numberedPatches(unitId)) numbered.programNumber: numbered.patch,
     };
     final blockPedalsByLabel = {
-      for (final pedal in await _pedals.watchComponentPedals(unitId).first) pedal.name: pedal,
+      for (final pedal in await _pedals.componentPedals(unitId)) pedal.name: pedal,
     };
 
     var imported = 0;
@@ -122,7 +131,7 @@ class PresetImportService {
         continue;
       }
       await _scenePedals.addPedal(sceneId: sceneId, pedalId: pedal.id);
-      final controls = await _controls.watchControls(pedal.id).first;
+      final controls = await _controls.controlsOf(pedal.id);
 
       if (block.modelNumber != null) {
         await _setValueByName(sceneId, controls, '${block.label} model', block.modelNumber!.toDouble());

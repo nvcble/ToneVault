@@ -1,9 +1,12 @@
 import 'package:go_router/go_router.dart';
 
 import '../../../app/router/routes.dart';
+import '../screens/captured_preset_import_screen.dart';
 import '../screens/live_control_screen.dart';
+import '../screens/midi_capture_log_screen.dart';
 import '../screens/midi_connection_screen.dart';
 import '../screens/midi_control_screen.dart';
+import '../screens/midi_diagnostics_screen.dart';
 import '../screens/midi_mapping_screen.dart';
 import '../screens/midi_monitor_screen.dart';
 import '../screens/midi_parameter_list_screen.dart';
@@ -50,6 +53,14 @@ List<RouteBase> midiRoutes() {
           builder: (context, state) => const MidiMonitorScreen(),
         ),
         GoRoute(
+          path: Routes.midiDiagnosticsSegment,
+          builder: (context, state) => MidiDiagnosticsScreen(profileId: _deviceId(state)),
+        ),
+        GoRoute(
+          path: Routes.midiCaptureLogSegment,
+          builder: (context, state) => const MidiCaptureLogScreen(),
+        ),
+        GoRoute(
           path: Routes.liveControlSegment,
           builder: (context, state) => LiveControlScreen(profileId: _deviceId(state)),
         ),
@@ -65,6 +76,10 @@ List<RouteBase> midiRoutes() {
         GoRoute(
           path: Routes.midiPresetImportSegment,
           builder: (context, state) => PresetImportScreen(profileId: _deviceId(state)),
+        ),
+        GoRoute(
+          path: Routes.midiCapturedPresetImportSegment,
+          builder: (context, state) => CapturedPresetImportScreen(profileId: _deviceId(state)),
         ),
         GoRoute(
           path: Routes.midiPatchScenesSegment,

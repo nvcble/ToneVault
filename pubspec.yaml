@@ -63,6 +63,20 @@ dev_dependencies:
   flutter_lints: ^6.0.0
   build_runner: ^2.15.1
   drift_dev: ^2.34.5
+  flutter_launcher_icons: ^0.14.0
+
+# Not read by the app itself - only by `dart run flutter_launcher_icons`,
+# which writes the launcher icons this describes into android/app/src/main/res.
+# Rerun it whenever assets/images/ToneVault.png changes.
+flutter_launcher_icons:
+  android: true
+  image_path: assets/images/ToneVault.png
+  # The source PNG is transparent outside the pedal art, so Android's
+  # adaptive-icon mask needs a solid backdrop behind it rather than showing
+  # through to the home screen wallpaper.
+  adaptive_icon_background: "#101010"
+  adaptive_icon_foreground: assets/images/ToneVault.png
+
 flutter:
   uses-material-design: true
 

@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 
 import '../../app/theme/app_spacing.dart';
+import 'inline_button_theme.dart';
 
 /// The actions along the bottom of a sheet or a dialog, ending on the right.
 ///
 /// The app theme stretches a [FilledButton] across its column, which is what a
 /// form wants and what a [Row] cannot give: an infinite minimum width is not a
 /// constraint a row can satisfy, and laying one out throws before anything
-/// reaches the screen. Buttons placed here get a finite minimum back, so an
+/// reaches the screen. [InlineButtonTheme] puts a finite minimum back, so an
 /// action bar reads the same everywhere without each screen repeating the
 /// override.
 class ActionRow extends StatelessWidget {
@@ -22,17 +23,7 @@ class ActionRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final themed = Theme.of(context).filledButtonTheme.style;
-
-    return FilledButtonTheme(
-      data: FilledButtonThemeData(
-        style: (themed ?? const ButtonStyle()).copyWith(
-          // Material's own minimum width, with the app's taller touch target.
-          minimumSize: const WidgetStatePropertyAll(
-            Size(64, AppSpacing.minTouchTarget),
-          ),
-        ),
-      ),
+    return InlineButtonTheme(
       child: Row(
         children: [
           ?leading,

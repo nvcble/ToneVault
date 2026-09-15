@@ -93,6 +93,7 @@ class _LiveControlBody extends ConsumerWidget {
 
         final currentNumber = ref.watch(currentPatchNumberProvider(profileId));
         final current = patches.where((p) => p.programNumber == currentNumber).firstOrNull;
+        final currentScene = ref.watch(currentSceneNumberProvider(profileId));
         final canAct = connected && ref.watch(experimentalProgramChangeEnabledProvider);
 
         return Padding(
@@ -110,6 +111,7 @@ class _LiveControlBody extends ConsumerWidget {
               ),
               const Spacer(),
               MidiSceneButtons(
+                selectedScene: currentScene,
                 onSelect: canAct ? (scene) => _sendScene(context, ref, scene) : null,
               ),
               const SizedBox(height: AppSpacing.lg),
@@ -187,6 +189,7 @@ class _LiveControlBody extends ConsumerWidget {
             parameterName: 'Scene',
             value: scene - 1,
           );
+      ref.read(currentSceneNumberProvider(profileId).notifier).state = scene;
     } catch (error) {
       if (context.mounted) showFailureSnackBar(context, error);
     }

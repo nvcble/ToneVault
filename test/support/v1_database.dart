@@ -89,7 +89,7 @@ const List<String> _v1Rows = [
 ];
 
 /// Opens a v1 database that already holds [_v1Rows] and lets drift upgrade it.
-AppDatabase openV1Database() => _openAt(1, [..._v1Schema, ..._v1Rows]);
+AppDatabase openV1Database() => openAt(1, [..._v1Schema, ..._v1Rows]);
 
 /// The `pedals` table as it stood from v6 to v8, shared by the fixtures of both
 /// versions because no step between them touches its shape.
@@ -172,7 +172,7 @@ const List<String> _v7Rows = [
 
 /// Opens a v7 database holding [_v7Rows] and lets drift upgrade it.
 AppDatabase openV7MultiEffectsDatabase() {
-  return _openAt(7, [
+  return openAt(7, [
     _pedalsAtV7,
     ..._snapshotSchemaAtV9,
     _pedalboardSlotsAtV10,
@@ -204,7 +204,7 @@ const List<String> _v9Rows = [
 /// This is the fixture the v10 rebuild is judged on: the reading in it was
 /// frozen before the table was rebuilt, and it has to come back out unchanged.
 AppDatabase openV9SnapshotDatabase() {
-  return _openAt(9, [
+  return openAt(9, [
     _pedalsAtV7,
     ..._snapshotSchemaAtV9,
     _pedalboardSlotsAtV10,
@@ -269,7 +269,7 @@ const List<String> _v10Rows = [
 /// written before a block had a type, and they have to come out as the blocks
 /// they always were, under the ids anything else already points at.
 AppDatabase openV10ChainDatabase() {
-  return _openAt(10, [
+  return openAt(10, [
     _pedalsAtV7,
     ..._snapshotTablesToV12,
     _pedalboardSlotsAtV10,
@@ -278,7 +278,10 @@ AppDatabase openV10ChainDatabase() {
 }
 
 /// A database that already holds [statements], at schema [version].
-AppDatabase _openAt(int version, List<String> statements) {
+///
+/// Shared with the fixtures in the files beside this one, which describe later
+/// versions than v1.
+AppDatabase openAt(int version, List<String> statements) {
   return AppDatabase(
     NativeDatabase.memory(
       setup: (rawDb) {

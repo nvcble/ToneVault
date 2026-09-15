@@ -5,12 +5,11 @@ import '../../../core/midi/midi_patch_selection.dart';
 import '../../../core/midi/patch_selection_defaults.dart';
 import 'midi_patch_recent_repository.dart';
 
-/// Loads a patch by number, using Bank Select and Program Change - the
-/// mechanism the MIDI module brief marks needing hardware verification.
+/// Loads a patch by number, using Bank Select and Program Change.
 ///
 /// [experimentalEnabled] is required on every call rather than checked once
-/// up front: nothing here trusts a caller to have already asked the user,
-/// including a caller written later that forgets to check the toggle itself.
+/// up front: nothing here trusts a caller to have already checked the
+/// enable flag itself, including a caller written later that forgets to.
 class PatchControlController {
   const PatchControlController(this._engine, this._recents);
 

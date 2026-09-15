@@ -5,6 +5,7 @@ import 'midi_device_profile.dart';
 import 'midi_endpoint.dart';
 import 'midi_log_entry.dart';
 import 'midi_message.dart';
+import 'midi_request_failure.dart';
 import 'midi_transport.dart';
 
 /// The one place that holds a live device connection.
@@ -95,19 +96,23 @@ class MidiEngine {
     return transport.disconnect();
   }
 
+  /// Sends [message], logging the attempt whether or not it got out.
+  ///
+  /// A refused send used to be logged as nothing at all, so a diagnostic
+  /// capture of a failing run looked identical to one where the app had never
+  /// tried - see [MidiLogEntry.failure].
   Future<void> send(MidiMessage message) async {
-    final transport = _transport;
-    if (transport == null) {
-      throw StateError('No MIDI transport attached.');
+    try {
+      final transport = _transport;
+      if (transport == null) {
+        throw StateError('No MIDI transport attached.');
+      }
+      await transport.send(message);
+      _recordOutgoing(message);
+    } catch (error) {
+      _recordOutgoing(message, failure: error.toString());
+      rethrow;
     }
-    await transport.send(message);
-    _record(
-      MidiLogEntry(
-        direction: MidiDirection.outgoing,
-        message: message,
-        timestamp: DateTime.now(),
-      ),
-    );
   }
 
   /// Sends each message in [messages] in order - a Bank Select ahead of a
@@ -118,9 +123,41 @@ class MidiEngine {
     }
   }
 
+  /// Sends [message], then waits for the first incoming message [matches]
+  /// accepts - a generic request/response pattern (a SysEx query and its
+  /// reply, for instance), not specific to any one device profile or
+  /// message shape.
+  ///
+  /// The listener is attached before sending, so a reply that arrives
+  /// immediately cannot be missed. Throws [MidiRequestTimedOut] if nothing
+  /// matching arrives within [timeout].
+  Future<MidiMessage> request(
+    MidiMessage message, {
+    required bool Function(MidiMessage message) matches,
+    Duration timeout = const Duration(seconds: 3),
+  }) async {
+    final response = incoming.firstWhere(matches).timeout(
+      timeout,
+      onTimeout: () => throw const MidiRequestTimedOut(),
+    );
+    await send(message);
+    return response;
+  }
+
   void _logIncoming(MidiMessage message) {
     _record(
       MidiLogEntry(direction: MidiDirection.incoming, message: message, timestamp: DateTime.now()),
+    );
+  }
+
+  void _recordOutgoing(MidiMessage message, {String? failure}) {
+    _record(
+      MidiLogEntry(
+        direction: MidiDirection.outgoing,
+        message: message,
+        timestamp: DateTime.now(),
+        failure: failure,
+      ),
     );
   }
 

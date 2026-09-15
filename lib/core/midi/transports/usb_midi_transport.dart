@@ -9,6 +9,7 @@ import '../midi_endpoint.dart';
 import '../midi_message.dart';
 import '../midi_transport.dart';
 import '../midi_transport_type.dart';
+import '../sysex_framing.dart';
 
 /// The only file in the app that imports `flutter_midi_command`.
 ///
@@ -123,16 +124,14 @@ class UsbMidiTransport implements MidiTransport {
     if (device == null || event.device.id != device.id) {
       return;
     }
-    final translated = _translate(event.message);
-    if (translated != null) {
-      _incomingController.add(translated);
-    }
+    _incomingController.add(_translate(event.message));
   }
 
-  /// Only the message shapes [MidiMessage] itself knows about; anything else
-  /// the plugin can parse (pitch bend, aftertouch, clock) is not something the
-  /// engine has a use for yet.
-  MidiMessage? _translate(fmc.MidiMessage message) {
+  /// Every message shape [MidiMessage] itself knows about is decoded into it;
+  /// anything else the plugin can parse (pitch bend, aftertouch, clock,
+  /// NRPN/RPN) becomes [UnknownMessage] instead of being dropped, so a
+  /// diagnostic capture never loses bytes a real device actually sent.
+  MidiMessage _translate(fmc.MidiMessage message) {
     return switch (message) {
       fmc.PCMessage m => ProgramChangeMessage(channel: m.channel, program: m.program),
       fmc.CCMessage m => ControlChangeMessage(
@@ -152,8 +151,9 @@ class UsbMidiTransport implements MidiTransport {
         velocity: m.velocity,
         isNoteOn: false,
       ),
-      fmc.SysExMessage m => SysExMessage(payload: m.rawData ?? m.headerData),
-      _ => null,
+      // The plugin hands over a whole frame; a payload is what is inside one.
+      fmc.SysExMessage m => SysExMessage(payload: sysExPayload(m.rawData ?? m.headerData)),
+      _ => UnknownMessage(raw: message.data),
     };
   }
 

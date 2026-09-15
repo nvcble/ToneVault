@@ -45,4 +45,12 @@ void main() {
       expect(message.toBytes(), [0xF0, 0x43, 0x10, 0xF7]);
     });
   });
+
+  group('UnknownMessage', () {
+    test('returns the raw bytes unchanged, for whatever this app cannot decode', () {
+      const message = UnknownMessage(raw: [0xE0, 0x00, 0x40]);
+
+      expect(message.toBytes(), [0xE0, 0x00, 0x40]);
+    });
+  });
 }

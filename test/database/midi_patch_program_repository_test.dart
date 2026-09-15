@@ -46,15 +46,25 @@ void main() {
     expect(number!.programNumber, 21);
   });
 
-  test('refuses a number outside 1-128', () async {
+  test('accepts 0, the device\'s first slot', () async {
+    // The whole point of the 0-127 range: a device's first preset is slot 0, so
+    // rejecting it made importing that preset impossible.
+    final repository = midiPatchProgramRepository(database);
+
+    await repository.setNumber(patchId: patchId, programNumber: 0);
+
+    expect((await repository.watchNumber(patchId).first)!.programNumber, 0);
+  });
+
+  test('refuses a number outside 0-127', () async {
     final repository = midiPatchProgramRepository(database);
 
     await expectLater(
-      repository.setNumber(patchId: patchId, programNumber: 0),
+      repository.setNumber(patchId: patchId, programNumber: -1),
       throwsA(isA<AppFailure>()),
     );
     await expectLater(
-      repository.setNumber(patchId: patchId, programNumber: 129),
+      repository.setNumber(patchId: patchId, programNumber: 128),
       throwsA(isA<AppFailure>()),
     );
   });

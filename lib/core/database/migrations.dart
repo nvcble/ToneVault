@@ -6,6 +6,8 @@ import 'migrations/schema_steps_v17.dart';
 import 'migrations/schema_steps_v18.dart';
 import 'migrations/schema_steps_v19.dart';
 import 'migrations/schema_steps_v20.dart';
+import 'migrations/schema_steps_v21.dart';
+import 'migrations/schema_steps_v22.dart';
 import 'migrations/schema_steps_v2_v9.dart';
 
 /// Schema history. Every version bump gets an entry here and a matching branch
@@ -99,7 +101,15 @@ import 'migrations/schema_steps_v2_v9.dart';
 /// - v20: midi_patch_favorites and midi_patch_recents, for the Patch
 ///   Browser's favorites and "Recently Used" sections. Purely additive: two
 ///   new tables, no ALTER and no DROP.
-const int currentSchemaVersion = 20;
+/// - v21: midi_preset_captures, a raw SysEx preset dump kept alongside
+///   whatever the decoder made of it, for the preset-import diagnostic
+///   milestone - see `NuxMg30V5PresetDecoder`. Purely additive: one new
+///   table, no ALTER and no DROP.
+/// - v22: midi_patch_program_numbers counted from 0 rather than 1, so a program
+///   number is the Program Change value itself and slot 0 is storable at all.
+///   Rebuilds the table to widen its CHECK to 0-127 and shifts existing rows
+///   down by one, which keeps every patch on the same physical slot.
+const int currentSchemaVersion = 22;
 
 MigrationStrategy buildMigrationStrategy(GeneratedDatabase database) {
   return MigrationStrategy(
@@ -118,6 +128,8 @@ MigrationStrategy buildMigrationStrategy(GeneratedDatabase database) {
       await upgradeThroughV18(database, from);
       await upgradeThroughV19(database, from);
       await upgradeThroughV20(database, from);
+      await upgradeThroughV21(database, from);
+      await upgradeThroughV22(database, from);
 
       if (to > currentSchemaVersion) {
         throw StateError('No migration registered up to schema $to.');

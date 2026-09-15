@@ -18,13 +18,15 @@ class MidiPatchProgramNumbers extends Table {
       .references(Patches, #id, onDelete: KeyAction.cascade)
       .unique()();
 
-  /// Counted from 1, matching the number a user reads off the device itself.
+  /// Counted from 0, the same as the Program Change value sent on the wire -
+  /// `buildPatchSelectionMessages` sends this number unchanged. A device's
+  /// first slot is 0 and its last is 127.
   IntColumn get programNumber => integer()();
 
   DateTimeColumn get updatedAt => dateTime()();
 
   @override
   List<String> get customConstraints => [
-    'CHECK (program_number BETWEEN 1 AND 128)',
+    'CHECK (program_number BETWEEN 0 AND 127)',
   ];
 }

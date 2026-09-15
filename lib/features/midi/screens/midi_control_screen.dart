@@ -4,28 +4,76 @@ import 'package:go_router/go_router.dart';
 
 import '../../../app/router/routes.dart';
 import '../../../app/theme/app_spacing.dart';
+import '../../../core/database/daos/midi_patch_program_number_dao.dart';
 import '../../../core/midi/midi_connection_state.dart';
 import '../../../core/midi/midi_device_profile.dart';
 import '../../../core/midi/midi_device_registry.dart';
 import '../../../shared/widgets/empty_state.dart';
 import '../../../shared/widgets/failure_snack_bar.dart';
 import '../../../shared/widgets/section_label.dart';
+import '../data/midi_connection_snapshot.dart';
 import '../providers/midi_connection_controller.dart';
+import '../providers/midi_device_link_providers.dart';
 import '../providers/midi_engine_providers.dart';
 import '../providers/midi_mapping_providers.dart';
 import '../providers/patch_control_providers.dart';
+import '../widgets/midi_module_menu.dart';
 import '../widgets/midi_scene_buttons.dart';
-import '../widgets/patch_selection_settings_card.dart';
+import '../widgets/patch_number_carousel.dart';
 
-/// Patch selection (experimental) and Pro Scene switching for one device.
-class MidiControlScreen extends ConsumerWidget {
+/// The scene switched to on first load and after every patch change - see
+/// `MidiSceneButtons`.
+const _defaultScene = 1;
+
+/// Patch selection and Pro Scene switching for one device.
+class MidiControlScreen extends ConsumerStatefulWidget {
   const MidiControlScreen({required this.profileId, super.key});
 
   final String profileId;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final profile = MidiDeviceRegistry.findById(profileId);
+  ConsumerState<MidiControlScreen> createState() => _MidiControlScreenState();
+}
+
+class _MidiControlScreenState extends ConsumerState<MidiControlScreen> {
+  bool _selectedDefaultScene = false;
+  ProviderSubscription<MidiConnectionSnapshot>? _connectionSubscription;
+
+  @override
+  void initState() {
+    super.initState();
+    // `listenManual` rather than `ref.listen`: this has to run once for
+    // whatever the connection already is when the page opens, not only for a
+    // change after that, and only `listenManual`'s subscription exposes the
+    // current value outside of build.
+    _connectionSubscription = ref.listenManual(
+      midiConnectionProvider(widget.profileId),
+      (previous, next) => _selectDefaultSceneOnceConnected(next),
+    );
+    _selectDefaultSceneOnceConnected(_connectionSubscription!.read());
+  }
+
+  @override
+  void dispose() {
+    _connectionSubscription?.close();
+    super.dispose();
+  }
+
+  void _selectDefaultSceneOnceConnected(MidiConnectionSnapshot snapshot) {
+    if (_selectedDefaultScene || snapshot.state != MidiConnectionState.connected) {
+      return;
+    }
+    final profile = MidiDeviceRegistry.findById(widget.profileId);
+    if (profile == null) {
+      return;
+    }
+    _selectedDefaultScene = true;
+    _sendScene(context, profile, _defaultScene);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final profile = MidiDeviceRegistry.findById(widget.profileId);
     if (profile == null) {
       return const Scaffold(
         body: EmptyState(icon: Icons.error_outline, title: 'Unknown device'),
@@ -33,31 +81,22 @@ class MidiControlScreen extends ConsumerWidget {
     }
 
     final connected =
-        ref.watch(midiConnectionProvider(profileId)).state ==
+        ref.watch(midiConnectionProvider(widget.profileId)).state ==
         MidiConnectionState.connected;
-    final experimentalEnabled = ref.watch(
-      experimentalProgramChangeEnabledProvider,
-    );
-    final canLoadPatch = connected && experimentalEnabled;
-    final currentPatch = ref.watch(currentPatchNumberProvider(profileId));
-    final overrideAsync = ref.watch(patchSelectionOverrideProvider(profileId));
-    final defaults = profile.patchSelectionDefaults;
+    final currentPatch = ref.watch(currentPatchNumberProvider(widget.profileId));
+    final currentScene = ref.watch(currentSceneNumberProvider(widget.profileId));
+    // Names the grid can show alongside a slot's number, for whichever slots
+    // this unit's owner has actually given a patch to.
+    final unitId = ref.watch(linkedPedalProvider(widget.profileId)).valueOrNull?.id;
+    final numbered = unitId == null
+        ? const <NumberedPatch>[]
+        : ref.watch(numberedPatchesProvider(unitId)).valueOrNull ?? const <NumberedPatch>[];
+    final patchNames = {for (final row in numbered) row.programNumber: row.patch.name};
 
     return Scaffold(
       appBar: AppBar(
         title: Text('${profile.displayName} control'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.tune),
-            tooltip: 'CC mapping',
-            onPressed: () => context.push(Routes.midiMapping(profileId)),
-          ),
-          IconButton(
-            icon: const Icon(Icons.terminal),
-            tooltip: 'MIDI Monitor',
-            onPressed: () => context.push(Routes.midiMonitor(profileId)),
-          ),
-        ],
+        actions: [MidiModuleMenu(profileId: widget.profileId)],
       ),
       body: ListView(
         children: [
@@ -66,87 +105,18 @@ class MidiControlScreen extends ConsumerWidget {
             child: FilledButton.icon(
               icon: const Icon(Icons.search),
               label: const Text('Select Patch'),
-              onPressed: () => context.push(Routes.midiPatchBrowser(profileId)),
+              onPressed: () => context.push(Routes.midiPatchBrowser(widget.profileId)),
             ),
           ),
-          const SectionLabel('Patch selection (experimental)'),
+          const SectionLabel('Patch selection'),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                SwitchListTile(
-                  contentPadding: EdgeInsets.zero,
-                  title: const Text('Enable experimental Program Change'),
-                  subtitle: const Text(
-                    'Unverified against hardware. Watch the MIDI Monitor while testing.',
-                  ),
-                  value: experimentalEnabled,
-                  onChanged: (value) =>
-                      ref
-                              .read(
-                                experimentalProgramChangeEnabledProvider
-                                    .notifier,
-                              )
-                              .state =
-                          value,
-                ),
-                if (defaults != null)
-                  overrideAsync.when(
-                    data: (override) => PatchSelectionSettingsCard(
-                      defaults: defaults,
-                      strategyOverride: override,
-                      onUsesBankSelectChanged: (value) => ref
-                          .read(patchSelectionRepositoryProvider)
-                          .setOverride(profile: profile, usesBankSelect: value),
-                      onBankSelectMsbChanged: (value) => ref
-                          .read(patchSelectionRepositoryProvider)
-                          .setOverride(
-                            profile: profile,
-                            bankSelectMsb: value,
-                            clearBankSelectMsb: value == null,
-                          ),
-                      onBankSelectLsbChanged: (value) => ref
-                          .read(patchSelectionRepositoryProvider)
-                          .setOverride(
-                            profile: profile,
-                            bankSelectLsb: value,
-                            clearBankSelectLsb: value == null,
-                          ),
-                    ),
-                    loading: () => const SizedBox.shrink(),
-                    error: (error, stackTrace) => const SizedBox.shrink(),
-                  ),
-                const SizedBox(height: AppSpacing.md),
-                Row(
-                  children: [
-                    IconButton(
-                      icon: const Icon(Icons.remove_circle_outline),
-                      onPressed: canLoadPatch
-                          ? () => _load(context, ref, profile, currentPatch - 1)
-                          : null,
-                    ),
-                    Expanded(
-                      child: Text(
-                        'Patch $currentPatch',
-                        textAlign: TextAlign.center,
-                      ),
-                    ),
-                    IconButton(
-                      icon: const Icon(Icons.add_circle_outline),
-                      onPressed: canLoadPatch
-                          ? () => _load(context, ref, profile, currentPatch + 1)
-                          : null,
-                    ),
-                  ],
-                ),
-                FilledButton(
-                  onPressed: canLoadPatch
-                      ? () => _load(context, ref, profile, currentPatch)
-                      : null,
-                  child: const Text('Load patch'),
-                ),
-              ],
+            child: PatchNumberCarousel(
+              selected: currentPatch,
+              patchNames: patchNames,
+              onSelected: (number) =>
+                  ref.read(currentPatchNumberProvider(widget.profileId).notifier).state = number,
+              onLoad: (number) => _load(context, profile, number),
             ),
           ),
           const SectionLabel('Scenes'),
@@ -158,47 +128,24 @@ class MidiControlScreen extends ConsumerWidget {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
             child: MidiSceneButtons(
-              onSelect: connected
-                  ? (scene) => _sendScene(context, ref, profile, scene)
-                  : null,
+              selectedScene: currentScene,
+              onSelect: connected ? (scene) => _sendScene(context, profile, scene) : null,
             ),
-          ),
-          const SectionLabel('More'),
-          ListTile(
-            leading: const Icon(Icons.play_circle_outline),
-            title: const Text('Live Control'),
-            subtitle: const Text('Large buttons for playing'),
-            onTap: () => context.push(Routes.liveControl(profileId)),
-          ),
-          ListTile(
-            leading: const Icon(Icons.folder_copy_outlined),
-            title: const Text('Patches'),
-            subtitle: const Text('Program numbers, scenes and sending'),
-            onTap: () => context.push(Routes.midiPatches(profileId)),
-          ),
-          ListTile(
-            leading: const Icon(Icons.list),
-            title: const Text('All parameters'),
-            subtitle: const Text('Blocks, models and knobs'),
-            onTap: () => context.push(Routes.midiParameters(profileId)),
           ),
         ],
       ),
     );
   }
 
-  Future<void> _load(
-    BuildContext context,
-    WidgetRef ref,
-    MidiDeviceProfile profile,
-    int patchNumber,
-  ) async {
-    if (patchNumber < 1) {
+  Future<void> _load(BuildContext context, MidiDeviceProfile profile, int patchNumber) async {
+    // Program numbers run 0-127; stepping past either end does nothing rather
+    // than sending a value the wire cannot carry.
+    if (patchNumber < 0 || patchNumber > 127) {
       return;
     }
     try {
       final override = await ref.read(
-        patchSelectionOverrideProvider(profileId).future,
+        patchSelectionOverrideProvider(widget.profileId).future,
       );
       await ref
           .read(patchControlControllerProvider)
@@ -206,26 +153,22 @@ class MidiControlScreen extends ConsumerWidget {
             profile: profile,
             patchNumber: patchNumber,
             override: override,
-            experimentalEnabled: ref.read(
-              experimentalProgramChangeEnabledProvider,
-            ),
+            experimentalEnabled: ref.read(experimentalProgramChangeEnabledProvider),
           );
-      ref.read(currentPatchNumberProvider(profileId).notifier).state =
-          patchNumber;
+      ref.read(currentPatchNumberProvider(widget.profileId).notifier).state = patchNumber;
+      // A patch change resets which scene is active on the device itself,
+      // so the app follows it back to the same default rather than showing
+      // a scene that no longer matches what actually loaded.
+      if (context.mounted) await _sendScene(context, profile, _defaultScene);
     } catch (error) {
       if (context.mounted) showFailureSnackBar(context, error);
     }
   }
 
-  Future<void> _sendScene(
-    BuildContext context,
-    WidgetRef ref,
-    MidiDeviceProfile profile,
-    int scene,
-  ) async {
+  Future<void> _sendScene(BuildContext context, MidiDeviceProfile profile, int scene) async {
     try {
       final parameters = await ref.read(
-        effectiveParametersProvider(profileId).future,
+        effectiveParametersProvider(widget.profileId).future,
       );
       await ref
           .read(midiParameterSenderProvider)
@@ -235,6 +178,7 @@ class MidiControlScreen extends ConsumerWidget {
             parameterName: 'Scene',
             value: scene - 1,
           );
+      ref.read(currentSceneNumberProvider(widget.profileId).notifier).state = scene;
     } catch (error) {
       if (context.mounted) showFailureSnackBar(context, error);
     }

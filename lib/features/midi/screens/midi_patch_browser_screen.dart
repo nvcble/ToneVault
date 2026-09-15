@@ -10,6 +10,7 @@ import '../../../core/midi/midi_device_registry.dart';
 import '../../../shared/widgets/empty_state.dart';
 import '../../../shared/widgets/failure_snack_bar.dart';
 import '../../../shared/widgets/section_label.dart';
+import '../data/midi_patch_bank_grouping.dart';
 import '../data/midi_patch_recent_repository.dart';
 import '../providers/midi_connection_controller.dart';
 import '../providers/midi_device_link_providers.dart';
@@ -152,8 +153,10 @@ class _BrowserState extends ConsumerState<_Browser> {
                             recentNumberedPatches(patches, recents: recentRows),
                             favorites,
                           ),
-                        const SectionLabel('All Patches'),
-                        ...patches.map((patch) => _tile(patch, favorites)),
+                        for (final bank in groupPatchesByBank(patches)) ...[
+                          SectionLabel('Bank ${bank.bankNumber.toString().padLeft(2, '0')}'),
+                          ...bank.patches.map((patch) => _tile(patch, favorites)),
+                        ],
                       ],
                     ),
             ),

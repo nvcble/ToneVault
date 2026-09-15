@@ -10,6 +10,7 @@ class MidiConnectionSnapshot {
     required this.state,
     required this.endpoints,
     this.errorMessage,
+    this.isBusy = false,
   });
 
   factory MidiConnectionSnapshot.initial(MidiDeviceProfile profile) =>
@@ -24,6 +25,11 @@ class MidiConnectionSnapshot {
   final List<MidiEndpoint> endpoints;
   final String? errorMessage;
 
+  /// Whether a scan or connect attempt is in flight - what a progress
+  /// indicator reads, so the screen never looks idle while it is actually
+  /// waiting on the platform's MIDI plugin.
+  final bool isBusy;
+
   bool get hasDetectedDevice => endpoints.isNotEmpty;
 
   MidiConnectionSnapshot copyWith({
@@ -31,10 +37,12 @@ class MidiConnectionSnapshot {
     List<MidiEndpoint>? endpoints,
     String? errorMessage,
     bool clearError = false,
+    bool? isBusy,
   }) => MidiConnectionSnapshot(
     profile: profile,
     state: state ?? this.state,
     endpoints: endpoints ?? this.endpoints,
     errorMessage: clearError ? null : (errorMessage ?? this.errorMessage),
+    isBusy: isBusy ?? this.isBusy,
   );
 }

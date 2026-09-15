@@ -113,6 +113,14 @@ abstract final class Routes {
 
   static String midiMonitor(String deviceId) => '$midi/$deviceId/monitor';
 
+  /// The bounded capture/raw-sender tool - see `MidiDiagnosticsScreen`.
+  /// Distinct from [midiMonitor], which is an always-on rolling log.
+  static String midiDiagnostics(String deviceId) => '$midi/$deviceId/diagnostics';
+
+  /// What the open capture has recorded - see `MidiCaptureLogScreen`. A page of
+  /// its own rather than a list on [midiDiagnostics], which it would bury.
+  static String midiCaptureLog(String deviceId) => '$midi/$deviceId/capture-log';
+
   static String midiPatches(String deviceId) => '$midi/$deviceId/patches';
 
   /// A patch's own scenes, reached through the device rather than through a
@@ -129,6 +137,11 @@ abstract final class Routes {
   /// Read-only preset import - see `PresetImportScreen`.
   static String midiPresetImport(String deviceId) => '$midi/$deviceId/import';
 
+  /// Reviewing already-captured presets against the experimental decoder -
+  /// see `CapturedPresetImportScreen`. Distinct from [midiPresetImport],
+  /// which is the real (currently unavailable) transfer.
+  static String midiCapturedPresetImport(String deviceId) => '$midi/$deviceId/captured-presets';
+
   /// A scene's own signal chain, for turning blocks on and off and editing
   /// their knobs before sending. See `MidiPatchEditorScreen`.
   static String midiSceneEditor(String deviceId, int patchId, int sceneId) =>
@@ -144,7 +157,10 @@ abstract final class Routes {
   static const String liveControlSegment = ':$midiDeviceIdParam/live';
   static const String midiPatchBrowserSegment = ':$midiDeviceIdParam/browse';
   static const String midiPresetImportSegment = ':$midiDeviceIdParam/import';
+  static const String midiCapturedPresetImportSegment = ':$midiDeviceIdParam/captured-presets';
   static const String midiMonitorSegment = ':$midiDeviceIdParam/monitor';
+  static const String midiDiagnosticsSegment = ':$midiDeviceIdParam/diagnostics';
+  static const String midiCaptureLogSegment = ':$midiDeviceIdParam/capture-log';
   static const String midiPatchesSegment = ':$midiDeviceIdParam/patches';
   static const String midiPatchScenesSegment =
       ':$midiDeviceIdParam/patches/:$midiPatchIdParam/scenes';
