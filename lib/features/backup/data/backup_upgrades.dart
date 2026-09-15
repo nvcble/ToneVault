@@ -146,6 +146,41 @@ Map<String, dynamic> upgradeBackupTables(
     }
   }
 
+  if (from < 18) {
+    // v18 let a user remap a device's CC assignments and its patch-selection
+    // strategy, the way NUX's own QuickTone app lets someone remap the MG-30
+    // itself. A file from before it recorded no such thing, and empty is the
+    // only honest reading: nobody had customized anything yet, because there
+    // was nowhere to.
+    for (final table in const [
+      'midiParameterOverrides',
+      'midiPatchSelectionSettings',
+    ]) {
+      upgraded.putIfAbsent(table, () => const <dynamic>[]);
+    }
+  }
+
+  if (from < 19) {
+    // v19 let a logged multi-effects unit be linked to a MIDI device profile,
+    // and its patches and scenes given a program/scene number. A file from
+    // before it has no such link, because there was nothing yet to link to.
+    for (final table in const [
+      'midiDeviceLinks',
+      'midiPatchProgramNumbers',
+      'midiSceneNumbers',
+    ]) {
+      upgraded.putIfAbsent(table, () => const <dynamic>[]);
+    }
+  }
+
+  if (from < 20) {
+    // v20 added the Patch Browser's favorites and "Recently Used" sections. A
+    // file from before it recorded neither, because there was nowhere to.
+    for (final table in const ['midiPatchFavorites', 'midiPatchRecents']) {
+      upgraded.putIfAbsent(table, () => const <dynamic>[]);
+    }
+  }
+
   return upgraded;
 }
 

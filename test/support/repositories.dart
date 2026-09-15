@@ -5,11 +5,20 @@ import 'package:tone_vault/core/database/daos/academy_progress_dao.dart';
 import 'package:tone_vault/core/database/daos/backup_dao.dart';
 import 'package:tone_vault/core/database/daos/change_log_dao.dart';
 import 'package:tone_vault/core/database/daos/configuration_dao.dart';
+import 'package:tone_vault/core/database/daos/midi_device_link_dao.dart';
+import 'package:tone_vault/core/database/daos/midi_parameter_override_dao.dart';
+import 'package:tone_vault/core/database/daos/midi_patch_favorite_dao.dart';
+import 'package:tone_vault/core/database/daos/midi_patch_program_number_dao.dart';
+import 'package:tone_vault/core/database/daos/midi_patch_recent_dao.dart';
+import 'package:tone_vault/core/database/daos/midi_patch_selection_settings_dao.dart';
+import 'package:tone_vault/core/database/daos/midi_scene_number_dao.dart';
 import 'package:tone_vault/core/database/daos/patch_dao.dart';
 import 'package:tone_vault/core/database/daos/pedal_control_dao.dart';
 import 'package:tone_vault/core/database/daos/pedal_dao.dart';
 import 'package:tone_vault/core/database/daos/pedal_replacement_dao.dart';
 import 'package:tone_vault/core/database/daos/scene_dao.dart';
+import 'package:tone_vault/core/midi/midi_engine.dart';
+import 'package:tone_vault/core/midi/preset_transfer/nux_mg30_v5_preset_transfer_service.dart';
 import 'package:tone_vault/features/academy/data/bookmark_repository.dart';
 import 'package:tone_vault/features/academy/data/curriculum_exporter.dart';
 import 'package:tone_vault/features/academy/data/curriculum_importer.dart';
@@ -20,6 +29,15 @@ import 'package:tone_vault/features/configurations/data/configuration_repository
 import 'package:tone_vault/features/configurations/data/configuration_value_repository.dart';
 import 'package:tone_vault/features/controls/data/control_repository.dart';
 import 'package:tone_vault/features/history/data/change_log_repository.dart';
+import 'package:tone_vault/features/midi/data/midi_device_link_repository.dart';
+import 'package:tone_vault/features/midi/data/midi_parameter_mapping_repository.dart';
+import 'package:tone_vault/features/midi/data/midi_patch_favorite_repository.dart';
+import 'package:tone_vault/features/midi/data/midi_patch_program_repository.dart';
+import 'package:tone_vault/features/midi/data/midi_patch_recent_repository.dart';
+import 'package:tone_vault/features/midi/data/midi_scene_number_repository.dart';
+import 'package:tone_vault/features/midi/data/patch_control_controller.dart';
+import 'package:tone_vault/features/midi/data/patch_selection_repository.dart';
+import 'package:tone_vault/features/midi/data/preset_import_service.dart';
 import 'package:tone_vault/features/patches/data/patch_repository.dart';
 import 'package:tone_vault/features/patches/data/scene_duplicator.dart';
 import 'package:tone_vault/features/patches/data/scene_pedal_repository.dart';
@@ -202,6 +220,67 @@ BookmarkRepository bookmarkRepository(
   DateTime Function()? clock,
 }) {
   return BookmarkRepository(AcademyBookmarkDao(database), clock: clock);
+}
+
+MidiParameterMappingRepository midiParameterMappingRepository(AppDatabase database) {
+  return MidiParameterMappingRepository(MidiParameterOverrideDao(database));
+}
+
+PatchSelectionRepository patchSelectionRepository(AppDatabase database) {
+  return PatchSelectionRepository(MidiPatchSelectionSettingsDao(database));
+}
+
+MidiDeviceLinkRepository midiDeviceLinkRepository(
+  AppDatabase database, {
+  DateTime Function()? clock,
+  ChangeLogRepository? changeLog,
+}) {
+  return MidiDeviceLinkRepository(
+    MidiDeviceLinkDao(database),
+    pedalRepository(database, clock: clock, changeLog: changeLog),
+    controlRepository(database, clock: clock, changeLog: changeLog),
+  );
+}
+
+MidiPatchProgramRepository midiPatchProgramRepository(AppDatabase database) {
+  return MidiPatchProgramRepository(MidiPatchProgramNumberDao(database));
+}
+
+MidiSceneNumberRepository midiSceneNumberRepository(AppDatabase database) {
+  return MidiSceneNumberRepository(MidiSceneNumberDao(database));
+}
+
+MidiPatchFavoriteRepository midiPatchFavoriteRepository(AppDatabase database) {
+  return MidiPatchFavoriteRepository(MidiPatchFavoriteDao(database));
+}
+
+MidiPatchRecentRepository midiPatchRecentRepository(AppDatabase database) {
+  return MidiPatchRecentRepository(MidiPatchRecentDao(database));
+}
+
+/// A patch-control controller wired the way the provider wires it, for tests
+/// that exercise `loadPatch`'s "Recently Used" side effect.
+PatchControlController patchControlController(AppDatabase database, MidiEngine engine) {
+  return PatchControlController(engine, midiPatchRecentRepository(database));
+}
+
+/// A preset-import service wired the way the provider wires it, for one
+/// [transfer] - typically a `MockNuxMg30V5PresetTransferService`, since no
+/// real implementation exists yet.
+PresetImportService presetImportService(
+  AppDatabase database,
+  NuxMg30V5PresetTransferService transfer,
+) {
+  return PresetImportService(
+    transfer,
+    patchRepository(database),
+    midiPatchProgramRepository(database),
+    sceneRepository(database),
+    scenePedalRepository(database),
+    sceneValueRepository(database),
+    pedalRepository(database),
+    controlRepository(database),
+  );
 }
 
 SceneValueRepository sceneValueRepository(

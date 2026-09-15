@@ -160,6 +160,33 @@ void main() {
     expect(progress.single['practiceSeconds'], 5400);
   });
 
+  test('a file from before MIDI mapping had no customization to lose', () {
+    final tables = upgradeBackupTables({'pedals': const <dynamic>[]}, from: 17);
+
+    // Nobody had customized anything, because there was nowhere to: v18 is what
+    // added the ability to remap a CC in the first place.
+    expect(tables['midiParameterOverrides'], isEmpty);
+    expect(tables['midiPatchSelectionSettings'], isEmpty);
+  });
+
+  test('a file from before device linking had no gear to link', () {
+    final tables = upgradeBackupTables({'pedals': const <dynamic>[]}, from: 18);
+
+    // Nobody had linked a pedal to a device profile, because v19 is what added
+    // the link itself, and the patch/scene numbers that go with it.
+    expect(tables['midiDeviceLinks'], isEmpty);
+    expect(tables['midiPatchProgramNumbers'], isEmpty);
+    expect(tables['midiSceneNumbers'], isEmpty);
+  });
+
+  test('a file from before the Patch Browser had nothing starred or recent', () {
+    final tables = upgradeBackupTables({'pedals': const <dynamic>[]}, from: 19);
+
+    // v20 is what added favorites and "Recently Used" in the first place.
+    expect(tables['midiPatchFavorites'], isEmpty);
+    expect(tables['midiPatchRecents'], isEmpty);
+  });
+
   test('the snapshots of an older file are left where they are', () {
     final tables = upgradeBackupTables({
       ...atV10(),

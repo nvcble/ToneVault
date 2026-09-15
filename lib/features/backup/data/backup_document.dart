@@ -71,6 +71,13 @@ String encodeVaultBackup(VaultRows rows, {required DateTime exportedAt}) {
       'academyExerciseProgress': _encode(rows.academyExerciseProgress),
       'academyPracticeSessions': _encode(rows.academyPracticeSessions),
       'academyBookmarks': _encode(rows.academyBookmarks),
+      'midiParameterOverrides': _encode(rows.midiParameterOverrides),
+      'midiPatchSelectionSettings': _encode(rows.midiPatchSelectionSettings),
+      'midiDeviceLinks': _encode(rows.midiDeviceLinks),
+      'midiPatchProgramNumbers': _encode(rows.midiPatchProgramNumbers),
+      'midiSceneNumbers': _encode(rows.midiSceneNumbers),
+      'midiPatchFavorites': _encode(rows.midiPatchFavorites),
+      'midiPatchRecents': _encode(rows.midiPatchRecents),
     },
   };
 
@@ -194,6 +201,37 @@ VaultRows _rows(Map<String, dynamic> tables) => (
     tables,
     'academyBookmarks',
     AcademyBookmark.fromJson,
+  ),
+  midiParameterOverrides: _decode(
+    tables,
+    'midiParameterOverrides',
+    MidiParameterOverride.fromJson,
+  ),
+  midiPatchSelectionSettings: _decode(
+    tables,
+    'midiPatchSelectionSettings',
+    MidiPatchSelectionSetting.fromJson,
+  ),
+  midiDeviceLinks: _decode(tables, 'midiDeviceLinks', MidiDeviceLink.fromJson),
+  midiPatchProgramNumbers: _decode(
+    tables,
+    'midiPatchProgramNumbers',
+    MidiPatchProgramNumber.fromJson,
+  ),
+  midiSceneNumbers: _decode(
+    tables,
+    'midiSceneNumbers',
+    MidiSceneNumber.fromJson,
+  ),
+  midiPatchFavorites: _decode(
+    tables,
+    'midiPatchFavorites',
+    MidiPatchFavorite.fromJson,
+  ),
+  midiPatchRecents: _decode(
+    tables,
+    'midiPatchRecents',
+    MidiPatchRecent.fromJson,
   ),
 );
 

@@ -275,6 +275,81 @@ Future<void> fillVault(AppDatabase database) async {
   );
 
   await _fillAcademy(database, moment);
+  await _fillMidi(database, moment, unitId: unitId, patchId: patchId, sceneId: sceneId);
+}
+
+/// A remapped CC, a patch-selection strategy, a device link and a
+/// program/scene number, so a backup carries a user's own MIDI setup the same
+/// way it carries their gear.
+Future<void> _fillMidi(
+  AppDatabase database,
+  DateTime moment, {
+  required int unitId,
+  required int patchId,
+  required int sceneId,
+}) async {
+  await database
+      .into(database.midiParameterOverrides)
+      .insert(
+        MidiParameterOverridesCompanion.insert(
+          deviceProfileId: 'nux_mg30_v5',
+          parameterName: 'Scene',
+          ccNumber: 90,
+          updatedAt: moment,
+        ),
+      );
+
+  await database
+      .into(database.midiPatchSelectionSettings)
+      .insert(
+        MidiPatchSelectionSettingsCompanion.insert(
+          deviceProfileId: 'nux_mg30_v5',
+          usesBankSelect: const Value(false),
+          updatedAt: moment,
+        ),
+      );
+
+  await database
+      .into(database.midiDeviceLinks)
+      .insert(
+        MidiDeviceLinksCompanion.insert(
+          pedalId: unitId,
+          deviceProfileId: 'nux_mg30_v5',
+          linkedAt: moment,
+        ),
+      );
+
+  await database
+      .into(database.midiPatchProgramNumbers)
+      .insert(
+        MidiPatchProgramNumbersCompanion.insert(
+          patchId: patchId,
+          programNumber: 21,
+          updatedAt: moment,
+        ),
+      );
+
+  await database
+      .into(database.midiSceneNumbers)
+      .insert(
+        MidiSceneNumbersCompanion.insert(
+          sceneId: sceneId,
+          sceneNumber: 1,
+          updatedAt: moment,
+        ),
+      );
+
+  await database
+      .into(database.midiPatchFavorites)
+      .insert(
+        MidiPatchFavoritesCompanion.insert(patchId: patchId, createdAt: moment),
+      );
+
+  await database
+      .into(database.midiPatchRecents)
+      .insert(
+        MidiPatchRecentsCompanion.insert(patchId: patchId, lastUsedAt: moment),
+      );
 }
 
 /// A course with a module, a lesson, an exercise, the progress against it - state,

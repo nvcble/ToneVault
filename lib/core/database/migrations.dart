@@ -3,6 +3,9 @@ import 'package:drift/drift.dart';
 import 'migrations/schema_steps_v10_v13.dart';
 import 'migrations/schema_steps_v15_v16.dart';
 import 'migrations/schema_steps_v17.dart';
+import 'migrations/schema_steps_v18.dart';
+import 'migrations/schema_steps_v19.dart';
+import 'migrations/schema_steps_v20.dart';
 import 'migrations/schema_steps_v2_v9.dart';
 
 /// Schema history. Every version bump gets an entry here and a matching branch
@@ -81,7 +84,22 @@ import 'migrations/schema_steps_v2_v9.dart';
 ///   in it, so inventing sittings from it would be inventing evenings. The running
 ///   total stays on the progress row rather than becoming a sum over the new table,
 ///   which is what keeps an upgrading phone's hours from going back to nought.
-const int currentSchemaVersion = 17;
+/// - v18: midi_parameter_overrides, a user's own CC number for a MIDI device
+///   parameter where it differs from the device profile's shipped default -
+///   the ToneVault equivalent of remapping a CC in NUX's own QuickTone app -
+///   and midi_patch_selection_settings, the same for the Bank Select /
+///   Program Change strategy a patch load uses. Purely additive: two new
+///   tables and one index, no ALTER and no DROP.
+/// - v19: midi_device_links (which owned pedal is which device profile),
+///   midi_patch_program_numbers (which Program Change number a patch loads
+///   as) and midi_scene_numbers (which Pro Scene slot a scene sends as) -
+///   what turns an ordinary logged multi-effects unit into one the MIDI
+///   module can connect to and send patches/scenes to. Purely additive:
+///   three new tables and one index, no ALTER and no DROP.
+/// - v20: midi_patch_favorites and midi_patch_recents, for the Patch
+///   Browser's favorites and "Recently Used" sections. Purely additive: two
+///   new tables, no ALTER and no DROP.
+const int currentSchemaVersion = 20;
 
 MigrationStrategy buildMigrationStrategy(GeneratedDatabase database) {
   return MigrationStrategy(
@@ -97,6 +115,9 @@ MigrationStrategy buildMigrationStrategy(GeneratedDatabase database) {
       await upgradeThroughV13(database, from);
       await upgradeThroughV16(database, from);
       await upgradeThroughV17(database, from);
+      await upgradeThroughV18(database, from);
+      await upgradeThroughV19(database, from);
+      await upgradeThroughV20(database, from);
 
       if (to > currentSchemaVersion) {
         throw StateError('No migration registered up to schema $to.');

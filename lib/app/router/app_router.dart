@@ -5,6 +5,7 @@ import '../../features/academy/routes/academy_routes.dart';
 import '../../features/academy/screens/practice_metronome_screen.dart';
 import '../../features/dashboard/screens/dashboard_screen.dart';
 import '../../features/history/screens/history_screen.dart';
+import '../../features/midi/routes/midi_routes.dart';
 import '../../features/pedals/routes/pedal_routes.dart';
 import '../../features/settings/screens/settings_screen.dart';
 import '../../shared/widgets/app_scaffold.dart';
@@ -62,6 +63,7 @@ GoRouter createAppRouter() {
         ],
       ),
       ...academyRoutes(),
+      ...midiRoutes(),
       // Through the Academy's wrapper rather than straight to the metronome, so the
       // time it counts is credited to the lesson that opened it - and so the time it
       // counted for nobody is cleared instead of landing on the next lesson.

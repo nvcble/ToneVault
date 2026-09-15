@@ -40,6 +40,13 @@ void main() {
     academyExerciseProgress: const [],
     academyPracticeSessions: const [],
     academyBookmarks: const [],
+    midiParameterOverrides: const [],
+    midiPatchSelectionSettings: const [],
+    midiDeviceLinks: const [],
+    midiPatchProgramNumbers: const [],
+    midiSceneNumbers: const [],
+    midiPatchFavorites: const [],
+    midiPatchRecents: const [],
   );
 
   setUp(() {
@@ -81,6 +88,13 @@ void main() {
     expect(rows.academyExerciseProgress, hasLength(1));
     expect(rows.academyPracticeSessions, hasLength(1));
     expect(rows.academyBookmarks, hasLength(1));
+    expect(rows.midiParameterOverrides, hasLength(1));
+    expect(rows.midiPatchSelectionSettings, hasLength(1));
+    expect(rows.midiDeviceLinks, hasLength(1));
+    expect(rows.midiPatchProgramNumbers, hasLength(1));
+    expect(rows.midiSceneNumbers, hasLength(1));
+    expect(rows.midiPatchFavorites, hasLength(1));
+    expect(rows.midiPatchRecents, hasLength(1));
   });
 
   test('an empty vault reads as empty lists', () async {
@@ -88,6 +102,52 @@ void main() {
 
     expect(rows.pedals, isEmpty);
     expect(rows.signalEndpoints, isEmpty);
+    expect(rows.midiParameterOverrides, isEmpty);
+    expect(rows.midiPatchSelectionSettings, isEmpty);
+    expect(rows.midiDeviceLinks, isEmpty);
+    expect(rows.midiPatchProgramNumbers, isEmpty);
+    expect(rows.midiSceneNumbers, isEmpty);
+    expect(rows.midiPatchFavorites, isEmpty);
+    expect(rows.midiPatchRecents, isEmpty);
+  });
+
+  test('a user\'s MIDI remapping survives being backed up', () async {
+    await fillVault(database);
+    final backed = await database.backupDao.readEverything();
+
+    await database.backupDao.writeEverything(backed);
+
+    final rows = await database.backupDao.readEverything();
+    expect(rows.midiParameterOverrides, backed.midiParameterOverrides);
+    expect(rows.midiParameterOverrides.single.ccNumber, 90);
+    expect(rows.midiPatchSelectionSettings, backed.midiPatchSelectionSettings);
+    expect(rows.midiPatchSelectionSettings.single.usesBankSelect, isFalse);
+  });
+
+  test('a device link and its patch/scene numbers survive being backed up', () async {
+    await fillVault(database);
+    final backed = await database.backupDao.readEverything();
+
+    await database.backupDao.writeEverything(backed);
+
+    final rows = await database.backupDao.readEverything();
+    expect(rows.midiDeviceLinks, backed.midiDeviceLinks);
+    expect(rows.midiDeviceLinks.single.deviceProfileId, 'nux_mg30_v5');
+    expect(rows.midiPatchProgramNumbers, backed.midiPatchProgramNumbers);
+    expect(rows.midiPatchProgramNumbers.single.programNumber, 21);
+    expect(rows.midiSceneNumbers, backed.midiSceneNumbers);
+    expect(rows.midiSceneNumbers.single.sceneNumber, 1);
+  });
+
+  test('favorites and recents survive being backed up', () async {
+    await fillVault(database);
+    final backed = await database.backupDao.readEverything();
+
+    await database.backupDao.writeEverything(backed);
+
+    final rows = await database.backupDao.readEverything();
+    expect(rows.midiPatchFavorites, backed.midiPatchFavorites);
+    expect(rows.midiPatchRecents, backed.midiPatchRecents);
   });
 
   test('writes a vault back with its ids intact', () async {

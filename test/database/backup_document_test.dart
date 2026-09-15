@@ -50,6 +50,13 @@ void main() {
       'academyExerciseProgress',
       'academyPracticeSessions',
       'academyBookmarks',
+      'midiParameterOverrides',
+      'midiPatchSelectionSettings',
+      'midiDeviceLinks',
+      'midiPatchProgramNumbers',
+      'midiSceneNumbers',
+      'midiPatchFavorites',
+      'midiPatchRecents',
     ]) {
       tables.remove(table);
     }
@@ -95,6 +102,13 @@ void main() {
     expect(backup.rows.academyExerciseProgress, saved.academyExerciseProgress);
     expect(backup.rows.academyPracticeSessions, saved.academyPracticeSessions);
     expect(backup.rows.academyBookmarks, saved.academyBookmarks);
+    expect(backup.rows.midiParameterOverrides, saved.midiParameterOverrides);
+    expect(backup.rows.midiPatchSelectionSettings, saved.midiPatchSelectionSettings);
+    expect(backup.rows.midiDeviceLinks, saved.midiDeviceLinks);
+    expect(backup.rows.midiPatchProgramNumbers, saved.midiPatchProgramNumbers);
+    expect(backup.rows.midiSceneNumbers, saved.midiSceneNumbers);
+    expect(backup.rows.midiPatchFavorites, saved.midiPatchFavorites);
+    expect(backup.rows.midiPatchRecents, saved.midiPatchRecents);
   });
 
   test('a date written in the device zone keeps its instant', () async {
@@ -208,6 +222,13 @@ void main() {
     expect(backup.rows.sceneValues, isEmpty);
     expect(backup.rows.academyCourses, isEmpty);
     expect(backup.rows.academyProgress, isEmpty);
+    expect(backup.rows.midiParameterOverrides, isEmpty);
+    expect(backup.rows.midiPatchSelectionSettings, isEmpty);
+    expect(backup.rows.midiDeviceLinks, isEmpty);
+    expect(backup.rows.midiPatchProgramNumbers, isEmpty);
+    expect(backup.rows.midiSceneNumbers, isEmpty);
+    expect(backup.rows.midiPatchFavorites, isEmpty);
+    expect(backup.rows.midiPatchRecents, isEmpty);
   });
 
   test('a file from before the Academy restores the gear in it', () async {

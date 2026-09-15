@@ -38,6 +38,19 @@ mixin _$BackupDaoMixin on DatabaseAccessor<AppDatabase> {
       attachedDatabase.academyPracticeSessions;
   $AcademyBookmarksTable get academyBookmarks =>
       attachedDatabase.academyBookmarks;
+  $MidiParameterOverridesTable get midiParameterOverrides =>
+      attachedDatabase.midiParameterOverrides;
+  $MidiPatchSelectionSettingsTable get midiPatchSelectionSettings =>
+      attachedDatabase.midiPatchSelectionSettings;
+  $MidiDeviceLinksTable get midiDeviceLinks => attachedDatabase.midiDeviceLinks;
+  $MidiPatchProgramNumbersTable get midiPatchProgramNumbers =>
+      attachedDatabase.midiPatchProgramNumbers;
+  $MidiSceneNumbersTable get midiSceneNumbers =>
+      attachedDatabase.midiSceneNumbers;
+  $MidiPatchFavoritesTable get midiPatchFavorites =>
+      attachedDatabase.midiPatchFavorites;
+  $MidiPatchRecentsTable get midiPatchRecents =>
+      attachedDatabase.midiPatchRecents;
   BackupDaoManager get managers => BackupDaoManager(this);
 }
 
@@ -138,5 +151,41 @@ class BackupDaoManager {
       $$AcademyBookmarksTableTableManager(
         _db.attachedDatabase,
         _db.academyBookmarks,
+      );
+  $$MidiParameterOverridesTableTableManager get midiParameterOverrides =>
+      $$MidiParameterOverridesTableTableManager(
+        _db.attachedDatabase,
+        _db.midiParameterOverrides,
+      );
+  $$MidiPatchSelectionSettingsTableTableManager
+  get midiPatchSelectionSettings =>
+      $$MidiPatchSelectionSettingsTableTableManager(
+        _db.attachedDatabase,
+        _db.midiPatchSelectionSettings,
+      );
+  $$MidiDeviceLinksTableTableManager get midiDeviceLinks =>
+      $$MidiDeviceLinksTableTableManager(
+        _db.attachedDatabase,
+        _db.midiDeviceLinks,
+      );
+  $$MidiPatchProgramNumbersTableTableManager get midiPatchProgramNumbers =>
+      $$MidiPatchProgramNumbersTableTableManager(
+        _db.attachedDatabase,
+        _db.midiPatchProgramNumbers,
+      );
+  $$MidiSceneNumbersTableTableManager get midiSceneNumbers =>
+      $$MidiSceneNumbersTableTableManager(
+        _db.attachedDatabase,
+        _db.midiSceneNumbers,
+      );
+  $$MidiPatchFavoritesTableTableManager get midiPatchFavorites =>
+      $$MidiPatchFavoritesTableTableManager(
+        _db.attachedDatabase,
+        _db.midiPatchFavorites,
+      );
+  $$MidiPatchRecentsTableTableManager get midiPatchRecents =>
+      $$MidiPatchRecentsTableTableManager(
+        _db.attachedDatabase,
+        _db.midiPatchRecents,
       );
 }

@@ -114,6 +114,12 @@ void main() {
       'scenes',
       'scenePedals',
       'sceneValues',
+      // All point at a patch or a scene, so a file without either cannot
+      // hold these either.
+      'midiPatchProgramNumbers',
+      'midiSceneNumbers',
+      'midiPatchFavorites',
+      'midiPatchRecents',
     ]) {
       tables.remove(table);
     }

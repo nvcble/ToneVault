@@ -51,6 +51,13 @@ void main() {
     academyExerciseProgress: const [],
     academyPracticeSessions: const [],
     academyBookmarks: const [],
+    midiParameterOverrides: const [],
+    midiPatchSelectionSettings: const [],
+    midiDeviceLinks: const [],
+    midiPatchProgramNumbers: const [],
+    midiSceneNumbers: const [],
+    midiPatchFavorites: const [],
+    midiPatchRecents: const [],
   );
 
   VaultBackup backupOf(VaultRows rows, {int? schemaVersion}) => (

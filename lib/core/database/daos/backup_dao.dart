@@ -12,6 +12,13 @@ import '../tables/academy_progress_table.dart';
 import '../tables/change_logs_table.dart';
 import '../tables/configuration_values_table.dart';
 import '../tables/configurations_table.dart';
+import '../tables/midi_device_links_table.dart';
+import '../tables/midi_parameter_overrides_table.dart';
+import '../tables/midi_patch_favorites_table.dart';
+import '../tables/midi_patch_program_numbers_table.dart';
+import '../tables/midi_patch_recents_table.dart';
+import '../tables/midi_patch_selection_settings_table.dart';
+import '../tables/midi_scene_numbers_table.dart';
 import '../tables/patches_table.dart';
 import '../tables/pedal_controls_table.dart';
 import '../tables/pedal_replacements_table.dart';
@@ -73,6 +80,13 @@ typedef VaultRows = ({
   List<AcademyExerciseProgressRow> academyExerciseProgress,
   List<AcademyPracticeSessionRow> academyPracticeSessions,
   List<AcademyBookmark> academyBookmarks,
+  List<MidiParameterOverride> midiParameterOverrides,
+  List<MidiPatchSelectionSetting> midiPatchSelectionSettings,
+  List<MidiDeviceLink> midiDeviceLinks,
+  List<MidiPatchProgramNumber> midiPatchProgramNumbers,
+  List<MidiSceneNumber> midiSceneNumbers,
+  List<MidiPatchFavorite> midiPatchFavorites,
+  List<MidiPatchRecent> midiPatchRecents,
 });
 
 /// Reads and replaces the whole vault, for backup and restore.
@@ -108,6 +122,13 @@ typedef VaultRows = ({
     AcademyExerciseProgress,
     AcademyPracticeSessions,
     AcademyBookmarks,
+    MidiParameterOverrides,
+    MidiPatchSelectionSettings,
+    MidiDeviceLinks,
+    MidiPatchProgramNumbers,
+    MidiSceneNumbers,
+    MidiPatchFavorites,
+    MidiPatchRecents,
   ],
 )
 class BackupDao extends DatabaseAccessor<AppDatabase> with _$BackupDaoMixin {
@@ -143,6 +164,15 @@ class BackupDao extends DatabaseAccessor<AppDatabase> with _$BackupDaoMixin {
         academyExerciseProgress: await select(academyExerciseProgress).get(),
         academyPracticeSessions: await select(academyPracticeSessions).get(),
         academyBookmarks: await select(academyBookmarks).get(),
+        midiParameterOverrides: await select(midiParameterOverrides).get(),
+        midiPatchSelectionSettings: await select(
+          midiPatchSelectionSettings,
+        ).get(),
+        midiDeviceLinks: await select(midiDeviceLinks).get(),
+        midiPatchProgramNumbers: await select(midiPatchProgramNumbers).get(),
+        midiSceneNumbers: await select(midiSceneNumbers).get(),
+        midiPatchFavorites: await select(midiPatchFavorites).get(),
+        midiPatchRecents: await select(midiPatchRecents).get(),
       ),
     );
   }
@@ -193,6 +223,16 @@ class BackupDao extends DatabaseAccessor<AppDatabase> with _$BackupDaoMixin {
         batch.insertAll(academyExerciseProgress, rows.academyExerciseProgress);
         batch.insertAll(academyPracticeSessions, rows.academyPracticeSessions);
         batch.insertAll(academyBookmarks, rows.academyBookmarks);
+        batch.insertAll(midiParameterOverrides, rows.midiParameterOverrides);
+        batch.insertAll(
+          midiPatchSelectionSettings,
+          rows.midiPatchSelectionSettings,
+        );
+        batch.insertAll(midiDeviceLinks, rows.midiDeviceLinks);
+        batch.insertAll(midiPatchProgramNumbers, rows.midiPatchProgramNumbers);
+        batch.insertAll(midiSceneNumbers, rows.midiSceneNumbers);
+        batch.insertAll(midiPatchFavorites, rows.midiPatchFavorites);
+        batch.insertAll(midiPatchRecents, rows.midiPatchRecents);
       });
     });
   }
@@ -200,6 +240,13 @@ class BackupDao extends DatabaseAccessor<AppDatabase> with _$BackupDaoMixin {
   /// Child before parent, the reverse of the write order, so no delete is
   /// refused by a row still pointing at what it is deleting.
   Future<void> _deleteEverything() async {
+    await delete(midiPatchRecents).go();
+    await delete(midiPatchFavorites).go();
+    await delete(midiSceneNumbers).go();
+    await delete(midiPatchProgramNumbers).go();
+    await delete(midiDeviceLinks).go();
+    await delete(midiPatchSelectionSettings).go();
+    await delete(midiParameterOverrides).go();
     await delete(academyBookmarks).go();
     await delete(academyPracticeSessions).go();
     await delete(academyExerciseProgress).go();

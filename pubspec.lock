@@ -374,6 +374,62 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "6.0.0"
+  flutter_midi_command:
+    dependency: "direct main"
+    description:
+      name: flutter_midi_command
+      sha256: "94d0455e08028029d88e5d9135a42c6fbb9d57dfee359a26633b7a07226153a8"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.2.0"
+  flutter_midi_command_android:
+    dependency: transitive
+    description:
+      name: flutter_midi_command_android
+      sha256: "05bcf9d7779a26faa47dc127a73dae3cfd0c833a98a202f54b6224923b56f016"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.2.0"
+  flutter_midi_command_darwin:
+    dependency: transitive
+    description:
+      name: flutter_midi_command_darwin
+      sha256: ad1c9417ff92b20ebe0b5b2f8a5aa40b134fc3110d0a527c61a8a1ec7315571b
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.2.0"
+  flutter_midi_command_linux:
+    dependency: transitive
+    description:
+      name: flutter_midi_command_linux
+      sha256: b1bb23b2fd04ff6b748b975ab26e1a5c27e86d37632211a44b48aa2cf0119212
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.2.0"
+  flutter_midi_command_platform_interface:
+    dependency: transitive
+    description:
+      name: flutter_midi_command_platform_interface
+      sha256: "1ec889b004ea40f9e429ae3a9d511f396e3f951e120a69c599bc08fe712b474f"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.2.0"
+  flutter_midi_command_web:
+    dependency: transitive
+    description:
+      name: flutter_midi_command_web
+      sha256: ed05dd77a330de43e8f085160a08781a4446ab22ed6a2fa5c217ae627d97f2fd
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.2.0"
+  flutter_midi_command_windows:
+    dependency: transitive
+    description:
+      name: flutter_midi_command_windows
+      sha256: dc436cc20444316b7e6a614f59af0dfc8bd36c2320e8dcf8c6606ce7ec7e4e20
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.2.0"
   flutter_plugin_android_lifecycle:
     dependency: transitive
     description:

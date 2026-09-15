@@ -7,6 +7,7 @@ import '../../../app/theme/app_spacing.dart';
 import '../../../shared/widgets/section_label.dart';
 import '../../academy/widgets/academy_action.dart';
 import '../../history/providers/history_providers.dart';
+import '../../midi/widgets/midi_action.dart';
 import '../providers/dashboard_providers.dart';
 import '../widgets/collection_tally_row.dart';
 import '../widgets/dashboard_actions.dart';
@@ -22,7 +23,7 @@ class DashboardScreen extends ConsumerWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('ToneVault'),
-        actions: const [AcademyAction()],
+        actions: const [MidiAction(), AcademyAction()],
       ),
       body: ListView(
         padding: const EdgeInsets.only(bottom: AppSpacing.md),

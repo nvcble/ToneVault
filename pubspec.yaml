@@ -51,6 +51,12 @@ dependencies:
   # file, which is the one thing every platform it supports agrees on.
   audioplayers: ^6.5.1
 
+  # MIDI transport for the multi-effects control module. Used only behind
+  # `MidiTransport` in `core/midi/transports/` - nothing else in the app
+  # imports this package directly, so it can be swapped without touching the
+  # engine, the device profiles, or any screen.
+  flutter_midi_command: ^1.2.0
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

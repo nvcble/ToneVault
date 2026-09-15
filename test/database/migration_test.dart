@@ -414,6 +414,135 @@ void main() {
     expect(unit.category.hasOwnControls, isFalse);
   });
 
+  test('the MIDI mapping tables are created exactly as fresh ones are', () async {
+    const tables = ['midi_parameter_overrides', 'midi_patch_selection_settings'];
+
+    // One at a time: two live databases at once only earn a drift warning.
+    final fresh = AppDatabase(NativeDatabase.memory());
+    final expected = <String, List<String>>{
+      for (final table in tables) table: await schemaFor(fresh, table),
+    };
+    await fresh.close();
+
+    final upgraded = openV1Database();
+    addTearDown(upgraded.close);
+
+    for (final table in tables) {
+      expect(
+        await schemaFor(upgraded, table),
+        expected[table],
+        reason: '$table differs between an upgraded phone and a new install',
+      );
+    }
+  });
+
+  test('an upgraded database can hold a MIDI CC remapping', () async {
+    final db = openV1Database();
+    addTearDown(db.close);
+
+    await db.midiParameterOverrideDao.upsertOverride(
+      deviceProfileId: 'nux_mg30_v5',
+      parameterName: 'Scene',
+      ccNumber: 90,
+      updatedAt: DateTime.utc(2026, 9),
+    );
+
+    final override = await db.midiParameterOverrideDao.findOverride(
+      deviceProfileId: 'nux_mg30_v5',
+      parameterName: 'Scene',
+    );
+    expect(override!.ccNumber, 90);
+    // The gear already on the phone is untouched by a table that did not exist
+    // when it was stored.
+    expect((await db.pedalDao.watchPedals().first).single.name, 'PureSky');
+  });
+
+  test('the device-link tables are created exactly as fresh ones are', () async {
+    const tables = [
+      'midi_device_links',
+      'midi_patch_program_numbers',
+      'midi_scene_numbers',
+    ];
+
+    // One at a time: two live databases at once only earn a drift warning.
+    final fresh = AppDatabase(NativeDatabase.memory());
+    final expected = <String, List<String>>{
+      for (final table in tables) table: await schemaFor(fresh, table),
+    };
+    await fresh.close();
+
+    final upgraded = openV1Database();
+    addTearDown(upgraded.close);
+
+    for (final table in tables) {
+      expect(
+        await schemaFor(upgraded, table),
+        expected[table],
+        reason: '$table differs between an upgraded phone and a new install',
+      );
+    }
+  });
+
+  test('an upgraded database can link a pedal to a device profile', () async {
+    final db = openV1Database();
+    addTearDown(db.close);
+
+    await db.midiDeviceLinkDao.insertLink(
+      MidiDeviceLinksCompanion.insert(
+        pedalId: 1,
+        deviceProfileId: 'nux_mg30_v5',
+        linkedAt: DateTime.utc(2026, 9),
+      ),
+    );
+
+    final link = await db.midiDeviceLinkDao.findLink('nux_mg30_v5');
+    expect(link!.pedalId, 1);
+    expect((await db.pedalDao.watchPedals().first).single.name, 'PureSky');
+  });
+
+  test('the Patch Browser tables are created exactly as fresh ones are', () async {
+    const tables = ['midi_patch_favorites', 'midi_patch_recents'];
+
+    // One at a time: two live databases at once only earn a drift warning.
+    final fresh = AppDatabase(NativeDatabase.memory());
+    final expected = <String, List<String>>{
+      for (final table in tables) table: await schemaFor(fresh, table),
+    };
+    await fresh.close();
+
+    final upgraded = openV1Database();
+    addTearDown(upgraded.close);
+
+    for (final table in tables) {
+      expect(
+        await schemaFor(upgraded, table),
+        expected[table],
+        reason: '$table differs between an upgraded phone and a new install',
+      );
+    }
+  });
+
+  test('an upgraded database can favorite and record a recent patch', () async {
+    final db = openV1Database();
+    addTearDown(db.close);
+    final unitId = await pedalRepository(db).createPedal(
+      const PedalDraft(
+        name: 'Valeton GP-200',
+        type: PedalType.digital,
+        category: PedalCategory.multiEffects,
+      ),
+    );
+    final patchId = await patchRepository(
+      db,
+    ).createPatch(unitId, const PatchDraft(name: 'Worship Clean'));
+
+    await db.midiPatchFavoriteDao.setFavorite(patchId: patchId, isFavorite: true);
+    await db.midiPatchRecentDao.recordUsed(patchId);
+
+    expect(await db.midiPatchFavoriteDao.watchFavoritePatchIds().first, {patchId});
+    expect((await db.midiPatchRecentDao.watchRecents().first).single.patchId, patchId);
+  });
+
   test(
     'the added column stores positions like a freshly created one',
     () async {

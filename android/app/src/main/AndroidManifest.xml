@@ -1,4 +1,14 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+    <!-- flutter_midi_command_android declares this feature as required="true",
+         which would stop the Play Store offering the whole app to any device
+         that does not report MIDI support - most of ToneVault has nothing to
+         do with MIDI. Overridden here so the MIDI module is simply
+         unavailable on such a device rather than the app being uninstallable. -->
+    <uses-feature
+        android:name="android.software.midi"
+        android:required="false"
+        tools:replace="android:required" />
     <application
         android:label="ToneVault"
         android:name="${applicationName}"

@@ -8,6 +8,7 @@ import '../../../core/database/app_database.dart';
 import '../../../shared/widgets/empty_state.dart';
 import '../../../shared/widgets/failure_snack_bar.dart';
 import '../../academy/widgets/academy_action.dart';
+import '../../midi/widgets/midi_action.dart';
 import '../data/pedal_filter.dart';
 import '../providers/pedal_filter_providers.dart';
 import '../providers/pedal_providers.dart';
@@ -23,7 +24,7 @@ class PedalsScreen extends ConsumerWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Pedals'),
-        actions: const [AcademyAction()],
+        actions: const [MidiAction(), AcademyAction()],
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () => context.go(Routes.pedalNew),

@@ -95,6 +95,62 @@ abstract final class Routes {
   /// whole courses and says for itself which path each of them belongs to.
   static const String academyCurriculum = '$academy/curriculum';
 
+  /// The MIDI module sits outside the tab shell too, for the same reason as
+  /// the Academy: reached from the header, not a destination to keep
+  /// selected.
+  static const String midi = '/midi';
+
+  /// [deviceId] is a device profile id (e.g. "nux_mg30_v5"), not a database
+  /// row - there is no row until the device is actually added as gear in a
+  /// later phase.
+  static String midiConnect(String deviceId) => '$midi/$deviceId/connect';
+
+  static String midiControl(String deviceId) => '$midi/$deviceId/control';
+
+  static String midiParameters(String deviceId) => '$midi/$deviceId/parameters';
+
+  static String midiMapping(String deviceId) => '$midi/$deviceId/mapping';
+
+  static String midiMonitor(String deviceId) => '$midi/$deviceId/monitor';
+
+  static String midiPatches(String deviceId) => '$midi/$deviceId/patches';
+
+  /// A patch's own scenes, reached through the device rather than through a
+  /// pedal id: the MIDI module knows a patch by which device it belongs to,
+  /// the same way the Pedals tab knows one by which unit it belongs to.
+  static String midiPatchScenes(String deviceId, int patchId) =>
+      '${midiPatches(deviceId)}/$patchId/scenes';
+
+  static String liveControl(String deviceId) => '$midi/$deviceId/live';
+
+  /// Direct patch selection - see `MidiPatchBrowserScreen`.
+  static String midiPatchBrowser(String deviceId) => '$midi/$deviceId/browse';
+
+  /// Read-only preset import - see `PresetImportScreen`.
+  static String midiPresetImport(String deviceId) => '$midi/$deviceId/import';
+
+  /// A scene's own signal chain, for turning blocks on and off and editing
+  /// their knobs before sending. See `MidiPatchEditorScreen`.
+  static String midiSceneEditor(String deviceId, int patchId, int sceneId) =>
+      '${midiPatchScenes(deviceId, patchId)}/$sceneId/editor';
+
+  static const String midiDeviceIdParam = 'deviceId';
+  static const String midiPatchIdParam = 'patchId';
+  static const String midiSceneIdParam = 'sceneId';
+  static const String midiConnectSegment = ':$midiDeviceIdParam/connect';
+  static const String midiControlSegment = ':$midiDeviceIdParam/control';
+  static const String midiParametersSegment = ':$midiDeviceIdParam/parameters';
+  static const String midiMappingSegment = ':$midiDeviceIdParam/mapping';
+  static const String liveControlSegment = ':$midiDeviceIdParam/live';
+  static const String midiPatchBrowserSegment = ':$midiDeviceIdParam/browse';
+  static const String midiPresetImportSegment = ':$midiDeviceIdParam/import';
+  static const String midiMonitorSegment = ':$midiDeviceIdParam/monitor';
+  static const String midiPatchesSegment = ':$midiDeviceIdParam/patches';
+  static const String midiPatchScenesSegment =
+      ':$midiDeviceIdParam/patches/:$midiPatchIdParam/scenes';
+  static const String midiSceneEditorSegment =
+      ':$midiDeviceIdParam/patches/:$midiPatchIdParam/scenes/:$midiSceneIdParam/editor';
+
   static const String pedalNew = '$pedals/new';
 
   static String pedalDetail(int pedalId) => '$pedals/$pedalId';

@@ -25,6 +25,13 @@ import 'daos/academy_progress_dao.dart';
 import 'daos/backup_dao.dart';
 import 'daos/change_log_dao.dart';
 import 'daos/configuration_dao.dart';
+import 'daos/midi_device_link_dao.dart';
+import 'daos/midi_parameter_override_dao.dart';
+import 'daos/midi_patch_favorite_dao.dart';
+import 'daos/midi_patch_program_number_dao.dart';
+import 'daos/midi_patch_recent_dao.dart';
+import 'daos/midi_patch_selection_settings_dao.dart';
+import 'daos/midi_scene_number_dao.dart';
 import 'daos/patch_dao.dart';
 import 'daos/pedal_control_dao.dart';
 import 'daos/pedal_dao.dart';
@@ -42,6 +49,13 @@ import 'tables/academy_progress_table.dart';
 import 'tables/change_logs_table.dart';
 import 'tables/configuration_values_table.dart';
 import 'tables/configurations_table.dart';
+import 'tables/midi_device_links_table.dart';
+import 'tables/midi_parameter_overrides_table.dart';
+import 'tables/midi_patch_favorites_table.dart';
+import 'tables/midi_patch_program_numbers_table.dart';
+import 'tables/midi_patch_recents_table.dart';
+import 'tables/midi_patch_selection_settings_table.dart';
+import 'tables/midi_scene_numbers_table.dart';
 import 'tables/patches_table.dart';
 import 'tables/pedal_controls_table.dart';
 import 'tables/pedal_replacements_table.dart';
@@ -100,6 +114,13 @@ part 'app_database.g.dart';
     AcademyExerciseProgress,
     AcademyPracticeSessions,
     AcademyBookmarks,
+    MidiParameterOverrides,
+    MidiPatchSelectionSettings,
+    MidiDeviceLinks,
+    MidiPatchProgramNumbers,
+    MidiSceneNumbers,
+    MidiPatchFavorites,
+    MidiPatchRecents,
   ],
   daos: [
     PedalDao,
@@ -112,6 +133,13 @@ part 'app_database.g.dart';
     AcademyCourseDao,
     AcademyProgressDao,
     AcademyBookmarkDao,
+    MidiParameterOverrideDao,
+    MidiPatchSelectionSettingsDao,
+    MidiDeviceLinkDao,
+    MidiPatchProgramNumberDao,
+    MidiSceneNumberDao,
+    MidiPatchFavoriteDao,
+    MidiPatchRecentDao,
     BackupDao,
   ],
 )

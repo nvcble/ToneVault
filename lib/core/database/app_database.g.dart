@@ -12370,6 +12370,2294 @@ class AcademyBookmarksCompanion extends UpdateCompanion<AcademyBookmark> {
   }
 }
 
+class $MidiParameterOverridesTable extends MidiParameterOverrides
+    with TableInfo<$MidiParameterOverridesTable, MidiParameterOverride> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $MidiParameterOverridesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'PRIMARY KEY AUTOINCREMENT',
+    ),
+  );
+  static const VerificationMeta _deviceProfileIdMeta = const VerificationMeta(
+    'deviceProfileId',
+  );
+  @override
+  late final GeneratedColumn<String> deviceProfileId = GeneratedColumn<String>(
+    'device_profile_id',
+    aliasedName,
+    false,
+    additionalChecks: GeneratedColumn.checkTextLength(
+      minTextLength: 1,
+      maxTextLength: 60,
+    ),
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _parameterNameMeta = const VerificationMeta(
+    'parameterName',
+  );
+  @override
+  late final GeneratedColumn<String> parameterName = GeneratedColumn<String>(
+    'parameter_name',
+    aliasedName,
+    false,
+    additionalChecks: GeneratedColumn.checkTextLength(
+      minTextLength: 1,
+      maxTextLength: 80,
+    ),
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _ccNumberMeta = const VerificationMeta(
+    'ccNumber',
+  );
+  @override
+  late final GeneratedColumn<int> ccNumber = GeneratedColumn<int>(
+    'cc_number',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _updatedAtMeta = const VerificationMeta(
+    'updatedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
+    'updated_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    deviceProfileId,
+    parameterName,
+    ccNumber,
+    updatedAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'midi_parameter_overrides';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<MidiParameterOverride> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('device_profile_id')) {
+      context.handle(
+        _deviceProfileIdMeta,
+        deviceProfileId.isAcceptableOrUnknown(
+          data['device_profile_id']!,
+          _deviceProfileIdMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_deviceProfileIdMeta);
+    }
+    if (data.containsKey('parameter_name')) {
+      context.handle(
+        _parameterNameMeta,
+        parameterName.isAcceptableOrUnknown(
+          data['parameter_name']!,
+          _parameterNameMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_parameterNameMeta);
+    }
+    if (data.containsKey('cc_number')) {
+      context.handle(
+        _ccNumberMeta,
+        ccNumber.isAcceptableOrUnknown(data['cc_number']!, _ccNumberMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_ccNumberMeta);
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(
+        _updatedAtMeta,
+        updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_updatedAtMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  List<Set<GeneratedColumn>> get uniqueKeys => [
+    {deviceProfileId, parameterName},
+  ];
+  @override
+  MidiParameterOverride map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return MidiParameterOverride(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      deviceProfileId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}device_profile_id'],
+      )!,
+      parameterName: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}parameter_name'],
+      )!,
+      ccNumber: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}cc_number'],
+      )!,
+      updatedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}updated_at'],
+      )!,
+    );
+  }
+
+  @override
+  $MidiParameterOverridesTable createAlias(String alias) {
+    return $MidiParameterOverridesTable(attachedDatabase, alias);
+  }
+}
+
+class MidiParameterOverride extends DataClass
+    implements Insertable<MidiParameterOverride> {
+  final int id;
+  final String deviceProfileId;
+
+  /// Matches a `MidiParameterDefinition.name` the device profile ships.
+  final String parameterName;
+  final int ccNumber;
+  final DateTime updatedAt;
+  const MidiParameterOverride({
+    required this.id,
+    required this.deviceProfileId,
+    required this.parameterName,
+    required this.ccNumber,
+    required this.updatedAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['device_profile_id'] = Variable<String>(deviceProfileId);
+    map['parameter_name'] = Variable<String>(parameterName);
+    map['cc_number'] = Variable<int>(ccNumber);
+    map['updated_at'] = Variable<DateTime>(updatedAt);
+    return map;
+  }
+
+  MidiParameterOverridesCompanion toCompanion(bool nullToAbsent) {
+    return MidiParameterOverridesCompanion(
+      id: Value(id),
+      deviceProfileId: Value(deviceProfileId),
+      parameterName: Value(parameterName),
+      ccNumber: Value(ccNumber),
+      updatedAt: Value(updatedAt),
+    );
+  }
+
+  factory MidiParameterOverride.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return MidiParameterOverride(
+      id: serializer.fromJson<int>(json['id']),
+      deviceProfileId: serializer.fromJson<String>(json['deviceProfileId']),
+      parameterName: serializer.fromJson<String>(json['parameterName']),
+      ccNumber: serializer.fromJson<int>(json['ccNumber']),
+      updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'deviceProfileId': serializer.toJson<String>(deviceProfileId),
+      'parameterName': serializer.toJson<String>(parameterName),
+      'ccNumber': serializer.toJson<int>(ccNumber),
+      'updatedAt': serializer.toJson<DateTime>(updatedAt),
+    };
+  }
+
+  MidiParameterOverride copyWith({
+    int? id,
+    String? deviceProfileId,
+    String? parameterName,
+    int? ccNumber,
+    DateTime? updatedAt,
+  }) => MidiParameterOverride(
+    id: id ?? this.id,
+    deviceProfileId: deviceProfileId ?? this.deviceProfileId,
+    parameterName: parameterName ?? this.parameterName,
+    ccNumber: ccNumber ?? this.ccNumber,
+    updatedAt: updatedAt ?? this.updatedAt,
+  );
+  MidiParameterOverride copyWithCompanion(
+    MidiParameterOverridesCompanion data,
+  ) {
+    return MidiParameterOverride(
+      id: data.id.present ? data.id.value : this.id,
+      deviceProfileId: data.deviceProfileId.present
+          ? data.deviceProfileId.value
+          : this.deviceProfileId,
+      parameterName: data.parameterName.present
+          ? data.parameterName.value
+          : this.parameterName,
+      ccNumber: data.ccNumber.present ? data.ccNumber.value : this.ccNumber,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('MidiParameterOverride(')
+          ..write('id: $id, ')
+          ..write('deviceProfileId: $deviceProfileId, ')
+          ..write('parameterName: $parameterName, ')
+          ..write('ccNumber: $ccNumber, ')
+          ..write('updatedAt: $updatedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode =>
+      Object.hash(id, deviceProfileId, parameterName, ccNumber, updatedAt);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is MidiParameterOverride &&
+          other.id == this.id &&
+          other.deviceProfileId == this.deviceProfileId &&
+          other.parameterName == this.parameterName &&
+          other.ccNumber == this.ccNumber &&
+          other.updatedAt == this.updatedAt);
+}
+
+class MidiParameterOverridesCompanion
+    extends UpdateCompanion<MidiParameterOverride> {
+  final Value<int> id;
+  final Value<String> deviceProfileId;
+  final Value<String> parameterName;
+  final Value<int> ccNumber;
+  final Value<DateTime> updatedAt;
+  const MidiParameterOverridesCompanion({
+    this.id = const Value.absent(),
+    this.deviceProfileId = const Value.absent(),
+    this.parameterName = const Value.absent(),
+    this.ccNumber = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+  });
+  MidiParameterOverridesCompanion.insert({
+    this.id = const Value.absent(),
+    required String deviceProfileId,
+    required String parameterName,
+    required int ccNumber,
+    required DateTime updatedAt,
+  }) : deviceProfileId = Value(deviceProfileId),
+       parameterName = Value(parameterName),
+       ccNumber = Value(ccNumber),
+       updatedAt = Value(updatedAt);
+  static Insertable<MidiParameterOverride> custom({
+    Expression<int>? id,
+    Expression<String>? deviceProfileId,
+    Expression<String>? parameterName,
+    Expression<int>? ccNumber,
+    Expression<DateTime>? updatedAt,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (deviceProfileId != null) 'device_profile_id': deviceProfileId,
+      if (parameterName != null) 'parameter_name': parameterName,
+      if (ccNumber != null) 'cc_number': ccNumber,
+      if (updatedAt != null) 'updated_at': updatedAt,
+    });
+  }
+
+  MidiParameterOverridesCompanion copyWith({
+    Value<int>? id,
+    Value<String>? deviceProfileId,
+    Value<String>? parameterName,
+    Value<int>? ccNumber,
+    Value<DateTime>? updatedAt,
+  }) {
+    return MidiParameterOverridesCompanion(
+      id: id ?? this.id,
+      deviceProfileId: deviceProfileId ?? this.deviceProfileId,
+      parameterName: parameterName ?? this.parameterName,
+      ccNumber: ccNumber ?? this.ccNumber,
+      updatedAt: updatedAt ?? this.updatedAt,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (deviceProfileId.present) {
+      map['device_profile_id'] = Variable<String>(deviceProfileId.value);
+    }
+    if (parameterName.present) {
+      map['parameter_name'] = Variable<String>(parameterName.value);
+    }
+    if (ccNumber.present) {
+      map['cc_number'] = Variable<int>(ccNumber.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<DateTime>(updatedAt.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('MidiParameterOverridesCompanion(')
+          ..write('id: $id, ')
+          ..write('deviceProfileId: $deviceProfileId, ')
+          ..write('parameterName: $parameterName, ')
+          ..write('ccNumber: $ccNumber, ')
+          ..write('updatedAt: $updatedAt')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $MidiPatchSelectionSettingsTable extends MidiPatchSelectionSettings
+    with
+        TableInfo<$MidiPatchSelectionSettingsTable, MidiPatchSelectionSetting> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $MidiPatchSelectionSettingsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'PRIMARY KEY AUTOINCREMENT',
+    ),
+  );
+  static const VerificationMeta _deviceProfileIdMeta = const VerificationMeta(
+    'deviceProfileId',
+  );
+  @override
+  late final GeneratedColumn<String> deviceProfileId = GeneratedColumn<String>(
+    'device_profile_id',
+    aliasedName,
+    false,
+    additionalChecks: GeneratedColumn.checkTextLength(
+      minTextLength: 1,
+      maxTextLength: 60,
+    ),
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways('UNIQUE'),
+  );
+  static const VerificationMeta _usesBankSelectMeta = const VerificationMeta(
+    'usesBankSelect',
+  );
+  @override
+  late final GeneratedColumn<bool> usesBankSelect = GeneratedColumn<bool>(
+    'uses_bank_select',
+    aliasedName,
+    true,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("uses_bank_select" IN (0, 1))',
+    ),
+  );
+  static const VerificationMeta _bankSelectMsbMeta = const VerificationMeta(
+    'bankSelectMsb',
+  );
+  @override
+  late final GeneratedColumn<int> bankSelectMsb = GeneratedColumn<int>(
+    'bank_select_msb',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _bankSelectLsbMeta = const VerificationMeta(
+    'bankSelectLsb',
+  );
+  @override
+  late final GeneratedColumn<int> bankSelectLsb = GeneratedColumn<int>(
+    'bank_select_lsb',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _updatedAtMeta = const VerificationMeta(
+    'updatedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
+    'updated_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    deviceProfileId,
+    usesBankSelect,
+    bankSelectMsb,
+    bankSelectLsb,
+    updatedAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'midi_patch_selection_settings';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<MidiPatchSelectionSetting> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('device_profile_id')) {
+      context.handle(
+        _deviceProfileIdMeta,
+        deviceProfileId.isAcceptableOrUnknown(
+          data['device_profile_id']!,
+          _deviceProfileIdMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_deviceProfileIdMeta);
+    }
+    if (data.containsKey('uses_bank_select')) {
+      context.handle(
+        _usesBankSelectMeta,
+        usesBankSelect.isAcceptableOrUnknown(
+          data['uses_bank_select']!,
+          _usesBankSelectMeta,
+        ),
+      );
+    }
+    if (data.containsKey('bank_select_msb')) {
+      context.handle(
+        _bankSelectMsbMeta,
+        bankSelectMsb.isAcceptableOrUnknown(
+          data['bank_select_msb']!,
+          _bankSelectMsbMeta,
+        ),
+      );
+    }
+    if (data.containsKey('bank_select_lsb')) {
+      context.handle(
+        _bankSelectLsbMeta,
+        bankSelectLsb.isAcceptableOrUnknown(
+          data['bank_select_lsb']!,
+          _bankSelectLsbMeta,
+        ),
+      );
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(
+        _updatedAtMeta,
+        updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_updatedAtMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  MidiPatchSelectionSetting map(
+    Map<String, dynamic> data, {
+    String? tablePrefix,
+  }) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return MidiPatchSelectionSetting(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      deviceProfileId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}device_profile_id'],
+      )!,
+      usesBankSelect: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}uses_bank_select'],
+      ),
+      bankSelectMsb: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}bank_select_msb'],
+      ),
+      bankSelectLsb: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}bank_select_lsb'],
+      ),
+      updatedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}updated_at'],
+      )!,
+    );
+  }
+
+  @override
+  $MidiPatchSelectionSettingsTable createAlias(String alias) {
+    return $MidiPatchSelectionSettingsTable(attachedDatabase, alias);
+  }
+}
+
+class MidiPatchSelectionSetting extends DataClass
+    implements Insertable<MidiPatchSelectionSetting> {
+  final int id;
+  final String deviceProfileId;
+  final bool? usesBankSelect;
+  final int? bankSelectMsb;
+  final int? bankSelectLsb;
+  final DateTime updatedAt;
+  const MidiPatchSelectionSetting({
+    required this.id,
+    required this.deviceProfileId,
+    this.usesBankSelect,
+    this.bankSelectMsb,
+    this.bankSelectLsb,
+    required this.updatedAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['device_profile_id'] = Variable<String>(deviceProfileId);
+    if (!nullToAbsent || usesBankSelect != null) {
+      map['uses_bank_select'] = Variable<bool>(usesBankSelect);
+    }
+    if (!nullToAbsent || bankSelectMsb != null) {
+      map['bank_select_msb'] = Variable<int>(bankSelectMsb);
+    }
+    if (!nullToAbsent || bankSelectLsb != null) {
+      map['bank_select_lsb'] = Variable<int>(bankSelectLsb);
+    }
+    map['updated_at'] = Variable<DateTime>(updatedAt);
+    return map;
+  }
+
+  MidiPatchSelectionSettingsCompanion toCompanion(bool nullToAbsent) {
+    return MidiPatchSelectionSettingsCompanion(
+      id: Value(id),
+      deviceProfileId: Value(deviceProfileId),
+      usesBankSelect: usesBankSelect == null && nullToAbsent
+          ? const Value.absent()
+          : Value(usesBankSelect),
+      bankSelectMsb: bankSelectMsb == null && nullToAbsent
+          ? const Value.absent()
+          : Value(bankSelectMsb),
+      bankSelectLsb: bankSelectLsb == null && nullToAbsent
+          ? const Value.absent()
+          : Value(bankSelectLsb),
+      updatedAt: Value(updatedAt),
+    );
+  }
+
+  factory MidiPatchSelectionSetting.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return MidiPatchSelectionSetting(
+      id: serializer.fromJson<int>(json['id']),
+      deviceProfileId: serializer.fromJson<String>(json['deviceProfileId']),
+      usesBankSelect: serializer.fromJson<bool?>(json['usesBankSelect']),
+      bankSelectMsb: serializer.fromJson<int?>(json['bankSelectMsb']),
+      bankSelectLsb: serializer.fromJson<int?>(json['bankSelectLsb']),
+      updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'deviceProfileId': serializer.toJson<String>(deviceProfileId),
+      'usesBankSelect': serializer.toJson<bool?>(usesBankSelect),
+      'bankSelectMsb': serializer.toJson<int?>(bankSelectMsb),
+      'bankSelectLsb': serializer.toJson<int?>(bankSelectLsb),
+      'updatedAt': serializer.toJson<DateTime>(updatedAt),
+    };
+  }
+
+  MidiPatchSelectionSetting copyWith({
+    int? id,
+    String? deviceProfileId,
+    Value<bool?> usesBankSelect = const Value.absent(),
+    Value<int?> bankSelectMsb = const Value.absent(),
+    Value<int?> bankSelectLsb = const Value.absent(),
+    DateTime? updatedAt,
+  }) => MidiPatchSelectionSetting(
+    id: id ?? this.id,
+    deviceProfileId: deviceProfileId ?? this.deviceProfileId,
+    usesBankSelect: usesBankSelect.present
+        ? usesBankSelect.value
+        : this.usesBankSelect,
+    bankSelectMsb: bankSelectMsb.present
+        ? bankSelectMsb.value
+        : this.bankSelectMsb,
+    bankSelectLsb: bankSelectLsb.present
+        ? bankSelectLsb.value
+        : this.bankSelectLsb,
+    updatedAt: updatedAt ?? this.updatedAt,
+  );
+  MidiPatchSelectionSetting copyWithCompanion(
+    MidiPatchSelectionSettingsCompanion data,
+  ) {
+    return MidiPatchSelectionSetting(
+      id: data.id.present ? data.id.value : this.id,
+      deviceProfileId: data.deviceProfileId.present
+          ? data.deviceProfileId.value
+          : this.deviceProfileId,
+      usesBankSelect: data.usesBankSelect.present
+          ? data.usesBankSelect.value
+          : this.usesBankSelect,
+      bankSelectMsb: data.bankSelectMsb.present
+          ? data.bankSelectMsb.value
+          : this.bankSelectMsb,
+      bankSelectLsb: data.bankSelectLsb.present
+          ? data.bankSelectLsb.value
+          : this.bankSelectLsb,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('MidiPatchSelectionSetting(')
+          ..write('id: $id, ')
+          ..write('deviceProfileId: $deviceProfileId, ')
+          ..write('usesBankSelect: $usesBankSelect, ')
+          ..write('bankSelectMsb: $bankSelectMsb, ')
+          ..write('bankSelectLsb: $bankSelectLsb, ')
+          ..write('updatedAt: $updatedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    deviceProfileId,
+    usesBankSelect,
+    bankSelectMsb,
+    bankSelectLsb,
+    updatedAt,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is MidiPatchSelectionSetting &&
+          other.id == this.id &&
+          other.deviceProfileId == this.deviceProfileId &&
+          other.usesBankSelect == this.usesBankSelect &&
+          other.bankSelectMsb == this.bankSelectMsb &&
+          other.bankSelectLsb == this.bankSelectLsb &&
+          other.updatedAt == this.updatedAt);
+}
+
+class MidiPatchSelectionSettingsCompanion
+    extends UpdateCompanion<MidiPatchSelectionSetting> {
+  final Value<int> id;
+  final Value<String> deviceProfileId;
+  final Value<bool?> usesBankSelect;
+  final Value<int?> bankSelectMsb;
+  final Value<int?> bankSelectLsb;
+  final Value<DateTime> updatedAt;
+  const MidiPatchSelectionSettingsCompanion({
+    this.id = const Value.absent(),
+    this.deviceProfileId = const Value.absent(),
+    this.usesBankSelect = const Value.absent(),
+    this.bankSelectMsb = const Value.absent(),
+    this.bankSelectLsb = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+  });
+  MidiPatchSelectionSettingsCompanion.insert({
+    this.id = const Value.absent(),
+    required String deviceProfileId,
+    this.usesBankSelect = const Value.absent(),
+    this.bankSelectMsb = const Value.absent(),
+    this.bankSelectLsb = const Value.absent(),
+    required DateTime updatedAt,
+  }) : deviceProfileId = Value(deviceProfileId),
+       updatedAt = Value(updatedAt);
+  static Insertable<MidiPatchSelectionSetting> custom({
+    Expression<int>? id,
+    Expression<String>? deviceProfileId,
+    Expression<bool>? usesBankSelect,
+    Expression<int>? bankSelectMsb,
+    Expression<int>? bankSelectLsb,
+    Expression<DateTime>? updatedAt,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (deviceProfileId != null) 'device_profile_id': deviceProfileId,
+      if (usesBankSelect != null) 'uses_bank_select': usesBankSelect,
+      if (bankSelectMsb != null) 'bank_select_msb': bankSelectMsb,
+      if (bankSelectLsb != null) 'bank_select_lsb': bankSelectLsb,
+      if (updatedAt != null) 'updated_at': updatedAt,
+    });
+  }
+
+  MidiPatchSelectionSettingsCompanion copyWith({
+    Value<int>? id,
+    Value<String>? deviceProfileId,
+    Value<bool?>? usesBankSelect,
+    Value<int?>? bankSelectMsb,
+    Value<int?>? bankSelectLsb,
+    Value<DateTime>? updatedAt,
+  }) {
+    return MidiPatchSelectionSettingsCompanion(
+      id: id ?? this.id,
+      deviceProfileId: deviceProfileId ?? this.deviceProfileId,
+      usesBankSelect: usesBankSelect ?? this.usesBankSelect,
+      bankSelectMsb: bankSelectMsb ?? this.bankSelectMsb,
+      bankSelectLsb: bankSelectLsb ?? this.bankSelectLsb,
+      updatedAt: updatedAt ?? this.updatedAt,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (deviceProfileId.present) {
+      map['device_profile_id'] = Variable<String>(deviceProfileId.value);
+    }
+    if (usesBankSelect.present) {
+      map['uses_bank_select'] = Variable<bool>(usesBankSelect.value);
+    }
+    if (bankSelectMsb.present) {
+      map['bank_select_msb'] = Variable<int>(bankSelectMsb.value);
+    }
+    if (bankSelectLsb.present) {
+      map['bank_select_lsb'] = Variable<int>(bankSelectLsb.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<DateTime>(updatedAt.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('MidiPatchSelectionSettingsCompanion(')
+          ..write('id: $id, ')
+          ..write('deviceProfileId: $deviceProfileId, ')
+          ..write('usesBankSelect: $usesBankSelect, ')
+          ..write('bankSelectMsb: $bankSelectMsb, ')
+          ..write('bankSelectLsb: $bankSelectLsb, ')
+          ..write('updatedAt: $updatedAt')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $MidiDeviceLinksTable extends MidiDeviceLinks
+    with TableInfo<$MidiDeviceLinksTable, MidiDeviceLink> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $MidiDeviceLinksTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'PRIMARY KEY AUTOINCREMENT',
+    ),
+  );
+  static const VerificationMeta _pedalIdMeta = const VerificationMeta(
+    'pedalId',
+  );
+  @override
+  late final GeneratedColumn<int> pedalId = GeneratedColumn<int>(
+    'pedal_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'UNIQUE REFERENCES pedals (id) ON DELETE RESTRICT',
+    ),
+  );
+  static const VerificationMeta _deviceProfileIdMeta = const VerificationMeta(
+    'deviceProfileId',
+  );
+  @override
+  late final GeneratedColumn<String> deviceProfileId = GeneratedColumn<String>(
+    'device_profile_id',
+    aliasedName,
+    false,
+    additionalChecks: GeneratedColumn.checkTextLength(
+      minTextLength: 1,
+      maxTextLength: 60,
+    ),
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _linkedAtMeta = const VerificationMeta(
+    'linkedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> linkedAt = GeneratedColumn<DateTime>(
+    'linked_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    pedalId,
+    deviceProfileId,
+    linkedAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'midi_device_links';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<MidiDeviceLink> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('pedal_id')) {
+      context.handle(
+        _pedalIdMeta,
+        pedalId.isAcceptableOrUnknown(data['pedal_id']!, _pedalIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_pedalIdMeta);
+    }
+    if (data.containsKey('device_profile_id')) {
+      context.handle(
+        _deviceProfileIdMeta,
+        deviceProfileId.isAcceptableOrUnknown(
+          data['device_profile_id']!,
+          _deviceProfileIdMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_deviceProfileIdMeta);
+    }
+    if (data.containsKey('linked_at')) {
+      context.handle(
+        _linkedAtMeta,
+        linkedAt.isAcceptableOrUnknown(data['linked_at']!, _linkedAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_linkedAtMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  MidiDeviceLink map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return MidiDeviceLink(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      pedalId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}pedal_id'],
+      )!,
+      deviceProfileId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}device_profile_id'],
+      )!,
+      linkedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}linked_at'],
+      )!,
+    );
+  }
+
+  @override
+  $MidiDeviceLinksTable createAlias(String alias) {
+    return $MidiDeviceLinksTable(attachedDatabase, alias);
+  }
+}
+
+class MidiDeviceLink extends DataClass implements Insertable<MidiDeviceLink> {
+  final int id;
+
+  /// Restricted, like every other reference to a pedal: retiring the unit
+  /// keeps the link's record of what it was rather than losing it.
+  final int pedalId;
+  final String deviceProfileId;
+  final DateTime linkedAt;
+  const MidiDeviceLink({
+    required this.id,
+    required this.pedalId,
+    required this.deviceProfileId,
+    required this.linkedAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['pedal_id'] = Variable<int>(pedalId);
+    map['device_profile_id'] = Variable<String>(deviceProfileId);
+    map['linked_at'] = Variable<DateTime>(linkedAt);
+    return map;
+  }
+
+  MidiDeviceLinksCompanion toCompanion(bool nullToAbsent) {
+    return MidiDeviceLinksCompanion(
+      id: Value(id),
+      pedalId: Value(pedalId),
+      deviceProfileId: Value(deviceProfileId),
+      linkedAt: Value(linkedAt),
+    );
+  }
+
+  factory MidiDeviceLink.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return MidiDeviceLink(
+      id: serializer.fromJson<int>(json['id']),
+      pedalId: serializer.fromJson<int>(json['pedalId']),
+      deviceProfileId: serializer.fromJson<String>(json['deviceProfileId']),
+      linkedAt: serializer.fromJson<DateTime>(json['linkedAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'pedalId': serializer.toJson<int>(pedalId),
+      'deviceProfileId': serializer.toJson<String>(deviceProfileId),
+      'linkedAt': serializer.toJson<DateTime>(linkedAt),
+    };
+  }
+
+  MidiDeviceLink copyWith({
+    int? id,
+    int? pedalId,
+    String? deviceProfileId,
+    DateTime? linkedAt,
+  }) => MidiDeviceLink(
+    id: id ?? this.id,
+    pedalId: pedalId ?? this.pedalId,
+    deviceProfileId: deviceProfileId ?? this.deviceProfileId,
+    linkedAt: linkedAt ?? this.linkedAt,
+  );
+  MidiDeviceLink copyWithCompanion(MidiDeviceLinksCompanion data) {
+    return MidiDeviceLink(
+      id: data.id.present ? data.id.value : this.id,
+      pedalId: data.pedalId.present ? data.pedalId.value : this.pedalId,
+      deviceProfileId: data.deviceProfileId.present
+          ? data.deviceProfileId.value
+          : this.deviceProfileId,
+      linkedAt: data.linkedAt.present ? data.linkedAt.value : this.linkedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('MidiDeviceLink(')
+          ..write('id: $id, ')
+          ..write('pedalId: $pedalId, ')
+          ..write('deviceProfileId: $deviceProfileId, ')
+          ..write('linkedAt: $linkedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, pedalId, deviceProfileId, linkedAt);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is MidiDeviceLink &&
+          other.id == this.id &&
+          other.pedalId == this.pedalId &&
+          other.deviceProfileId == this.deviceProfileId &&
+          other.linkedAt == this.linkedAt);
+}
+
+class MidiDeviceLinksCompanion extends UpdateCompanion<MidiDeviceLink> {
+  final Value<int> id;
+  final Value<int> pedalId;
+  final Value<String> deviceProfileId;
+  final Value<DateTime> linkedAt;
+  const MidiDeviceLinksCompanion({
+    this.id = const Value.absent(),
+    this.pedalId = const Value.absent(),
+    this.deviceProfileId = const Value.absent(),
+    this.linkedAt = const Value.absent(),
+  });
+  MidiDeviceLinksCompanion.insert({
+    this.id = const Value.absent(),
+    required int pedalId,
+    required String deviceProfileId,
+    required DateTime linkedAt,
+  }) : pedalId = Value(pedalId),
+       deviceProfileId = Value(deviceProfileId),
+       linkedAt = Value(linkedAt);
+  static Insertable<MidiDeviceLink> custom({
+    Expression<int>? id,
+    Expression<int>? pedalId,
+    Expression<String>? deviceProfileId,
+    Expression<DateTime>? linkedAt,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (pedalId != null) 'pedal_id': pedalId,
+      if (deviceProfileId != null) 'device_profile_id': deviceProfileId,
+      if (linkedAt != null) 'linked_at': linkedAt,
+    });
+  }
+
+  MidiDeviceLinksCompanion copyWith({
+    Value<int>? id,
+    Value<int>? pedalId,
+    Value<String>? deviceProfileId,
+    Value<DateTime>? linkedAt,
+  }) {
+    return MidiDeviceLinksCompanion(
+      id: id ?? this.id,
+      pedalId: pedalId ?? this.pedalId,
+      deviceProfileId: deviceProfileId ?? this.deviceProfileId,
+      linkedAt: linkedAt ?? this.linkedAt,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (pedalId.present) {
+      map['pedal_id'] = Variable<int>(pedalId.value);
+    }
+    if (deviceProfileId.present) {
+      map['device_profile_id'] = Variable<String>(deviceProfileId.value);
+    }
+    if (linkedAt.present) {
+      map['linked_at'] = Variable<DateTime>(linkedAt.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('MidiDeviceLinksCompanion(')
+          ..write('id: $id, ')
+          ..write('pedalId: $pedalId, ')
+          ..write('deviceProfileId: $deviceProfileId, ')
+          ..write('linkedAt: $linkedAt')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $MidiPatchProgramNumbersTable extends MidiPatchProgramNumbers
+    with TableInfo<$MidiPatchProgramNumbersTable, MidiPatchProgramNumber> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $MidiPatchProgramNumbersTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'PRIMARY KEY AUTOINCREMENT',
+    ),
+  );
+  static const VerificationMeta _patchIdMeta = const VerificationMeta(
+    'patchId',
+  );
+  @override
+  late final GeneratedColumn<int> patchId = GeneratedColumn<int>(
+    'patch_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'UNIQUE REFERENCES patches (id) ON DELETE CASCADE',
+    ),
+  );
+  static const VerificationMeta _programNumberMeta = const VerificationMeta(
+    'programNumber',
+  );
+  @override
+  late final GeneratedColumn<int> programNumber = GeneratedColumn<int>(
+    'program_number',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _updatedAtMeta = const VerificationMeta(
+    'updatedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
+    'updated_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [id, patchId, programNumber, updatedAt];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'midi_patch_program_numbers';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<MidiPatchProgramNumber> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('patch_id')) {
+      context.handle(
+        _patchIdMeta,
+        patchId.isAcceptableOrUnknown(data['patch_id']!, _patchIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_patchIdMeta);
+    }
+    if (data.containsKey('program_number')) {
+      context.handle(
+        _programNumberMeta,
+        programNumber.isAcceptableOrUnknown(
+          data['program_number']!,
+          _programNumberMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_programNumberMeta);
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(
+        _updatedAtMeta,
+        updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_updatedAtMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  MidiPatchProgramNumber map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return MidiPatchProgramNumber(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      patchId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}patch_id'],
+      )!,
+      programNumber: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}program_number'],
+      )!,
+      updatedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}updated_at'],
+      )!,
+    );
+  }
+
+  @override
+  $MidiPatchProgramNumbersTable createAlias(String alias) {
+    return $MidiPatchProgramNumbersTable(attachedDatabase, alias);
+  }
+}
+
+class MidiPatchProgramNumber extends DataClass
+    implements Insertable<MidiPatchProgramNumber> {
+  final int id;
+  final int patchId;
+
+  /// Counted from 1, matching the number a user reads off the device itself.
+  final int programNumber;
+  final DateTime updatedAt;
+  const MidiPatchProgramNumber({
+    required this.id,
+    required this.patchId,
+    required this.programNumber,
+    required this.updatedAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['patch_id'] = Variable<int>(patchId);
+    map['program_number'] = Variable<int>(programNumber);
+    map['updated_at'] = Variable<DateTime>(updatedAt);
+    return map;
+  }
+
+  MidiPatchProgramNumbersCompanion toCompanion(bool nullToAbsent) {
+    return MidiPatchProgramNumbersCompanion(
+      id: Value(id),
+      patchId: Value(patchId),
+      programNumber: Value(programNumber),
+      updatedAt: Value(updatedAt),
+    );
+  }
+
+  factory MidiPatchProgramNumber.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return MidiPatchProgramNumber(
+      id: serializer.fromJson<int>(json['id']),
+      patchId: serializer.fromJson<int>(json['patchId']),
+      programNumber: serializer.fromJson<int>(json['programNumber']),
+      updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'patchId': serializer.toJson<int>(patchId),
+      'programNumber': serializer.toJson<int>(programNumber),
+      'updatedAt': serializer.toJson<DateTime>(updatedAt),
+    };
+  }
+
+  MidiPatchProgramNumber copyWith({
+    int? id,
+    int? patchId,
+    int? programNumber,
+    DateTime? updatedAt,
+  }) => MidiPatchProgramNumber(
+    id: id ?? this.id,
+    patchId: patchId ?? this.patchId,
+    programNumber: programNumber ?? this.programNumber,
+    updatedAt: updatedAt ?? this.updatedAt,
+  );
+  MidiPatchProgramNumber copyWithCompanion(
+    MidiPatchProgramNumbersCompanion data,
+  ) {
+    return MidiPatchProgramNumber(
+      id: data.id.present ? data.id.value : this.id,
+      patchId: data.patchId.present ? data.patchId.value : this.patchId,
+      programNumber: data.programNumber.present
+          ? data.programNumber.value
+          : this.programNumber,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('MidiPatchProgramNumber(')
+          ..write('id: $id, ')
+          ..write('patchId: $patchId, ')
+          ..write('programNumber: $programNumber, ')
+          ..write('updatedAt: $updatedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, patchId, programNumber, updatedAt);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is MidiPatchProgramNumber &&
+          other.id == this.id &&
+          other.patchId == this.patchId &&
+          other.programNumber == this.programNumber &&
+          other.updatedAt == this.updatedAt);
+}
+
+class MidiPatchProgramNumbersCompanion
+    extends UpdateCompanion<MidiPatchProgramNumber> {
+  final Value<int> id;
+  final Value<int> patchId;
+  final Value<int> programNumber;
+  final Value<DateTime> updatedAt;
+  const MidiPatchProgramNumbersCompanion({
+    this.id = const Value.absent(),
+    this.patchId = const Value.absent(),
+    this.programNumber = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+  });
+  MidiPatchProgramNumbersCompanion.insert({
+    this.id = const Value.absent(),
+    required int patchId,
+    required int programNumber,
+    required DateTime updatedAt,
+  }) : patchId = Value(patchId),
+       programNumber = Value(programNumber),
+       updatedAt = Value(updatedAt);
+  static Insertable<MidiPatchProgramNumber> custom({
+    Expression<int>? id,
+    Expression<int>? patchId,
+    Expression<int>? programNumber,
+    Expression<DateTime>? updatedAt,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (patchId != null) 'patch_id': patchId,
+      if (programNumber != null) 'program_number': programNumber,
+      if (updatedAt != null) 'updated_at': updatedAt,
+    });
+  }
+
+  MidiPatchProgramNumbersCompanion copyWith({
+    Value<int>? id,
+    Value<int>? patchId,
+    Value<int>? programNumber,
+    Value<DateTime>? updatedAt,
+  }) {
+    return MidiPatchProgramNumbersCompanion(
+      id: id ?? this.id,
+      patchId: patchId ?? this.patchId,
+      programNumber: programNumber ?? this.programNumber,
+      updatedAt: updatedAt ?? this.updatedAt,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (patchId.present) {
+      map['patch_id'] = Variable<int>(patchId.value);
+    }
+    if (programNumber.present) {
+      map['program_number'] = Variable<int>(programNumber.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<DateTime>(updatedAt.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('MidiPatchProgramNumbersCompanion(')
+          ..write('id: $id, ')
+          ..write('patchId: $patchId, ')
+          ..write('programNumber: $programNumber, ')
+          ..write('updatedAt: $updatedAt')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $MidiSceneNumbersTable extends MidiSceneNumbers
+    with TableInfo<$MidiSceneNumbersTable, MidiSceneNumber> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $MidiSceneNumbersTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'PRIMARY KEY AUTOINCREMENT',
+    ),
+  );
+  static const VerificationMeta _sceneIdMeta = const VerificationMeta(
+    'sceneId',
+  );
+  @override
+  late final GeneratedColumn<int> sceneId = GeneratedColumn<int>(
+    'scene_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'UNIQUE REFERENCES scenes (id) ON DELETE CASCADE',
+    ),
+  );
+  static const VerificationMeta _sceneNumberMeta = const VerificationMeta(
+    'sceneNumber',
+  );
+  @override
+  late final GeneratedColumn<int> sceneNumber = GeneratedColumn<int>(
+    'scene_number',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _updatedAtMeta = const VerificationMeta(
+    'updatedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
+    'updated_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [id, sceneId, sceneNumber, updatedAt];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'midi_scene_numbers';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<MidiSceneNumber> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('scene_id')) {
+      context.handle(
+        _sceneIdMeta,
+        sceneId.isAcceptableOrUnknown(data['scene_id']!, _sceneIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_sceneIdMeta);
+    }
+    if (data.containsKey('scene_number')) {
+      context.handle(
+        _sceneNumberMeta,
+        sceneNumber.isAcceptableOrUnknown(
+          data['scene_number']!,
+          _sceneNumberMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_sceneNumberMeta);
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(
+        _updatedAtMeta,
+        updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_updatedAtMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  MidiSceneNumber map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return MidiSceneNumber(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      sceneId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}scene_id'],
+      )!,
+      sceneNumber: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}scene_number'],
+      )!,
+      updatedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}updated_at'],
+      )!,
+    );
+  }
+
+  @override
+  $MidiSceneNumbersTable createAlias(String alias) {
+    return $MidiSceneNumbersTable(attachedDatabase, alias);
+  }
+}
+
+class MidiSceneNumber extends DataClass implements Insertable<MidiSceneNumber> {
+  final int id;
+  final int sceneId;
+  final int sceneNumber;
+  final DateTime updatedAt;
+  const MidiSceneNumber({
+    required this.id,
+    required this.sceneId,
+    required this.sceneNumber,
+    required this.updatedAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['scene_id'] = Variable<int>(sceneId);
+    map['scene_number'] = Variable<int>(sceneNumber);
+    map['updated_at'] = Variable<DateTime>(updatedAt);
+    return map;
+  }
+
+  MidiSceneNumbersCompanion toCompanion(bool nullToAbsent) {
+    return MidiSceneNumbersCompanion(
+      id: Value(id),
+      sceneId: Value(sceneId),
+      sceneNumber: Value(sceneNumber),
+      updatedAt: Value(updatedAt),
+    );
+  }
+
+  factory MidiSceneNumber.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return MidiSceneNumber(
+      id: serializer.fromJson<int>(json['id']),
+      sceneId: serializer.fromJson<int>(json['sceneId']),
+      sceneNumber: serializer.fromJson<int>(json['sceneNumber']),
+      updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'sceneId': serializer.toJson<int>(sceneId),
+      'sceneNumber': serializer.toJson<int>(sceneNumber),
+      'updatedAt': serializer.toJson<DateTime>(updatedAt),
+    };
+  }
+
+  MidiSceneNumber copyWith({
+    int? id,
+    int? sceneId,
+    int? sceneNumber,
+    DateTime? updatedAt,
+  }) => MidiSceneNumber(
+    id: id ?? this.id,
+    sceneId: sceneId ?? this.sceneId,
+    sceneNumber: sceneNumber ?? this.sceneNumber,
+    updatedAt: updatedAt ?? this.updatedAt,
+  );
+  MidiSceneNumber copyWithCompanion(MidiSceneNumbersCompanion data) {
+    return MidiSceneNumber(
+      id: data.id.present ? data.id.value : this.id,
+      sceneId: data.sceneId.present ? data.sceneId.value : this.sceneId,
+      sceneNumber: data.sceneNumber.present
+          ? data.sceneNumber.value
+          : this.sceneNumber,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('MidiSceneNumber(')
+          ..write('id: $id, ')
+          ..write('sceneId: $sceneId, ')
+          ..write('sceneNumber: $sceneNumber, ')
+          ..write('updatedAt: $updatedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, sceneId, sceneNumber, updatedAt);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is MidiSceneNumber &&
+          other.id == this.id &&
+          other.sceneId == this.sceneId &&
+          other.sceneNumber == this.sceneNumber &&
+          other.updatedAt == this.updatedAt);
+}
+
+class MidiSceneNumbersCompanion extends UpdateCompanion<MidiSceneNumber> {
+  final Value<int> id;
+  final Value<int> sceneId;
+  final Value<int> sceneNumber;
+  final Value<DateTime> updatedAt;
+  const MidiSceneNumbersCompanion({
+    this.id = const Value.absent(),
+    this.sceneId = const Value.absent(),
+    this.sceneNumber = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+  });
+  MidiSceneNumbersCompanion.insert({
+    this.id = const Value.absent(),
+    required int sceneId,
+    required int sceneNumber,
+    required DateTime updatedAt,
+  }) : sceneId = Value(sceneId),
+       sceneNumber = Value(sceneNumber),
+       updatedAt = Value(updatedAt);
+  static Insertable<MidiSceneNumber> custom({
+    Expression<int>? id,
+    Expression<int>? sceneId,
+    Expression<int>? sceneNumber,
+    Expression<DateTime>? updatedAt,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (sceneId != null) 'scene_id': sceneId,
+      if (sceneNumber != null) 'scene_number': sceneNumber,
+      if (updatedAt != null) 'updated_at': updatedAt,
+    });
+  }
+
+  MidiSceneNumbersCompanion copyWith({
+    Value<int>? id,
+    Value<int>? sceneId,
+    Value<int>? sceneNumber,
+    Value<DateTime>? updatedAt,
+  }) {
+    return MidiSceneNumbersCompanion(
+      id: id ?? this.id,
+      sceneId: sceneId ?? this.sceneId,
+      sceneNumber: sceneNumber ?? this.sceneNumber,
+      updatedAt: updatedAt ?? this.updatedAt,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (sceneId.present) {
+      map['scene_id'] = Variable<int>(sceneId.value);
+    }
+    if (sceneNumber.present) {
+      map['scene_number'] = Variable<int>(sceneNumber.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<DateTime>(updatedAt.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('MidiSceneNumbersCompanion(')
+          ..write('id: $id, ')
+          ..write('sceneId: $sceneId, ')
+          ..write('sceneNumber: $sceneNumber, ')
+          ..write('updatedAt: $updatedAt')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $MidiPatchFavoritesTable extends MidiPatchFavorites
+    with TableInfo<$MidiPatchFavoritesTable, MidiPatchFavorite> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $MidiPatchFavoritesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'PRIMARY KEY AUTOINCREMENT',
+    ),
+  );
+  static const VerificationMeta _patchIdMeta = const VerificationMeta(
+    'patchId',
+  );
+  @override
+  late final GeneratedColumn<int> patchId = GeneratedColumn<int>(
+    'patch_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'UNIQUE REFERENCES patches (id) ON DELETE CASCADE',
+    ),
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [id, patchId, createdAt];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'midi_patch_favorites';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<MidiPatchFavorite> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('patch_id')) {
+      context.handle(
+        _patchIdMeta,
+        patchId.isAcceptableOrUnknown(data['patch_id']!, _patchIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_patchIdMeta);
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  MidiPatchFavorite map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return MidiPatchFavorite(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      patchId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}patch_id'],
+      )!,
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created_at'],
+      )!,
+    );
+  }
+
+  @override
+  $MidiPatchFavoritesTable createAlias(String alias) {
+    return $MidiPatchFavoritesTable(attachedDatabase, alias);
+  }
+}
+
+class MidiPatchFavorite extends DataClass
+    implements Insertable<MidiPatchFavorite> {
+  final int id;
+  final int patchId;
+  final DateTime createdAt;
+  const MidiPatchFavorite({
+    required this.id,
+    required this.patchId,
+    required this.createdAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['patch_id'] = Variable<int>(patchId);
+    map['created_at'] = Variable<DateTime>(createdAt);
+    return map;
+  }
+
+  MidiPatchFavoritesCompanion toCompanion(bool nullToAbsent) {
+    return MidiPatchFavoritesCompanion(
+      id: Value(id),
+      patchId: Value(patchId),
+      createdAt: Value(createdAt),
+    );
+  }
+
+  factory MidiPatchFavorite.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return MidiPatchFavorite(
+      id: serializer.fromJson<int>(json['id']),
+      patchId: serializer.fromJson<int>(json['patchId']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'patchId': serializer.toJson<int>(patchId),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+    };
+  }
+
+  MidiPatchFavorite copyWith({int? id, int? patchId, DateTime? createdAt}) =>
+      MidiPatchFavorite(
+        id: id ?? this.id,
+        patchId: patchId ?? this.patchId,
+        createdAt: createdAt ?? this.createdAt,
+      );
+  MidiPatchFavorite copyWithCompanion(MidiPatchFavoritesCompanion data) {
+    return MidiPatchFavorite(
+      id: data.id.present ? data.id.value : this.id,
+      patchId: data.patchId.present ? data.patchId.value : this.patchId,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('MidiPatchFavorite(')
+          ..write('id: $id, ')
+          ..write('patchId: $patchId, ')
+          ..write('createdAt: $createdAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, patchId, createdAt);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is MidiPatchFavorite &&
+          other.id == this.id &&
+          other.patchId == this.patchId &&
+          other.createdAt == this.createdAt);
+}
+
+class MidiPatchFavoritesCompanion extends UpdateCompanion<MidiPatchFavorite> {
+  final Value<int> id;
+  final Value<int> patchId;
+  final Value<DateTime> createdAt;
+  const MidiPatchFavoritesCompanion({
+    this.id = const Value.absent(),
+    this.patchId = const Value.absent(),
+    this.createdAt = const Value.absent(),
+  });
+  MidiPatchFavoritesCompanion.insert({
+    this.id = const Value.absent(),
+    required int patchId,
+    required DateTime createdAt,
+  }) : patchId = Value(patchId),
+       createdAt = Value(createdAt);
+  static Insertable<MidiPatchFavorite> custom({
+    Expression<int>? id,
+    Expression<int>? patchId,
+    Expression<DateTime>? createdAt,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (patchId != null) 'patch_id': patchId,
+      if (createdAt != null) 'created_at': createdAt,
+    });
+  }
+
+  MidiPatchFavoritesCompanion copyWith({
+    Value<int>? id,
+    Value<int>? patchId,
+    Value<DateTime>? createdAt,
+  }) {
+    return MidiPatchFavoritesCompanion(
+      id: id ?? this.id,
+      patchId: patchId ?? this.patchId,
+      createdAt: createdAt ?? this.createdAt,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (patchId.present) {
+      map['patch_id'] = Variable<int>(patchId.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('MidiPatchFavoritesCompanion(')
+          ..write('id: $id, ')
+          ..write('patchId: $patchId, ')
+          ..write('createdAt: $createdAt')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $MidiPatchRecentsTable extends MidiPatchRecents
+    with TableInfo<$MidiPatchRecentsTable, MidiPatchRecent> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $MidiPatchRecentsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'PRIMARY KEY AUTOINCREMENT',
+    ),
+  );
+  static const VerificationMeta _patchIdMeta = const VerificationMeta(
+    'patchId',
+  );
+  @override
+  late final GeneratedColumn<int> patchId = GeneratedColumn<int>(
+    'patch_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'UNIQUE REFERENCES patches (id) ON DELETE CASCADE',
+    ),
+  );
+  static const VerificationMeta _lastUsedAtMeta = const VerificationMeta(
+    'lastUsedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> lastUsedAt = GeneratedColumn<DateTime>(
+    'last_used_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [id, patchId, lastUsedAt];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'midi_patch_recents';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<MidiPatchRecent> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('patch_id')) {
+      context.handle(
+        _patchIdMeta,
+        patchId.isAcceptableOrUnknown(data['patch_id']!, _patchIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_patchIdMeta);
+    }
+    if (data.containsKey('last_used_at')) {
+      context.handle(
+        _lastUsedAtMeta,
+        lastUsedAt.isAcceptableOrUnknown(
+          data['last_used_at']!,
+          _lastUsedAtMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_lastUsedAtMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  MidiPatchRecent map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return MidiPatchRecent(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      patchId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}patch_id'],
+      )!,
+      lastUsedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}last_used_at'],
+      )!,
+    );
+  }
+
+  @override
+  $MidiPatchRecentsTable createAlias(String alias) {
+    return $MidiPatchRecentsTable(attachedDatabase, alias);
+  }
+}
+
+class MidiPatchRecent extends DataClass implements Insertable<MidiPatchRecent> {
+  final int id;
+  final int patchId;
+  final DateTime lastUsedAt;
+  const MidiPatchRecent({
+    required this.id,
+    required this.patchId,
+    required this.lastUsedAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['patch_id'] = Variable<int>(patchId);
+    map['last_used_at'] = Variable<DateTime>(lastUsedAt);
+    return map;
+  }
+
+  MidiPatchRecentsCompanion toCompanion(bool nullToAbsent) {
+    return MidiPatchRecentsCompanion(
+      id: Value(id),
+      patchId: Value(patchId),
+      lastUsedAt: Value(lastUsedAt),
+    );
+  }
+
+  factory MidiPatchRecent.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return MidiPatchRecent(
+      id: serializer.fromJson<int>(json['id']),
+      patchId: serializer.fromJson<int>(json['patchId']),
+      lastUsedAt: serializer.fromJson<DateTime>(json['lastUsedAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'patchId': serializer.toJson<int>(patchId),
+      'lastUsedAt': serializer.toJson<DateTime>(lastUsedAt),
+    };
+  }
+
+  MidiPatchRecent copyWith({int? id, int? patchId, DateTime? lastUsedAt}) =>
+      MidiPatchRecent(
+        id: id ?? this.id,
+        patchId: patchId ?? this.patchId,
+        lastUsedAt: lastUsedAt ?? this.lastUsedAt,
+      );
+  MidiPatchRecent copyWithCompanion(MidiPatchRecentsCompanion data) {
+    return MidiPatchRecent(
+      id: data.id.present ? data.id.value : this.id,
+      patchId: data.patchId.present ? data.patchId.value : this.patchId,
+      lastUsedAt: data.lastUsedAt.present
+          ? data.lastUsedAt.value
+          : this.lastUsedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('MidiPatchRecent(')
+          ..write('id: $id, ')
+          ..write('patchId: $patchId, ')
+          ..write('lastUsedAt: $lastUsedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, patchId, lastUsedAt);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is MidiPatchRecent &&
+          other.id == this.id &&
+          other.patchId == this.patchId &&
+          other.lastUsedAt == this.lastUsedAt);
+}
+
+class MidiPatchRecentsCompanion extends UpdateCompanion<MidiPatchRecent> {
+  final Value<int> id;
+  final Value<int> patchId;
+  final Value<DateTime> lastUsedAt;
+  const MidiPatchRecentsCompanion({
+    this.id = const Value.absent(),
+    this.patchId = const Value.absent(),
+    this.lastUsedAt = const Value.absent(),
+  });
+  MidiPatchRecentsCompanion.insert({
+    this.id = const Value.absent(),
+    required int patchId,
+    required DateTime lastUsedAt,
+  }) : patchId = Value(patchId),
+       lastUsedAt = Value(lastUsedAt);
+  static Insertable<MidiPatchRecent> custom({
+    Expression<int>? id,
+    Expression<int>? patchId,
+    Expression<DateTime>? lastUsedAt,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (patchId != null) 'patch_id': patchId,
+      if (lastUsedAt != null) 'last_used_at': lastUsedAt,
+    });
+  }
+
+  MidiPatchRecentsCompanion copyWith({
+    Value<int>? id,
+    Value<int>? patchId,
+    Value<DateTime>? lastUsedAt,
+  }) {
+    return MidiPatchRecentsCompanion(
+      id: id ?? this.id,
+      patchId: patchId ?? this.patchId,
+      lastUsedAt: lastUsedAt ?? this.lastUsedAt,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (patchId.present) {
+      map['patch_id'] = Variable<int>(patchId.value);
+    }
+    if (lastUsedAt.present) {
+      map['last_used_at'] = Variable<DateTime>(lastUsedAt.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('MidiPatchRecentsCompanion(')
+          ..write('id: $id, ')
+          ..write('patchId: $patchId, ')
+          ..write('lastUsedAt: $lastUsedAt')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
@@ -12411,6 +14699,23 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final $AcademyPracticeSessionsTable academyPracticeSessions =
       $AcademyPracticeSessionsTable(this);
   late final $AcademyBookmarksTable academyBookmarks = $AcademyBookmarksTable(
+    this,
+  );
+  late final $MidiParameterOverridesTable midiParameterOverrides =
+      $MidiParameterOverridesTable(this);
+  late final $MidiPatchSelectionSettingsTable midiPatchSelectionSettings =
+      $MidiPatchSelectionSettingsTable(this);
+  late final $MidiDeviceLinksTable midiDeviceLinks = $MidiDeviceLinksTable(
+    this,
+  );
+  late final $MidiPatchProgramNumbersTable midiPatchProgramNumbers =
+      $MidiPatchProgramNumbersTable(this);
+  late final $MidiSceneNumbersTable midiSceneNumbers = $MidiSceneNumbersTable(
+    this,
+  );
+  late final $MidiPatchFavoritesTable midiPatchFavorites =
+      $MidiPatchFavoritesTable(this);
+  late final $MidiPatchRecentsTable midiPatchRecents = $MidiPatchRecentsTable(
     this,
   );
   late final Index idxPedalsStatus = Index(
@@ -12493,6 +14798,14 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     'idx_academy_practice_sessions_lesson',
     'CREATE INDEX idx_academy_practice_sessions_lesson ON academy_practice_sessions (lesson_id, ended_at)',
   );
+  late final Index idxMidiParameterOverridesDevice = Index(
+    'idx_midi_parameter_overrides_device',
+    'CREATE INDEX idx_midi_parameter_overrides_device ON midi_parameter_overrides (device_profile_id)',
+  );
+  late final Index idxMidiDeviceLinksProfile = Index(
+    'idx_midi_device_links_profile',
+    'CREATE INDEX idx_midi_device_links_profile ON midi_device_links (device_profile_id)',
+  );
   late final PedalDao pedalDao = PedalDao(this as AppDatabase);
   late final PedalControlDao pedalControlDao = PedalControlDao(
     this as AppDatabase,
@@ -12513,6 +14826,24 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     this as AppDatabase,
   );
   late final AcademyBookmarkDao academyBookmarkDao = AcademyBookmarkDao(
+    this as AppDatabase,
+  );
+  late final MidiParameterOverrideDao midiParameterOverrideDao =
+      MidiParameterOverrideDao(this as AppDatabase);
+  late final MidiPatchSelectionSettingsDao midiPatchSelectionSettingsDao =
+      MidiPatchSelectionSettingsDao(this as AppDatabase);
+  late final MidiDeviceLinkDao midiDeviceLinkDao = MidiDeviceLinkDao(
+    this as AppDatabase,
+  );
+  late final MidiPatchProgramNumberDao midiPatchProgramNumberDao =
+      MidiPatchProgramNumberDao(this as AppDatabase);
+  late final MidiSceneNumberDao midiSceneNumberDao = MidiSceneNumberDao(
+    this as AppDatabase,
+  );
+  late final MidiPatchFavoriteDao midiPatchFavoriteDao = MidiPatchFavoriteDao(
+    this as AppDatabase,
+  );
+  late final MidiPatchRecentDao midiPatchRecentDao = MidiPatchRecentDao(
     this as AppDatabase,
   );
   late final BackupDao backupDao = BackupDao(this as AppDatabase);
@@ -12546,6 +14877,13 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     academyExerciseProgress,
     academyPracticeSessions,
     academyBookmarks,
+    midiParameterOverrides,
+    midiPatchSelectionSettings,
+    midiDeviceLinks,
+    midiPatchProgramNumbers,
+    midiSceneNumbers,
+    midiPatchFavorites,
+    midiPatchRecents,
     idxPedalsStatus,
     idxPedalsName,
     idxPedalsHost,
@@ -12566,6 +14904,8 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     idxAcademyLessonsModule,
     idxAcademyExercisesLesson,
     idxAcademyPracticeSessionsLesson,
+    idxMidiParameterOverridesDevice,
+    idxMidiDeviceLinksProfile,
   ];
   @override
   StreamQueryUpdateRules get streamUpdateRules => const StreamQueryUpdateRules([
@@ -12726,6 +15066,36 @@ abstract class _$AppDatabase extends GeneratedDatabase {
       result: [
         TableUpdate('academy_practice_sessions', kind: UpdateKind.delete),
       ],
+    ),
+    WritePropagation(
+      on: TableUpdateQuery.onTableName(
+        'patches',
+        limitUpdateKind: UpdateKind.delete,
+      ),
+      result: [
+        TableUpdate('midi_patch_program_numbers', kind: UpdateKind.delete),
+      ],
+    ),
+    WritePropagation(
+      on: TableUpdateQuery.onTableName(
+        'scenes',
+        limitUpdateKind: UpdateKind.delete,
+      ),
+      result: [TableUpdate('midi_scene_numbers', kind: UpdateKind.delete)],
+    ),
+    WritePropagation(
+      on: TableUpdateQuery.onTableName(
+        'patches',
+        limitUpdateKind: UpdateKind.delete,
+      ),
+      result: [TableUpdate('midi_patch_favorites', kind: UpdateKind.delete)],
+    ),
+    WritePropagation(
+      on: TableUpdateQuery.onTableName(
+        'patches',
+        limitUpdateKind: UpdateKind.delete,
+      ),
+      result: [TableUpdate('midi_patch_recents', kind: UpdateKind.delete)],
     ),
   ]);
   @override
@@ -12953,6 +15323,26 @@ final class $$PedalsTableReferences
 
     final cache = $_typedResult.readTableOrNull(
       _rigSnapshotEntriesRefsTable($_db),
+    );
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+
+  static MultiTypedResultKey<$MidiDeviceLinksTable, List<MidiDeviceLink>>
+  _midiDeviceLinksRefsTable(_$AppDatabase db) => MultiTypedResultKey.fromTable(
+    db.midiDeviceLinks,
+    aliasName: 'pedals__id__midi_device_links__pedal_id',
+  );
+
+  $$MidiDeviceLinksTableProcessedTableManager get midiDeviceLinksRefs {
+    final manager = $$MidiDeviceLinksTableTableManager(
+      $_db,
+      $_db.midiDeviceLinks,
+    ).filter((f) => f.pedalId.id.sqlEquals($_itemColumn<int>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(
+      _midiDeviceLinksRefsTable($_db),
     );
     return ProcessedTableManager(
       manager.$state.copyWith(prefetchedData: cache),
@@ -13272,6 +15662,31 @@ class $$PedalsTableFilterComposer
           }) => $$RigSnapshotEntriesTableFilterComposer(
             $db: $db,
             $table: $db.rigSnapshotEntries,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+
+  Expression<bool> midiDeviceLinksRefs(
+    Expression<bool> Function($$MidiDeviceLinksTableFilterComposer f) f,
+  ) {
+    final $$MidiDeviceLinksTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.midiDeviceLinks,
+      getReferencedColumn: (t) => t.pedalId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$MidiDeviceLinksTableFilterComposer(
+            $db: $db,
+            $table: $db.midiDeviceLinks,
             $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
             joinBuilder: joinBuilder,
             $removeJoinBuilderFromRootComposer:
@@ -13675,6 +16090,31 @@ class $$PedalsTableAnnotationComposer
         );
     return f(composer);
   }
+
+  Expression<T> midiDeviceLinksRefs<T extends Object>(
+    Expression<T> Function($$MidiDeviceLinksTableAnnotationComposer a) f,
+  ) {
+    final $$MidiDeviceLinksTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.midiDeviceLinks,
+      getReferencedColumn: (t) => t.pedalId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$MidiDeviceLinksTableAnnotationComposer(
+            $db: $db,
+            $table: $db.midiDeviceLinks,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
 }
 
 class $$PedalsTableTableManager
@@ -13701,6 +16141,7 @@ class $$PedalsTableTableManager
             bool replacementsWhereIncoming,
             bool signalBlocksRefs,
             bool rigSnapshotEntriesRefs,
+            bool midiDeviceLinksRefs,
           })
         > {
   $$PedalsTableTableManager(_$AppDatabase db, $PedalsTable table)
@@ -13794,6 +16235,7 @@ class $$PedalsTableTableManager
                 replacementsWhereIncoming = false,
                 signalBlocksRefs = false,
                 rigSnapshotEntriesRefs = false,
+                midiDeviceLinksRefs = false,
               }) {
                 return PrefetchHooks(
                   db: db,
@@ -13807,6 +16249,7 @@ class $$PedalsTableTableManager
                     if (replacementsWhereIncoming) db.pedalReplacements,
                     if (signalBlocksRefs) db.signalBlocks,
                     if (rigSnapshotEntriesRefs) db.rigSnapshotEntries,
+                    if (midiDeviceLinksRefs) db.midiDeviceLinks,
                   ],
                   addJoins:
                       <
@@ -14027,6 +16470,27 @@ class $$PedalsTableTableManager
                               ),
                           typedResults: items,
                         ),
+                      if (midiDeviceLinksRefs)
+                        await $_getPrefetchedData<
+                          Pedal,
+                          $PedalsTable,
+                          MidiDeviceLink
+                        >(
+                          currentTable: table,
+                          referencedTable: $$PedalsTableReferences
+                              ._midiDeviceLinksRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$PedalsTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).midiDeviceLinksRefs,
+                          referencedItemsForCurrentItem:
+                              (item, referencedItems) => referencedItems.where(
+                                (e) => e.pedalId == item.id,
+                              ),
+                          typedResults: items,
+                        ),
                     ];
                   },
                 );
@@ -14058,6 +16522,7 @@ typedef $$PedalsTableProcessedTableManager =
         bool replacementsWhereIncoming,
         bool signalBlocksRefs,
         bool rigSnapshotEntriesRefs,
+        bool midiDeviceLinksRefs,
       })
     >;
 typedef $$PedalControlsTableCreateCompanionBuilder =
@@ -15795,6 +18260,72 @@ final class $$PatchesTableReferences
       manager.$state.copyWith(prefetchedData: cache),
     );
   }
+
+  static MultiTypedResultKey<
+    $MidiPatchProgramNumbersTable,
+    List<MidiPatchProgramNumber>
+  >
+  _midiPatchProgramNumbersRefsTable(_$AppDatabase db) =>
+      MultiTypedResultKey.fromTable(
+        db.midiPatchProgramNumbers,
+        aliasName: 'patches__id__midi_patch_program_numbers__patch_id',
+      );
+
+  $$MidiPatchProgramNumbersTableProcessedTableManager
+  get midiPatchProgramNumbersRefs {
+    final manager = $$MidiPatchProgramNumbersTableTableManager(
+      $_db,
+      $_db.midiPatchProgramNumbers,
+    ).filter((f) => f.patchId.id.sqlEquals($_itemColumn<int>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(
+      _midiPatchProgramNumbersRefsTable($_db),
+    );
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+
+  static MultiTypedResultKey<$MidiPatchFavoritesTable, List<MidiPatchFavorite>>
+  _midiPatchFavoritesRefsTable(_$AppDatabase db) =>
+      MultiTypedResultKey.fromTable(
+        db.midiPatchFavorites,
+        aliasName: 'patches__id__midi_patch_favorites__patch_id',
+      );
+
+  $$MidiPatchFavoritesTableProcessedTableManager get midiPatchFavoritesRefs {
+    final manager = $$MidiPatchFavoritesTableTableManager(
+      $_db,
+      $_db.midiPatchFavorites,
+    ).filter((f) => f.patchId.id.sqlEquals($_itemColumn<int>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(
+      _midiPatchFavoritesRefsTable($_db),
+    );
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+
+  static MultiTypedResultKey<$MidiPatchRecentsTable, List<MidiPatchRecent>>
+  _midiPatchRecentsRefsTable(_$AppDatabase db) => MultiTypedResultKey.fromTable(
+    db.midiPatchRecents,
+    aliasName: 'patches__id__midi_patch_recents__patch_id',
+  );
+
+  $$MidiPatchRecentsTableProcessedTableManager get midiPatchRecentsRefs {
+    final manager = $$MidiPatchRecentsTableTableManager(
+      $_db,
+      $_db.midiPatchRecents,
+    ).filter((f) => f.patchId.id.sqlEquals($_itemColumn<int>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(
+      _midiPatchRecentsRefsTable($_db),
+    );
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
 }
 
 class $$PatchesTableFilterComposer
@@ -15870,6 +18401,82 @@ class $$PatchesTableFilterComposer
           }) => $$ScenesTableFilterComposer(
             $db: $db,
             $table: $db.scenes,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+
+  Expression<bool> midiPatchProgramNumbersRefs(
+    Expression<bool> Function($$MidiPatchProgramNumbersTableFilterComposer f) f,
+  ) {
+    final $$MidiPatchProgramNumbersTableFilterComposer composer =
+        $composerBuilder(
+          composer: this,
+          getCurrentColumn: (t) => t.id,
+          referencedTable: $db.midiPatchProgramNumbers,
+          getReferencedColumn: (t) => t.patchId,
+          builder:
+              (
+                joinBuilder, {
+                $addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer,
+              }) => $$MidiPatchProgramNumbersTableFilterComposer(
+                $db: $db,
+                $table: $db.midiPatchProgramNumbers,
+                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                joinBuilder: joinBuilder,
+                $removeJoinBuilderFromRootComposer:
+                    $removeJoinBuilderFromRootComposer,
+              ),
+        );
+    return f(composer);
+  }
+
+  Expression<bool> midiPatchFavoritesRefs(
+    Expression<bool> Function($$MidiPatchFavoritesTableFilterComposer f) f,
+  ) {
+    final $$MidiPatchFavoritesTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.midiPatchFavorites,
+      getReferencedColumn: (t) => t.patchId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$MidiPatchFavoritesTableFilterComposer(
+            $db: $db,
+            $table: $db.midiPatchFavorites,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+
+  Expression<bool> midiPatchRecentsRefs(
+    Expression<bool> Function($$MidiPatchRecentsTableFilterComposer f) f,
+  ) {
+    final $$MidiPatchRecentsTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.midiPatchRecents,
+      getReferencedColumn: (t) => t.patchId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$MidiPatchRecentsTableFilterComposer(
+            $db: $db,
+            $table: $db.midiPatchRecents,
             $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
             joinBuilder: joinBuilder,
             $removeJoinBuilderFromRootComposer:
@@ -16009,6 +18616,84 @@ class $$PatchesTableAnnotationComposer
     );
     return f(composer);
   }
+
+  Expression<T> midiPatchProgramNumbersRefs<T extends Object>(
+    Expression<T> Function($$MidiPatchProgramNumbersTableAnnotationComposer a)
+    f,
+  ) {
+    final $$MidiPatchProgramNumbersTableAnnotationComposer composer =
+        $composerBuilder(
+          composer: this,
+          getCurrentColumn: (t) => t.id,
+          referencedTable: $db.midiPatchProgramNumbers,
+          getReferencedColumn: (t) => t.patchId,
+          builder:
+              (
+                joinBuilder, {
+                $addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer,
+              }) => $$MidiPatchProgramNumbersTableAnnotationComposer(
+                $db: $db,
+                $table: $db.midiPatchProgramNumbers,
+                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                joinBuilder: joinBuilder,
+                $removeJoinBuilderFromRootComposer:
+                    $removeJoinBuilderFromRootComposer,
+              ),
+        );
+    return f(composer);
+  }
+
+  Expression<T> midiPatchFavoritesRefs<T extends Object>(
+    Expression<T> Function($$MidiPatchFavoritesTableAnnotationComposer a) f,
+  ) {
+    final $$MidiPatchFavoritesTableAnnotationComposer composer =
+        $composerBuilder(
+          composer: this,
+          getCurrentColumn: (t) => t.id,
+          referencedTable: $db.midiPatchFavorites,
+          getReferencedColumn: (t) => t.patchId,
+          builder:
+              (
+                joinBuilder, {
+                $addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer,
+              }) => $$MidiPatchFavoritesTableAnnotationComposer(
+                $db: $db,
+                $table: $db.midiPatchFavorites,
+                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                joinBuilder: joinBuilder,
+                $removeJoinBuilderFromRootComposer:
+                    $removeJoinBuilderFromRootComposer,
+              ),
+        );
+    return f(composer);
+  }
+
+  Expression<T> midiPatchRecentsRefs<T extends Object>(
+    Expression<T> Function($$MidiPatchRecentsTableAnnotationComposer a) f,
+  ) {
+    final $$MidiPatchRecentsTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.midiPatchRecents,
+      getReferencedColumn: (t) => t.patchId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$MidiPatchRecentsTableAnnotationComposer(
+            $db: $db,
+            $table: $db.midiPatchRecents,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
 }
 
 class $$PatchesTableTableManager
@@ -16024,7 +18709,13 @@ class $$PatchesTableTableManager
           $$PatchesTableUpdateCompanionBuilder,
           (Patch, $$PatchesTableReferences),
           Patch,
-          PrefetchHooks Function({bool pedalId, bool scenesRefs})
+          PrefetchHooks Function({
+            bool pedalId,
+            bool scenesRefs,
+            bool midiPatchProgramNumbersRefs,
+            bool midiPatchFavoritesRefs,
+            bool midiPatchRecentsRefs,
+          })
         > {
   $$PatchesTableTableManager(_$AppDatabase db, $PatchesTable table)
     : super(
@@ -16077,59 +18768,140 @@ class $$PatchesTableTableManager
                 ),
               )
               .toList(),
-          prefetchHooksCallback: ({pedalId = false, scenesRefs = false}) {
-            return PrefetchHooks(
-              db: db,
-              explicitlyWatchedTables: [if (scenesRefs) db.scenes],
-              addJoins:
-                  <
-                    T extends TableManagerState<
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic
-                    >
-                  >(state) {
-                    if (pedalId) {
-                      state =
-                          state.withJoin(
-                                currentTable: table,
-                                currentColumn: table.pedalId,
-                                referencedTable: $$PatchesTableReferences
-                                    ._pedalIdTable(db),
-                                referencedColumn: $$PatchesTableReferences
-                                    ._pedalIdTable(db)
-                                    .id,
-                              )
-                              as T;
-                    }
+          prefetchHooksCallback:
+              ({
+                pedalId = false,
+                scenesRefs = false,
+                midiPatchProgramNumbersRefs = false,
+                midiPatchFavoritesRefs = false,
+                midiPatchRecentsRefs = false,
+              }) {
+                return PrefetchHooks(
+                  db: db,
+                  explicitlyWatchedTables: [
+                    if (scenesRefs) db.scenes,
+                    if (midiPatchProgramNumbersRefs) db.midiPatchProgramNumbers,
+                    if (midiPatchFavoritesRefs) db.midiPatchFavorites,
+                    if (midiPatchRecentsRefs) db.midiPatchRecents,
+                  ],
+                  addJoins:
+                      <
+                        T extends TableManagerState<
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic
+                        >
+                      >(state) {
+                        if (pedalId) {
+                          state =
+                              state.withJoin(
+                                    currentTable: table,
+                                    currentColumn: table.pedalId,
+                                    referencedTable: $$PatchesTableReferences
+                                        ._pedalIdTable(db),
+                                    referencedColumn: $$PatchesTableReferences
+                                        ._pedalIdTable(db)
+                                        .id,
+                                  )
+                                  as T;
+                        }
 
-                    return state;
+                        return state;
+                      },
+                  getPrefetchedDataCallback: (items) async {
+                    return [
+                      if (scenesRefs)
+                        await $_getPrefetchedData<Patch, $PatchesTable, Scene>(
+                          currentTable: table,
+                          referencedTable: $$PatchesTableReferences
+                              ._scenesRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$PatchesTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).scenesRefs,
+                          referencedItemsForCurrentItem:
+                              (item, referencedItems) => referencedItems.where(
+                                (e) => e.patchId == item.id,
+                              ),
+                          typedResults: items,
+                        ),
+                      if (midiPatchProgramNumbersRefs)
+                        await $_getPrefetchedData<
+                          Patch,
+                          $PatchesTable,
+                          MidiPatchProgramNumber
+                        >(
+                          currentTable: table,
+                          referencedTable: $$PatchesTableReferences
+                              ._midiPatchProgramNumbersRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$PatchesTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).midiPatchProgramNumbersRefs,
+                          referencedItemsForCurrentItem:
+                              (item, referencedItems) => referencedItems.where(
+                                (e) => e.patchId == item.id,
+                              ),
+                          typedResults: items,
+                        ),
+                      if (midiPatchFavoritesRefs)
+                        await $_getPrefetchedData<
+                          Patch,
+                          $PatchesTable,
+                          MidiPatchFavorite
+                        >(
+                          currentTable: table,
+                          referencedTable: $$PatchesTableReferences
+                              ._midiPatchFavoritesRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$PatchesTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).midiPatchFavoritesRefs,
+                          referencedItemsForCurrentItem:
+                              (item, referencedItems) => referencedItems.where(
+                                (e) => e.patchId == item.id,
+                              ),
+                          typedResults: items,
+                        ),
+                      if (midiPatchRecentsRefs)
+                        await $_getPrefetchedData<
+                          Patch,
+                          $PatchesTable,
+                          MidiPatchRecent
+                        >(
+                          currentTable: table,
+                          referencedTable: $$PatchesTableReferences
+                              ._midiPatchRecentsRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$PatchesTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).midiPatchRecentsRefs,
+                          referencedItemsForCurrentItem:
+                              (item, referencedItems) => referencedItems.where(
+                                (e) => e.patchId == item.id,
+                              ),
+                          typedResults: items,
+                        ),
+                    ];
                   },
-              getPrefetchedDataCallback: (items) async {
-                return [
-                  if (scenesRefs)
-                    await $_getPrefetchedData<Patch, $PatchesTable, Scene>(
-                      currentTable: table,
-                      referencedTable: $$PatchesTableReferences
-                          ._scenesRefsTable(db),
-                      managerFromTypedResult: (p0) =>
-                          $$PatchesTableReferences(db, table, p0).scenesRefs,
-                      referencedItemsForCurrentItem: (item, referencedItems) =>
-                          referencedItems.where((e) => e.patchId == item.id),
-                      typedResults: items,
-                    ),
-                ];
+                );
               },
-            );
-          },
         ),
       );
 }
@@ -16146,7 +18918,13 @@ typedef $$PatchesTableProcessedTableManager =
       $$PatchesTableUpdateCompanionBuilder,
       (Patch, $$PatchesTableReferences),
       Patch,
-      PrefetchHooks Function({bool pedalId, bool scenesRefs})
+      PrefetchHooks Function({
+        bool pedalId,
+        bool scenesRefs,
+        bool midiPatchProgramNumbersRefs,
+        bool midiPatchFavoritesRefs,
+        bool midiPatchRecentsRefs,
+      })
     >;
 typedef $$ScenesTableCreateCompanionBuilder =
     ScenesCompanion Function({
@@ -16219,6 +18997,26 @@ final class $$ScenesTableReferences
     ).filter((f) => f.sceneId.id.sqlEquals($_itemColumn<int>('id')!));
 
     final cache = $_typedResult.readTableOrNull(_sceneValuesRefsTable($_db));
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+
+  static MultiTypedResultKey<$MidiSceneNumbersTable, List<MidiSceneNumber>>
+  _midiSceneNumbersRefsTable(_$AppDatabase db) => MultiTypedResultKey.fromTable(
+    db.midiSceneNumbers,
+    aliasName: 'scenes__id__midi_scene_numbers__scene_id',
+  );
+
+  $$MidiSceneNumbersTableProcessedTableManager get midiSceneNumbersRefs {
+    final manager = $$MidiSceneNumbersTableTableManager(
+      $_db,
+      $_db.midiSceneNumbers,
+    ).filter((f) => f.sceneId.id.sqlEquals($_itemColumn<int>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(
+      _midiSceneNumbersRefsTable($_db),
+    );
     return ProcessedTableManager(
       manager.$state.copyWith(prefetchedData: cache),
     );
@@ -16323,6 +19121,31 @@ class $$ScenesTableFilterComposer
           }) => $$SceneValuesTableFilterComposer(
             $db: $db,
             $table: $db.sceneValues,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+
+  Expression<bool> midiSceneNumbersRefs(
+    Expression<bool> Function($$MidiSceneNumbersTableFilterComposer f) f,
+  ) {
+    final $$MidiSceneNumbersTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.midiSceneNumbers,
+      getReferencedColumn: (t) => t.sceneId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$MidiSceneNumbersTableFilterComposer(
+            $db: $db,
+            $table: $db.midiSceneNumbers,
             $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
             joinBuilder: joinBuilder,
             $removeJoinBuilderFromRootComposer:
@@ -16487,6 +19310,31 @@ class $$ScenesTableAnnotationComposer
     );
     return f(composer);
   }
+
+  Expression<T> midiSceneNumbersRefs<T extends Object>(
+    Expression<T> Function($$MidiSceneNumbersTableAnnotationComposer a) f,
+  ) {
+    final $$MidiSceneNumbersTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.midiSceneNumbers,
+      getReferencedColumn: (t) => t.sceneId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$MidiSceneNumbersTableAnnotationComposer(
+            $db: $db,
+            $table: $db.midiSceneNumbers,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
 }
 
 class $$ScenesTableTableManager
@@ -16506,6 +19354,7 @@ class $$ScenesTableTableManager
             bool patchId,
             bool scenePedalsRefs,
             bool sceneValuesRefs,
+            bool midiSceneNumbersRefs,
           })
         > {
   $$ScenesTableTableManager(_$AppDatabase db, $ScenesTable table)
@@ -16562,12 +19411,14 @@ class $$ScenesTableTableManager
                 patchId = false,
                 scenePedalsRefs = false,
                 sceneValuesRefs = false,
+                midiSceneNumbersRefs = false,
               }) {
                 return PrefetchHooks(
                   db: db,
                   explicitlyWatchedTables: [
                     if (scenePedalsRefs) db.scenePedals,
                     if (sceneValuesRefs) db.sceneValues,
+                    if (midiSceneNumbersRefs) db.midiSceneNumbers,
                   ],
                   addJoins:
                       <
@@ -16645,6 +19496,27 @@ class $$ScenesTableTableManager
                               ),
                           typedResults: items,
                         ),
+                      if (midiSceneNumbersRefs)
+                        await $_getPrefetchedData<
+                          Scene,
+                          $ScenesTable,
+                          MidiSceneNumber
+                        >(
+                          currentTable: table,
+                          referencedTable: $$ScenesTableReferences
+                              ._midiSceneNumbersRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$ScenesTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).midiSceneNumbersRefs,
+                          referencedItemsForCurrentItem:
+                              (item, referencedItems) => referencedItems.where(
+                                (e) => e.sceneId == item.id,
+                              ),
+                          typedResults: items,
+                        ),
                     ];
                   },
                 );
@@ -16669,6 +19541,7 @@ typedef $$ScenesTableProcessedTableManager =
         bool patchId,
         bool scenePedalsRefs,
         bool sceneValuesRefs,
+        bool midiSceneNumbersRefs,
       })
     >;
 typedef $$ScenePedalsTableCreateCompanionBuilder =
@@ -25683,6 +28556,1958 @@ typedef $$AcademyBookmarksTableProcessedTableManager =
       AcademyBookmark,
       PrefetchHooks Function()
     >;
+typedef $$MidiParameterOverridesTableCreateCompanionBuilder =
+    MidiParameterOverridesCompanion Function({
+      Value<int> id,
+      required String deviceProfileId,
+      required String parameterName,
+      required int ccNumber,
+      required DateTime updatedAt,
+    });
+typedef $$MidiParameterOverridesTableUpdateCompanionBuilder =
+    MidiParameterOverridesCompanion Function({
+      Value<int> id,
+      Value<String> deviceProfileId,
+      Value<String> parameterName,
+      Value<int> ccNumber,
+      Value<DateTime> updatedAt,
+    });
+
+class $$MidiParameterOverridesTableFilterComposer
+    extends Composer<_$AppDatabase, $MidiParameterOverridesTable> {
+  $$MidiParameterOverridesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get deviceProfileId => $composableBuilder(
+    column: $table.deviceProfileId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get parameterName => $composableBuilder(
+    column: $table.parameterName,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get ccNumber => $composableBuilder(
+    column: $table.ccNumber,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$MidiParameterOverridesTableOrderingComposer
+    extends Composer<_$AppDatabase, $MidiParameterOverridesTable> {
+  $$MidiParameterOverridesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get deviceProfileId => $composableBuilder(
+    column: $table.deviceProfileId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get parameterName => $composableBuilder(
+    column: $table.parameterName,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get ccNumber => $composableBuilder(
+    column: $table.ccNumber,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$MidiParameterOverridesTableAnnotationComposer
+    extends Composer<_$AppDatabase, $MidiParameterOverridesTable> {
+  $$MidiParameterOverridesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get deviceProfileId => $composableBuilder(
+    column: $table.deviceProfileId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get parameterName => $composableBuilder(
+    column: $table.parameterName,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get ccNumber =>
+      $composableBuilder(column: $table.ccNumber, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+}
+
+class $$MidiParameterOverridesTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $MidiParameterOverridesTable,
+          MidiParameterOverride,
+          $$MidiParameterOverridesTableFilterComposer,
+          $$MidiParameterOverridesTableOrderingComposer,
+          $$MidiParameterOverridesTableAnnotationComposer,
+          $$MidiParameterOverridesTableCreateCompanionBuilder,
+          $$MidiParameterOverridesTableUpdateCompanionBuilder,
+          (
+            MidiParameterOverride,
+            BaseReferences<
+              _$AppDatabase,
+              $MidiParameterOverridesTable,
+              MidiParameterOverride
+            >,
+          ),
+          MidiParameterOverride,
+          PrefetchHooks Function()
+        > {
+  $$MidiParameterOverridesTableTableManager(
+    _$AppDatabase db,
+    $MidiParameterOverridesTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$MidiParameterOverridesTableFilterComposer(
+                $db: db,
+                $table: table,
+              ),
+          createOrderingComposer: () =>
+              $$MidiParameterOverridesTableOrderingComposer(
+                $db: db,
+                $table: table,
+              ),
+          createComputedFieldComposer: () =>
+              $$MidiParameterOverridesTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<String> deviceProfileId = const Value.absent(),
+                Value<String> parameterName = const Value.absent(),
+                Value<int> ccNumber = const Value.absent(),
+                Value<DateTime> updatedAt = const Value.absent(),
+              }) => MidiParameterOverridesCompanion(
+                id: id,
+                deviceProfileId: deviceProfileId,
+                parameterName: parameterName,
+                ccNumber: ccNumber,
+                updatedAt: updatedAt,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                required String deviceProfileId,
+                required String parameterName,
+                required int ccNumber,
+                required DateTime updatedAt,
+              }) => MidiParameterOverridesCompanion.insert(
+                id: id,
+                deviceProfileId: deviceProfileId,
+                parameterName: parameterName,
+                ccNumber: ccNumber,
+                updatedAt: updatedAt,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$MidiParameterOverridesTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $MidiParameterOverridesTable,
+      MidiParameterOverride,
+      $$MidiParameterOverridesTableFilterComposer,
+      $$MidiParameterOverridesTableOrderingComposer,
+      $$MidiParameterOverridesTableAnnotationComposer,
+      $$MidiParameterOverridesTableCreateCompanionBuilder,
+      $$MidiParameterOverridesTableUpdateCompanionBuilder,
+      (
+        MidiParameterOverride,
+        BaseReferences<
+          _$AppDatabase,
+          $MidiParameterOverridesTable,
+          MidiParameterOverride
+        >,
+      ),
+      MidiParameterOverride,
+      PrefetchHooks Function()
+    >;
+typedef $$MidiPatchSelectionSettingsTableCreateCompanionBuilder =
+    MidiPatchSelectionSettingsCompanion Function({
+      Value<int> id,
+      required String deviceProfileId,
+      Value<bool?> usesBankSelect,
+      Value<int?> bankSelectMsb,
+      Value<int?> bankSelectLsb,
+      required DateTime updatedAt,
+    });
+typedef $$MidiPatchSelectionSettingsTableUpdateCompanionBuilder =
+    MidiPatchSelectionSettingsCompanion Function({
+      Value<int> id,
+      Value<String> deviceProfileId,
+      Value<bool?> usesBankSelect,
+      Value<int?> bankSelectMsb,
+      Value<int?> bankSelectLsb,
+      Value<DateTime> updatedAt,
+    });
+
+class $$MidiPatchSelectionSettingsTableFilterComposer
+    extends Composer<_$AppDatabase, $MidiPatchSelectionSettingsTable> {
+  $$MidiPatchSelectionSettingsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get deviceProfileId => $composableBuilder(
+    column: $table.deviceProfileId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get usesBankSelect => $composableBuilder(
+    column: $table.usesBankSelect,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get bankSelectMsb => $composableBuilder(
+    column: $table.bankSelectMsb,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get bankSelectLsb => $composableBuilder(
+    column: $table.bankSelectLsb,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$MidiPatchSelectionSettingsTableOrderingComposer
+    extends Composer<_$AppDatabase, $MidiPatchSelectionSettingsTable> {
+  $$MidiPatchSelectionSettingsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get deviceProfileId => $composableBuilder(
+    column: $table.deviceProfileId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get usesBankSelect => $composableBuilder(
+    column: $table.usesBankSelect,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get bankSelectMsb => $composableBuilder(
+    column: $table.bankSelectMsb,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get bankSelectLsb => $composableBuilder(
+    column: $table.bankSelectLsb,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$MidiPatchSelectionSettingsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $MidiPatchSelectionSettingsTable> {
+  $$MidiPatchSelectionSettingsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get deviceProfileId => $composableBuilder(
+    column: $table.deviceProfileId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<bool> get usesBankSelect => $composableBuilder(
+    column: $table.usesBankSelect,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get bankSelectMsb => $composableBuilder(
+    column: $table.bankSelectMsb,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get bankSelectLsb => $composableBuilder(
+    column: $table.bankSelectLsb,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+}
+
+class $$MidiPatchSelectionSettingsTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $MidiPatchSelectionSettingsTable,
+          MidiPatchSelectionSetting,
+          $$MidiPatchSelectionSettingsTableFilterComposer,
+          $$MidiPatchSelectionSettingsTableOrderingComposer,
+          $$MidiPatchSelectionSettingsTableAnnotationComposer,
+          $$MidiPatchSelectionSettingsTableCreateCompanionBuilder,
+          $$MidiPatchSelectionSettingsTableUpdateCompanionBuilder,
+          (
+            MidiPatchSelectionSetting,
+            BaseReferences<
+              _$AppDatabase,
+              $MidiPatchSelectionSettingsTable,
+              MidiPatchSelectionSetting
+            >,
+          ),
+          MidiPatchSelectionSetting,
+          PrefetchHooks Function()
+        > {
+  $$MidiPatchSelectionSettingsTableTableManager(
+    _$AppDatabase db,
+    $MidiPatchSelectionSettingsTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$MidiPatchSelectionSettingsTableFilterComposer(
+                $db: db,
+                $table: table,
+              ),
+          createOrderingComposer: () =>
+              $$MidiPatchSelectionSettingsTableOrderingComposer(
+                $db: db,
+                $table: table,
+              ),
+          createComputedFieldComposer: () =>
+              $$MidiPatchSelectionSettingsTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<String> deviceProfileId = const Value.absent(),
+                Value<bool?> usesBankSelect = const Value.absent(),
+                Value<int?> bankSelectMsb = const Value.absent(),
+                Value<int?> bankSelectLsb = const Value.absent(),
+                Value<DateTime> updatedAt = const Value.absent(),
+              }) => MidiPatchSelectionSettingsCompanion(
+                id: id,
+                deviceProfileId: deviceProfileId,
+                usesBankSelect: usesBankSelect,
+                bankSelectMsb: bankSelectMsb,
+                bankSelectLsb: bankSelectLsb,
+                updatedAt: updatedAt,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                required String deviceProfileId,
+                Value<bool?> usesBankSelect = const Value.absent(),
+                Value<int?> bankSelectMsb = const Value.absent(),
+                Value<int?> bankSelectLsb = const Value.absent(),
+                required DateTime updatedAt,
+              }) => MidiPatchSelectionSettingsCompanion.insert(
+                id: id,
+                deviceProfileId: deviceProfileId,
+                usesBankSelect: usesBankSelect,
+                bankSelectMsb: bankSelectMsb,
+                bankSelectLsb: bankSelectLsb,
+                updatedAt: updatedAt,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$MidiPatchSelectionSettingsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $MidiPatchSelectionSettingsTable,
+      MidiPatchSelectionSetting,
+      $$MidiPatchSelectionSettingsTableFilterComposer,
+      $$MidiPatchSelectionSettingsTableOrderingComposer,
+      $$MidiPatchSelectionSettingsTableAnnotationComposer,
+      $$MidiPatchSelectionSettingsTableCreateCompanionBuilder,
+      $$MidiPatchSelectionSettingsTableUpdateCompanionBuilder,
+      (
+        MidiPatchSelectionSetting,
+        BaseReferences<
+          _$AppDatabase,
+          $MidiPatchSelectionSettingsTable,
+          MidiPatchSelectionSetting
+        >,
+      ),
+      MidiPatchSelectionSetting,
+      PrefetchHooks Function()
+    >;
+typedef $$MidiDeviceLinksTableCreateCompanionBuilder =
+    MidiDeviceLinksCompanion Function({
+      Value<int> id,
+      required int pedalId,
+      required String deviceProfileId,
+      required DateTime linkedAt,
+    });
+typedef $$MidiDeviceLinksTableUpdateCompanionBuilder =
+    MidiDeviceLinksCompanion Function({
+      Value<int> id,
+      Value<int> pedalId,
+      Value<String> deviceProfileId,
+      Value<DateTime> linkedAt,
+    });
+
+final class $$MidiDeviceLinksTableReferences
+    extends
+        BaseReferences<_$AppDatabase, $MidiDeviceLinksTable, MidiDeviceLink> {
+  $$MidiDeviceLinksTableReferences(
+    super.$_db,
+    super.$_table,
+    super.$_typedResult,
+  );
+
+  static $PedalsTable _pedalIdTable(_$AppDatabase db) =>
+      db.pedals.createAlias('midi_device_links__pedal_id__pedals__id');
+
+  $$PedalsTableProcessedTableManager get pedalId {
+    final $_column = $_itemColumn<int>('pedal_id')!;
+
+    final manager = $$PedalsTableTableManager(
+      $_db,
+      $_db.pedals,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_pedalIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+}
+
+class $$MidiDeviceLinksTableFilterComposer
+    extends Composer<_$AppDatabase, $MidiDeviceLinksTable> {
+  $$MidiDeviceLinksTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get deviceProfileId => $composableBuilder(
+    column: $table.deviceProfileId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get linkedAt => $composableBuilder(
+    column: $table.linkedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  $$PedalsTableFilterComposer get pedalId {
+    final $$PedalsTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.pedalId,
+      referencedTable: $db.pedals,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$PedalsTableFilterComposer(
+            $db: $db,
+            $table: $db.pedals,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$MidiDeviceLinksTableOrderingComposer
+    extends Composer<_$AppDatabase, $MidiDeviceLinksTable> {
+  $$MidiDeviceLinksTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get deviceProfileId => $composableBuilder(
+    column: $table.deviceProfileId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get linkedAt => $composableBuilder(
+    column: $table.linkedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  $$PedalsTableOrderingComposer get pedalId {
+    final $$PedalsTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.pedalId,
+      referencedTable: $db.pedals,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$PedalsTableOrderingComposer(
+            $db: $db,
+            $table: $db.pedals,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$MidiDeviceLinksTableAnnotationComposer
+    extends Composer<_$AppDatabase, $MidiDeviceLinksTable> {
+  $$MidiDeviceLinksTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get deviceProfileId => $composableBuilder(
+    column: $table.deviceProfileId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get linkedAt =>
+      $composableBuilder(column: $table.linkedAt, builder: (column) => column);
+
+  $$PedalsTableAnnotationComposer get pedalId {
+    final $$PedalsTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.pedalId,
+      referencedTable: $db.pedals,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$PedalsTableAnnotationComposer(
+            $db: $db,
+            $table: $db.pedals,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$MidiDeviceLinksTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $MidiDeviceLinksTable,
+          MidiDeviceLink,
+          $$MidiDeviceLinksTableFilterComposer,
+          $$MidiDeviceLinksTableOrderingComposer,
+          $$MidiDeviceLinksTableAnnotationComposer,
+          $$MidiDeviceLinksTableCreateCompanionBuilder,
+          $$MidiDeviceLinksTableUpdateCompanionBuilder,
+          (MidiDeviceLink, $$MidiDeviceLinksTableReferences),
+          MidiDeviceLink,
+          PrefetchHooks Function({bool pedalId})
+        > {
+  $$MidiDeviceLinksTableTableManager(
+    _$AppDatabase db,
+    $MidiDeviceLinksTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$MidiDeviceLinksTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$MidiDeviceLinksTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$MidiDeviceLinksTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<int> pedalId = const Value.absent(),
+                Value<String> deviceProfileId = const Value.absent(),
+                Value<DateTime> linkedAt = const Value.absent(),
+              }) => MidiDeviceLinksCompanion(
+                id: id,
+                pedalId: pedalId,
+                deviceProfileId: deviceProfileId,
+                linkedAt: linkedAt,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                required int pedalId,
+                required String deviceProfileId,
+                required DateTime linkedAt,
+              }) => MidiDeviceLinksCompanion.insert(
+                id: id,
+                pedalId: pedalId,
+                deviceProfileId: deviceProfileId,
+                linkedAt: linkedAt,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable(table),
+                  $$MidiDeviceLinksTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: ({pedalId = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [],
+              addJoins:
+                  <
+                    T extends TableManagerState<
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic
+                    >
+                  >(state) {
+                    if (pedalId) {
+                      state =
+                          state.withJoin(
+                                currentTable: table,
+                                currentColumn: table.pedalId,
+                                referencedTable:
+                                    $$MidiDeviceLinksTableReferences
+                                        ._pedalIdTable(db),
+                                referencedColumn:
+                                    $$MidiDeviceLinksTableReferences
+                                        ._pedalIdTable(db)
+                                        .id,
+                              )
+                              as T;
+                    }
+
+                    return state;
+                  },
+              getPrefetchedDataCallback: (items) async {
+                return [];
+              },
+            );
+          },
+        ),
+      );
+}
+
+typedef $$MidiDeviceLinksTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $MidiDeviceLinksTable,
+      MidiDeviceLink,
+      $$MidiDeviceLinksTableFilterComposer,
+      $$MidiDeviceLinksTableOrderingComposer,
+      $$MidiDeviceLinksTableAnnotationComposer,
+      $$MidiDeviceLinksTableCreateCompanionBuilder,
+      $$MidiDeviceLinksTableUpdateCompanionBuilder,
+      (MidiDeviceLink, $$MidiDeviceLinksTableReferences),
+      MidiDeviceLink,
+      PrefetchHooks Function({bool pedalId})
+    >;
+typedef $$MidiPatchProgramNumbersTableCreateCompanionBuilder =
+    MidiPatchProgramNumbersCompanion Function({
+      Value<int> id,
+      required int patchId,
+      required int programNumber,
+      required DateTime updatedAt,
+    });
+typedef $$MidiPatchProgramNumbersTableUpdateCompanionBuilder =
+    MidiPatchProgramNumbersCompanion Function({
+      Value<int> id,
+      Value<int> patchId,
+      Value<int> programNumber,
+      Value<DateTime> updatedAt,
+    });
+
+final class $$MidiPatchProgramNumbersTableReferences
+    extends
+        BaseReferences<
+          _$AppDatabase,
+          $MidiPatchProgramNumbersTable,
+          MidiPatchProgramNumber
+        > {
+  $$MidiPatchProgramNumbersTableReferences(
+    super.$_db,
+    super.$_table,
+    super.$_typedResult,
+  );
+
+  static $PatchesTable _patchIdTable(_$AppDatabase db) => db.patches
+      .createAlias('midi_patch_program_numbers__patch_id__patches__id');
+
+  $$PatchesTableProcessedTableManager get patchId {
+    final $_column = $_itemColumn<int>('patch_id')!;
+
+    final manager = $$PatchesTableTableManager(
+      $_db,
+      $_db.patches,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_patchIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+}
+
+class $$MidiPatchProgramNumbersTableFilterComposer
+    extends Composer<_$AppDatabase, $MidiPatchProgramNumbersTable> {
+  $$MidiPatchProgramNumbersTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get programNumber => $composableBuilder(
+    column: $table.programNumber,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  $$PatchesTableFilterComposer get patchId {
+    final $$PatchesTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.patchId,
+      referencedTable: $db.patches,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$PatchesTableFilterComposer(
+            $db: $db,
+            $table: $db.patches,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$MidiPatchProgramNumbersTableOrderingComposer
+    extends Composer<_$AppDatabase, $MidiPatchProgramNumbersTable> {
+  $$MidiPatchProgramNumbersTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get programNumber => $composableBuilder(
+    column: $table.programNumber,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  $$PatchesTableOrderingComposer get patchId {
+    final $$PatchesTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.patchId,
+      referencedTable: $db.patches,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$PatchesTableOrderingComposer(
+            $db: $db,
+            $table: $db.patches,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$MidiPatchProgramNumbersTableAnnotationComposer
+    extends Composer<_$AppDatabase, $MidiPatchProgramNumbersTable> {
+  $$MidiPatchProgramNumbersTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<int> get programNumber => $composableBuilder(
+    column: $table.programNumber,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+
+  $$PatchesTableAnnotationComposer get patchId {
+    final $$PatchesTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.patchId,
+      referencedTable: $db.patches,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$PatchesTableAnnotationComposer(
+            $db: $db,
+            $table: $db.patches,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$MidiPatchProgramNumbersTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $MidiPatchProgramNumbersTable,
+          MidiPatchProgramNumber,
+          $$MidiPatchProgramNumbersTableFilterComposer,
+          $$MidiPatchProgramNumbersTableOrderingComposer,
+          $$MidiPatchProgramNumbersTableAnnotationComposer,
+          $$MidiPatchProgramNumbersTableCreateCompanionBuilder,
+          $$MidiPatchProgramNumbersTableUpdateCompanionBuilder,
+          (MidiPatchProgramNumber, $$MidiPatchProgramNumbersTableReferences),
+          MidiPatchProgramNumber,
+          PrefetchHooks Function({bool patchId})
+        > {
+  $$MidiPatchProgramNumbersTableTableManager(
+    _$AppDatabase db,
+    $MidiPatchProgramNumbersTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$MidiPatchProgramNumbersTableFilterComposer(
+                $db: db,
+                $table: table,
+              ),
+          createOrderingComposer: () =>
+              $$MidiPatchProgramNumbersTableOrderingComposer(
+                $db: db,
+                $table: table,
+              ),
+          createComputedFieldComposer: () =>
+              $$MidiPatchProgramNumbersTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<int> patchId = const Value.absent(),
+                Value<int> programNumber = const Value.absent(),
+                Value<DateTime> updatedAt = const Value.absent(),
+              }) => MidiPatchProgramNumbersCompanion(
+                id: id,
+                patchId: patchId,
+                programNumber: programNumber,
+                updatedAt: updatedAt,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                required int patchId,
+                required int programNumber,
+                required DateTime updatedAt,
+              }) => MidiPatchProgramNumbersCompanion.insert(
+                id: id,
+                patchId: patchId,
+                programNumber: programNumber,
+                updatedAt: updatedAt,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable(table),
+                  $$MidiPatchProgramNumbersTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: ({patchId = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [],
+              addJoins:
+                  <
+                    T extends TableManagerState<
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic
+                    >
+                  >(state) {
+                    if (patchId) {
+                      state =
+                          state.withJoin(
+                                currentTable: table,
+                                currentColumn: table.patchId,
+                                referencedTable:
+                                    $$MidiPatchProgramNumbersTableReferences
+                                        ._patchIdTable(db),
+                                referencedColumn:
+                                    $$MidiPatchProgramNumbersTableReferences
+                                        ._patchIdTable(db)
+                                        .id,
+                              )
+                              as T;
+                    }
+
+                    return state;
+                  },
+              getPrefetchedDataCallback: (items) async {
+                return [];
+              },
+            );
+          },
+        ),
+      );
+}
+
+typedef $$MidiPatchProgramNumbersTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $MidiPatchProgramNumbersTable,
+      MidiPatchProgramNumber,
+      $$MidiPatchProgramNumbersTableFilterComposer,
+      $$MidiPatchProgramNumbersTableOrderingComposer,
+      $$MidiPatchProgramNumbersTableAnnotationComposer,
+      $$MidiPatchProgramNumbersTableCreateCompanionBuilder,
+      $$MidiPatchProgramNumbersTableUpdateCompanionBuilder,
+      (MidiPatchProgramNumber, $$MidiPatchProgramNumbersTableReferences),
+      MidiPatchProgramNumber,
+      PrefetchHooks Function({bool patchId})
+    >;
+typedef $$MidiSceneNumbersTableCreateCompanionBuilder =
+    MidiSceneNumbersCompanion Function({
+      Value<int> id,
+      required int sceneId,
+      required int sceneNumber,
+      required DateTime updatedAt,
+    });
+typedef $$MidiSceneNumbersTableUpdateCompanionBuilder =
+    MidiSceneNumbersCompanion Function({
+      Value<int> id,
+      Value<int> sceneId,
+      Value<int> sceneNumber,
+      Value<DateTime> updatedAt,
+    });
+
+final class $$MidiSceneNumbersTableReferences
+    extends
+        BaseReferences<_$AppDatabase, $MidiSceneNumbersTable, MidiSceneNumber> {
+  $$MidiSceneNumbersTableReferences(
+    super.$_db,
+    super.$_table,
+    super.$_typedResult,
+  );
+
+  static $ScenesTable _sceneIdTable(_$AppDatabase db) =>
+      db.scenes.createAlias('midi_scene_numbers__scene_id__scenes__id');
+
+  $$ScenesTableProcessedTableManager get sceneId {
+    final $_column = $_itemColumn<int>('scene_id')!;
+
+    final manager = $$ScenesTableTableManager(
+      $_db,
+      $_db.scenes,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_sceneIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+}
+
+class $$MidiSceneNumbersTableFilterComposer
+    extends Composer<_$AppDatabase, $MidiSceneNumbersTable> {
+  $$MidiSceneNumbersTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get sceneNumber => $composableBuilder(
+    column: $table.sceneNumber,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  $$ScenesTableFilterComposer get sceneId {
+    final $$ScenesTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.sceneId,
+      referencedTable: $db.scenes,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$ScenesTableFilterComposer(
+            $db: $db,
+            $table: $db.scenes,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$MidiSceneNumbersTableOrderingComposer
+    extends Composer<_$AppDatabase, $MidiSceneNumbersTable> {
+  $$MidiSceneNumbersTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get sceneNumber => $composableBuilder(
+    column: $table.sceneNumber,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  $$ScenesTableOrderingComposer get sceneId {
+    final $$ScenesTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.sceneId,
+      referencedTable: $db.scenes,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$ScenesTableOrderingComposer(
+            $db: $db,
+            $table: $db.scenes,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$MidiSceneNumbersTableAnnotationComposer
+    extends Composer<_$AppDatabase, $MidiSceneNumbersTable> {
+  $$MidiSceneNumbersTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<int> get sceneNumber => $composableBuilder(
+    column: $table.sceneNumber,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+
+  $$ScenesTableAnnotationComposer get sceneId {
+    final $$ScenesTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.sceneId,
+      referencedTable: $db.scenes,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$ScenesTableAnnotationComposer(
+            $db: $db,
+            $table: $db.scenes,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$MidiSceneNumbersTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $MidiSceneNumbersTable,
+          MidiSceneNumber,
+          $$MidiSceneNumbersTableFilterComposer,
+          $$MidiSceneNumbersTableOrderingComposer,
+          $$MidiSceneNumbersTableAnnotationComposer,
+          $$MidiSceneNumbersTableCreateCompanionBuilder,
+          $$MidiSceneNumbersTableUpdateCompanionBuilder,
+          (MidiSceneNumber, $$MidiSceneNumbersTableReferences),
+          MidiSceneNumber,
+          PrefetchHooks Function({bool sceneId})
+        > {
+  $$MidiSceneNumbersTableTableManager(
+    _$AppDatabase db,
+    $MidiSceneNumbersTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$MidiSceneNumbersTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$MidiSceneNumbersTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$MidiSceneNumbersTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<int> sceneId = const Value.absent(),
+                Value<int> sceneNumber = const Value.absent(),
+                Value<DateTime> updatedAt = const Value.absent(),
+              }) => MidiSceneNumbersCompanion(
+                id: id,
+                sceneId: sceneId,
+                sceneNumber: sceneNumber,
+                updatedAt: updatedAt,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                required int sceneId,
+                required int sceneNumber,
+                required DateTime updatedAt,
+              }) => MidiSceneNumbersCompanion.insert(
+                id: id,
+                sceneId: sceneId,
+                sceneNumber: sceneNumber,
+                updatedAt: updatedAt,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable(table),
+                  $$MidiSceneNumbersTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: ({sceneId = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [],
+              addJoins:
+                  <
+                    T extends TableManagerState<
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic
+                    >
+                  >(state) {
+                    if (sceneId) {
+                      state =
+                          state.withJoin(
+                                currentTable: table,
+                                currentColumn: table.sceneId,
+                                referencedTable:
+                                    $$MidiSceneNumbersTableReferences
+                                        ._sceneIdTable(db),
+                                referencedColumn:
+                                    $$MidiSceneNumbersTableReferences
+                                        ._sceneIdTable(db)
+                                        .id,
+                              )
+                              as T;
+                    }
+
+                    return state;
+                  },
+              getPrefetchedDataCallback: (items) async {
+                return [];
+              },
+            );
+          },
+        ),
+      );
+}
+
+typedef $$MidiSceneNumbersTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $MidiSceneNumbersTable,
+      MidiSceneNumber,
+      $$MidiSceneNumbersTableFilterComposer,
+      $$MidiSceneNumbersTableOrderingComposer,
+      $$MidiSceneNumbersTableAnnotationComposer,
+      $$MidiSceneNumbersTableCreateCompanionBuilder,
+      $$MidiSceneNumbersTableUpdateCompanionBuilder,
+      (MidiSceneNumber, $$MidiSceneNumbersTableReferences),
+      MidiSceneNumber,
+      PrefetchHooks Function({bool sceneId})
+    >;
+typedef $$MidiPatchFavoritesTableCreateCompanionBuilder =
+    MidiPatchFavoritesCompanion Function({
+      Value<int> id,
+      required int patchId,
+      required DateTime createdAt,
+    });
+typedef $$MidiPatchFavoritesTableUpdateCompanionBuilder =
+    MidiPatchFavoritesCompanion Function({
+      Value<int> id,
+      Value<int> patchId,
+      Value<DateTime> createdAt,
+    });
+
+final class $$MidiPatchFavoritesTableReferences
+    extends
+        BaseReferences<
+          _$AppDatabase,
+          $MidiPatchFavoritesTable,
+          MidiPatchFavorite
+        > {
+  $$MidiPatchFavoritesTableReferences(
+    super.$_db,
+    super.$_table,
+    super.$_typedResult,
+  );
+
+  static $PatchesTable _patchIdTable(_$AppDatabase db) =>
+      db.patches.createAlias('midi_patch_favorites__patch_id__patches__id');
+
+  $$PatchesTableProcessedTableManager get patchId {
+    final $_column = $_itemColumn<int>('patch_id')!;
+
+    final manager = $$PatchesTableTableManager(
+      $_db,
+      $_db.patches,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_patchIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+}
+
+class $$MidiPatchFavoritesTableFilterComposer
+    extends Composer<_$AppDatabase, $MidiPatchFavoritesTable> {
+  $$MidiPatchFavoritesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  $$PatchesTableFilterComposer get patchId {
+    final $$PatchesTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.patchId,
+      referencedTable: $db.patches,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$PatchesTableFilterComposer(
+            $db: $db,
+            $table: $db.patches,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$MidiPatchFavoritesTableOrderingComposer
+    extends Composer<_$AppDatabase, $MidiPatchFavoritesTable> {
+  $$MidiPatchFavoritesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  $$PatchesTableOrderingComposer get patchId {
+    final $$PatchesTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.patchId,
+      referencedTable: $db.patches,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$PatchesTableOrderingComposer(
+            $db: $db,
+            $table: $db.patches,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$MidiPatchFavoritesTableAnnotationComposer
+    extends Composer<_$AppDatabase, $MidiPatchFavoritesTable> {
+  $$MidiPatchFavoritesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  $$PatchesTableAnnotationComposer get patchId {
+    final $$PatchesTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.patchId,
+      referencedTable: $db.patches,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$PatchesTableAnnotationComposer(
+            $db: $db,
+            $table: $db.patches,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$MidiPatchFavoritesTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $MidiPatchFavoritesTable,
+          MidiPatchFavorite,
+          $$MidiPatchFavoritesTableFilterComposer,
+          $$MidiPatchFavoritesTableOrderingComposer,
+          $$MidiPatchFavoritesTableAnnotationComposer,
+          $$MidiPatchFavoritesTableCreateCompanionBuilder,
+          $$MidiPatchFavoritesTableUpdateCompanionBuilder,
+          (MidiPatchFavorite, $$MidiPatchFavoritesTableReferences),
+          MidiPatchFavorite,
+          PrefetchHooks Function({bool patchId})
+        > {
+  $$MidiPatchFavoritesTableTableManager(
+    _$AppDatabase db,
+    $MidiPatchFavoritesTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$MidiPatchFavoritesTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$MidiPatchFavoritesTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$MidiPatchFavoritesTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<int> patchId = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+              }) => MidiPatchFavoritesCompanion(
+                id: id,
+                patchId: patchId,
+                createdAt: createdAt,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                required int patchId,
+                required DateTime createdAt,
+              }) => MidiPatchFavoritesCompanion.insert(
+                id: id,
+                patchId: patchId,
+                createdAt: createdAt,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable(table),
+                  $$MidiPatchFavoritesTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: ({patchId = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [],
+              addJoins:
+                  <
+                    T extends TableManagerState<
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic
+                    >
+                  >(state) {
+                    if (patchId) {
+                      state =
+                          state.withJoin(
+                                currentTable: table,
+                                currentColumn: table.patchId,
+                                referencedTable:
+                                    $$MidiPatchFavoritesTableReferences
+                                        ._patchIdTable(db),
+                                referencedColumn:
+                                    $$MidiPatchFavoritesTableReferences
+                                        ._patchIdTable(db)
+                                        .id,
+                              )
+                              as T;
+                    }
+
+                    return state;
+                  },
+              getPrefetchedDataCallback: (items) async {
+                return [];
+              },
+            );
+          },
+        ),
+      );
+}
+
+typedef $$MidiPatchFavoritesTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $MidiPatchFavoritesTable,
+      MidiPatchFavorite,
+      $$MidiPatchFavoritesTableFilterComposer,
+      $$MidiPatchFavoritesTableOrderingComposer,
+      $$MidiPatchFavoritesTableAnnotationComposer,
+      $$MidiPatchFavoritesTableCreateCompanionBuilder,
+      $$MidiPatchFavoritesTableUpdateCompanionBuilder,
+      (MidiPatchFavorite, $$MidiPatchFavoritesTableReferences),
+      MidiPatchFavorite,
+      PrefetchHooks Function({bool patchId})
+    >;
+typedef $$MidiPatchRecentsTableCreateCompanionBuilder =
+    MidiPatchRecentsCompanion Function({
+      Value<int> id,
+      required int patchId,
+      required DateTime lastUsedAt,
+    });
+typedef $$MidiPatchRecentsTableUpdateCompanionBuilder =
+    MidiPatchRecentsCompanion Function({
+      Value<int> id,
+      Value<int> patchId,
+      Value<DateTime> lastUsedAt,
+    });
+
+final class $$MidiPatchRecentsTableReferences
+    extends
+        BaseReferences<_$AppDatabase, $MidiPatchRecentsTable, MidiPatchRecent> {
+  $$MidiPatchRecentsTableReferences(
+    super.$_db,
+    super.$_table,
+    super.$_typedResult,
+  );
+
+  static $PatchesTable _patchIdTable(_$AppDatabase db) =>
+      db.patches.createAlias('midi_patch_recents__patch_id__patches__id');
+
+  $$PatchesTableProcessedTableManager get patchId {
+    final $_column = $_itemColumn<int>('patch_id')!;
+
+    final manager = $$PatchesTableTableManager(
+      $_db,
+      $_db.patches,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_patchIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+}
+
+class $$MidiPatchRecentsTableFilterComposer
+    extends Composer<_$AppDatabase, $MidiPatchRecentsTable> {
+  $$MidiPatchRecentsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get lastUsedAt => $composableBuilder(
+    column: $table.lastUsedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  $$PatchesTableFilterComposer get patchId {
+    final $$PatchesTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.patchId,
+      referencedTable: $db.patches,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$PatchesTableFilterComposer(
+            $db: $db,
+            $table: $db.patches,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$MidiPatchRecentsTableOrderingComposer
+    extends Composer<_$AppDatabase, $MidiPatchRecentsTable> {
+  $$MidiPatchRecentsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get lastUsedAt => $composableBuilder(
+    column: $table.lastUsedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  $$PatchesTableOrderingComposer get patchId {
+    final $$PatchesTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.patchId,
+      referencedTable: $db.patches,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$PatchesTableOrderingComposer(
+            $db: $db,
+            $table: $db.patches,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$MidiPatchRecentsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $MidiPatchRecentsTable> {
+  $$MidiPatchRecentsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get lastUsedAt => $composableBuilder(
+    column: $table.lastUsedAt,
+    builder: (column) => column,
+  );
+
+  $$PatchesTableAnnotationComposer get patchId {
+    final $$PatchesTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.patchId,
+      referencedTable: $db.patches,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$PatchesTableAnnotationComposer(
+            $db: $db,
+            $table: $db.patches,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$MidiPatchRecentsTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $MidiPatchRecentsTable,
+          MidiPatchRecent,
+          $$MidiPatchRecentsTableFilterComposer,
+          $$MidiPatchRecentsTableOrderingComposer,
+          $$MidiPatchRecentsTableAnnotationComposer,
+          $$MidiPatchRecentsTableCreateCompanionBuilder,
+          $$MidiPatchRecentsTableUpdateCompanionBuilder,
+          (MidiPatchRecent, $$MidiPatchRecentsTableReferences),
+          MidiPatchRecent,
+          PrefetchHooks Function({bool patchId})
+        > {
+  $$MidiPatchRecentsTableTableManager(
+    _$AppDatabase db,
+    $MidiPatchRecentsTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$MidiPatchRecentsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$MidiPatchRecentsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$MidiPatchRecentsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<int> patchId = const Value.absent(),
+                Value<DateTime> lastUsedAt = const Value.absent(),
+              }) => MidiPatchRecentsCompanion(
+                id: id,
+                patchId: patchId,
+                lastUsedAt: lastUsedAt,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                required int patchId,
+                required DateTime lastUsedAt,
+              }) => MidiPatchRecentsCompanion.insert(
+                id: id,
+                patchId: patchId,
+                lastUsedAt: lastUsedAt,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable(table),
+                  $$MidiPatchRecentsTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: ({patchId = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [],
+              addJoins:
+                  <
+                    T extends TableManagerState<
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic
+                    >
+                  >(state) {
+                    if (patchId) {
+                      state =
+                          state.withJoin(
+                                currentTable: table,
+                                currentColumn: table.patchId,
+                                referencedTable:
+                                    $$MidiPatchRecentsTableReferences
+                                        ._patchIdTable(db),
+                                referencedColumn:
+                                    $$MidiPatchRecentsTableReferences
+                                        ._patchIdTable(db)
+                                        .id,
+                              )
+                              as T;
+                    }
+
+                    return state;
+                  },
+              getPrefetchedDataCallback: (items) async {
+                return [];
+              },
+            );
+          },
+        ),
+      );
+}
+
+typedef $$MidiPatchRecentsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $MidiPatchRecentsTable,
+      MidiPatchRecent,
+      $$MidiPatchRecentsTableFilterComposer,
+      $$MidiPatchRecentsTableOrderingComposer,
+      $$MidiPatchRecentsTableAnnotationComposer,
+      $$MidiPatchRecentsTableCreateCompanionBuilder,
+      $$MidiPatchRecentsTableUpdateCompanionBuilder,
+      (MidiPatchRecent, $$MidiPatchRecentsTableReferences),
+      MidiPatchRecent,
+      PrefetchHooks Function({bool patchId})
+    >;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -25743,4 +30568,28 @@ class $AppDatabaseManager {
       );
   $$AcademyBookmarksTableTableManager get academyBookmarks =>
       $$AcademyBookmarksTableTableManager(_db, _db.academyBookmarks);
+  $$MidiParameterOverridesTableTableManager get midiParameterOverrides =>
+      $$MidiParameterOverridesTableTableManager(
+        _db,
+        _db.midiParameterOverrides,
+      );
+  $$MidiPatchSelectionSettingsTableTableManager
+  get midiPatchSelectionSettings =>
+      $$MidiPatchSelectionSettingsTableTableManager(
+        _db,
+        _db.midiPatchSelectionSettings,
+      );
+  $$MidiDeviceLinksTableTableManager get midiDeviceLinks =>
+      $$MidiDeviceLinksTableTableManager(_db, _db.midiDeviceLinks);
+  $$MidiPatchProgramNumbersTableTableManager get midiPatchProgramNumbers =>
+      $$MidiPatchProgramNumbersTableTableManager(
+        _db,
+        _db.midiPatchProgramNumbers,
+      );
+  $$MidiSceneNumbersTableTableManager get midiSceneNumbers =>
+      $$MidiSceneNumbersTableTableManager(_db, _db.midiSceneNumbers);
+  $$MidiPatchFavoritesTableTableManager get midiPatchFavorites =>
+      $$MidiPatchFavoritesTableTableManager(_db, _db.midiPatchFavorites);
+  $$MidiPatchRecentsTableTableManager get midiPatchRecents =>
+      $$MidiPatchRecentsTableTableManager(_db, _db.midiPatchRecents);
 }
