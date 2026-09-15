@@ -84,6 +84,7 @@ class _MidiControlScreenState extends ConsumerState<MidiControlScreen> {
         ref.watch(midiConnectionProvider(widget.profileId)).state ==
         MidiConnectionState.connected;
     final currentPatch = ref.watch(currentPatchNumberProvider(widget.profileId));
+    final loadedPatch = ref.watch(currentLoadedPatchNumberProvider(widget.profileId));
     final currentScene = ref.watch(currentSceneNumberProvider(widget.profileId));
     // Names the grid can show alongside a slot's number, for whichever slots
     // this unit's owner has actually given a patch to.
@@ -113,6 +114,7 @@ class _MidiControlScreenState extends ConsumerState<MidiControlScreen> {
             padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
             child: PatchNumberCarousel(
               selected: currentPatch,
+              loaded: loadedPatch,
               patchNames: patchNames,
               onSelected: (number) =>
                   ref.read(currentPatchNumberProvider(widget.profileId).notifier).state = number,
@@ -156,6 +158,7 @@ class _MidiControlScreenState extends ConsumerState<MidiControlScreen> {
             experimentalEnabled: ref.read(experimentalProgramChangeEnabledProvider),
           );
       ref.read(currentPatchNumberProvider(widget.profileId).notifier).state = patchNumber;
+      ref.read(currentLoadedPatchNumberProvider(widget.profileId).notifier).state = patchNumber;
       // A patch change resets which scene is active on the device itself,
       // so the app follows it back to the same default rather than showing
       // a scene that no longer matches what actually loaded.

@@ -13,21 +13,26 @@ class PatchNumberCarousel extends StatefulWidget {
     required this.selected,
     required this.onSelected,
     required this.onLoad,
+    this.loaded,
     this.patchNames = const {},
     super.key,
   });
 
-  /// The Program Change number selected, 0-127.
+  /// The Program Change number selected (pre-selected, bordered), 0-127.
   final int selected;
   final ValueChanged<int> onSelected;
   final ValueChanged<int> onLoad;
+
+  /// The number last actually loaded (double-tapped), if any - filled rather
+  /// than bordered. Null before anything has been loaded.
+  final int? loaded;
 
   /// Program number to patch name, for the slots a real patch has been given.
   final Map<int, String> patchNames;
 
   static const _columns = 4;
   static const _rows = 5;
-  static const _tileHeight = 72.0;
+  static const _tileHeight = 80.0;
   static const perPage = _columns * _rows;
   static const totalSlots = 128;
   static const _gridHeight = _rows * _tileHeight + (_rows - 1) * AppSpacing.sm;
@@ -83,9 +88,12 @@ class _PatchNumberCarouselState extends State<PatchNumberCarousel> {
             ),
           ],
         ),
+        Text(_labelFor(widget.selected), style: Theme.of(context).textTheme.titleSmall),
       ],
     );
   }
+
+  String _labelFor(int number) => widget.patchNames[number] ?? 'Patch ${number + 1}';
 
   // A carousel slide rather than a jump cut - the transition the brief asks
   // for when the page changes, whether by chevron or by swipe.
@@ -108,8 +116,9 @@ class _PatchNumberCarouselState extends State<PatchNumberCarousel> {
         final number = first + index; // 0-based Program Change value
         return PatchGridTile(
           number: number + 1,
-          label: widget.patchNames[number] ?? 'Patch ${number + 1}',
+          label: _labelFor(number),
           selected: number == widget.selected,
+          loaded: number == widget.loaded,
           onTap: () => widget.onSelected(number),
           onDoubleTap: () => widget.onLoad(number),
         );

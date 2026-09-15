@@ -18,6 +18,13 @@ final StateProviderFamily<int, String> currentPatchNumberProvider = StateProvide
   (ref, deviceProfileId) => 0,
 );
 
+/// The patch number last successfully loaded (double-tapped) onto the device,
+/// per device profile - distinct from [currentPatchNumberProvider], which
+/// moves on a single tap that only pre-selects a tile. Null until one has
+/// actually loaded.
+final StateProviderFamily<int?, String> currentLoadedPatchNumberProvider =
+    StateProvider.family<int?, String>((ref, deviceProfileId) => null);
+
 /// The Pro Scene the previous scene button press sent, per device profile -
 /// same idea as [currentPatchNumberProvider]: not a reading from the device,
 /// only the last one this app sent, or null until it has sent one.

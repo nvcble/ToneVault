@@ -10,6 +10,7 @@ void main() {
   Future<void> pump(
     WidgetTester tester, {
     int selected = 0,
+    int? loaded,
     Map<int, String> names = const {},
     ValueChanged<int>? onSelected,
     ValueChanged<int>? onLoad,
@@ -22,6 +23,7 @@ void main() {
         home: Scaffold(
           body: PatchNumberCarousel(
             selected: selected,
+            loaded: loaded,
             patchNames: names,
             onSelected: onSelected ?? (_) {},
             onLoad: onLoad ?? (_) {},
@@ -30,6 +32,10 @@ void main() {
       ),
     );
   }
+
+  /// The tile's own copy of [text], distinct from the selected-patch label
+  /// repeated below the pager.
+  Finder tileText(String text) => find.descendant(of: find.byType(PatchGridTile), matching: find.text(text));
 
   testWidgets('shows 20 tiles a page, numbered from 1', (tester) async {
     await pump(tester);
@@ -43,10 +49,30 @@ void main() {
   testWidgets('a known patch name replaces the generic slot label', (tester) async {
     await pump(tester, names: {0: 'Core Lead'});
 
-    expect(find.text('Core Lead'), findsOneWidget);
-    expect(find.text('Patch 1'), findsNothing);
+    expect(tileText('Core Lead'), findsOneWidget);
+    expect(tileText('Patch 1'), findsNothing);
     // Every other slot on the page still falls back to the generic label.
-    expect(find.text('Patch 2'), findsOneWidget);
+    expect(tileText('Patch 2'), findsOneWidget);
+  });
+
+  testWidgets('shows the selected patch name below the pager', (tester) async {
+    await pump(tester, selected: 4, names: {4: 'Core Lead'});
+
+    expect(find.text('Core Lead'), findsNWidgets(2)); // the tile, and this line
+    expect(find.text('Page 1 of 7'), findsOneWidget);
+  });
+
+  testWidgets('falls back to the generic label when the slot is unnamed', (tester) async {
+    await pump(tester, selected: 5);
+
+    expect(find.text('Patch 6'), findsNWidgets(2));
+  });
+
+  testWidgets('a loaded tile fills rather than just borders', (tester) async {
+    await pump(tester, loaded: 4);
+
+    expect(tester.widget<PatchGridTile>(find.widgetWithText(PatchGridTile, '05')).loaded, isTrue);
+    expect(tester.widget<PatchGridTile>(find.widgetWithText(PatchGridTile, '06')).loaded, isFalse);
   });
 
   testWidgets('the chevrons slide to the next and previous page', (tester) async {

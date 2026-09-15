@@ -90,7 +90,9 @@ void main() {
     await tester.tap(find.text('02'));
     await tester.pumpAndSettle(kDoubleTapTimeout);
 
-    expect(tester.widget<PatchGridTile>(find.widgetWithText(PatchGridTile, '02')).selected, isTrue);
+    final tile = tester.widget<PatchGridTile>(find.widgetWithText(PatchGridTile, '02'));
+    expect(tile.selected, isTrue);
+    expect(tile.loaded, isFalse);
     expect(transport.sent, isEmpty);
   });
 
@@ -105,6 +107,20 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(transport.sent, isNotEmpty);
+    expect(tester.widget<PatchGridTile>(find.widgetWithText(PatchGridTile, '02')).loaded, isTrue);
+  });
+
+  testWidgets('the selected patch name shows below the pager', (tester) async {
+    prepare();
+
+    await pumpControl(tester);
+
+    expect(find.text('Patch 1'), findsNWidgets(2)); // the default tile, and this line
+
+    await tester.tap(find.text('02'));
+    await tester.pumpAndSettle(kDoubleTapTimeout);
+
+    expect(find.text('Patch 2'), findsNWidgets(2));
   });
 
   testWidgets('sending a scene highlights it and only it', (tester) async {
