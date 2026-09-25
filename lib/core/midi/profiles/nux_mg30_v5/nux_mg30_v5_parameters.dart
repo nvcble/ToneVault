@@ -4,7 +4,8 @@ import 'nux_mg30_v5_block_specs.dart';
 
 String _modelParameterName(NuxBlockSpec block) => '${block.label} model';
 
-String _knobParameterName(NuxBlockSpec block, int index) => '${block.label} Knob ${index + 1}';
+String _knobParameterName(NuxBlockSpec block, int index) =>
+    '${block.label} Knob ${index + 1}';
 
 /// Knob CCs whose range is not the 0-100 every other knob uses, exactly as
 /// the chart states it: Modulation Knob 5 and Delay Knob 4 are 6-position
@@ -179,7 +180,8 @@ List<MidiParameterDefinition> _buildParameters() {
 /// the Send/Return block has a fixed one-model select and no knobs of its
 /// own (its real controls are global parameters, not persisted; see
 /// [nuxMg30V5GlobalParameters]), so it is left out.
-final List<MidiBlockDefinition> nuxMg30V5BlockDefinitions = _buildBlockDefinitions();
+final List<MidiBlockDefinition> nuxMg30V5BlockDefinitions =
+    _buildBlockDefinitions();
 
 List<MidiBlockDefinition> _buildBlockDefinitions() {
   return [

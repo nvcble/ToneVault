@@ -22,26 +22,32 @@ void main() {
     expect(override, isNull);
   });
 
-  test('setOverride stores only the fields given, alongside what was already there', () async {
-    final repository = patchSelectionRepository(database);
-    await repository.setOverride(profile: _profile, bankSelectMsb: 5);
+  test(
+    'setOverride stores only the fields given, alongside what was already there',
+    () async {
+      final repository = patchSelectionRepository(database);
+      await repository.setOverride(profile: _profile, bankSelectMsb: 5);
 
-    await repository.setOverride(profile: _profile, usesBankSelect: false);
+      await repository.setOverride(profile: _profile, usesBankSelect: false);
 
-    final override = await repository.watchOverride(_profile.id).first;
-    expect(override!.usesBankSelect, isFalse);
-    expect(override.bankSelectMsb, 5);
-  });
+      final override = await repository.watchOverride(_profile.id).first;
+      expect(override!.usesBankSelect, isFalse);
+      expect(override.bankSelectMsb, 5);
+    },
+  );
 
-  test('a clear flag removes a field back to the device profile default', () async {
-    final repository = patchSelectionRepository(database);
-    await repository.setOverride(profile: _profile, bankSelectMsb: 5);
+  test(
+    'a clear flag removes a field back to the device profile default',
+    () async {
+      final repository = patchSelectionRepository(database);
+      await repository.setOverride(profile: _profile, bankSelectMsb: 5);
 
-    await repository.setOverride(profile: _profile, clearBankSelectMsb: true);
+      await repository.setOverride(profile: _profile, clearBankSelectMsb: true);
 
-    final override = await repository.watchOverride(_profile.id).first;
-    expect(override!.bankSelectMsb, isNull);
-  });
+      final override = await repository.watchOverride(_profile.id).first;
+      expect(override!.bankSelectMsb, isNull);
+    },
+  );
 
   test('refuses a Bank Select value outside the 7-bit MIDI range', () async {
     final repository = patchSelectionRepository(database);
@@ -54,7 +60,11 @@ void main() {
 
   test('resetOverride removes the whole strategy', () async {
     final repository = patchSelectionRepository(database);
-    await repository.setOverride(profile: _profile, usesBankSelect: false, bankSelectMsb: 5);
+    await repository.setOverride(
+      profile: _profile,
+      usesBankSelect: false,
+      bankSelectMsb: 5,
+    );
 
     await repository.resetOverride(_profile.id);
 

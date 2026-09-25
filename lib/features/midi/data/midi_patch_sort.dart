@@ -28,7 +28,8 @@ List<Patch> sortMidiPatches(
   required MidiPatchSort sort,
   required Map<int, int> numbers,
 }) {
-  int byName(Patch a, Patch b) => a.name.toLowerCase().compareTo(b.name.toLowerCase());
+  int byName(Patch a, Patch b) =>
+      a.name.toLowerCase().compareTo(b.name.toLowerCase());
 
   final sorted = [...patches];
   if (sort == MidiPatchSort.name) {

@@ -12,7 +12,8 @@ class MidiSceneNumberRepository {
 
   final MidiSceneNumberDao _dao;
 
-  Stream<MidiSceneNumber?> watchNumber(int sceneId) => _dao.watchNumber(sceneId);
+  Stream<MidiSceneNumber?> watchNumber(int sceneId) =>
+      _dao.watchNumber(sceneId);
 
   Future<void> setNumber({
     required int patchId,
@@ -23,18 +24,30 @@ class MidiSceneNumberRepository {
       throw const AppFailure('A Pro Scene slot has to be 1, 2 or 3.');
     }
 
-    final clash = await _dao.numbersInPatch(patchId: patchId, exceptSceneId: sceneId);
+    final clash = await _dao.numbersInPatch(
+      patchId: patchId,
+      exceptSceneId: sceneId,
+    );
     if (clash.any((existing) => existing.sceneNumber == sceneNumber)) {
-      throw AppFailure('Another scene in this patch is already Scene $sceneNumber.');
+      throw AppFailure(
+        'Another scene in this patch is already Scene $sceneNumber.',
+      );
     }
 
     await guardFailure(
-      () => _dao.upsertNumber(sceneId: sceneId, sceneNumber: sceneNumber, updatedAt: DateTime.now()),
+      () => _dao.upsertNumber(
+        sceneId: sceneId,
+        sceneNumber: sceneNumber,
+        updatedAt: DateTime.now(),
+      ),
       'Could not save that scene number.',
     );
   }
 
   Future<void> clearNumber(int sceneId) {
-    return guardFailure(() => _dao.deleteNumber(sceneId), 'Could not clear that scene number.');
+    return guardFailure(
+      () => _dao.deleteNumber(sceneId),
+      'Could not clear that scene number.',
+    );
   }
 }

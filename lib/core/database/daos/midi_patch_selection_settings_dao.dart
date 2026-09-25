@@ -59,10 +59,9 @@ class MidiPatchSelectionSettingsDao extends DatabaseAccessor<AppDatabase>
   /// Returns whether a row existed to remove - resetting the whole strategy
   /// back to the device profile's own candidate.
   Future<bool> deleteSettings(String deviceProfileId) async {
-    final deletedRows =
-        await (delete(midiPatchSelectionSettings)
-              ..where((row) => row.deviceProfileId.equals(deviceProfileId)))
-            .go();
+    final deletedRows = await (delete(
+      midiPatchSelectionSettings,
+    )..where((row) => row.deviceProfileId.equals(deviceProfileId))).go();
     return deletedRows > 0;
   }
 }

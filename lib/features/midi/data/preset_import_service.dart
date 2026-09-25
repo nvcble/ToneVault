@@ -15,7 +15,12 @@ import 'midi_patch_program_repository.dart';
 enum PresetImportDecision { skip, overwrite }
 
 /// What one import run did.
-typedef PresetImportSummary = ({int imported, int overwritten, int skipped, List<PresetImportFailure> failures});
+typedef PresetImportSummary = ({
+  int imported,
+  int overwritten,
+  int skipped,
+  List<PresetImportFailure> failures,
+});
 
 /// One preset that could not be imported, and why - a name clash with an
 /// existing patch on the unit is the likeliest cause.
@@ -49,17 +54,21 @@ class PresetImportService {
   final PedalRepository _pedals;
   final ControlRepository _controls;
 
-  Future<List<ImportedPreset>> fetchPresets({void Function(int completed, int total)? onProgress}) =>
-      _transfer.importAllPresets(onProgress: onProgress);
+  Future<List<ImportedPreset>> fetchPresets({
+    void Function(int completed, int total)? onProgress,
+  }) => _transfer.importAllPresets(onProgress: onProgress);
 
   /// How many of [presets] would replace a patch already on [unitId] at the
   /// same program number - what an "Overwrite All" confirmation needs before
   /// the user commits to it, without changing anything yet.
   Future<int> countOverwrites(int unitId, List<ImportedPreset> presets) async {
     final existingNumbers = {
-      for (final numbered in await _programs.numberedPatches(unitId)) numbered.programNumber,
+      for (final numbered in await _programs.numberedPatches(unitId))
+        numbered.programNumber,
     };
-    return presets.where((preset) => existingNumbers.contains(preset.programNumber)).length;
+    return presets
+        .where((preset) => existingNumbers.contains(preset.programNumber))
+        .length;
   }
 
   /// Imports [presets] onto [unitId], calling [resolveDuplicate] whenever an
@@ -70,13 +79,19 @@ class PresetImportService {
   Future<PresetImportSummary> importPresets({
     required int unitId,
     required List<ImportedPreset> presets,
-    required Future<PresetImportDecision> Function(ImportedPreset incoming, Patch existing) resolveDuplicate,
+    required Future<PresetImportDecision> Function(
+      ImportedPreset incoming,
+      Patch existing,
+    )
+    resolveDuplicate,
   }) async {
     final existingByNumber = {
-      for (final numbered in await _programs.numberedPatches(unitId)) numbered.programNumber: numbered.patch,
+      for (final numbered in await _programs.numberedPatches(unitId))
+        numbered.programNumber: numbered.patch,
     };
     final blockPedalsByLabel = {
-      for (final pedal in await _pedals.componentPedals(unitId)) pedal.name: pedal,
+      for (final pedal in await _pedals.componentPedals(unitId))
+        pedal.name: pedal,
     };
 
     var imported = 0;
@@ -107,11 +122,19 @@ class PresetImportService {
           imported++;
         }
       } catch (error) {
-        failures.add((programNumber: preset.programNumber, message: error.toString()));
+        failures.add((
+          programNumber: preset.programNumber,
+          message: error.toString(),
+        ));
       }
     }
 
-    return (imported: imported, overwritten: overwritten, skipped: skipped, failures: failures);
+    return (
+      imported: imported,
+      overwritten: overwritten,
+      skipped: skipped,
+      failures: failures,
+    );
   }
 
   Future<void> _importOne(
@@ -119,9 +142,18 @@ class PresetImportService {
     ImportedPreset preset,
     Map<String, Pedal> blockPedalsByLabel,
   ) async {
-    final patchId = await _patches.createPatch(unitId, PatchDraft(name: preset.name));
-    await _programs.setNumber(patchId: patchId, programNumber: preset.programNumber);
-    final sceneId = await _scenes.createScene(patchId, const SceneDraft(name: 'Imported'));
+    final patchId = await _patches.createPatch(
+      unitId,
+      PatchDraft(name: preset.name),
+    );
+    await _programs.setNumber(
+      patchId: patchId,
+      programNumber: preset.programNumber,
+    );
+    final sceneId = await _scenes.createScene(
+      patchId,
+      const SceneDraft(name: 'Imported'),
+    );
 
     for (final block in preset.blocks) {
       final pedal = blockPedalsByLabel[block.label];
@@ -134,7 +166,12 @@ class PresetImportService {
       final controls = await _controls.controlsOf(pedal.id);
 
       if (block.modelNumber != null) {
-        await _setValueByName(sceneId, controls, '${block.label} model', block.modelNumber!.toDouble());
+        await _setValueByName(
+          sceneId,
+          controls,
+          '${block.label} model',
+          block.modelNumber!.toDouble(),
+        );
       }
       for (final entry in block.parameters.entries) {
         await _setValueByName(sceneId, controls, entry.key, entry.value);
@@ -148,10 +185,16 @@ class PresetImportService {
     String name,
     double value,
   ) async {
-    final control = controls.where((candidate) => candidate.name == name).firstOrNull;
+    final control = controls
+        .where((candidate) => candidate.name == name)
+        .firstOrNull;
     if (control == null) {
       return;
     }
-    await _sceneValues.setValue(sceneId: sceneId, controlId: control.id, value: value);
+    await _sceneValues.setValue(
+      sceneId: sceneId,
+      controlId: control.id,
+      value: value,
+    );
   }
 }

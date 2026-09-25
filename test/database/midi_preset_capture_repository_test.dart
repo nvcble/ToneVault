@@ -51,51 +51,64 @@ void main() {
     expect(captures.single.rawSysEx, [0xF0, 0x43, 0x58, 0xF7]);
     expect(captures.single.capturedAt, DateTime.utc(2026, 9));
 
-    final summary = jsonDecode(captures.single.decodedSummaryJson!) as Map<String, dynamic>;
+    final summary =
+        jsonDecode(captures.single.decodedSummaryJson!) as Map<String, dynamic>;
     expect(summary['name'], 'Worship Lead');
   });
 
-  test('a second save for the same program number replaces the first', () async {
-    final repository = midiPresetCaptureRepository(database);
-    await repository.saveCapture(
-      pedalId: unitId,
-      deviceProfileId: 'nux_mg30_v5',
-      programNumber: 5,
-      rawSysEx: Uint8List.fromList([0x00]),
-    );
+  test(
+    'a second save for the same program number replaces the first',
+    () async {
+      final repository = midiPresetCaptureRepository(database);
+      await repository.saveCapture(
+        pedalId: unitId,
+        deviceProfileId: 'nux_mg30_v5',
+        programNumber: 5,
+        rawSysEx: Uint8List.fromList([0x00]),
+      );
 
-    await repository.saveCapture(
-      pedalId: unitId,
-      deviceProfileId: 'nux_mg30_v5',
-      programNumber: 5,
-      rawSysEx: Uint8List.fromList([0x01]),
-      decoded: const DecodedNuxMg30V5Preset(programNumber: 5, name: 'Replaced'),
-    );
+      await repository.saveCapture(
+        pedalId: unitId,
+        deviceProfileId: 'nux_mg30_v5',
+        programNumber: 5,
+        rawSysEx: Uint8List.fromList([0x01]),
+        decoded: const DecodedNuxMg30V5Preset(
+          programNumber: 5,
+          name: 'Replaced',
+        ),
+      );
 
-    final captures = await repository.watchCaptures(unitId).first;
-    expect(captures, hasLength(1));
-    expect(captures.single.rawSysEx, [0x01]);
-    expect(captures.single.decodedName, 'Replaced');
-  });
+      final captures = await repository.watchCaptures(unitId).first;
+      expect(captures, hasLength(1));
+      expect(captures.single.rawSysEx, [0x01]);
+      expect(captures.single.decodedName, 'Replaced');
+    },
+  );
 
-  test('findByProgramNumber is null when nothing has been captured for that slot', () async {
-    final repository = midiPresetCaptureRepository(database);
+  test(
+    'findByProgramNumber is null when nothing has been captured for that slot',
+    () async {
+      final repository = midiPresetCaptureRepository(database);
 
-    expect(await repository.findByProgramNumber(unitId, 9), isNull);
-  });
+      expect(await repository.findByProgramNumber(unitId, 9), isNull);
+    },
+  );
 
-  test('deleteCapture removes the row and reports whether one existed', () async {
-    final repository = midiPresetCaptureRepository(database);
-    await repository.saveCapture(
-      pedalId: unitId,
-      deviceProfileId: 'nux_mg30_v5',
-      programNumber: 5,
-      rawSysEx: Uint8List.fromList([0x00]),
-    );
-    final id = (await repository.watchCaptures(unitId).first).single.id;
+  test(
+    'deleteCapture removes the row and reports whether one existed',
+    () async {
+      final repository = midiPresetCaptureRepository(database);
+      await repository.saveCapture(
+        pedalId: unitId,
+        deviceProfileId: 'nux_mg30_v5',
+        programNumber: 5,
+        rawSysEx: Uint8List.fromList([0x00]),
+      );
+      final id = (await repository.watchCaptures(unitId).first).single.id;
 
-    expect(await repository.deleteCapture(id), isTrue);
-    expect(await repository.deleteCapture(id), isFalse);
-    expect(await repository.watchCaptures(unitId).first, isEmpty);
-  });
+      expect(await repository.deleteCapture(id), isTrue);
+      expect(await repository.deleteCapture(id), isFalse);
+      expect(await repository.watchCaptures(unitId).first, isEmpty);
+    },
+  );
 }

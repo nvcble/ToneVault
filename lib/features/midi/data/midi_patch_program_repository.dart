@@ -8,7 +8,8 @@ class MidiPatchProgramRepository {
 
   final MidiPatchProgramNumberDao _dao;
 
-  Stream<MidiPatchProgramNumber?> watchNumber(int patchId) => _dao.watchNumber(patchId);
+  Stream<MidiPatchProgramNumber?> watchNumber(int patchId) =>
+      _dao.watchNumber(patchId);
 
   /// The numbered patches of one unit, in the order Live Control cycles
   /// through them.
@@ -17,9 +18,13 @@ class MidiPatchProgramRepository {
 
   /// A one-off read of [watchNumberedPatches], for a computation that just
   /// needs the current numbers rather than to keep watching them.
-  Future<List<NumberedPatch>> numberedPatches(int pedalId) => _dao.numberedPatches(pedalId);
+  Future<List<NumberedPatch>> numberedPatches(int pedalId) =>
+      _dao.numberedPatches(pedalId);
 
-  Future<void> setNumber({required int patchId, required int programNumber}) async {
+  Future<void> setNumber({
+    required int patchId,
+    required int programNumber,
+  }) async {
     // 0-127, not 1-128: a program number is the Program Change value sent on
     // the wire, and the device's first slot is 0. The old range rejected slot
     // 0 outright, so importing the very first preset off a unit always failed.
@@ -38,6 +43,9 @@ class MidiPatchProgramRepository {
   }
 
   Future<void> clearNumber(int patchId) {
-    return guardFailure(() => _dao.deleteNumber(patchId), 'Could not clear that patch number.');
+    return guardFailure(
+      () => _dao.deleteNumber(patchId),
+      'Could not clear that patch number.',
+    );
   }
 }

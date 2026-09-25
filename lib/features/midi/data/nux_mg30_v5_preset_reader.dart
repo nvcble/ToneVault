@@ -15,7 +15,10 @@ class NuxMg30V5PresetReader {
   /// Throws [MidiRequestTimedOut] if the device does not answer within
   /// [timeout] - a real possibility given this command has never been tried
   /// against this app's own hardware.
-  Future<MidiMessage> readPreset(int programNumber, {Duration timeout = const Duration(seconds: 5)}) {
+  Future<MidiMessage> readPreset(
+    int programNumber, {
+    Duration timeout = const Duration(seconds: 5),
+  }) {
     return _engine.request(
       NuxMg30V5SysEx.getPresetDataRequest(programNumber),
       matches: (message) =>

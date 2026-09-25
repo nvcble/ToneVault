@@ -32,11 +32,10 @@ class MidiSceneNumberDao extends DatabaseAccessor<AppDatabase>
   }) {
     return (select(midiSceneNumbers).join([
           innerJoin(scenes, scenes.id.equalsExp(midiSceneNumbers.sceneId)),
-        ])
-          ..where(
-            scenes.patchId.equals(patchId) &
-                midiSceneNumbers.sceneId.equals(exceptSceneId).not(),
-          ))
+        ])..where(
+          scenes.patchId.equals(patchId) &
+              midiSceneNumbers.sceneId.equals(exceptSceneId).not(),
+        ))
         .map((row) => row.readTable(midiSceneNumbers))
         .get();
   }

@@ -35,7 +35,10 @@ void main() {
 
   /// The tile's own copy of [text], distinct from the selected-patch label
   /// repeated below the pager.
-  Finder tileText(String text) => find.descendant(of: find.byType(PatchGridTile), matching: find.text(text));
+  Finder tileText(String text) => find.descendant(
+    of: find.byType(PatchGridTile),
+    matching: find.text(text),
+  );
 
   testWidgets('shows 20 tiles a page, numbered from 1', (tester) async {
     await pump(tester);
@@ -46,7 +49,9 @@ void main() {
     expect(find.text('Page 1 of 7'), findsOneWidget);
   });
 
-  testWidgets('a known patch name replaces the generic slot label', (tester) async {
+  testWidgets('a known patch name replaces the generic slot label', (
+    tester,
+  ) async {
     await pump(tester, names: {0: 'Core Lead'});
 
     expect(tileText('Core Lead'), findsOneWidget);
@@ -62,7 +67,9 @@ void main() {
     expect(find.text('Page 1 of 7'), findsOneWidget);
   });
 
-  testWidgets('falls back to the generic label when the slot is unnamed', (tester) async {
+  testWidgets('falls back to the generic label when the slot is unnamed', (
+    tester,
+  ) async {
     await pump(tester, selected: 5);
 
     expect(find.text('Patch 6'), findsNWidgets(2));
@@ -71,11 +78,23 @@ void main() {
   testWidgets('a loaded tile fills rather than just borders', (tester) async {
     await pump(tester, loaded: 4);
 
-    expect(tester.widget<PatchGridTile>(find.widgetWithText(PatchGridTile, '05')).loaded, isTrue);
-    expect(tester.widget<PatchGridTile>(find.widgetWithText(PatchGridTile, '06')).loaded, isFalse);
+    expect(
+      tester
+          .widget<PatchGridTile>(find.widgetWithText(PatchGridTile, '05'))
+          .loaded,
+      isTrue,
+    );
+    expect(
+      tester
+          .widget<PatchGridTile>(find.widgetWithText(PatchGridTile, '06'))
+          .loaded,
+      isFalse,
+    );
   });
 
-  testWidgets('the chevrons slide to the next and previous page', (tester) async {
+  testWidgets('the chevrons slide to the next and previous page', (
+    tester,
+  ) async {
     await pump(tester);
 
     await tester.tap(find.byIcon(Icons.chevron_right));
@@ -101,7 +120,14 @@ void main() {
     expect(find.byType(PatchGridTile), findsNWidgets(8));
     expect(find.text('128'), findsOneWidget);
     // Nothing left to page forward to.
-    expect(tester.widget<IconButton>(find.widgetWithIcon(IconButton, Icons.chevron_right)).onPressed, isNull);
+    expect(
+      tester
+          .widget<IconButton>(
+            find.widgetWithIcon(IconButton, Icons.chevron_right),
+          )
+          .onPressed,
+      isNull,
+    );
   });
 
   testWidgets('opens on the page holding the selected slot', (tester) async {
@@ -111,10 +137,16 @@ void main() {
     expect(find.text('26'), findsOneWidget);
   });
 
-  testWidgets('a single tap only pre-selects, reporting its 0-based number', (tester) async {
+  testWidgets('a single tap only pre-selects, reporting its 0-based number', (
+    tester,
+  ) async {
     int? selected;
     int? loaded;
-    await pump(tester, onSelected: (number) => selected = number, onLoad: (number) => loaded = number);
+    await pump(
+      tester,
+      onSelected: (number) => selected = number,
+      onLoad: (number) => loaded = number,
+    );
 
     await tester.tap(find.text('05'));
     // Nothing else tapped within the double-tap window, so it resolves to a
@@ -125,7 +157,9 @@ void main() {
     expect(loaded, isNull);
   });
 
-  testWidgets('a double tap loads the tile, not just pre-selects it', (tester) async {
+  testWidgets('a double tap loads the tile, not just pre-selects it', (
+    tester,
+  ) async {
     int? loaded;
     await pump(tester, onLoad: (number) => loaded = number);
 

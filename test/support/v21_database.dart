@@ -40,7 +40,11 @@ final List<String> _v21Rows = [
   'INSERT INTO pedals (id, name, type, category, created_at, updated_at) '
       "VALUES (1, 'NUX MG-30', 'digital', 'multiEffects', "
       "'2026-01-01T00:00:00.000Z', '2026-01-01T00:00:00.000Z')",
-  for (final (id, name) in [(1, 'Worship Clean'), (2, 'Core Lead'), (3, 'Ambient')])
+  for (final (id, name) in [
+    (1, 'Worship Clean'),
+    (2, 'Core Lead'),
+    (3, 'Ambient'),
+  ])
     'INSERT INTO patches (id, pedal_id, name, created_at, updated_at) '
         "VALUES ($id, 1, '$name', "
         "'2026-01-01T00:00:00.000Z', '2026-01-01T00:00:00.000Z')",

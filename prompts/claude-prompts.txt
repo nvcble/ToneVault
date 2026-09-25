@@ -1,0 +1,8 @@
+As a full stack developer with 10 years of experience with Flutter/Dart/Drift/SQLite/Firebase, do the following on this requirement:
+
+[Midi Module]
+1. Hotone Ampero Mini Landing Page, Make the patch lists a tile but in a grid view with pagination just like what we did with Nux MG-30 v5 controller.
+2. Hotone Ampero Mini Landing Page, when I tried to select F01-1 in mobile phone, Hotone Ampero Mini pedal doesn't react upon selection. I already double tap F01-1 but still no response with the Ampero Mini. You can check the logs here: C:\Users\MarkN\Downloads\tonevault-capture-ampero2.json.
+3. Hotone Ampero Mini Landing Page, when I double tap F01-1 it will be selected. But when I select other sample P01-2, it will not react on the mobile but the ampero mini pedal was changed to P01-2. Fix this bug.
+
+Note: Do not generate or make your code longer. Generate your code short, simple, easy to maintain, and professional. Use reusable components as much as possible.

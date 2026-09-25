@@ -31,15 +31,21 @@ class MidiPatchProgramNumberDao extends DatabaseAccessor<AppDatabase>
 
   JoinedSelectStatement<Object?, Object?> _numberedPatchesQuery(int pedalId) {
     return select(midiPatchProgramNumbers).join([
-      innerJoin(patches, patches.id.equalsExp(midiPatchProgramNumbers.patchId)),
-    ])
+        innerJoin(
+          patches,
+          patches.id.equalsExp(midiPatchProgramNumbers.patchId),
+        ),
+      ])
       ..where(patches.pedalId.equals(pedalId))
       ..orderBy([OrderingTerm.asc(midiPatchProgramNumbers.programNumber)]);
   }
 
   List<NumberedPatch> _toNumberedPatches(List<TypedResult> rows) => [
     for (final row in rows)
-      (patch: row.readTable(patches), programNumber: row.readTable(midiPatchProgramNumbers).programNumber),
+      (
+        patch: row.readTable(patches),
+        programNumber: row.readTable(midiPatchProgramNumbers).programNumber,
+      ),
   ];
 
   Stream<MidiPatchProgramNumber?> watchNumber(int patchId) {

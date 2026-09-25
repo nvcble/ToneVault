@@ -9,14 +9,13 @@ import 'nux_mg30_v5_preset_reader.dart';
 enum PresetCaptureDecision { skip, overwrite }
 
 /// What one capture-all run did.
-typedef PresetCaptureSummary =
-    ({
-      int captured,
-      int overwritten,
-      int skipped,
-      List<PresetCaptureFailure> failures,
-      bool stoppedEarly,
-    });
+typedef PresetCaptureSummary = ({
+  int captured,
+  int overwritten,
+  int skipped,
+  List<PresetCaptureFailure> failures,
+  bool stoppedEarly,
+});
 
 /// One program number that could not be captured, and why - most likely a
 /// timeout, since this command has never been confirmed against V5
@@ -31,12 +30,17 @@ typedef PresetCaptureFailure = ({int programNumber, String message});
 /// completely different fixes.
 typedef PresetCaptureFailureGroup = ({String message, int count});
 
-List<PresetCaptureFailureGroup> groupCaptureFailures(List<PresetCaptureFailure> failures) {
+List<PresetCaptureFailureGroup> groupCaptureFailures(
+  List<PresetCaptureFailure> failures,
+) {
   final counts = <String, int>{};
   for (final failure in failures) {
     counts.update(failure.message, (count) => count + 1, ifAbsent: () => 1);
   }
-  return [for (final entry in counts.entries) (message: entry.key, count: entry.value)];
+  return [
+    for (final entry in counts.entries)
+      (message: entry.key, count: entry.value),
+  ];
 }
 
 /// Walks every program number in [firstProgramNumber, lastProgramNumber],
@@ -70,15 +74,25 @@ class NuxMg30V5PresetCaptureService {
     final failures = <PresetCaptureFailure>[];
     final total = lastProgramNumber - firstProgramNumber + 1;
 
-    for (var programNumber = firstProgramNumber; programNumber <= lastProgramNumber; programNumber++) {
+    for (
+      var programNumber = firstProgramNumber;
+      programNumber <= lastProgramNumber;
+      programNumber++
+    ) {
       try {
-        final existing = await _captures.findByProgramNumber(unitId, programNumber);
+        final existing = await _captures.findByProgramNumber(
+          unitId,
+          programNumber,
+        );
         if (existing != null && onDuplicate == PresetCaptureDecision.skip) {
           skipped++;
           continue;
         }
 
-        final response = await _reader.readPreset(programNumber, timeout: readTimeout);
+        final response = await _reader.readPreset(
+          programNumber,
+          timeout: readTimeout,
+        );
         DecodedNuxMg30V5Preset? decoded;
         try {
           decoded = decodeNuxMg30V5Preset(response);

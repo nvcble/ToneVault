@@ -17,21 +17,23 @@ final Provider<MidiEngine> midiEngineProvider = Provider<MidiEngine>((ref) {
   return engine;
 });
 
-final Provider<MidiParameterSender> midiParameterSenderProvider = Provider<MidiParameterSender>(
-  (ref) => MidiParameterSender(ref.watch(midiEngineProvider)),
-);
-
-final Provider<NuxMg30V5PresetReader> nuxMg30V5PresetReaderProvider = Provider<NuxMg30V5PresetReader>(
-  (ref) => NuxMg30V5PresetReader(ref.watch(midiEngineProvider)),
-);
-
-final Provider<NuxMg30V5PresetCaptureService> nuxMg30V5PresetCaptureServiceProvider =
-    Provider<NuxMg30V5PresetCaptureService>(
-      (ref) => NuxMg30V5PresetCaptureService(
-        ref.watch(nuxMg30V5PresetReaderProvider),
-        ref.watch(midiPresetCaptureRepositoryProvider),
-      ),
+final Provider<MidiParameterSender> midiParameterSenderProvider =
+    Provider<MidiParameterSender>(
+      (ref) => MidiParameterSender(ref.watch(midiEngineProvider)),
     );
+
+final Provider<NuxMg30V5PresetReader> nuxMg30V5PresetReaderProvider =
+    Provider<NuxMg30V5PresetReader>(
+      (ref) => NuxMg30V5PresetReader(ref.watch(midiEngineProvider)),
+    );
+
+final Provider<NuxMg30V5PresetCaptureService>
+nuxMg30V5PresetCaptureServiceProvider = Provider<NuxMg30V5PresetCaptureService>(
+  (ref) => NuxMg30V5PresetCaptureService(
+    ref.watch(nuxMg30V5PresetReaderProvider),
+    ref.watch(midiPresetCaptureRepositoryProvider),
+  ),
+);
 
 /// Builds the transport a connection type asks for.
 ///

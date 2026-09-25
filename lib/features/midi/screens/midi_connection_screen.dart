@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 
-import '../../../app/router/routes.dart';
 import '../../../app/theme/app_spacing.dart';
 import '../../../core/midi/midi_connection_state.dart';
 import '../../../shared/widgets/section_label.dart';
@@ -10,10 +8,19 @@ import '../providers/midi_connection_controller.dart';
 import '../widgets/midi_connection_status.dart';
 
 /// Connect to, or disconnect from, one device profile's hardware.
+///
+/// [onOpenControl] is what "Open control" navigates to - decided by whoever
+/// builds this screen (see `midi_routes.dart`), not hardcoded here, since
+/// which screen that is differs per device profile.
 class MidiConnectionScreen extends ConsumerWidget {
-  const MidiConnectionScreen({required this.profileId, super.key});
+  const MidiConnectionScreen({
+    required this.profileId,
+    required this.onOpenControl,
+    super.key,
+  });
 
   final String profileId;
+  final VoidCallback onOpenControl;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -39,7 +46,9 @@ class MidiConnectionScreen extends ConsumerWidget {
           _Field(label: 'Device', value: snapshot.profile.displayName),
           _Field(
             label: 'Connection type',
-            value: snapshot.profile.connectionTypes.map((type) => type.label).join(', '),
+            value: snapshot.profile.connectionTypes
+                .map((type) => type.label)
+                .join(', '),
           ),
           const SectionLabel('Connection'),
           Padding(
@@ -62,7 +71,9 @@ class MidiConnectionScreen extends ConsumerWidget {
               children: [
                 Expanded(
                   child: FilledButton(
-                    onPressed: isConnected || isBusy ? null : controller.connect,
+                    onPressed: isConnected || isBusy
+                        ? null
+                        : controller.connect,
                     child: const Text('Connect'),
                   ),
                 ),
@@ -79,7 +90,7 @@ class MidiConnectionScreen extends ConsumerWidget {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
             child: FilledButton.tonal(
-              onPressed: isConnected ? () => context.push(Routes.midiControl(profileId)) : null,
+              onPressed: isConnected ? onOpenControl : null,
               child: const Text('Open control'),
             ),
           ),
@@ -99,11 +110,19 @@ class _Field extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md, vertical: AppSpacing.xs),
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppSpacing.md,
+        vertical: AppSpacing.xs,
+      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(label, style: theme.textTheme.labelMedium?.copyWith(color: theme.colorScheme.outline)),
+          Text(
+            label,
+            style: theme.textTheme.labelMedium?.copyWith(
+              color: theme.colorScheme.outline,
+            ),
+          ),
           Text(value, style: theme.textTheme.bodyLarge),
         ],
       ),

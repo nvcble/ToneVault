@@ -18,7 +18,11 @@ import '../support/fake_midi_transport.dart';
 /// sent are read - MIDI Diagnostics only starts and stops the capture.
 void main() {
   const profile = NuxMg30V5Profile();
-  const endpoint = MidiEndpoint(id: 'dev-1', name: 'MG-30', type: MidiTransportType.usb);
+  const endpoint = MidiEndpoint(
+    id: 'dev-1',
+    name: 'MG-30',
+    type: MidiTransportType.usb,
+  );
 
   late FakeMidiTransport transport;
   late ProviderContainer container;
@@ -53,16 +57,23 @@ void main() {
     await tester.pumpAndSettle();
   }
 
-  testWidgets('says where to start a capture when none has run', (tester) async {
+  testWidgets('says where to start a capture when none has run', (
+    tester,
+  ) async {
     prepare();
 
     await pumpLog(tester);
 
     expect(find.text('Nothing captured yet'), findsOneWidget);
-    expect(find.textContaining('Start a capture on the Diagnostics screen'), findsOneWidget);
+    expect(
+      find.textContaining('Start a capture on the Diagnostics screen'),
+      findsOneWidget,
+    );
   });
 
-  testWidgets('points at the device once a capture is open but silent', (tester) async {
+  testWidgets('points at the device once a capture is open but silent', (
+    tester,
+  ) async {
     prepare();
     container.read(midiCaptureProvider.notifier).start();
 
@@ -71,7 +82,9 @@ void main() {
     expect(find.textContaining('Capturing.'), findsOneWidget);
   });
 
-  testWidgets('shows the raw bytes of what the device sent, newest first', (tester) async {
+  testWidgets('shows the raw bytes of what the device sent, newest first', (
+    tester,
+  ) async {
     prepare();
     container.read(midiCaptureProvider.notifier).start();
     // Through the transport rather than the controller, so this covers the whole
@@ -82,8 +95,14 @@ void main() {
 
     expect(find.byType(MidiLogTile), findsNWidgets(2));
     // Newest first: the reply to whatever was just tried is the row wanted.
-    final tiles = tester.widgetList<MidiLogTile>(find.byType(MidiLogTile)).toList();
-    expect((tiles.first.entry.message as SysExMessage).payload, [0x43, 0x58, 0x02]);
+    final tiles = tester
+        .widgetList<MidiLogTile>(find.byType(MidiLogTile))
+        .toList();
+    expect((tiles.first.entry.message as SysExMessage).payload, [
+      0x43,
+      0x58,
+      0x02,
+    ]);
     expect(find.textContaining('F0 43 58 02 F7'), findsOneWidget);
   });
 }

@@ -8,6 +8,8 @@ import 'migrations/schema_steps_v19.dart';
 import 'migrations/schema_steps_v20.dart';
 import 'migrations/schema_steps_v21.dart';
 import 'migrations/schema_steps_v22.dart';
+import 'migrations/schema_steps_v23.dart';
+import 'migrations/schema_steps_v24.dart';
 import 'migrations/schema_steps_v2_v9.dart';
 
 /// Schema history. Every version bump gets an entry here and a matching branch
@@ -109,7 +111,15 @@ import 'migrations/schema_steps_v2_v9.dart';
 ///   number is the Program Change value itself and slot 0 is storable at all.
 ///   Rebuilds the table to widen its CHECK to 0-127 and shifts existing rows
 ///   down by one, which keeps every patch on the same physical slot.
-const int currentSchemaVersion = 22;
+/// - v23: hotone_ampero_mini_patches, the independent Hotone Ampero Mini MIDI
+///   controller's own patch library - deliberately not a pedal-linked table
+///   like midi_preset_captures, since this device's patches are not tied to
+///   ToneVault's physical gear inventory. Purely additive: one new table, no
+///   ALTER and no DROP.
+/// - v24: hotone_ampero_mini_patches.local_label, the name the user typed for
+///   a patch slot themselves - kept apart from `name`, which holds only what
+///   was decoded from the device's own bytes. Purely additive: one ADD COLUMN.
+const int currentSchemaVersion = 24;
 
 MigrationStrategy buildMigrationStrategy(GeneratedDatabase database) {
   return MigrationStrategy(
@@ -130,6 +140,8 @@ MigrationStrategy buildMigrationStrategy(GeneratedDatabase database) {
       await upgradeThroughV20(database, from);
       await upgradeThroughV21(database, from);
       await upgradeThroughV22(database, from);
+      await upgradeThroughV23(database, from);
+      await upgradeThroughV24(database, from);
 
       if (to > currentSchemaVersion) {
         throw StateError('No migration registered up to schema $to.');

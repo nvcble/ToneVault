@@ -57,7 +57,9 @@ class CapturedPresetImportScreen extends ConsumerWidget {
               Expanded(
                 child: PresetImportFlow(
                   unitId: pedal.id,
-                  service: ref.watch(experimentalCapturedPresetImportServiceProvider(pedal.id)),
+                  service: ref.watch(
+                    experimentalCapturedPresetImportServiceProvider(pedal.id),
+                  ),
                 ),
               ),
             ],

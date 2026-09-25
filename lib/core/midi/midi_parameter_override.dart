@@ -5,7 +5,10 @@
 /// Drift so the resolution logic in `midi_parameter_resolution.dart` has
 /// nothing to do with persistence and can be tested without a database.
 class MidiParameterOverride {
-  const MidiParameterOverride({required this.parameterName, required this.ccNumber});
+  const MidiParameterOverride({
+    required this.parameterName,
+    required this.ccNumber,
+  });
 
   final String parameterName;
   final int ccNumber;

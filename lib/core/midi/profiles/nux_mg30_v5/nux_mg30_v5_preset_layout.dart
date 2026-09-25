@@ -30,8 +30,18 @@ typedef NuxMg30V5PresetLayout = ({
 });
 
 const List<NuxMg30V5PresetLayout> nuxMg30V5PresetLayouts = [
-  (length: 218, nameOffset: 165, nameStartsOnPair: false, v403FieldOffsets: true),
-  (length: 222, nameOffset: 167, nameStartsOnPair: true, v403FieldOffsets: false),
+  (
+    length: 218,
+    nameOffset: 165,
+    nameStartsOnPair: false,
+    v403FieldOffsets: true,
+  ),
+  (
+    length: 222,
+    nameOffset: 167,
+    nameStartsOnPair: true,
+    v403FieldOffsets: false,
+  ),
 ];
 
 /// The layout for a dump of [length] bytes, or null if that length is unknown.
@@ -56,8 +66,14 @@ const _nameWindow = 24;
 /// survives inside SysEx data bytes, which must stay under 0x80. A zero
 /// character ends the name. Reverse-engineered by `mg30-controller`'s
 /// `_convertProgramName`, reimplemented independently here.
-String decodeNuxMg30V5PresetName(List<int> bytes, NuxMg30V5PresetLayout layout) {
-  final data = bytes.sublist(layout.nameOffset, layout.nameOffset + _nameWindow);
+String decodeNuxMg30V5PresetName(
+  List<int> bytes,
+  NuxMg30V5PresetLayout layout,
+) {
+  final data = bytes.sublist(
+    layout.nameOffset,
+    layout.nameOffset + _nameWindow,
+  );
   final result = StringBuffer();
   var i = 0;
   var pair = layout.nameStartsOnPair;

@@ -53,7 +53,8 @@ abstract final class NuxMg30V5SysEx {
   /// "Who are you" - `F0 43 58 00 F7`. v4.0.3 replies with a 45-byte frame
   /// whose bytes 4-9 spell its firmware version in ASCII (e.g. "v4.0.3").
   /// What a V5 unit replies with - if it replies to this at all - is unknown.
-  static SysExMessage identifyRequest() => const SysExMessage(payload: [0x43, 0x58, 0x00]);
+  static SysExMessage identifyRequest() =>
+      const SysExMessage(payload: [0x43, 0x58, 0x00]);
 
   /// Which program number (and Pro Scene) is currently loaded -
   /// `F0 43 58 70 15 00 F7`.
@@ -71,13 +72,28 @@ abstract final class NuxMg30V5SysEx {
   /// is actually non-disruptive on real hardware is unverified; see the
   /// class doc.
   static SysExMessage getPresetDataRequest(int programNo) => SysExMessage(
-    payload: [0x43, 0x58, 0x70, 0x0B, 0x00, programNo, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00],
+    payload: [
+      0x43,
+      0x58,
+      0x70,
+      0x0B,
+      0x00,
+      programNo,
+      0x00,
+      0x00,
+      0x00,
+      0x00,
+      0x00,
+      0x00,
+      0x00,
+    ],
   );
 
   /// True for a 45-byte identify reply, `F0 43 58 10 ...`.
   static bool isIdentifyResponse(MidiMessage message) {
     final bytes = message.toBytes();
-    return bytes.length == 45 && _prefixMatches(bytes, const [0x43, 0x58, 0x10]);
+    return bytes.length == 45 &&
+        _prefixMatches(bytes, const [0x43, 0x58, 0x10]);
   }
 
   /// The identify reply's firmware string, e.g. "v4.0.3" - not assumed to be
@@ -86,12 +102,14 @@ abstract final class NuxMg30V5SysEx {
       String.fromCharCodes(message.toBytes().sublist(4, 10));
 
   /// True for a "get preset data" reply, `F0 43 58 70 0B 02 ...`.
-  static bool isPresetDataResponse(MidiMessage message) => _isPresetDump(message, 0x0B);
+  static bool isPresetDataResponse(MidiMessage message) =>
+      _isPresetDump(message, 0x0B);
 
   /// True for a "get current effect state" reply, `F0 43 58 70 0C 02 ...` -
   /// the same frame shape [isPresetDataResponse] matches and the same layout
   /// the preset decoder reads.
-  static bool isCurrentEffectStateResponse(MidiMessage message) => _isPresetDump(message, 0x0C);
+  static bool isCurrentEffectStateResponse(MidiMessage message) =>
+      _isPresetDump(message, 0x0C);
 
   static bool _isPresetDump(MidiMessage message, int command) {
     final bytes = message.toBytes();
@@ -103,12 +121,14 @@ abstract final class NuxMg30V5SysEx {
   /// `F0 43 58 70 15 02 ...`, 15 bytes.
   static bool isCurrentProgramNumberResponse(MidiMessage message) {
     final bytes = message.toBytes();
-    return bytes.length == 15 && _prefixMatches(bytes, const [0x43, 0x58, 0x70, 0x15, 0x02]);
+    return bytes.length == 15 &&
+        _prefixMatches(bytes, const [0x43, 0x58, 0x70, 0x15, 0x02]);
   }
 
   /// The program number a "get preset data" or "get current effect state"
   /// reply is for - byte 6, verified on V5 by the slot echoing the request.
-  static int presetResponseProgramNumber(MidiMessage message) => message.toBytes()[6];
+  static int presetResponseProgramNumber(MidiMessage message) =>
+      message.toBytes()[6];
 
   static bool _prefixMatches(List<int> bytes, List<int> prefix) {
     for (var i = 0; i < prefix.length; i++) {

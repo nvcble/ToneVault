@@ -103,7 +103,10 @@ void main() {
     expect(backup.rows.academyPracticeSessions, saved.academyPracticeSessions);
     expect(backup.rows.academyBookmarks, saved.academyBookmarks);
     expect(backup.rows.midiParameterOverrides, saved.midiParameterOverrides);
-    expect(backup.rows.midiPatchSelectionSettings, saved.midiPatchSelectionSettings);
+    expect(
+      backup.rows.midiPatchSelectionSettings,
+      saved.midiPatchSelectionSettings,
+    );
     expect(backup.rows.midiDeviceLinks, saved.midiDeviceLinks);
     expect(backup.rows.midiPatchProgramNumbers, saved.midiPatchProgramNumbers);
     expect(backup.rows.midiSceneNumbers, saved.midiSceneNumbers);

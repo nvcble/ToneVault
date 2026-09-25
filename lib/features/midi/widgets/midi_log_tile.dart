@@ -37,8 +37,8 @@ class MidiLogTile extends StatelessWidget {
         failure != null
             ? Icons.error_outline
             : isOutgoing
-                ? Icons.arrow_upward
-                : Icons.arrow_downward,
+            ? Icons.arrow_upward
+            : Icons.arrow_downward,
         color: failure != null ? Theme.of(context).colorScheme.error : null,
       ),
       title: Text(bytes, style: const TextStyle(fontFamily: 'monospace')),
@@ -52,7 +52,10 @@ class MidiLogTile extends StatelessWidget {
     await Clipboard.setData(ClipboardData(text: bytes));
     if (context.mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Copied raw bytes'), duration: Duration(seconds: 1)),
+        const SnackBar(
+          content: Text('Copied raw bytes'),
+          duration: Duration(seconds: 1),
+        ),
       );
     }
   }

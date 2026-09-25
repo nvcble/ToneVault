@@ -35,7 +35,9 @@ void main() {
   tearDown(() => database.close());
 
   test('has no recents until one is recorded', () async {
-    final recents = await midiPatchRecentRepository(database).watchRecents().first;
+    final recents = await midiPatchRecentRepository(
+      database,
+    ).watchRecents().first;
 
     expect(recents, isEmpty);
   });
@@ -63,37 +65,51 @@ void main() {
   });
 
   group('recentNumberedPatches', () {
-    test('cross-references recents against numbered patches, newest first', () async {
-      await midiPatchProgramRepository(database).setNumber(patchId: firstPatchId, programNumber: 1);
-      await midiPatchProgramRepository(
-        database,
-      ).setNumber(patchId: secondPatchId, programNumber: 2);
-      final numbered = await midiPatchProgramRepository(database).watchNumberedPatches(unitId).first;
+    test(
+      'cross-references recents against numbered patches, newest first',
+      () async {
+        await midiPatchProgramRepository(
+          database,
+        ).setNumber(patchId: firstPatchId, programNumber: 1);
+        await midiPatchProgramRepository(
+          database,
+        ).setNumber(patchId: secondPatchId, programNumber: 2);
+        final numbered = await midiPatchProgramRepository(
+          database,
+        ).watchNumberedPatches(unitId).first;
 
-      final repository = midiPatchRecentRepository(database);
-      var second = 0;
-      DateTime tick() => DateTime(2026).add(Duration(seconds: second++));
-      await repository.recordUsed(firstPatchId, clock: tick);
-      await repository.recordUsed(secondPatchId, clock: tick);
-      final recents = await repository.watchRecents().first;
+        final repository = midiPatchRecentRepository(database);
+        var second = 0;
+        DateTime tick() => DateTime(2026).add(Duration(seconds: second++));
+        await repository.recordUsed(firstPatchId, clock: tick);
+        await repository.recordUsed(secondPatchId, clock: tick);
+        final recents = await repository.watchRecents().first;
 
-      final result = recentNumberedPatches(numbered, recents: recents);
+        final result = recentNumberedPatches(numbered, recents: recents);
 
-      expect(result.map((n) => n.patch.id), [secondPatchId, firstPatchId]);
-    });
+        expect(result.map((n) => n.patch.id), [secondPatchId, firstPatchId]);
+      },
+    );
 
-    test('leaves out a recent whose patch no longer has a program number', () async {
-      await midiPatchProgramRepository(database).setNumber(patchId: firstPatchId, programNumber: 1);
-      final numbered = await midiPatchProgramRepository(database).watchNumberedPatches(unitId).first;
+    test(
+      'leaves out a recent whose patch no longer has a program number',
+      () async {
+        await midiPatchProgramRepository(
+          database,
+        ).setNumber(patchId: firstPatchId, programNumber: 1);
+        final numbered = await midiPatchProgramRepository(
+          database,
+        ).watchNumberedPatches(unitId).first;
 
-      final repository = midiPatchRecentRepository(database);
-      await repository.recordUsed(firstPatchId);
-      await repository.recordUsed(secondPatchId);
-      final recents = await repository.watchRecents().first;
+        final repository = midiPatchRecentRepository(database);
+        await repository.recordUsed(firstPatchId);
+        await repository.recordUsed(secondPatchId);
+        final recents = await repository.watchRecents().first;
 
-      final result = recentNumberedPatches(numbered, recents: recents);
+        final result = recentNumberedPatches(numbered, recents: recents);
 
-      expect(result.map((n) => n.patch.id), [firstPatchId]);
-    });
+        expect(result.map((n) => n.patch.id), [firstPatchId]);
+      },
+    );
   });
 }

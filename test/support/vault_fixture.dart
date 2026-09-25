@@ -275,7 +275,13 @@ Future<void> fillVault(AppDatabase database) async {
   );
 
   await _fillAcademy(database, moment);
-  await _fillMidi(database, moment, unitId: unitId, patchId: patchId, sceneId: sceneId);
+  await _fillMidi(
+    database,
+    moment,
+    unitId: unitId,
+    patchId: patchId,
+    sceneId: sceneId,
+  );
 }
 
 /// A remapped CC, a patch-selection strategy, a device link and a

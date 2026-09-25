@@ -11,9 +11,8 @@ import 'scenes_table.dart';
 class MidiSceneNumbers extends Table {
   IntColumn get id => integer().autoIncrement()();
 
-  IntColumn get sceneId => integer()
-      .references(Scenes, #id, onDelete: KeyAction.cascade)
-      .unique()();
+  IntColumn get sceneId =>
+      integer().references(Scenes, #id, onDelete: KeyAction.cascade).unique()();
 
   IntColumn get sceneNumber => integer()();
 

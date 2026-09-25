@@ -43,7 +43,9 @@ class MidiPatchEditorScreen extends ConsumerWidget {
     final pedalAsync = ref.watch(linkedPedalProvider(profileId));
 
     return Scaffold(
-      appBar: AppBar(title: Text(sceneAsync.valueOrNull?.name ?? 'Patch Editor')),
+      appBar: AppBar(
+        title: Text(sceneAsync.valueOrNull?.name ?? 'Patch Editor'),
+      ),
       body: pedalAsync.when(
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (error, stackTrace) => EmptyState(
@@ -59,7 +61,11 @@ class MidiPatchEditorScreen extends ConsumerWidget {
               message: 'Add this device as gear from its Patches screen first.',
             );
           }
-          return _SignalChain(profileId: profileId, sceneId: sceneId, unitId: pedal.id);
+          return _SignalChain(
+            profileId: profileId,
+            sceneId: sceneId,
+            unitId: pedal.id,
+          );
         },
       ),
     );
@@ -67,7 +73,11 @@ class MidiPatchEditorScreen extends ConsumerWidget {
 }
 
 class _SignalChain extends ConsumerWidget {
-  const _SignalChain({required this.profileId, required this.sceneId, required this.unitId});
+  const _SignalChain({
+    required this.profileId,
+    required this.sceneId,
+    required this.unitId,
+  });
 
   final String profileId;
   final int sceneId;
@@ -89,7 +99,9 @@ class _SignalChain extends ConsumerWidget {
     }
 
     final enabledIds = enabled.map((pedal) => pedal.id).toSet();
-    final controlsByBlock = {for (final group in groups) group.owner.id: group.controls};
+    final controlsByBlock = {
+      for (final group in groups) group.owner.id: group.controls,
+    };
 
     return Column(
       children: [
@@ -99,7 +111,8 @@ class _SignalChain extends ConsumerWidget {
               ? const EmptyState(
                   icon: Icons.list_alt,
                   title: 'No blocks yet',
-                  message: 'This unit has no blocks added to it in the Pedals tab.',
+                  message:
+                      'This unit has no blocks added to it in the Pedals tab.',
                 )
               : ListView(
                   children: [
@@ -128,12 +141,20 @@ class _SignalChain extends ConsumerWidget {
   Future<void> _send(BuildContext context, WidgetRef ref) async {
     final profile = MidiDeviceRegistry.findById(profileId)!;
     try {
-      final parameters = await ref.read(effectiveParametersProvider(profileId).future);
+      final parameters = await ref.read(
+        effectiveParametersProvider(profileId).future,
+      );
       final sent = await ref
           .read(midiSceneSendServiceProvider)
-          .sendSceneValues(profile: profile, effectiveParameters: parameters, sceneId: sceneId);
+          .sendSceneValues(
+            profile: profile,
+            effectiveParameters: parameters,
+            sceneId: sceneId,
+          );
       if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Sent $sent value(s).')));
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Sent $sent value(s).')));
       }
     } catch (error) {
       if (context.mounted) showFailureSnackBar(context, error);

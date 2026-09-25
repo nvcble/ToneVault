@@ -29,7 +29,8 @@ class MidiMonitorScreen extends ConsumerWidget {
           ? const EmptyState(
               icon: Icons.terminal,
               title: 'Nothing logged yet',
-              message: 'Every message sent to or received from the device will show up here.',
+              message:
+                  'Every message sent to or received from the device will show up here.',
             )
           : ListView.builder(
               reverse: true,

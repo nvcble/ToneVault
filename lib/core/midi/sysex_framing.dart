@@ -16,6 +16,8 @@
 /// reply was cut short, should still round-trip whatever bytes did arrive.
 List<int> sysExPayload(List<int> raw) {
   final start = raw.isNotEmpty && raw.first == 0xF0 ? 1 : 0;
-  final end = raw.length > start && raw.last == 0xF7 ? raw.length - 1 : raw.length;
+  final end = raw.length > start && raw.last == 0xF7
+      ? raw.length - 1
+      : raw.length;
   return raw.sublist(start, end);
 }

@@ -101,11 +101,14 @@ void main() {
       expect(onto('Am'), ['F#7', 'Bm7b5', 'Em7', 'Am']);
     });
 
-    test('and the chord asked about is the one it lands on, as it was written', () {
-      expect(circleOnto(Chord.parse('Cmaj7')).last, Chord.parse('Cmaj7'));
-      expect(circleOnto(Chord.parse('C'), steps: 1), hasLength(2));
-      expect(onto('C', steps: 1), ['G7', 'C']);
-    });
+    test(
+      'and the chord asked about is the one it lands on, as it was written',
+      () {
+        expect(circleOnto(Chord.parse('Cmaj7')).last, Chord.parse('Cmaj7'));
+        expect(circleOnto(Chord.parse('C'), steps: 1), hasLength(2));
+        expect(onto('C', steps: 1), ['G7', 'C']);
+      },
+    );
   });
 
   test('the distance round the circle is counted the short way', () {

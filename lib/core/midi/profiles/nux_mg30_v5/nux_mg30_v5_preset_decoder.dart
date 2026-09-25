@@ -65,7 +65,12 @@ class DecodedNuxMg30V5Preset {
 }
 
 class _BlockSpec {
-  const _BlockSpec(this.label, this.modelByteOffset, this.bypassMask, this.sceneByteOffset);
+  const _BlockSpec(
+    this.label,
+    this.modelByteOffset,
+    this.bypassMask,
+    this.sceneByteOffset,
+  );
   final String label;
   final int modelByteOffset;
   final int bypassMask;
@@ -168,9 +173,12 @@ DecodedNuxMg30V5Preset decodeNuxMg30V5Preset(MidiMessage response) {
           label: spec.label,
           modelCode: bytes[spec.modelByteOffset],
           bypassPerScene: [
-            bytes[208 + spec.sceneByteOffset] & spec.bypassMask == spec.bypassMask,
-            bytes[211 + spec.sceneByteOffset] & spec.bypassMask == spec.bypassMask,
-            bytes[214 + spec.sceneByteOffset] & spec.bypassMask == spec.bypassMask,
+            bytes[208 + spec.sceneByteOffset] & spec.bypassMask ==
+                spec.bypassMask,
+            bytes[211 + spec.sceneByteOffset] & spec.bypassMask ==
+                spec.bypassMask,
+            bytes[214 + spec.sceneByteOffset] & spec.bypassMask ==
+                spec.bypassMask,
           ],
         ),
       );
@@ -226,11 +234,12 @@ void _applyParallelFlags(
   }
 }
 
-DecodedNuxMg30V5Block _withParallel(DecodedNuxMg30V5Block block, bool isParallel) =>
-    DecodedNuxMg30V5Block(
-      label: block.label,
-      modelCode: block.modelCode,
-      bypassPerScene: block.bypassPerScene,
-      isParallel: isParallel,
-    );
-
+DecodedNuxMg30V5Block _withParallel(
+  DecodedNuxMg30V5Block block,
+  bool isParallel,
+) => DecodedNuxMg30V5Block(
+  label: block.label,
+  modelCode: block.modelCode,
+  bypassPerScene: block.bypassPerScene,
+  isParallel: isParallel,
+);

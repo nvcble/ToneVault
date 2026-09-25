@@ -65,7 +65,10 @@ class CagedShapes extends ConsumerWidget {
             style: theme.textTheme.bodyMedium,
           )
         else ...[
-          _Order(chord: chord.spell(flats: flats), voicings: voicings),
+          _Order(
+            chord: chord.spell(flats: flats),
+            voicings: voicings,
+          ),
           const SizedBox(height: AppSpacing.sm),
           for (final voicing in voicings) ChordVoicingCard(voicing: voicing),
           if (gaps.isNotEmpty)

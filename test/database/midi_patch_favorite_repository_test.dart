@@ -29,7 +29,9 @@ void main() {
   tearDown(() => database.close());
 
   test('has no favorites until one is starred', () async {
-    final favorites = await midiPatchFavoriteRepository(database).watchFavoritePatchIds().first;
+    final favorites = await midiPatchFavoriteRepository(
+      database,
+    ).watchFavoritePatchIds().first;
 
     expect(favorites, isEmpty);
   });

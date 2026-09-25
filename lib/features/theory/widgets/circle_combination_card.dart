@@ -70,9 +70,7 @@ class CircleCombinationCard extends ConsumerWidget {
               if (progression.isNotEmpty) ...[
                 TheoryFactRow(
                   label: 'Onto it',
-                  value: progression
-                      .map((chord) => chord.symbol)
-                      .join('   '),
+                  value: progression.map((chord) => chord.symbol).join('   '),
                 ),
                 Text(
                   'Each of those is a fifth above the next, so every change falls a '

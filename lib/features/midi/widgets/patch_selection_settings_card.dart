@@ -23,9 +23,12 @@ class PatchSelectionSettingsCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final usesBankSelect = strategyOverride?.usesBankSelect ?? defaults.usesBankSelect;
-    final bankSelectMsb = strategyOverride?.bankSelectMsb ?? defaults.bankSelectMsb;
-    final bankSelectLsb = strategyOverride?.bankSelectLsb ?? defaults.bankSelectLsb;
+    final usesBankSelect =
+        strategyOverride?.usesBankSelect ?? defaults.usesBankSelect;
+    final bankSelectMsb =
+        strategyOverride?.bankSelectMsb ?? defaults.bankSelectMsb;
+    final bankSelectLsb =
+        strategyOverride?.bankSelectLsb ?? defaults.bankSelectLsb;
 
     return Card(
       child: Padding(
@@ -66,7 +69,11 @@ class PatchSelectionSettingsCard extends StatelessWidget {
 }
 
 class _NumberField extends StatelessWidget {
-  const _NumberField({required this.label, required this.value, required this.onChanged});
+  const _NumberField({
+    required this.label,
+    required this.value,
+    required this.onChanged,
+  });
 
   final String label;
   final int? value;
@@ -78,7 +85,8 @@ class _NumberField extends StatelessWidget {
       initialValue: value?.toString() ?? '',
       decoration: InputDecoration(labelText: label, hintText: 'None'),
       keyboardType: TextInputType.number,
-      onFieldSubmitted: (text) => onChanged(text.isEmpty ? null : int.tryParse(text)),
+      onFieldSubmitted: (text) =>
+          onChanged(text.isEmpty ? null : int.tryParse(text)),
     );
   }
 }

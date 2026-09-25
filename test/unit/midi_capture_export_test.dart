@@ -17,20 +17,26 @@ void main() {
     ),
   ];
 
-  test('encodeCaptureAsJson keeps direction, type and exact bytes per entry', () {
-    final json = encodeCaptureAsJson(entries);
+  test(
+    'encodeCaptureAsJson keeps direction, type and exact bytes per entry',
+    () {
+      final json = encodeCaptureAsJson(entries);
 
-    expect(json, contains('"direction": "outgoing"'));
-    expect(json, contains('"bytes": "F0 43 10 F7"'));
-    expect(json, contains('"type": "Control Change"'));
-  });
+      expect(json, contains('"direction": "outgoing"'));
+      expect(json, contains('"bytes": "F0 43 10 F7"'));
+      expect(json, contains('"type": "Control Change"'));
+    },
+  );
 
-  test('encodeCaptureAsText reads TX/RX with the same hex bytes as the Monitor', () {
-    final text = encodeCaptureAsText(entries);
+  test(
+    'encodeCaptureAsText reads TX/RX with the same hex bytes as the Monitor',
+    () {
+      final text = encodeCaptureAsText(entries);
 
-    expect(text, contains('TX  SysEx  F0 43 10 F7'));
-    expect(text, contains('RX  Control Change  B0 50 01'));
-  });
+      expect(text, contains('TX  SysEx  F0 43 10 F7'));
+      expect(text, contains('RX  Control Change  B0 50 01'));
+    },
+  );
 
   test('carries the reason a send was refused into both readable formats', () {
     // Without this, an exported capture of a failing run is indistinguishable
@@ -44,8 +50,14 @@ void main() {
       ),
     ];
 
-    expect(encodeCaptureAsJson(refused), contains('"failure": "Bad state: Cannot send'));
-    expect(encodeCaptureAsText(refused), contains('NOT SENT: Bad state: Cannot send'));
+    expect(
+      encodeCaptureAsJson(refused),
+      contains('"failure": "Bad state: Cannot send'),
+    );
+    expect(
+      encodeCaptureAsText(refused),
+      contains('NOT SENT: Bad state: Cannot send'),
+    );
     // The frame never left, but it is still what was attempted.
     expect(encodeCaptureAsSyx(refused), [0xF0, 0x43, 0x10, 0xF7]);
   });

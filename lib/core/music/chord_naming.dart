@@ -26,8 +26,6 @@ List<Chord> chordsOfNotes(Iterable<PitchClass> notes) {
 }
 
 Chord? _chordOn(PitchClass root, Set<PitchClass> notes) {
-  final type = chordTypeFor([
-    for (final note in notes) root.intervalTo(note),
-  ]);
+  final type = chordTypeFor([for (final note in notes) root.intervalTo(note)]);
   return type == null ? null : Chord(root, type);
 }

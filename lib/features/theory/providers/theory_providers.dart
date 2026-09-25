@@ -157,8 +157,9 @@ final Provider<List<Chord>> combinedChordsProvider = Provider<List<Chord>>(
 );
 
 /// The way round the circle onto the chord they spell.
-final Provider<List<Chord>> combinedProgressionProvider =
-    Provider<List<Chord>>((ref) {
-      final chords = ref.watch(combinedChordsProvider);
-      return chords.isEmpty ? const [] : circleOnto(chords.first);
-    });
+final Provider<List<Chord>> combinedProgressionProvider = Provider<List<Chord>>(
+  (ref) {
+    final chords = ref.watch(combinedChordsProvider);
+    return chords.isEmpty ? const [] : circleOnto(chords.first);
+  },
+);

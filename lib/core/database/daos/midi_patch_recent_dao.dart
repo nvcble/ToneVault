@@ -7,7 +7,8 @@ part 'midi_patch_recent_dao.g.dart';
 
 /// Typed queries over `midi_patch_recents`.
 @DriftAccessor(tables: [MidiPatchRecents])
-class MidiPatchRecentDao extends DatabaseAccessor<AppDatabase> with _$MidiPatchRecentDaoMixin {
+class MidiPatchRecentDao extends DatabaseAccessor<AppDatabase>
+    with _$MidiPatchRecentDaoMixin {
   MidiPatchRecentDao(super.attachedDatabase);
 
   /// The most recently used patches, newest first, app-wide - small enough

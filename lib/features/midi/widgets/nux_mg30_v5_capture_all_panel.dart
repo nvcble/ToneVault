@@ -19,22 +19,33 @@ import 'preset_capture_summary_view.dart';
 /// against real hardware. This exists so 128 reads do not have to be done
 /// one at a time by hand once that happens.
 class NuxMg30V5CaptureAllPanel extends ConsumerStatefulWidget {
-  const NuxMg30V5CaptureAllPanel({required this.profileId, required this.unitId, super.key});
+  const NuxMg30V5CaptureAllPanel({
+    required this.profileId,
+    required this.unitId,
+    super.key,
+  });
 
   final String profileId;
   final int unitId;
 
   @override
-  ConsumerState<NuxMg30V5CaptureAllPanel> createState() => _NuxMg30V5CaptureAllPanelState();
+  ConsumerState<NuxMg30V5CaptureAllPanel> createState() =>
+      _NuxMg30V5CaptureAllPanelState();
 }
 
-class _NuxMg30V5CaptureAllPanelState extends ConsumerState<NuxMg30V5CaptureAllPanel> {
+class _NuxMg30V5CaptureAllPanelState
+    extends ConsumerState<NuxMg30V5CaptureAllPanel> {
   bool _running = false;
   PresetCaptureSummary? _summary;
 
   @override
   Widget build(BuildContext context) {
-    final existingCount = ref.watch(midiPresetCapturesProvider(widget.unitId)).valueOrNull?.length ?? 0;
+    final existingCount =
+        ref
+            .watch(midiPresetCapturesProvider(widget.unitId))
+            .valueOrNull
+            ?.length ??
+        0;
 
     return Card(
       child: Padding(
@@ -42,7 +53,10 @@ class _NuxMg30V5CaptureAllPanelState extends ConsumerState<NuxMg30V5CaptureAllPa
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Capture All Presets (Experimental)', style: Theme.of(context).textTheme.titleSmall),
+            Text(
+              'Capture All Presets (Experimental)',
+              style: Theme.of(context).textTheme.titleSmall,
+            ),
             const SizedBox(height: AppSpacing.xs),
             Text(
               '$existingCount of 128 slots already captured. This reads program '
@@ -81,11 +95,13 @@ class _NuxMg30V5CaptureAllPanelState extends ConsumerState<NuxMg30V5CaptureAllPa
           ),
           actions: [
             TextButton(
-              onPressed: () => Navigator.of(context).pop(PresetCaptureDecision.skip),
+              onPressed: () =>
+                  Navigator.of(context).pop(PresetCaptureDecision.skip),
               child: const Text('Keep existing'),
             ),
             FilledButton(
-              onPressed: () => Navigator.of(context).pop(PresetCaptureDecision.overwrite),
+              onPressed: () =>
+                  Navigator.of(context).pop(PresetCaptureDecision.overwrite),
               child: const Text('Replace all'),
             ),
           ],

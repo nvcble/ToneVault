@@ -18,44 +18,75 @@ final _patches = [
 
 void main() {
   test('starts at the first patch when nothing is current', () {
-    final next = nextLiveControlPatch(patches: _patches, current: null, direction: 1);
+    final next = nextLiveControlPatch(
+      patches: _patches,
+      current: null,
+      direction: 1,
+    );
 
     expect(next!.patch.name, 'Worship Lead');
   });
 
   test('steps forward from the current patch', () {
-    final next = nextLiveControlPatch(patches: _patches, current: _patches[0], direction: 1);
+    final next = nextLiveControlPatch(
+      patches: _patches,
+      current: _patches[0],
+      direction: 1,
+    );
 
     expect(next!.patch.name, 'Ballad');
   });
 
   test('steps backward from the current patch', () {
-    final next = nextLiveControlPatch(patches: _patches, current: _patches[2], direction: -1);
+    final next = nextLiveControlPatch(
+      patches: _patches,
+      current: _patches[2],
+      direction: -1,
+    );
 
     expect(next!.patch.name, 'Ballad');
   });
 
   test('clamps at the last patch rather than wrapping', () {
-    final next = nextLiveControlPatch(patches: _patches, current: _patches[2], direction: 1);
+    final next = nextLiveControlPatch(
+      patches: _patches,
+      current: _patches[2],
+      direction: 1,
+    );
 
     expect(next!.patch.name, 'Solo');
   });
 
   test('clamps at the first patch rather than wrapping', () {
-    final next = nextLiveControlPatch(patches: _patches, current: _patches[0], direction: -1);
+    final next = nextLiveControlPatch(
+      patches: _patches,
+      current: _patches[0],
+      direction: -1,
+    );
 
     expect(next!.patch.name, 'Worship Lead');
   });
 
-  test('starts from the first patch when the current one is no longer numbered', () {
-    final goneMissing = (patch: _patch(99, 'Deleted'), programNumber: 99);
-    final next = nextLiveControlPatch(patches: _patches, current: goneMissing, direction: 1);
+  test(
+    'starts from the first patch when the current one is no longer numbered',
+    () {
+      final goneMissing = (patch: _patch(99, 'Deleted'), programNumber: 99);
+      final next = nextLiveControlPatch(
+        patches: _patches,
+        current: goneMissing,
+        direction: 1,
+      );
 
-    expect(next!.patch.name, 'Worship Lead');
-  });
+      expect(next!.patch.name, 'Worship Lead');
+    },
+  );
 
   test('is null when there are no numbered patches at all', () {
-    final next = nextLiveControlPatch(patches: const [], current: null, direction: 1);
+    final next = nextLiveControlPatch(
+      patches: const [],
+      current: null,
+      direction: 1,
+    );
 
     expect(next, isNull);
   });

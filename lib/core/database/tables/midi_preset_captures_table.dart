@@ -15,7 +15,8 @@ import 'pedals_table.dart';
 class MidiPresetCaptures extends Table {
   IntColumn get id => integer().autoIncrement()();
 
-  IntColumn get pedalId => integer().references(Pedals, #id, onDelete: KeyAction.cascade)();
+  IntColumn get pedalId =>
+      integer().references(Pedals, #id, onDelete: KeyAction.cascade)();
 
   /// Which device profile's protocol this capture should be read with, e.g.
   /// "nux_mg30_v5" - never assumed from context, since a unit could in

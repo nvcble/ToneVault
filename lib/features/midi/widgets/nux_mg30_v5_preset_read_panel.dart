@@ -24,16 +24,22 @@ import '../providers/midi_preset_capture_providers.dart';
 /// device has not been added as gear yet, in which case reading still works
 /// but nothing can be saved.
 class NuxMg30V5PresetReadPanel extends ConsumerStatefulWidget {
-  const NuxMg30V5PresetReadPanel({required this.profileId, required this.unitId, super.key});
+  const NuxMg30V5PresetReadPanel({
+    required this.profileId,
+    required this.unitId,
+    super.key,
+  });
 
   final String profileId;
   final int? unitId;
 
   @override
-  ConsumerState<NuxMg30V5PresetReadPanel> createState() => _NuxMg30V5PresetReadPanelState();
+  ConsumerState<NuxMg30V5PresetReadPanel> createState() =>
+      _NuxMg30V5PresetReadPanelState();
 }
 
-class _NuxMg30V5PresetReadPanelState extends ConsumerState<NuxMg30V5PresetReadPanel> {
+class _NuxMg30V5PresetReadPanelState
+    extends ConsumerState<NuxMg30V5PresetReadPanel> {
   final _controller = TextEditingController(text: '1');
   bool _reading = false;
   bool _saving = false;
@@ -57,7 +63,10 @@ class _NuxMg30V5PresetReadPanelState extends ConsumerState<NuxMg30V5PresetReadPa
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Read One Preset (Experimental)', style: Theme.of(context).textTheme.titleSmall),
+            Text(
+              'Read One Preset (Experimental)',
+              style: Theme.of(context).textTheme.titleSmall,
+            ),
             const SizedBox(height: AppSpacing.xs),
             const Text(
               'Unverified for V5 - reverse-engineered from a community project '
@@ -94,11 +103,16 @@ class _NuxMg30V5PresetReadPanelState extends ConsumerState<NuxMg30V5PresetReadPa
             ),
             if (_error != null) ...[
               const SizedBox(height: AppSpacing.sm),
-              Text(_readableError(_error!), style: TextStyle(color: Theme.of(context).colorScheme.error)),
+              Text(
+                _readableError(_error!),
+                style: TextStyle(color: Theme.of(context).colorScheme.error),
+              ),
             ],
             if (_response != null) ...[
               const SizedBox(height: AppSpacing.sm),
-              Text('Preset received. Raw response length: ${_response!.toBytes().length} bytes.'),
+              Text(
+                'Preset received. Raw response length: ${_response!.toBytes().length} bytes.',
+              ),
               const SizedBox(height: AppSpacing.xs),
               if (widget.unitId == null)
                 const Text(
@@ -127,7 +141,9 @@ class _NuxMg30V5PresetReadPanelState extends ConsumerState<NuxMg30V5PresetReadPa
   List<Widget> _decodedSummary(DecodedNuxMg30V5Preset decoded) {
     return [
       const SizedBox(height: AppSpacing.sm),
-      Text('Program ${decoded.programNumber}: "${decoded.name ?? '(name not decoded)'}"'),
+      Text(
+        'Program ${decoded.programNumber}: "${decoded.name ?? '(name not decoded)'}"',
+      ),
       if (decoded.tempoBpm != null) Text('Tempo: ${decoded.tempoBpm} BPM'),
       if (decoded.signalChainOrder.isNotEmpty)
         Text('Chain order: ${decoded.signalChainOrder.join(' → ')}'),
@@ -163,7 +179,9 @@ class _NuxMg30V5PresetReadPanelState extends ConsumerState<NuxMg30V5PresetReadPa
     });
 
     try {
-      final response = await ref.read(nuxMg30V5PresetReaderProvider).readPreset(programNumber);
+      final response = await ref
+          .read(nuxMg30V5PresetReaderProvider)
+          .readPreset(programNumber);
       DecodedNuxMg30V5Preset? decoded;
       try {
         decoded = decodeNuxMg30V5Preset(response);
@@ -218,7 +236,8 @@ class _NuxMg30V5PresetReadPanelState extends ConsumerState<NuxMg30V5PresetReadPa
       'The MG-30 did not answer within the timeout. It may not respond to '
           'this SysEx command on V5 firmware, or the unit is busy.',
     StateError _ => 'Not connected to the MG-30.',
-    _ => 'Could not read that preset. The response may not match what this '
-        'app expects for V5.',
+    _ =>
+      'Could not read that preset. The response may not match what this '
+          'app expects for V5.',
   };
 }

@@ -14,9 +14,9 @@ import '../../../core/midi/midi_message.dart';
 /// back later (by a person, or eventually a decoder); [encodeCaptureAsSyx]
 /// is the raw wire bytes only, the shape a `.syx` file editor or another MIDI
 /// tool expects.
-String encodeCaptureAsJson(List<MidiLogEntry> entries) => const JsonEncoder.withIndent(
-  '  ',
-).convert([
+String encodeCaptureAsJson(
+  List<MidiLogEntry> entries,
+) => const JsonEncoder.withIndent('  ').convert([
   for (final entry in entries)
     {
       'timestamp': entry.timestamp.toIso8601String(),
@@ -68,6 +68,9 @@ Future<void> shareCaptureFile(
       ),
     );
   } catch (error) {
-    throw AppFailure('Could not pass the capture on to be saved.', cause: error);
+    throw AppFailure(
+      'Could not pass the capture on to be saved.',
+      cause: error,
+    );
   }
 }

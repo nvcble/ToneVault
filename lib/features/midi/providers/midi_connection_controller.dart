@@ -22,31 +22,40 @@ final StateNotifierProviderFamily<
   String
 >
 midiConnectionProvider =
-    StateNotifierProvider.family<MidiConnectionController, MidiConnectionSnapshot, String>(
-      (ref, profileId) {
-        final profile = MidiDeviceRegistry.findById(profileId);
-        if (profile == null) {
-          throw ArgumentError('Unknown MIDI device profile "$profileId".');
-        }
-        return MidiConnectionController(profile, ref.watch(midiEngineProvider));
-      },
-    );
+    StateNotifierProvider.family<
+      MidiConnectionController,
+      MidiConnectionSnapshot,
+      String
+    >((ref, profileId) {
+      final profile = MidiDeviceRegistry.findById(profileId);
+      if (profile == null) {
+        throw ArgumentError('Unknown MIDI device profile "$profileId".');
+      }
+      return MidiConnectionController(profile, ref.watch(midiEngineProvider));
+    });
 
 /// What the connection screen does, without any of it holding the logic.
 class MidiConnectionController extends StateNotifier<MidiConnectionSnapshot> {
-  MidiConnectionController(MidiDeviceProfile profile, this._engine, {Duration? scanTimeout})
-    : _scanTimeout = scanTimeout ?? _defaultScanTimeout,
-      super(MidiConnectionSnapshot.initial(profile)) {
+  MidiConnectionController(
+    MidiDeviceProfile profile,
+    this._engine, {
+    Duration? scanTimeout,
+  }) : _scanTimeout = scanTimeout ?? _defaultScanTimeout,
+       super(MidiConnectionSnapshot.initial(profile)) {
     _engine.attach(
       profile: profile,
       transportBuilder: () => transportFor(profile.connectionTypes.first),
     );
-    _stateSubscription = _engine.connectionState.listen(_onConnectionStateChanged);
+    _stateSubscription = _engine.connectionState.listen(
+      _onConnectionStateChanged,
+    );
     // A USB device plugged or unplugged after this screen opened is picked up
     // without the user having to press anything, though [connect] also
     // rescans immediately before it tries, in case this event is slow to
     // arrive or does not fire at all on a given platform.
-    _availabilitySubscription = _engine.availabilityChanged.listen((_) => scan());
+    _availabilitySubscription = _engine.availabilityChanged.listen(
+      (_) => scan(),
+    );
     unawaited(scan());
   }
 
@@ -126,9 +135,11 @@ class MidiConnectionController extends StateNotifier<MidiConnectionSnapshot> {
   static const _scanTimeoutMessage =
       'Timed out looking for MIDI devices. If your phone showed a USB '
       'permission prompt, allow it and try again.';
-  static const _connectTimeoutMessage = 'Timed out while connecting to the MIDI device.';
+  static const _connectTimeoutMessage =
+      'Timed out while connecting to the MIDI device.';
   static const _connectFailureMessage = 'Could not connect to the MIDI device.';
-  static const _disconnectFailureMessage = 'Could not disconnect from the MIDI device.';
+  static const _disconnectFailureMessage =
+      'Could not disconnect from the MIDI device.';
 
   @override
   void dispose() {

@@ -124,20 +124,23 @@ void main() {
     expect(rows.midiPatchSelectionSettings.single.usesBankSelect, isFalse);
   });
 
-  test('a device link and its patch/scene numbers survive being backed up', () async {
-    await fillVault(database);
-    final backed = await database.backupDao.readEverything();
+  test(
+    'a device link and its patch/scene numbers survive being backed up',
+    () async {
+      await fillVault(database);
+      final backed = await database.backupDao.readEverything();
 
-    await database.backupDao.writeEverything(backed);
+      await database.backupDao.writeEverything(backed);
 
-    final rows = await database.backupDao.readEverything();
-    expect(rows.midiDeviceLinks, backed.midiDeviceLinks);
-    expect(rows.midiDeviceLinks.single.deviceProfileId, 'nux_mg30_v5');
-    expect(rows.midiPatchProgramNumbers, backed.midiPatchProgramNumbers);
-    expect(rows.midiPatchProgramNumbers.single.programNumber, 21);
-    expect(rows.midiSceneNumbers, backed.midiSceneNumbers);
-    expect(rows.midiSceneNumbers.single.sceneNumber, 1);
-  });
+      final rows = await database.backupDao.readEverything();
+      expect(rows.midiDeviceLinks, backed.midiDeviceLinks);
+      expect(rows.midiDeviceLinks.single.deviceProfileId, 'nux_mg30_v5');
+      expect(rows.midiPatchProgramNumbers, backed.midiPatchProgramNumbers);
+      expect(rows.midiPatchProgramNumbers.single.programNumber, 21);
+      expect(rows.midiSceneNumbers, backed.midiSceneNumbers);
+      expect(rows.midiSceneNumbers.single.sceneNumber, 1);
+    },
+  );
 
   test('favorites and recents survive being backed up', () async {
     await fillVault(database);

@@ -10,7 +10,8 @@ import 'nux_mg30_v5_preset_transfer_service.dart';
 /// passing off as real. This class is wired into tests only; the app's own
 /// provider graph never constructs it, so no screen a real user opens can
 /// end up showing simulated data as if it came from their device.
-class MockNuxMg30V5PresetTransferService implements NuxMg30V5PresetTransferService {
+class MockNuxMg30V5PresetTransferService
+    implements NuxMg30V5PresetTransferService {
   const MockNuxMg30V5PresetTransferService({
     this.presetCount = 3,
     this.delay = const Duration(milliseconds: 10),
@@ -40,8 +41,16 @@ class MockNuxMg30V5PresetTransferService implements NuxMg30V5PresetTransferServi
     name: 'Simulated Patch ${index + 1}',
     confidence: MidiSupportLevel.unknown,
     blocks: const [
-      ImportedBlock(label: 'Amp', modelNumber: 3, parameters: {'Amp Knob 1': 60, 'Amp Knob 2': 45}),
-      ImportedBlock(label: 'Delay', modelNumber: 1, parameters: {'Delay Knob 1': 30}),
+      ImportedBlock(
+        label: 'Amp',
+        modelNumber: 3,
+        parameters: {'Amp Knob 1': 60, 'Amp Knob 2': 45},
+      ),
+      ImportedBlock(
+        label: 'Delay',
+        modelNumber: 1,
+        parameters: {'Delay Knob 1': 30},
+      ),
     ],
   );
 }

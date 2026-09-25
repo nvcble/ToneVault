@@ -46,8 +46,9 @@ Uint8List wavOfBars({
       // click before it, so a tempo that is not a whole number of samples long cannot
       // round its way out of time across the bars.
       from: _samples(interval * beat, sampleRate),
-      pitch:
-          accentFirst && beat % signature.beats == 0 ? accentPitch : beatPitch,
+      pitch: accentFirst && beat % signature.beats == 0
+          ? accentPitch
+          : beatPitch,
       sampleRate: sampleRate,
     );
   }

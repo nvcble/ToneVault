@@ -28,7 +28,9 @@ void main() {
         GoRoute(
           path: '/',
           builder: (context, state) => Scaffold(
-            appBar: AppBar(actions: const [MidiModuleMenu(profileId: profileId)]),
+            appBar: AppBar(
+              actions: const [MidiModuleMenu(profileId: profileId)],
+            ),
           ),
         ),
         for (final route in destinations.values)
@@ -37,7 +39,9 @@ void main() {
     ),
   );
 
-  testWidgets('holds every MIDI screen behind one overflow button', (tester) async {
+  testWidgets('holds every MIDI screen behind one overflow button', (
+    tester,
+  ) async {
     await tester.pumpWidget(app());
 
     expect(find.byIcon(Icons.more_vert), findsOneWidget);
@@ -45,7 +49,11 @@ void main() {
     await tester.pumpAndSettle();
 
     for (final label in destinations.keys) {
-      expect(find.text(label), findsOneWidget, reason: '$label is not in the menu');
+      expect(
+        find.text(label),
+        findsOneWidget,
+        reason: '$label is not in the menu',
+      );
     }
   });
 

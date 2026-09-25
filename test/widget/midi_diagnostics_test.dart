@@ -29,7 +29,11 @@ import '../support/screen_harness.dart';
 /// Diagnostics failed on a real device while every unit test passed.
 void main() {
   const profile = NuxMg30V5Profile();
-  const endpoint = MidiEndpoint(id: 'dev-1', name: 'MG-30', type: MidiTransportType.usb);
+  const endpoint = MidiEndpoint(
+    id: 'dev-1',
+    name: 'MG-30',
+    type: MidiTransportType.usb,
+  );
 
   late AppDatabase database;
   late MidiEngine engine;
@@ -77,7 +81,9 @@ void main() {
     await tester.pumpAndSettle();
   }
 
-  screenTest('lays out every panel for a NUX MG-30 V5 without throwing', (tester) async {
+  screenTest('lays out every panel for a NUX MG-30 V5 without throwing', (
+    tester,
+  ) async {
     useTallSurface(tester);
 
     await pumpDiagnostics(tester);
@@ -100,11 +106,17 @@ void main() {
       // for, and must say so rather than reading as verified support.
       'Read One Preset (Experimental)',
     ]) {
-      expect(find.text(section), findsOneWidget, reason: '$section should be on the screen');
+      expect(
+        find.text(section),
+        findsOneWidget,
+        reason: '$section should be on the screen',
+      );
     }
   });
 
-  screenTest('links to the capture log rather than listing bytes inline', (tester) async {
+  screenTest('links to the capture log rather than listing bytes inline', (
+    tester,
+  ) async {
     useTallSurface(tester);
 
     await pumpDiagnostics(tester);
@@ -116,7 +128,9 @@ void main() {
     expect(find.byType(MidiLogTile), findsNothing);
   });
 
-  screenTest('opens the capture log page when that row is tapped', (tester) async {
+  screenTest('opens the capture log page when that row is tapped', (
+    tester,
+  ) async {
     useTallSurface(tester);
     // Through the real router, so a path built by Routes and the segment the
     // route is registered under have to actually agree.
@@ -144,15 +158,18 @@ void main() {
     expect(tester.takeException(), isNull);
   });
 
-  screenTest('offers Connect while disconnected and reports the detected device', (tester) async {
-    await pumpDiagnostics(tester);
+  screenTest(
+    'offers Connect while disconnected and reports the detected device',
+    (tester) async {
+      await pumpDiagnostics(tester);
 
-    expect(find.text('Connect'), findsOneWidget);
-    await tester.tap(find.text('Connect'));
-    await tester.pumpAndSettle();
+      expect(find.text('Connect'), findsOneWidget);
+      await tester.tap(find.text('Connect'));
+      await tester.pumpAndSettle();
 
-    expect(tester.takeException(), isNull);
-    // Connected now, so the button has done its job and stepped aside.
-    expect(find.text('Connect'), findsNothing);
-  });
+      expect(tester.takeException(), isNull);
+      // Connected now, so the button has done its job and stepped aside.
+      expect(find.text('Connect'), findsNothing);
+    },
+  );
 }

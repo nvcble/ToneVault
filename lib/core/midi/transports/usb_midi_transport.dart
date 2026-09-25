@@ -18,7 +18,8 @@ import '../sysex_framing.dart';
 /// this transport's [scan] on purpose: nothing the app ships asks for them
 /// yet.
 class UsbMidiTransport implements MidiTransport {
-  UsbMidiTransport({fmc.MidiCommand? command}) : _command = command ?? fmc.MidiCommand();
+  UsbMidiTransport({fmc.MidiCommand? command})
+    : _command = command ?? fmc.MidiCommand();
 
   final fmc.MidiCommand _command;
 
@@ -53,7 +54,11 @@ class UsbMidiTransport implements MidiTransport {
     return [
       for (final device in devices)
         if (device.type == fmc.MidiDeviceType.serial)
-          MidiEndpoint(id: device.id, name: device.name, type: MidiTransportType.usb),
+          MidiEndpoint(
+            id: device.id,
+            name: device.name,
+            type: MidiTransportType.usb,
+          ),
     ];
   }
 
@@ -62,7 +67,9 @@ class UsbMidiTransport implements MidiTransport {
     _setState(MidiConnectionState.connecting);
     try {
       final devices = await _command.devices ?? const <fmc.MidiDevice>[];
-      final device = devices.where((candidate) => candidate.id == endpoint.id).firstOrNull;
+      final device = devices
+          .where((candidate) => candidate.id == endpoint.id)
+          .firstOrNull;
       if (device == null) {
         throw const MidiDeviceUnavailable();
       }
@@ -70,7 +77,9 @@ class UsbMidiTransport implements MidiTransport {
       await _command.connectToDevice(device);
       _connectedDevice = device;
       _dataSubscription = _command.onMidiDataReceived?.listen(_handleIncoming);
-      _deviceStateSubscription = device.onConnectionStateChanged.listen(_handleDeviceState);
+      _deviceStateSubscription = device.onConnectionStateChanged.listen(
+        _handleDeviceState,
+      );
       _setState(MidiConnectionState.connected);
     } on MidiConnectionFailure {
       _setState(MidiConnectionState.error);
@@ -133,7 +142,10 @@ class UsbMidiTransport implements MidiTransport {
   /// diagnostic capture never loses bytes a real device actually sent.
   MidiMessage _translate(fmc.MidiMessage message) {
     return switch (message) {
-      fmc.PCMessage m => ProgramChangeMessage(channel: m.channel, program: m.program),
+      fmc.PCMessage m => ProgramChangeMessage(
+        channel: m.channel,
+        program: m.program,
+      ),
       fmc.CCMessage m => ControlChangeMessage(
         channel: m.channel,
         controller: m.controller,
@@ -152,7 +164,9 @@ class UsbMidiTransport implements MidiTransport {
         isNoteOn: false,
       ),
       // The plugin hands over a whole frame; a payload is what is inside one.
-      fmc.SysExMessage m => SysExMessage(payload: sysExPayload(m.rawData ?? m.headerData)),
+      fmc.SysExMessage m => SysExMessage(
+        payload: sysExPayload(m.rawData ?? m.headerData),
+      ),
       _ => UnknownMessage(raw: message.data),
     };
   }

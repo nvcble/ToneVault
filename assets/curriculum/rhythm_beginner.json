@@ -75,6 +75,31 @@
                 "Strumming and hoping tells you something is wrong; picking string by string tells you which finger to move.",
                 "Slow the click down until every note rings. Speed here is not the thing being practised."
               ],
+              "nextSkill": "Reading Notation and Tab"
+            }
+          ]
+        },
+        {
+          "slug": "reading-the-page-rhythm",
+          "title": "Reading the Page",
+          "summary": "How the charts in this course are written, so every lesson after this one can lean on it.",
+          "lessons": [
+            {
+              "slug": "reading-notation-and-tab-rhythm",
+              "title": "Reading Notation and Tab",
+              "kind": "concept",
+              "estimatedMinutes": 15,
+              "body": "Two systems for writing down what to play, and rhythm guitar mostly meets them as chord charts.\n\n**Standard notation** puts pitch on a five-line staff, in treble clef for guitar. It says exactly which note and how long it lasts, but not where on the neck to play it.\n\n**Tablature (tab)** is six lines instead of five, one per string - top line the high E, bottom line the low E. A number on a line is a fret: a 3 on the bottom line is fret 3 on the low E. Numbers stacked on top of each other are played together, which is how tab shows a chord.\n\nMost rhythm parts are written as a **chord chart** instead: chord names above the staff, with slash marks below them showing when to strum rather than which notes to fret. One slash per beat is the default - the chord name says what to hold, the slash says when to hit it.\n\nA few symbols worth knowing on sight: **x** above a string means mute it, and a bar line marks off one bar from the next.",
+              "objective": "Read a chord chart's chord names and slash rhythm well enough to play through it without stopping to work out what a symbol means.",
+              "commonMistakes": [
+                "Reading tab numbers as fingers instead of frets.",
+                "Treating the slashes as notes to pick out, rather than as when to strum the held chord.",
+                "Losing track of the bar lines and drifting a chord change early or late."
+              ],
+              "practiceTips": [
+                "Clap the slash rhythm before picking up the guitar. The chart is a rhythm first.",
+                "Follow one chart all the way through without stopping, even if a change is late - stopping is the habit to lose."
+              ],
               "nextSkill": "Em and Am"
             }
           ]

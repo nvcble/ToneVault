@@ -26,15 +26,18 @@ void main() {
       expect(messages[1].toBytes(), [0xC0, 0]);
     });
 
-    test('counts patches from 0, so the number is the Program Change value', () {
-      final messages = buildPatchSelectionMessages(
-        defaults: _defaults,
-        channel: 0,
-        patchNumber: 21,
-      );
+    test(
+      'counts patches from 0, so the number is the Program Change value',
+      () {
+        final messages = buildPatchSelectionMessages(
+          defaults: _defaults,
+          channel: 0,
+          patchNumber: 21,
+        );
 
-      expect(messages.last.toBytes(), [0xC0, 21]);
-    });
+        expect(messages.last.toBytes(), [0xC0, 21]);
+      },
+    );
 
     test('sends the last patch of all as Program Change 127', () {
       final messages = buildPatchSelectionMessages(

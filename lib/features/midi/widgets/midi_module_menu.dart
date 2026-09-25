@@ -18,7 +18,11 @@ class MidiModuleMenu extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final destinations = <(String, IconData, String)>[
-      ('Live Control', Icons.play_circle_outline, Routes.liveControl(profileId)),
+      (
+        'Live Control',
+        Icons.play_circle_outline,
+        Routes.liveControl(profileId),
+      ),
       ('Patches', Icons.folder_copy_outlined, Routes.midiPatches(profileId)),
       ('All Parameters', Icons.list, Routes.midiParameters(profileId)),
       ('CC Mapping', Icons.tune, Routes.midiMapping(profileId)),

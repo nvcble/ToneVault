@@ -417,27 +417,33 @@ void main() {
     expect(unit.category.hasOwnControls, isFalse);
   });
 
-  test('the MIDI mapping tables are created exactly as fresh ones are', () async {
-    const tables = ['midi_parameter_overrides', 'midi_patch_selection_settings'];
+  test(
+    'the MIDI mapping tables are created exactly as fresh ones are',
+    () async {
+      const tables = [
+        'midi_parameter_overrides',
+        'midi_patch_selection_settings',
+      ];
 
-    // One at a time: two live databases at once only earn a drift warning.
-    final fresh = AppDatabase(NativeDatabase.memory());
-    final expected = <String, List<String>>{
-      for (final table in tables) table: await schemaFor(fresh, table),
-    };
-    await fresh.close();
+      // One at a time: two live databases at once only earn a drift warning.
+      final fresh = AppDatabase(NativeDatabase.memory());
+      final expected = <String, List<String>>{
+        for (final table in tables) table: await schemaFor(fresh, table),
+      };
+      await fresh.close();
 
-    final upgraded = openV1Database();
-    addTearDown(upgraded.close);
+      final upgraded = openV1Database();
+      addTearDown(upgraded.close);
 
-    for (final table in tables) {
-      expect(
-        await schemaFor(upgraded, table),
-        expected[table],
-        reason: '$table differs between an upgraded phone and a new install',
-      );
-    }
-  });
+      for (final table in tables) {
+        expect(
+          await schemaFor(upgraded, table),
+          expected[table],
+          reason: '$table differs between an upgraded phone and a new install',
+        );
+      }
+    },
+  );
 
   test('an upgraded database can hold a MIDI CC remapping', () async {
     final db = openV1Database();
@@ -460,31 +466,34 @@ void main() {
     expect((await db.pedalDao.watchPedals().first).single.name, 'PureSky');
   });
 
-  test('the device-link tables are created exactly as fresh ones are', () async {
-    const tables = [
-      'midi_device_links',
-      'midi_patch_program_numbers',
-      'midi_scene_numbers',
-    ];
+  test(
+    'the device-link tables are created exactly as fresh ones are',
+    () async {
+      const tables = [
+        'midi_device_links',
+        'midi_patch_program_numbers',
+        'midi_scene_numbers',
+      ];
 
-    // One at a time: two live databases at once only earn a drift warning.
-    final fresh = AppDatabase(NativeDatabase.memory());
-    final expected = <String, List<String>>{
-      for (final table in tables) table: await schemaFor(fresh, table),
-    };
-    await fresh.close();
+      // One at a time: two live databases at once only earn a drift warning.
+      final fresh = AppDatabase(NativeDatabase.memory());
+      final expected = <String, List<String>>{
+        for (final table in tables) table: await schemaFor(fresh, table),
+      };
+      await fresh.close();
 
-    final upgraded = openV1Database();
-    addTearDown(upgraded.close);
+      final upgraded = openV1Database();
+      addTearDown(upgraded.close);
 
-    for (final table in tables) {
-      expect(
-        await schemaFor(upgraded, table),
-        expected[table],
-        reason: '$table differs between an upgraded phone and a new install',
-      );
-    }
-  });
+      for (final table in tables) {
+        expect(
+          await schemaFor(upgraded, table),
+          expected[table],
+          reason: '$table differs between an upgraded phone and a new install',
+        );
+      }
+    },
+  );
 
   test('an upgraded database can link a pedal to a device profile', () async {
     final db = openV1Database();
@@ -503,27 +512,30 @@ void main() {
     expect((await db.pedalDao.watchPedals().first).single.name, 'PureSky');
   });
 
-  test('the Patch Browser tables are created exactly as fresh ones are', () async {
-    const tables = ['midi_patch_favorites', 'midi_patch_recents'];
+  test(
+    'the Patch Browser tables are created exactly as fresh ones are',
+    () async {
+      const tables = ['midi_patch_favorites', 'midi_patch_recents'];
 
-    // One at a time: two live databases at once only earn a drift warning.
-    final fresh = AppDatabase(NativeDatabase.memory());
-    final expected = <String, List<String>>{
-      for (final table in tables) table: await schemaFor(fresh, table),
-    };
-    await fresh.close();
+      // One at a time: two live databases at once only earn a drift warning.
+      final fresh = AppDatabase(NativeDatabase.memory());
+      final expected = <String, List<String>>{
+        for (final table in tables) table: await schemaFor(fresh, table),
+      };
+      await fresh.close();
 
-    final upgraded = openV1Database();
-    addTearDown(upgraded.close);
+      final upgraded = openV1Database();
+      addTearDown(upgraded.close);
 
-    for (final table in tables) {
-      expect(
-        await schemaFor(upgraded, table),
-        expected[table],
-        reason: '$table differs between an upgraded phone and a new install',
-      );
-    }
-  });
+      for (final table in tables) {
+        expect(
+          await schemaFor(upgraded, table),
+          expected[table],
+          reason: '$table differs between an upgraded phone and a new install',
+        );
+      }
+    },
+  );
 
   test('an upgraded database can favorite and record a recent patch', () async {
     final db = openV1Database();
@@ -539,34 +551,45 @@ void main() {
       db,
     ).createPatch(unitId, const PatchDraft(name: 'Worship Clean'));
 
-    await db.midiPatchFavoriteDao.setFavorite(patchId: patchId, isFavorite: true);
+    await db.midiPatchFavoriteDao.setFavorite(
+      patchId: patchId,
+      isFavorite: true,
+    );
     await db.midiPatchRecentDao.recordUsed(patchId);
 
-    expect(await db.midiPatchFavoriteDao.watchFavoritePatchIds().first, {patchId});
-    expect((await db.midiPatchRecentDao.watchRecents().first).single.patchId, patchId);
+    expect(await db.midiPatchFavoriteDao.watchFavoritePatchIds().first, {
+      patchId,
+    });
+    expect(
+      (await db.midiPatchRecentDao.watchRecents().first).single.patchId,
+      patchId,
+    );
   });
 
-  test('the preset capture table is created exactly as a fresh one is', () async {
-    const tables = ['midi_preset_captures'];
+  test(
+    'the preset capture table is created exactly as a fresh one is',
+    () async {
+      const tables = ['midi_preset_captures'];
 
-    // One at a time: two live databases at once only earn a drift warning.
-    final fresh = AppDatabase(NativeDatabase.memory());
-    final expected = <String, List<String>>{
-      for (final table in tables) table: await schemaFor(fresh, table),
-    };
-    await fresh.close();
+      // One at a time: two live databases at once only earn a drift warning.
+      final fresh = AppDatabase(NativeDatabase.memory());
+      final expected = <String, List<String>>{
+        for (final table in tables) table: await schemaFor(fresh, table),
+      };
+      await fresh.close();
 
-    final upgraded = openV1Database();
-    addTearDown(upgraded.close);
+      final upgraded = openV1Database();
+      addTearDown(upgraded.close);
 
-    for (final table in tables) {
-      expect(
-        await schemaFor(upgraded, table),
-        expected[table],
-        reason: '$table differs between an upgraded phone and a new install',
-      );
-    }
-  });
+      for (final table in tables) {
+        expect(
+          await schemaFor(upgraded, table),
+          expected[table],
+          reason: '$table differs between an upgraded phone and a new install',
+        );
+      }
+    },
+  );
 
   test('an upgraded database can hold a raw preset capture', () async {
     final db = openV1Database();
@@ -603,10 +626,11 @@ void main() {
 
     // Slot 1 under the old counting and slot 0 under the new one are the same
     // Program Change 0, because the sender no longer subtracts one.
-    expect(
-      numbered.map((row) => (row.patch.name, row.programNumber)),
-      [('Worship Clean', 0), ('Core Lead', 21), ('Ambient', 127)],
-    );
+    expect(numbered.map((row) => (row.patch.name, row.programNumber)), [
+      ('Worship Clean', 0),
+      ('Core Lead', 21),
+      ('Ambient', 127),
+    ]);
   });
 
   test('an upgraded database can hold the first slot of all', () async {
@@ -621,7 +645,10 @@ void main() {
       updatedAt: DateTime.utc(2026, 9),
     );
 
-    expect((await db.midiPatchProgramNumberDao.findNumber(2))!.programNumber, 0);
+    expect(
+      (await db.midiPatchProgramNumberDao.findNumber(2))!.programNumber,
+      0,
+    );
   });
 
   test('the renumbered table matches a freshly created one', () async {
@@ -664,4 +691,47 @@ void main() {
       ]);
     },
   );
+
+  test(
+    'the Hotone Ampero Mini patch table is created exactly as a fresh one is',
+    () async {
+      const tables = ['hotone_ampero_mini_patches'];
+
+      final fresh = AppDatabase(NativeDatabase.memory());
+      final expected = <String, List<String>>{
+        for (final table in tables) table: await schemaFor(fresh, table),
+      };
+      await fresh.close();
+
+      final upgraded = openV1Database();
+      addTearDown(upgraded.close);
+
+      for (final table in tables) {
+        expect(
+          await schemaFor(upgraded, table),
+          expected[table],
+          reason: '$table differs between an upgraded phone and a new install',
+        );
+      }
+    },
+  );
+
+  test('an upgraded database can hold a Hotone Ampero Mini patch', () async {
+    final db = openV1Database();
+    addTearDown(db.close);
+
+    await db.hotoneAmperoMiniPatchDao.upsertPatch(
+      deviceProfileId: 'hotone_ampero_mini',
+      patchNumber: 5,
+      rawSysEx: Uint8List.fromList([0xF0, 0x21, 0x25, 0xF7]),
+      lastSyncedAt: DateTime.utc(2026, 9, 16),
+      syncState: 'synced',
+    );
+
+    final patches = await db.hotoneAmperoMiniPatchDao
+        .watchPatches('hotone_ampero_mini')
+        .first;
+    expect(patches.single.patchNumber, 5);
+    expect(patches.single.rawSysEx, [0xF0, 0x21, 0x25, 0xF7]);
+  });
 }

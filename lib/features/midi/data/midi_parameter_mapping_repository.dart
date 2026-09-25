@@ -18,10 +18,17 @@ class MidiParameterMappingRepository {
 
   /// [profile]'s parameters, with any stored override's CC number in place of
   /// the default. Pushes a new list whenever an override changes.
-  Stream<List<MidiParameterDefinition>> watchEffectiveParameters(MidiDeviceProfile profile) {
+  Stream<List<MidiParameterDefinition>> watchEffectiveParameters(
+    MidiDeviceProfile profile,
+  ) {
     return _dao
         .watchOverrides(profile.id)
-        .map((rows) => applyParameterOverrides(profile.parameterDefinitions, _toDomain(rows)));
+        .map(
+          (rows) => applyParameterOverrides(
+            profile.parameterDefinitions,
+            _toDomain(rows),
+          ),
+        );
   }
 
   /// The stored override for one parameter, or null when it uses the
@@ -32,7 +39,11 @@ class MidiParameterMappingRepository {
   }) {
     return _dao
         .watchOverrides(deviceProfileId)
-        .map((rows) => rows.where((row) => row.parameterName == parameterName).firstOrNull);
+        .map(
+          (rows) => rows
+              .where((row) => row.parameterName == parameterName)
+              .firstOrNull,
+        );
   }
 
   /// The names of every parameter of [deviceProfileId] that has been
@@ -57,7 +68,9 @@ class MidiParameterMappingRepository {
       (definition) => definition.name == parameterName,
     );
     if (!knownName) {
-      throw AppFailure('"$parameterName" is not a parameter of ${profile.displayName}.');
+      throw AppFailure(
+        '"$parameterName" is not a parameter of ${profile.displayName}.',
+      );
     }
     if (ccNumber < 0 || ccNumber > 127) {
       throw const AppFailure('A MIDI CC number has to be between 0 and 127.');
@@ -75,9 +88,15 @@ class MidiParameterMappingRepository {
   }
 
   /// Resets [parameterName] back to the device profile's own default.
-  Future<void> resetOverride({required String deviceProfileId, required String parameterName}) {
+  Future<void> resetOverride({
+    required String deviceProfileId,
+    required String parameterName,
+  }) {
     return guardFailure(
-      () => _dao.deleteOverride(deviceProfileId: deviceProfileId, parameterName: parameterName),
+      () => _dao.deleteOverride(
+        deviceProfileId: deviceProfileId,
+        parameterName: parameterName,
+      ),
       'Could not reset that mapping.',
     );
   }
@@ -90,8 +109,13 @@ class MidiParameterMappingRepository {
     );
   }
 
-  List<domain.MidiParameterOverride> _toDomain(List<MidiParameterOverride> rows) => [
+  List<domain.MidiParameterOverride> _toDomain(
+    List<MidiParameterOverride> rows,
+  ) => [
     for (final row in rows)
-      domain.MidiParameterOverride(parameterName: row.parameterName, ccNumber: row.ccNumber),
+      domain.MidiParameterOverride(
+        parameterName: row.parameterName,
+        ccNumber: row.ccNumber,
+      ),
   ];
 }

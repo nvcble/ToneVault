@@ -19,6 +19,16 @@ void main() {
     await tester.pumpAndSettle();
   }
 
+  /// Taller than the default test window, keeping the same width, so the whole wheel is
+  /// on screen at once: connecting notes on it is one drag across several dots, which a
+  /// scroll position cannot be part way through.
+  Future<void> pumpTallEnoughForTheWheel(WidgetTester tester) async {
+    tester.view.physicalSize = const Size(800, 1400);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.reset);
+    await pump(tester);
+  }
+
   /// Seven tabs are more than a phone's width, so the bar scrolls and the last of them
   /// has to be brought into view before it can be tapped - as a player would have to.
   Future<void> openTab(WidgetTester tester, String label) async {
@@ -29,17 +39,32 @@ void main() {
     await tester.pumpAndSettle();
   }
 
-  /// The wheel is square and as wide as the screen, so half its dots are below the fold
-  /// and a note is brought into view before it is pressed. Named inside the wheel because
-  /// the key picker above the tabs spells the same twelve notes.
+  /// One note, tapped alone: the wheel treats a tap as the shortest possible line, so
+  /// this both picks a key and toggles a single-note "chord".
   Future<void> press(WidgetTester tester, String note) async {
     final dot = find.descendant(
       of: find.byType(CircleOfFifthsWheel),
       matching: find.text(note),
     );
-    await tester.ensureVisible(dot);
-    await tester.pumpAndSettle();
     await tester.tap(dot);
+    await tester.pumpAndSettle();
+  }
+
+  /// A drag across several notes in one motion, the way a chord is actually built on
+  /// the wheel: down on the first, through each of the rest in order, up on the last.
+  Future<void> connect(WidgetTester tester, List<String> notes) async {
+    Offset centreOf(String note) => tester.getCenter(
+      find.descendant(
+        of: find.byType(CircleOfFifthsWheel),
+        matching: find.text(note),
+      ),
+    );
+
+    final gesture = await tester.startGesture(centreOf(notes.first));
+    for (final note in notes.skip(1)) {
+      await gesture.moveTo(centreOf(note));
+    }
+    await gesture.up();
     await tester.pumpAndSettle();
   }
 
@@ -87,8 +112,7 @@ void main() {
     await pump(tester);
 
     await openTab(tester, 'Circle');
-    await tester.tap(find.text('A'));
-    await tester.pumpAndSettle();
+    await press(tester, 'A');
 
     expect(find.text('A major'), findsOne);
     expect(find.text('3 sharps'), findsOne);
@@ -121,26 +145,23 @@ void main() {
   });
 
   testWidgets('the circle names the notes combined on it', (tester) async {
-    await pump(tester);
+    await pumpTallEnoughForTheWheel(tester);
     await openTab(tester, 'Circle');
 
-    for (final note in const ['C', 'E', 'G']) {
-      await press(tester, note);
-    }
+    await connect(tester, const ['C', 'E', 'G']);
 
-    // The chord is worked out from the notes, and the way onto it from the chord: three
-    // dots pressed on a wheel end up as vi-ii-V-I without anything having been listed.
+    // The chord is worked out from the notes, and the way onto it from the chord: a
+    // line drawn through three dots on the wheel ends up as vi-ii-V-I without anything
+    // having been listed.
     await scrollWheel(tester, find.text('C   E   G'));
     expect(find.text('Am7   Dm7   G7   C'), findsOne);
   });
 
   testWidgets('and a chord built on it takes the key with it', (tester) async {
-    await pump(tester);
+    await pumpTallEnoughForTheWheel(tester);
     await openTab(tester, 'Circle');
 
-    for (final note in const ['A', 'C', 'E']) {
-      await press(tester, note);
-    }
+    await connect(tester, const ['A', 'C', 'E']);
 
     // Read in A minor, so the step that comes from outside the key arrives as the
     // dominant seventh a player would put there rather than as something diatonic.
@@ -154,16 +175,17 @@ void main() {
     expect(find.text('The chords of A major'), findsOne);
   });
 
-  testWidgets('the caged tab is one chord in the five shapes that climb the neck', (
-    tester,
-  ) async {
-    await pump(tester);
-    await openTab(tester, 'CAGED');
+  testWidgets(
+    'the caged tab is one chord in the five shapes that climb the neck',
+    (tester) async {
+      await pump(tester);
+      await openTab(tester, 'CAGED');
 
-    expect(find.text('C up the neck'), findsOne);
-    expect(find.text('C  →  A  →  G  →  E  →  D'), findsOne);
-    expect(find.text('C shape'), findsOne);
-  });
+      expect(find.text('C up the neck'), findsOne);
+      expect(find.text('C  →  A  →  G  →  E  →  D'), findsOne);
+      expect(find.text('C shape'), findsOne);
+    },
+  );
 
   testWidgets('and follows whichever chord of the key is asked about', (
     tester,

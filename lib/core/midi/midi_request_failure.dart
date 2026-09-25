@@ -8,5 +8,6 @@ class MidiRequestTimedOut implements Exception {
   const MidiRequestTimedOut();
 
   @override
-  String toString() => 'MidiRequestTimedOut: no matching response arrived in time.';
+  String toString() =>
+      'MidiRequestTimedOut: no matching response arrived in time.';
 }

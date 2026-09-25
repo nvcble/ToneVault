@@ -13,10 +13,13 @@ class MidiPresetCaptureRepository {
 
   final MidiPresetCaptureDao _dao;
 
-  Stream<List<MidiPresetCapture>> watchCaptures(int pedalId) => _dao.watchCaptures(pedalId);
+  Stream<List<MidiPresetCapture>> watchCaptures(int pedalId) =>
+      _dao.watchCaptures(pedalId);
 
-  Future<MidiPresetCapture?> findByProgramNumber(int pedalId, int programNumber) =>
-      _dao.findByProgramNumber(pedalId, programNumber);
+  Future<MidiPresetCapture?> findByProgramNumber(
+    int pedalId,
+    int programNumber,
+  ) => _dao.findByProgramNumber(pedalId, programNumber);
 
   /// Replaces any earlier capture of the same [pedalId]/[programNumber] -
   /// deliberate for a single manual read (the user just asked to read this
@@ -37,7 +40,9 @@ class MidiPresetCaptureRepository {
       programNumber: programNumber,
       rawSysEx: rawSysEx,
       decodedName: decoded?.name,
-      decodedSummaryJson: decoded == null ? null : encodeDecodedPresetAsJson(decoded),
+      decodedSummaryJson: decoded == null
+          ? null
+          : encodeDecodedPresetAsJson(decoded),
       firmwareLabel: firmwareLabel,
       capturedAt: (clock ?? DateTime.now)(),
     );

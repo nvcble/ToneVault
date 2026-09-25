@@ -30,7 +30,9 @@ class PatchSelectionRepository {
   }) async {
     for (final value in [bankSelectMsb, bankSelectLsb]) {
       if (value != null && (value < 0 || value > 127)) {
-        throw const AppFailure('A Bank Select value has to be between 0 and 127.');
+        throw const AppFailure(
+          'A Bank Select value has to be between 0 and 127.',
+        );
       }
     }
 
@@ -40,13 +42,20 @@ class PatchSelectionRepository {
     await guardFailure(
       () => _dao.upsertSettings(
         deviceProfileId: profile.id,
-        usesBankSelect: usesBankSelect ?? existing?.usesBankSelect ?? defaults?.usesBankSelect,
+        usesBankSelect:
+            usesBankSelect ??
+            existing?.usesBankSelect ??
+            defaults?.usesBankSelect,
         bankSelectMsb: clearBankSelectMsb
             ? null
-            : bankSelectMsb ?? existing?.bankSelectMsb ?? defaults?.bankSelectMsb,
+            : bankSelectMsb ??
+                  existing?.bankSelectMsb ??
+                  defaults?.bankSelectMsb,
         bankSelectLsb: clearBankSelectLsb
             ? null
-            : bankSelectLsb ?? existing?.bankSelectLsb ?? defaults?.bankSelectLsb,
+            : bankSelectLsb ??
+                  existing?.bankSelectLsb ??
+                  defaults?.bankSelectLsb,
         updatedAt: DateTime.now(),
       ),
       'Could not save the patch-selection strategy.',

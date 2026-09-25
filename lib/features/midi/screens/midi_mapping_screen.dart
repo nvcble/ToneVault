@@ -24,7 +24,9 @@ class MidiMappingScreen extends ConsumerWidget {
     }
 
     final parametersAsync = ref.watch(effectiveParametersProvider(profileId));
-    final overriddenAsync = ref.watch(overriddenParameterNamesProvider(profileId));
+    final overriddenAsync = ref.watch(
+      overriddenParameterNamesProvider(profileId),
+    );
 
     return Scaffold(
       appBar: AppBar(
@@ -35,7 +37,9 @@ class MidiMappingScreen extends ConsumerWidget {
             tooltip: 'Reset all to defaults',
             onPressed: () async {
               try {
-                await ref.read(midiParameterMappingRepositoryProvider).resetAllOverrides(profileId);
+                await ref
+                    .read(midiParameterMappingRepositoryProvider)
+                    .resetAllOverrides(profileId);
               } catch (error) {
                 if (context.mounted) showFailureSnackBar(context, error);
               }
@@ -63,7 +67,11 @@ class MidiMappingScreen extends ConsumerWidget {
                   try {
                     await ref
                         .read(midiParameterMappingRepositoryProvider)
-                        .setOverride(profile: profile, parameterName: definition.name, ccNumber: cc);
+                        .setOverride(
+                          profile: profile,
+                          parameterName: definition.name,
+                          ccNumber: cc,
+                        );
                   } catch (error) {
                     if (context.mounted) showFailureSnackBar(context, error);
                   }
@@ -72,7 +80,10 @@ class MidiMappingScreen extends ConsumerWidget {
                   try {
                     await ref
                         .read(midiParameterMappingRepositoryProvider)
-                        .resetOverride(deviceProfileId: profileId, parameterName: definition.name);
+                        .resetOverride(
+                          deviceProfileId: profileId,
+                          parameterName: definition.name,
+                        );
                   } catch (error) {
                     if (context.mounted) showFailureSnackBar(context, error);
                   }

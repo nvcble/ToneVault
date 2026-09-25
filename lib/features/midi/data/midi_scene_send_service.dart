@@ -26,7 +26,9 @@ class MidiSceneSendService {
   }) async {
     final controls = await _sceneDao.sceneControlsOf(sceneId);
     final values = await _sceneDao.valuesOf(sceneId);
-    final valueByControlId = {for (final value in values) value.controlId: value.value};
+    final valueByControlId = {
+      for (final value in values) value.controlId: value.value,
+    };
 
     final sceneValues = [
       for (final owned in controls)

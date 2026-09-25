@@ -20,34 +20,49 @@ void main() {
       expect(profile.connectionTypes, [MidiTransportType.usb]);
     });
 
-    test('reports the capability matrix confirmed by the V5 chart and QuickTone', () {
-      expect(
-        profile.supportLevelOf(MidiFeature.patchSelection),
-        MidiSupportLevel.needsHardwareVerification,
-      );
-      expect(
-        profile.supportLevelOf(MidiFeature.sceneSwitching),
-        MidiSupportLevel.partiallySupported,
-      );
-      expect(profile.supportLevelOf(MidiFeature.blockBypass), MidiSupportLevel.partiallySupported);
-      expect(profile.supportLevelOf(MidiFeature.parameterControl), MidiSupportLevel.supported);
-      expect(profile.supportLevelOf(MidiFeature.patchEditing), MidiSupportLevel.supported);
-      expect(
-        profile.supportLevelOf(MidiFeature.effectModelSelection),
-        MidiSupportLevel.supported,
-      );
-      expect(
-        profile.supportLevelOf(MidiFeature.signalChainEditing),
-        MidiSupportLevel.unsupported,
-      );
-      // Partial, not unknown: reading a slot's dump is verified against the
-      // real unit, while decoding most of it and writing one back are not.
-      expect(
-        profile.supportLevelOf(MidiFeature.patchTransfer),
-        MidiSupportLevel.partiallySupported,
-      );
-      expect(profile.supportLevelOf(MidiFeature.irManagement), MidiSupportLevel.partiallySupported);
-    });
+    test(
+      'reports the capability matrix confirmed by the V5 chart and QuickTone',
+      () {
+        expect(
+          profile.supportLevelOf(MidiFeature.patchSelection),
+          MidiSupportLevel.needsHardwareVerification,
+        );
+        expect(
+          profile.supportLevelOf(MidiFeature.sceneSwitching),
+          MidiSupportLevel.partiallySupported,
+        );
+        expect(
+          profile.supportLevelOf(MidiFeature.blockBypass),
+          MidiSupportLevel.partiallySupported,
+        );
+        expect(
+          profile.supportLevelOf(MidiFeature.parameterControl),
+          MidiSupportLevel.supported,
+        );
+        expect(
+          profile.supportLevelOf(MidiFeature.patchEditing),
+          MidiSupportLevel.supported,
+        );
+        expect(
+          profile.supportLevelOf(MidiFeature.effectModelSelection),
+          MidiSupportLevel.supported,
+        );
+        expect(
+          profile.supportLevelOf(MidiFeature.signalChainEditing),
+          MidiSupportLevel.unsupported,
+        );
+        // Partial, not unknown: reading a slot's dump is verified against the
+        // real unit, while decoding most of it and writing one back are not.
+        expect(
+          profile.supportLevelOf(MidiFeature.patchTransfer),
+          MidiSupportLevel.partiallySupported,
+        );
+        expect(
+          profile.supportLevelOf(MidiFeature.irManagement),
+          MidiSupportLevel.partiallySupported,
+        );
+      },
+    );
 
     test('ships every CC the V5 chart and QuickTone confirm', () {
       expect(profile.parameterDefinitions, hasLength(86));
@@ -60,16 +75,22 @@ void main() {
       expect(defaults.usesBankSelect, isFalse);
       expect(defaults.bankSelectMsb, isNull);
       expect(defaults.bankSelectLsb, isNull);
-      expect(defaults.verificationStatus, MidiSupportLevel.needsHardwareVerification);
+      expect(
+        defaults.verificationStatus,
+        MidiSupportLevel.needsHardwareVerification,
+      );
     });
 
     test('is reachable from the registry by its id', () {
-      expect(MidiDeviceRegistry.findById('nux_mg30_v5'), isA<NuxMg30V5Profile>());
+      expect(
+        MidiDeviceRegistry.findById('nux_mg30_v5'),
+        isA<NuxMg30V5Profile>(),
+      );
       expect(MidiDeviceRegistry.findById('does_not_exist'), isNull);
     });
 
-    test('is the only device the catalog offers so far', () {
-      expect(MidiDeviceRegistry.profiles, hasLength(1));
+    test('is one of the devices the catalog offers', () {
+      expect(MidiDeviceRegistry.profiles, contains(isA<NuxMg30V5Profile>()));
     });
   });
 }

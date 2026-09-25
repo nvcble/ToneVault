@@ -24,7 +24,8 @@ const capturedNuxMg30V5PresetHex =
 /// transport hands one to [MidiEngine].
 SysExMessage capturedNuxMg30V5Preset() {
   final bytes = [
-    for (final part in capturedNuxMg30V5PresetHex.split(' ')) int.parse(part, radix: 16),
+    for (final part in capturedNuxMg30V5PresetHex.split(' '))
+      int.parse(part, radix: 16),
   ];
   return SysExMessage(payload: bytes.sublist(1, bytes.length - 1));
 }

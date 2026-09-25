@@ -25,30 +25,45 @@ void main() {
 
   tearDown(() => database.close());
 
-  test('orders numbered patches by their program number, not creation order', () async {
-    final second = await patchRepository(
-      database,
-    ).createPatch(unitId, const PatchDraft(name: 'Second'));
-    final first = await patchRepository(
-      database,
-    ).createPatch(unitId, const PatchDraft(name: 'First'));
-    await midiPatchProgramRepository(database).setNumber(patchId: second, programNumber: 2);
-    await midiPatchProgramRepository(database).setNumber(patchId: first, programNumber: 1);
+  test(
+    'orders numbered patches by their program number, not creation order',
+    () async {
+      final second = await patchRepository(
+        database,
+      ).createPatch(unitId, const PatchDraft(name: 'Second'));
+      final first = await patchRepository(
+        database,
+      ).createPatch(unitId, const PatchDraft(name: 'First'));
+      await midiPatchProgramRepository(
+        database,
+      ).setNumber(patchId: second, programNumber: 2);
+      await midiPatchProgramRepository(
+        database,
+      ).setNumber(patchId: first, programNumber: 1);
 
-    final numbered = await midiPatchProgramRepository(database).watchNumberedPatches(unitId).first;
+      final numbered = await midiPatchProgramRepository(
+        database,
+      ).watchNumberedPatches(unitId).first;
 
-    expect(numbered.map((n) => n.patch.name), ['First', 'Second']);
-    expect(numbered.map((n) => n.programNumber), [1, 2]);
-  });
+      expect(numbered.map((n) => n.patch.name), ['First', 'Second']);
+      expect(numbered.map((n) => n.programNumber), [1, 2]);
+    },
+  );
 
   test('leaves out a patch with no program number', () async {
     final numberedId = await patchRepository(
       database,
     ).createPatch(unitId, const PatchDraft(name: 'Numbered'));
-    await patchRepository(database).createPatch(unitId, const PatchDraft(name: 'Unnumbered'));
-    await midiPatchProgramRepository(database).setNumber(patchId: numberedId, programNumber: 1);
+    await patchRepository(
+      database,
+    ).createPatch(unitId, const PatchDraft(name: 'Unnumbered'));
+    await midiPatchProgramRepository(
+      database,
+    ).setNumber(patchId: numberedId, programNumber: 1);
 
-    final numbered = await midiPatchProgramRepository(database).watchNumberedPatches(unitId).first;
+    final numbered = await midiPatchProgramRepository(
+      database,
+    ).watchNumberedPatches(unitId).first;
 
     expect(numbered.map((n) => n.patch.name), ['Numbered']);
   });
@@ -64,9 +79,13 @@ void main() {
     final otherPatchId = await patchRepository(
       database,
     ).createPatch(otherUnitId, const PatchDraft(name: 'Elsewhere'));
-    await midiPatchProgramRepository(database).setNumber(patchId: otherPatchId, programNumber: 1);
+    await midiPatchProgramRepository(
+      database,
+    ).setNumber(patchId: otherPatchId, programNumber: 1);
 
-    final numbered = await midiPatchProgramRepository(database).watchNumberedPatches(unitId).first;
+    final numbered = await midiPatchProgramRepository(
+      database,
+    ).watchNumberedPatches(unitId).first;
 
     expect(numbered, isEmpty);
   });

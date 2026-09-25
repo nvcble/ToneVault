@@ -15268,6 +15268,790 @@ class MidiPresetCapturesCompanion extends UpdateCompanion<MidiPresetCapture> {
   }
 }
 
+class $HotoneAmperoMiniPatchesTable extends HotoneAmperoMiniPatches
+    with TableInfo<$HotoneAmperoMiniPatchesTable, HotoneAmperoMiniPatch> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $HotoneAmperoMiniPatchesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'PRIMARY KEY AUTOINCREMENT',
+    ),
+  );
+  static const VerificationMeta _deviceProfileIdMeta = const VerificationMeta(
+    'deviceProfileId',
+  );
+  @override
+  late final GeneratedColumn<String> deviceProfileId = GeneratedColumn<String>(
+    'device_profile_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _patchNumberMeta = const VerificationMeta(
+    'patchNumber',
+  );
+  @override
+  late final GeneratedColumn<int> patchNumber = GeneratedColumn<int>(
+    'patch_number',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _nameMeta = const VerificationMeta('name');
+  @override
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+    'name',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _rawSysExMeta = const VerificationMeta(
+    'rawSysEx',
+  );
+  @override
+  late final GeneratedColumn<Uint8List> rawSysEx = GeneratedColumn<Uint8List>(
+    'raw_sys_ex',
+    aliasedName,
+    true,
+    type: DriftSqlType.blob,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _decodedJsonMeta = const VerificationMeta(
+    'decodedJson',
+  );
+  @override
+  late final GeneratedColumn<String> decodedJson = GeneratedColumn<String>(
+    'decoded_json',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _firmwareVersionMeta = const VerificationMeta(
+    'firmwareVersion',
+  );
+  @override
+  late final GeneratedColumn<String> firmwareVersion = GeneratedColumn<String>(
+    'firmware_version',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _protocolVersionMeta = const VerificationMeta(
+    'protocolVersion',
+  );
+  @override
+  late final GeneratedColumn<String> protocolVersion = GeneratedColumn<String>(
+    'protocol_version',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _lastSyncedAtMeta = const VerificationMeta(
+    'lastSyncedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> lastSyncedAt = GeneratedColumn<DateTime>(
+    'last_synced_at',
+    aliasedName,
+    true,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _locallyModifiedMeta = const VerificationMeta(
+    'locallyModified',
+  );
+  @override
+  late final GeneratedColumn<bool> locallyModified = GeneratedColumn<bool>(
+    'locally_modified',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("locally_modified" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  static const VerificationMeta _syncStateMeta = const VerificationMeta(
+    'syncState',
+  );
+  @override
+  late final GeneratedColumn<String> syncState = GeneratedColumn<String>(
+    'sync_state',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('notSynced'),
+  );
+  static const VerificationMeta _localLabelMeta = const VerificationMeta(
+    'localLabel',
+  );
+  @override
+  late final GeneratedColumn<String> localLabel = GeneratedColumn<String>(
+    'local_label',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    deviceProfileId,
+    patchNumber,
+    name,
+    rawSysEx,
+    decodedJson,
+    firmwareVersion,
+    protocolVersion,
+    lastSyncedAt,
+    locallyModified,
+    syncState,
+    localLabel,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'hotone_ampero_mini_patches';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<HotoneAmperoMiniPatch> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('device_profile_id')) {
+      context.handle(
+        _deviceProfileIdMeta,
+        deviceProfileId.isAcceptableOrUnknown(
+          data['device_profile_id']!,
+          _deviceProfileIdMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_deviceProfileIdMeta);
+    }
+    if (data.containsKey('patch_number')) {
+      context.handle(
+        _patchNumberMeta,
+        patchNumber.isAcceptableOrUnknown(
+          data['patch_number']!,
+          _patchNumberMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_patchNumberMeta);
+    }
+    if (data.containsKey('name')) {
+      context.handle(
+        _nameMeta,
+        name.isAcceptableOrUnknown(data['name']!, _nameMeta),
+      );
+    }
+    if (data.containsKey('raw_sys_ex')) {
+      context.handle(
+        _rawSysExMeta,
+        rawSysEx.isAcceptableOrUnknown(data['raw_sys_ex']!, _rawSysExMeta),
+      );
+    }
+    if (data.containsKey('decoded_json')) {
+      context.handle(
+        _decodedJsonMeta,
+        decodedJson.isAcceptableOrUnknown(
+          data['decoded_json']!,
+          _decodedJsonMeta,
+        ),
+      );
+    }
+    if (data.containsKey('firmware_version')) {
+      context.handle(
+        _firmwareVersionMeta,
+        firmwareVersion.isAcceptableOrUnknown(
+          data['firmware_version']!,
+          _firmwareVersionMeta,
+        ),
+      );
+    }
+    if (data.containsKey('protocol_version')) {
+      context.handle(
+        _protocolVersionMeta,
+        protocolVersion.isAcceptableOrUnknown(
+          data['protocol_version']!,
+          _protocolVersionMeta,
+        ),
+      );
+    }
+    if (data.containsKey('last_synced_at')) {
+      context.handle(
+        _lastSyncedAtMeta,
+        lastSyncedAt.isAcceptableOrUnknown(
+          data['last_synced_at']!,
+          _lastSyncedAtMeta,
+        ),
+      );
+    }
+    if (data.containsKey('locally_modified')) {
+      context.handle(
+        _locallyModifiedMeta,
+        locallyModified.isAcceptableOrUnknown(
+          data['locally_modified']!,
+          _locallyModifiedMeta,
+        ),
+      );
+    }
+    if (data.containsKey('sync_state')) {
+      context.handle(
+        _syncStateMeta,
+        syncState.isAcceptableOrUnknown(data['sync_state']!, _syncStateMeta),
+      );
+    }
+    if (data.containsKey('local_label')) {
+      context.handle(
+        _localLabelMeta,
+        localLabel.isAcceptableOrUnknown(data['local_label']!, _localLabelMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  List<Set<GeneratedColumn>> get uniqueKeys => [
+    {deviceProfileId, patchNumber},
+  ];
+  @override
+  HotoneAmperoMiniPatch map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return HotoneAmperoMiniPatch(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      deviceProfileId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}device_profile_id'],
+      )!,
+      patchNumber: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}patch_number'],
+      )!,
+      name: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}name'],
+      ),
+      rawSysEx: attachedDatabase.typeMapping.read(
+        DriftSqlType.blob,
+        data['${effectivePrefix}raw_sys_ex'],
+      ),
+      decodedJson: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}decoded_json'],
+      ),
+      firmwareVersion: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}firmware_version'],
+      ),
+      protocolVersion: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}protocol_version'],
+      ),
+      lastSyncedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}last_synced_at'],
+      ),
+      locallyModified: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}locally_modified'],
+      )!,
+      syncState: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}sync_state'],
+      )!,
+      localLabel: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}local_label'],
+      ),
+    );
+  }
+
+  @override
+  $HotoneAmperoMiniPatchesTable createAlias(String alias) {
+    return $HotoneAmperoMiniPatchesTable(attachedDatabase, alias);
+  }
+}
+
+class HotoneAmperoMiniPatch extends DataClass
+    implements Insertable<HotoneAmperoMiniPatch> {
+  final int id;
+
+  /// Always `hotone_ampero_mini` today, but named rather than assumed, the
+  /// same way `MidiPresetCaptures.deviceProfileId` is.
+  final String deviceProfileId;
+
+  /// The Program Change value this patch loads as (0-127).
+  final int patchNumber;
+
+  /// The decoder's best-effort name, or null until a sync has actually
+  /// decoded one. Only ever written from bytes the device sent.
+  final String? name;
+
+  /// The exact wire bytes of the last successful read, or null before any
+  /// sync has happened for this slot.
+  final Uint8List? rawSysEx;
+
+  /// Whatever else the decoder produced, as JSON - kept as one column rather
+  /// than a table per field, since which fields exist depends on how much of
+  /// the protocol is understood when this row was last written.
+  final String? decodedJson;
+
+  /// What this patch's device reported for firmware/protocol, if anything -
+  /// see the firmware-awareness requirement: behavior confirmed on one
+  /// firmware is not assumed to hold on another.
+  final String? firmwareVersion;
+  final String? protocolVersion;
+  final DateTime? lastSyncedAt;
+
+  /// True once a local edit has diverged from [lastSyncedAt]'s data and has
+  /// not yet been sent back to the device - distinct from [syncState], which
+  /// is about the device relationship, not the edit itself.
+  final bool locallyModified;
+
+  /// One of: notSynced, synced, modifiedLocally, writePending, writeFailed,
+  /// verified - see `HotoneAmperoMiniSyncState`. Stored as text rather than a
+  /// Drift enum column so a future state can be added without a migration.
+  final String syncState;
+
+  /// Reserved, and currently unwritten.
+  ///
+  /// Added in v24 for hand-typed slot labels, which were then dropped: patch
+  /// names are to come from the pedal, not from the user. Kept because v24 has
+  /// already been applied, and an unused nullable column is cheaper than a
+  /// schema downgrade. If it is ever used again it must stay separate from
+  /// [name], which means "decoded from bytes the device sent".
+  ///
+  /// Declared last on purpose, and it must stay last: v24 adds it with ALTER
+  /// TABLE ADD COLUMN, which appends, so any earlier position here would make
+  /// an upgraded phone's column order differ from a fresh install's.
+  final String? localLabel;
+  const HotoneAmperoMiniPatch({
+    required this.id,
+    required this.deviceProfileId,
+    required this.patchNumber,
+    this.name,
+    this.rawSysEx,
+    this.decodedJson,
+    this.firmwareVersion,
+    this.protocolVersion,
+    this.lastSyncedAt,
+    required this.locallyModified,
+    required this.syncState,
+    this.localLabel,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['device_profile_id'] = Variable<String>(deviceProfileId);
+    map['patch_number'] = Variable<int>(patchNumber);
+    if (!nullToAbsent || name != null) {
+      map['name'] = Variable<String>(name);
+    }
+    if (!nullToAbsent || rawSysEx != null) {
+      map['raw_sys_ex'] = Variable<Uint8List>(rawSysEx);
+    }
+    if (!nullToAbsent || decodedJson != null) {
+      map['decoded_json'] = Variable<String>(decodedJson);
+    }
+    if (!nullToAbsent || firmwareVersion != null) {
+      map['firmware_version'] = Variable<String>(firmwareVersion);
+    }
+    if (!nullToAbsent || protocolVersion != null) {
+      map['protocol_version'] = Variable<String>(protocolVersion);
+    }
+    if (!nullToAbsent || lastSyncedAt != null) {
+      map['last_synced_at'] = Variable<DateTime>(lastSyncedAt);
+    }
+    map['locally_modified'] = Variable<bool>(locallyModified);
+    map['sync_state'] = Variable<String>(syncState);
+    if (!nullToAbsent || localLabel != null) {
+      map['local_label'] = Variable<String>(localLabel);
+    }
+    return map;
+  }
+
+  HotoneAmperoMiniPatchesCompanion toCompanion(bool nullToAbsent) {
+    return HotoneAmperoMiniPatchesCompanion(
+      id: Value(id),
+      deviceProfileId: Value(deviceProfileId),
+      patchNumber: Value(patchNumber),
+      name: name == null && nullToAbsent ? const Value.absent() : Value(name),
+      rawSysEx: rawSysEx == null && nullToAbsent
+          ? const Value.absent()
+          : Value(rawSysEx),
+      decodedJson: decodedJson == null && nullToAbsent
+          ? const Value.absent()
+          : Value(decodedJson),
+      firmwareVersion: firmwareVersion == null && nullToAbsent
+          ? const Value.absent()
+          : Value(firmwareVersion),
+      protocolVersion: protocolVersion == null && nullToAbsent
+          ? const Value.absent()
+          : Value(protocolVersion),
+      lastSyncedAt: lastSyncedAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(lastSyncedAt),
+      locallyModified: Value(locallyModified),
+      syncState: Value(syncState),
+      localLabel: localLabel == null && nullToAbsent
+          ? const Value.absent()
+          : Value(localLabel),
+    );
+  }
+
+  factory HotoneAmperoMiniPatch.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return HotoneAmperoMiniPatch(
+      id: serializer.fromJson<int>(json['id']),
+      deviceProfileId: serializer.fromJson<String>(json['deviceProfileId']),
+      patchNumber: serializer.fromJson<int>(json['patchNumber']),
+      name: serializer.fromJson<String?>(json['name']),
+      rawSysEx: serializer.fromJson<Uint8List?>(json['rawSysEx']),
+      decodedJson: serializer.fromJson<String?>(json['decodedJson']),
+      firmwareVersion: serializer.fromJson<String?>(json['firmwareVersion']),
+      protocolVersion: serializer.fromJson<String?>(json['protocolVersion']),
+      lastSyncedAt: serializer.fromJson<DateTime?>(json['lastSyncedAt']),
+      locallyModified: serializer.fromJson<bool>(json['locallyModified']),
+      syncState: serializer.fromJson<String>(json['syncState']),
+      localLabel: serializer.fromJson<String?>(json['localLabel']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'deviceProfileId': serializer.toJson<String>(deviceProfileId),
+      'patchNumber': serializer.toJson<int>(patchNumber),
+      'name': serializer.toJson<String?>(name),
+      'rawSysEx': serializer.toJson<Uint8List?>(rawSysEx),
+      'decodedJson': serializer.toJson<String?>(decodedJson),
+      'firmwareVersion': serializer.toJson<String?>(firmwareVersion),
+      'protocolVersion': serializer.toJson<String?>(protocolVersion),
+      'lastSyncedAt': serializer.toJson<DateTime?>(lastSyncedAt),
+      'locallyModified': serializer.toJson<bool>(locallyModified),
+      'syncState': serializer.toJson<String>(syncState),
+      'localLabel': serializer.toJson<String?>(localLabel),
+    };
+  }
+
+  HotoneAmperoMiniPatch copyWith({
+    int? id,
+    String? deviceProfileId,
+    int? patchNumber,
+    Value<String?> name = const Value.absent(),
+    Value<Uint8List?> rawSysEx = const Value.absent(),
+    Value<String?> decodedJson = const Value.absent(),
+    Value<String?> firmwareVersion = const Value.absent(),
+    Value<String?> protocolVersion = const Value.absent(),
+    Value<DateTime?> lastSyncedAt = const Value.absent(),
+    bool? locallyModified,
+    String? syncState,
+    Value<String?> localLabel = const Value.absent(),
+  }) => HotoneAmperoMiniPatch(
+    id: id ?? this.id,
+    deviceProfileId: deviceProfileId ?? this.deviceProfileId,
+    patchNumber: patchNumber ?? this.patchNumber,
+    name: name.present ? name.value : this.name,
+    rawSysEx: rawSysEx.present ? rawSysEx.value : this.rawSysEx,
+    decodedJson: decodedJson.present ? decodedJson.value : this.decodedJson,
+    firmwareVersion: firmwareVersion.present
+        ? firmwareVersion.value
+        : this.firmwareVersion,
+    protocolVersion: protocolVersion.present
+        ? protocolVersion.value
+        : this.protocolVersion,
+    lastSyncedAt: lastSyncedAt.present ? lastSyncedAt.value : this.lastSyncedAt,
+    locallyModified: locallyModified ?? this.locallyModified,
+    syncState: syncState ?? this.syncState,
+    localLabel: localLabel.present ? localLabel.value : this.localLabel,
+  );
+  HotoneAmperoMiniPatch copyWithCompanion(
+    HotoneAmperoMiniPatchesCompanion data,
+  ) {
+    return HotoneAmperoMiniPatch(
+      id: data.id.present ? data.id.value : this.id,
+      deviceProfileId: data.deviceProfileId.present
+          ? data.deviceProfileId.value
+          : this.deviceProfileId,
+      patchNumber: data.patchNumber.present
+          ? data.patchNumber.value
+          : this.patchNumber,
+      name: data.name.present ? data.name.value : this.name,
+      rawSysEx: data.rawSysEx.present ? data.rawSysEx.value : this.rawSysEx,
+      decodedJson: data.decodedJson.present
+          ? data.decodedJson.value
+          : this.decodedJson,
+      firmwareVersion: data.firmwareVersion.present
+          ? data.firmwareVersion.value
+          : this.firmwareVersion,
+      protocolVersion: data.protocolVersion.present
+          ? data.protocolVersion.value
+          : this.protocolVersion,
+      lastSyncedAt: data.lastSyncedAt.present
+          ? data.lastSyncedAt.value
+          : this.lastSyncedAt,
+      locallyModified: data.locallyModified.present
+          ? data.locallyModified.value
+          : this.locallyModified,
+      syncState: data.syncState.present ? data.syncState.value : this.syncState,
+      localLabel: data.localLabel.present
+          ? data.localLabel.value
+          : this.localLabel,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('HotoneAmperoMiniPatch(')
+          ..write('id: $id, ')
+          ..write('deviceProfileId: $deviceProfileId, ')
+          ..write('patchNumber: $patchNumber, ')
+          ..write('name: $name, ')
+          ..write('rawSysEx: $rawSysEx, ')
+          ..write('decodedJson: $decodedJson, ')
+          ..write('firmwareVersion: $firmwareVersion, ')
+          ..write('protocolVersion: $protocolVersion, ')
+          ..write('lastSyncedAt: $lastSyncedAt, ')
+          ..write('locallyModified: $locallyModified, ')
+          ..write('syncState: $syncState, ')
+          ..write('localLabel: $localLabel')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    deviceProfileId,
+    patchNumber,
+    name,
+    $driftBlobEquality.hash(rawSysEx),
+    decodedJson,
+    firmwareVersion,
+    protocolVersion,
+    lastSyncedAt,
+    locallyModified,
+    syncState,
+    localLabel,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is HotoneAmperoMiniPatch &&
+          other.id == this.id &&
+          other.deviceProfileId == this.deviceProfileId &&
+          other.patchNumber == this.patchNumber &&
+          other.name == this.name &&
+          $driftBlobEquality.equals(other.rawSysEx, this.rawSysEx) &&
+          other.decodedJson == this.decodedJson &&
+          other.firmwareVersion == this.firmwareVersion &&
+          other.protocolVersion == this.protocolVersion &&
+          other.lastSyncedAt == this.lastSyncedAt &&
+          other.locallyModified == this.locallyModified &&
+          other.syncState == this.syncState &&
+          other.localLabel == this.localLabel);
+}
+
+class HotoneAmperoMiniPatchesCompanion
+    extends UpdateCompanion<HotoneAmperoMiniPatch> {
+  final Value<int> id;
+  final Value<String> deviceProfileId;
+  final Value<int> patchNumber;
+  final Value<String?> name;
+  final Value<Uint8List?> rawSysEx;
+  final Value<String?> decodedJson;
+  final Value<String?> firmwareVersion;
+  final Value<String?> protocolVersion;
+  final Value<DateTime?> lastSyncedAt;
+  final Value<bool> locallyModified;
+  final Value<String> syncState;
+  final Value<String?> localLabel;
+  const HotoneAmperoMiniPatchesCompanion({
+    this.id = const Value.absent(),
+    this.deviceProfileId = const Value.absent(),
+    this.patchNumber = const Value.absent(),
+    this.name = const Value.absent(),
+    this.rawSysEx = const Value.absent(),
+    this.decodedJson = const Value.absent(),
+    this.firmwareVersion = const Value.absent(),
+    this.protocolVersion = const Value.absent(),
+    this.lastSyncedAt = const Value.absent(),
+    this.locallyModified = const Value.absent(),
+    this.syncState = const Value.absent(),
+    this.localLabel = const Value.absent(),
+  });
+  HotoneAmperoMiniPatchesCompanion.insert({
+    this.id = const Value.absent(),
+    required String deviceProfileId,
+    required int patchNumber,
+    this.name = const Value.absent(),
+    this.rawSysEx = const Value.absent(),
+    this.decodedJson = const Value.absent(),
+    this.firmwareVersion = const Value.absent(),
+    this.protocolVersion = const Value.absent(),
+    this.lastSyncedAt = const Value.absent(),
+    this.locallyModified = const Value.absent(),
+    this.syncState = const Value.absent(),
+    this.localLabel = const Value.absent(),
+  }) : deviceProfileId = Value(deviceProfileId),
+       patchNumber = Value(patchNumber);
+  static Insertable<HotoneAmperoMiniPatch> custom({
+    Expression<int>? id,
+    Expression<String>? deviceProfileId,
+    Expression<int>? patchNumber,
+    Expression<String>? name,
+    Expression<Uint8List>? rawSysEx,
+    Expression<String>? decodedJson,
+    Expression<String>? firmwareVersion,
+    Expression<String>? protocolVersion,
+    Expression<DateTime>? lastSyncedAt,
+    Expression<bool>? locallyModified,
+    Expression<String>? syncState,
+    Expression<String>? localLabel,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (deviceProfileId != null) 'device_profile_id': deviceProfileId,
+      if (patchNumber != null) 'patch_number': patchNumber,
+      if (name != null) 'name': name,
+      if (rawSysEx != null) 'raw_sys_ex': rawSysEx,
+      if (decodedJson != null) 'decoded_json': decodedJson,
+      if (firmwareVersion != null) 'firmware_version': firmwareVersion,
+      if (protocolVersion != null) 'protocol_version': protocolVersion,
+      if (lastSyncedAt != null) 'last_synced_at': lastSyncedAt,
+      if (locallyModified != null) 'locally_modified': locallyModified,
+      if (syncState != null) 'sync_state': syncState,
+      if (localLabel != null) 'local_label': localLabel,
+    });
+  }
+
+  HotoneAmperoMiniPatchesCompanion copyWith({
+    Value<int>? id,
+    Value<String>? deviceProfileId,
+    Value<int>? patchNumber,
+    Value<String?>? name,
+    Value<Uint8List?>? rawSysEx,
+    Value<String?>? decodedJson,
+    Value<String?>? firmwareVersion,
+    Value<String?>? protocolVersion,
+    Value<DateTime?>? lastSyncedAt,
+    Value<bool>? locallyModified,
+    Value<String>? syncState,
+    Value<String?>? localLabel,
+  }) {
+    return HotoneAmperoMiniPatchesCompanion(
+      id: id ?? this.id,
+      deviceProfileId: deviceProfileId ?? this.deviceProfileId,
+      patchNumber: patchNumber ?? this.patchNumber,
+      name: name ?? this.name,
+      rawSysEx: rawSysEx ?? this.rawSysEx,
+      decodedJson: decodedJson ?? this.decodedJson,
+      firmwareVersion: firmwareVersion ?? this.firmwareVersion,
+      protocolVersion: protocolVersion ?? this.protocolVersion,
+      lastSyncedAt: lastSyncedAt ?? this.lastSyncedAt,
+      locallyModified: locallyModified ?? this.locallyModified,
+      syncState: syncState ?? this.syncState,
+      localLabel: localLabel ?? this.localLabel,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (deviceProfileId.present) {
+      map['device_profile_id'] = Variable<String>(deviceProfileId.value);
+    }
+    if (patchNumber.present) {
+      map['patch_number'] = Variable<int>(patchNumber.value);
+    }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    if (rawSysEx.present) {
+      map['raw_sys_ex'] = Variable<Uint8List>(rawSysEx.value);
+    }
+    if (decodedJson.present) {
+      map['decoded_json'] = Variable<String>(decodedJson.value);
+    }
+    if (firmwareVersion.present) {
+      map['firmware_version'] = Variable<String>(firmwareVersion.value);
+    }
+    if (protocolVersion.present) {
+      map['protocol_version'] = Variable<String>(protocolVersion.value);
+    }
+    if (lastSyncedAt.present) {
+      map['last_synced_at'] = Variable<DateTime>(lastSyncedAt.value);
+    }
+    if (locallyModified.present) {
+      map['locally_modified'] = Variable<bool>(locallyModified.value);
+    }
+    if (syncState.present) {
+      map['sync_state'] = Variable<String>(syncState.value);
+    }
+    if (localLabel.present) {
+      map['local_label'] = Variable<String>(localLabel.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('HotoneAmperoMiniPatchesCompanion(')
+          ..write('id: $id, ')
+          ..write('deviceProfileId: $deviceProfileId, ')
+          ..write('patchNumber: $patchNumber, ')
+          ..write('name: $name, ')
+          ..write('rawSysEx: $rawSysEx, ')
+          ..write('decodedJson: $decodedJson, ')
+          ..write('firmwareVersion: $firmwareVersion, ')
+          ..write('protocolVersion: $protocolVersion, ')
+          ..write('lastSyncedAt: $lastSyncedAt, ')
+          ..write('locallyModified: $locallyModified, ')
+          ..write('syncState: $syncState, ')
+          ..write('localLabel: $localLabel')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
@@ -15330,6 +16114,8 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   );
   late final $MidiPresetCapturesTable midiPresetCaptures =
       $MidiPresetCapturesTable(this);
+  late final $HotoneAmperoMiniPatchesTable hotoneAmperoMiniPatches =
+      $HotoneAmperoMiniPatchesTable(this);
   late final Index idxPedalsStatus = Index(
     'idx_pedals_status',
     'CREATE INDEX idx_pedals_status ON pedals (status)',
@@ -15461,6 +16247,8 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final MidiPresetCaptureDao midiPresetCaptureDao = MidiPresetCaptureDao(
     this as AppDatabase,
   );
+  late final HotoneAmperoMiniPatchDao hotoneAmperoMiniPatchDao =
+      HotoneAmperoMiniPatchDao(this as AppDatabase);
   late final BackupDao backupDao = BackupDao(this as AppDatabase);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
@@ -15500,6 +16288,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     midiPatchFavorites,
     midiPatchRecents,
     midiPresetCaptures,
+    hotoneAmperoMiniPatches,
     idxPedalsStatus,
     idxPedalsName,
     idxPedalsHost,
@@ -31643,6 +32432,368 @@ typedef $$MidiPresetCapturesTableProcessedTableManager =
       MidiPresetCapture,
       PrefetchHooks Function({bool pedalId})
     >;
+typedef $$HotoneAmperoMiniPatchesTableCreateCompanionBuilder =
+    HotoneAmperoMiniPatchesCompanion Function({
+      Value<int> id,
+      required String deviceProfileId,
+      required int patchNumber,
+      Value<String?> name,
+      Value<Uint8List?> rawSysEx,
+      Value<String?> decodedJson,
+      Value<String?> firmwareVersion,
+      Value<String?> protocolVersion,
+      Value<DateTime?> lastSyncedAt,
+      Value<bool> locallyModified,
+      Value<String> syncState,
+      Value<String?> localLabel,
+    });
+typedef $$HotoneAmperoMiniPatchesTableUpdateCompanionBuilder =
+    HotoneAmperoMiniPatchesCompanion Function({
+      Value<int> id,
+      Value<String> deviceProfileId,
+      Value<int> patchNumber,
+      Value<String?> name,
+      Value<Uint8List?> rawSysEx,
+      Value<String?> decodedJson,
+      Value<String?> firmwareVersion,
+      Value<String?> protocolVersion,
+      Value<DateTime?> lastSyncedAt,
+      Value<bool> locallyModified,
+      Value<String> syncState,
+      Value<String?> localLabel,
+    });
+
+class $$HotoneAmperoMiniPatchesTableFilterComposer
+    extends Composer<_$AppDatabase, $HotoneAmperoMiniPatchesTable> {
+  $$HotoneAmperoMiniPatchesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get deviceProfileId => $composableBuilder(
+    column: $table.deviceProfileId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get patchNumber => $composableBuilder(
+    column: $table.patchNumber,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<Uint8List> get rawSysEx => $composableBuilder(
+    column: $table.rawSysEx,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get decodedJson => $composableBuilder(
+    column: $table.decodedJson,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get firmwareVersion => $composableBuilder(
+    column: $table.firmwareVersion,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get protocolVersion => $composableBuilder(
+    column: $table.protocolVersion,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get lastSyncedAt => $composableBuilder(
+    column: $table.lastSyncedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get locallyModified => $composableBuilder(
+    column: $table.locallyModified,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get syncState => $composableBuilder(
+    column: $table.syncState,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get localLabel => $composableBuilder(
+    column: $table.localLabel,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$HotoneAmperoMiniPatchesTableOrderingComposer
+    extends Composer<_$AppDatabase, $HotoneAmperoMiniPatchesTable> {
+  $$HotoneAmperoMiniPatchesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get deviceProfileId => $composableBuilder(
+    column: $table.deviceProfileId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get patchNumber => $composableBuilder(
+    column: $table.patchNumber,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<Uint8List> get rawSysEx => $composableBuilder(
+    column: $table.rawSysEx,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get decodedJson => $composableBuilder(
+    column: $table.decodedJson,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get firmwareVersion => $composableBuilder(
+    column: $table.firmwareVersion,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get protocolVersion => $composableBuilder(
+    column: $table.protocolVersion,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get lastSyncedAt => $composableBuilder(
+    column: $table.lastSyncedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get locallyModified => $composableBuilder(
+    column: $table.locallyModified,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get syncState => $composableBuilder(
+    column: $table.syncState,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get localLabel => $composableBuilder(
+    column: $table.localLabel,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$HotoneAmperoMiniPatchesTableAnnotationComposer
+    extends Composer<_$AppDatabase, $HotoneAmperoMiniPatchesTable> {
+  $$HotoneAmperoMiniPatchesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get deviceProfileId => $composableBuilder(
+    column: $table.deviceProfileId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get patchNumber => $composableBuilder(
+    column: $table.patchNumber,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get name =>
+      $composableBuilder(column: $table.name, builder: (column) => column);
+
+  GeneratedColumn<Uint8List> get rawSysEx =>
+      $composableBuilder(column: $table.rawSysEx, builder: (column) => column);
+
+  GeneratedColumn<String> get decodedJson => $composableBuilder(
+    column: $table.decodedJson,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get firmwareVersion => $composableBuilder(
+    column: $table.firmwareVersion,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get protocolVersion => $composableBuilder(
+    column: $table.protocolVersion,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get lastSyncedAt => $composableBuilder(
+    column: $table.lastSyncedAt,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<bool> get locallyModified => $composableBuilder(
+    column: $table.locallyModified,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get syncState =>
+      $composableBuilder(column: $table.syncState, builder: (column) => column);
+
+  GeneratedColumn<String> get localLabel => $composableBuilder(
+    column: $table.localLabel,
+    builder: (column) => column,
+  );
+}
+
+class $$HotoneAmperoMiniPatchesTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $HotoneAmperoMiniPatchesTable,
+          HotoneAmperoMiniPatch,
+          $$HotoneAmperoMiniPatchesTableFilterComposer,
+          $$HotoneAmperoMiniPatchesTableOrderingComposer,
+          $$HotoneAmperoMiniPatchesTableAnnotationComposer,
+          $$HotoneAmperoMiniPatchesTableCreateCompanionBuilder,
+          $$HotoneAmperoMiniPatchesTableUpdateCompanionBuilder,
+          (
+            HotoneAmperoMiniPatch,
+            BaseReferences<
+              _$AppDatabase,
+              $HotoneAmperoMiniPatchesTable,
+              HotoneAmperoMiniPatch
+            >,
+          ),
+          HotoneAmperoMiniPatch,
+          PrefetchHooks Function()
+        > {
+  $$HotoneAmperoMiniPatchesTableTableManager(
+    _$AppDatabase db,
+    $HotoneAmperoMiniPatchesTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$HotoneAmperoMiniPatchesTableFilterComposer(
+                $db: db,
+                $table: table,
+              ),
+          createOrderingComposer: () =>
+              $$HotoneAmperoMiniPatchesTableOrderingComposer(
+                $db: db,
+                $table: table,
+              ),
+          createComputedFieldComposer: () =>
+              $$HotoneAmperoMiniPatchesTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<String> deviceProfileId = const Value.absent(),
+                Value<int> patchNumber = const Value.absent(),
+                Value<String?> name = const Value.absent(),
+                Value<Uint8List?> rawSysEx = const Value.absent(),
+                Value<String?> decodedJson = const Value.absent(),
+                Value<String?> firmwareVersion = const Value.absent(),
+                Value<String?> protocolVersion = const Value.absent(),
+                Value<DateTime?> lastSyncedAt = const Value.absent(),
+                Value<bool> locallyModified = const Value.absent(),
+                Value<String> syncState = const Value.absent(),
+                Value<String?> localLabel = const Value.absent(),
+              }) => HotoneAmperoMiniPatchesCompanion(
+                id: id,
+                deviceProfileId: deviceProfileId,
+                patchNumber: patchNumber,
+                name: name,
+                rawSysEx: rawSysEx,
+                decodedJson: decodedJson,
+                firmwareVersion: firmwareVersion,
+                protocolVersion: protocolVersion,
+                lastSyncedAt: lastSyncedAt,
+                locallyModified: locallyModified,
+                syncState: syncState,
+                localLabel: localLabel,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                required String deviceProfileId,
+                required int patchNumber,
+                Value<String?> name = const Value.absent(),
+                Value<Uint8List?> rawSysEx = const Value.absent(),
+                Value<String?> decodedJson = const Value.absent(),
+                Value<String?> firmwareVersion = const Value.absent(),
+                Value<String?> protocolVersion = const Value.absent(),
+                Value<DateTime?> lastSyncedAt = const Value.absent(),
+                Value<bool> locallyModified = const Value.absent(),
+                Value<String> syncState = const Value.absent(),
+                Value<String?> localLabel = const Value.absent(),
+              }) => HotoneAmperoMiniPatchesCompanion.insert(
+                id: id,
+                deviceProfileId: deviceProfileId,
+                patchNumber: patchNumber,
+                name: name,
+                rawSysEx: rawSysEx,
+                decodedJson: decodedJson,
+                firmwareVersion: firmwareVersion,
+                protocolVersion: protocolVersion,
+                lastSyncedAt: lastSyncedAt,
+                locallyModified: locallyModified,
+                syncState: syncState,
+                localLabel: localLabel,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$HotoneAmperoMiniPatchesTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $HotoneAmperoMiniPatchesTable,
+      HotoneAmperoMiniPatch,
+      $$HotoneAmperoMiniPatchesTableFilterComposer,
+      $$HotoneAmperoMiniPatchesTableOrderingComposer,
+      $$HotoneAmperoMiniPatchesTableAnnotationComposer,
+      $$HotoneAmperoMiniPatchesTableCreateCompanionBuilder,
+      $$HotoneAmperoMiniPatchesTableUpdateCompanionBuilder,
+      (
+        HotoneAmperoMiniPatch,
+        BaseReferences<
+          _$AppDatabase,
+          $HotoneAmperoMiniPatchesTable,
+          HotoneAmperoMiniPatch
+        >,
+      ),
+      HotoneAmperoMiniPatch,
+      PrefetchHooks Function()
+    >;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -31729,4 +32880,9 @@ class $AppDatabaseManager {
       $$MidiPatchRecentsTableTableManager(_db, _db.midiPatchRecents);
   $$MidiPresetCapturesTableTableManager get midiPresetCaptures =>
       $$MidiPresetCapturesTableTableManager(_db, _db.midiPresetCaptures);
+  $$HotoneAmperoMiniPatchesTableTableManager get hotoneAmperoMiniPatches =>
+      $$HotoneAmperoMiniPatchesTableTableManager(
+        _db,
+        _db.hotoneAmperoMiniPatches,
+      );
 }

@@ -8,7 +8,8 @@ part 'midi_preset_capture_dao.g.dart';
 /// Typed queries over `midi_preset_captures` - see that table's own
 /// documentation for why raw and decoded data are kept side by side.
 @DriftAccessor(tables: [MidiPresetCaptures])
-class MidiPresetCaptureDao extends DatabaseAccessor<AppDatabase> with _$MidiPresetCaptureDaoMixin {
+class MidiPresetCaptureDao extends DatabaseAccessor<AppDatabase>
+    with _$MidiPresetCaptureDaoMixin {
   MidiPresetCaptureDao(super.attachedDatabase);
 
   Stream<List<MidiPresetCapture>> watchCaptures(int pedalId) {
@@ -18,9 +19,14 @@ class MidiPresetCaptureDao extends DatabaseAccessor<AppDatabase> with _$MidiPres
         .watch();
   }
 
-  Future<MidiPresetCapture?> findByProgramNumber(int pedalId, int programNumber) {
+  Future<MidiPresetCapture?> findByProgramNumber(
+    int pedalId,
+    int programNumber,
+  ) {
     return (select(midiPresetCaptures)..where(
-          (row) => row.pedalId.equals(pedalId) & row.programNumber.equals(programNumber),
+          (row) =>
+              row.pedalId.equals(pedalId) &
+              row.programNumber.equals(programNumber),
         ))
         .getSingleOrNull();
   }

@@ -41,7 +41,9 @@ void main() {
     test('ignores an override naming a parameter the device does not ship', () {
       final result = applyParameterOverrides(
         [_scene],
-        const [MidiParameterOverride(parameterName: 'Does not exist', ccNumber: 1)],
+        const [
+          MidiParameterOverride(parameterName: 'Does not exist', ccNumber: 1),
+        ],
       );
 
       expect(result, [_scene]);

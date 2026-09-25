@@ -48,7 +48,11 @@ void main() {
   test('setNumber stores the scene number', () async {
     final repository = midiSceneNumberRepository(database);
 
-    await repository.setNumber(patchId: patchId, sceneId: sceneAId, sceneNumber: 1);
+    await repository.setNumber(
+      patchId: patchId,
+      sceneId: sceneAId,
+      sceneNumber: 1,
+    );
 
     final number = await repository.watchNumber(sceneAId).first;
     expect(number!.sceneNumber, 1);
@@ -67,29 +71,55 @@ void main() {
     );
   });
 
-  test('refuses a number another scene of the same patch already holds', () async {
-    final repository = midiSceneNumberRepository(database);
-    await repository.setNumber(patchId: patchId, sceneId: sceneAId, sceneNumber: 1);
+  test(
+    'refuses a number another scene of the same patch already holds',
+    () async {
+      final repository = midiSceneNumberRepository(database);
+      await repository.setNumber(
+        patchId: patchId,
+        sceneId: sceneAId,
+        sceneNumber: 1,
+      );
 
-    await expectLater(
-      repository.setNumber(patchId: patchId, sceneId: sceneBId, sceneNumber: 1),
-      throwsA(isA<AppFailure>()),
-    );
-  });
+      await expectLater(
+        repository.setNumber(
+          patchId: patchId,
+          sceneId: sceneBId,
+          sceneNumber: 1,
+        ),
+        throwsA(isA<AppFailure>()),
+      );
+    },
+  );
 
-  test('changing a scene\'s own number back to itself is not a clash', () async {
-    final repository = midiSceneNumberRepository(database);
-    await repository.setNumber(patchId: patchId, sceneId: sceneAId, sceneNumber: 1);
+  test(
+    'changing a scene\'s own number back to itself is not a clash',
+    () async {
+      final repository = midiSceneNumberRepository(database);
+      await repository.setNumber(
+        patchId: patchId,
+        sceneId: sceneAId,
+        sceneNumber: 1,
+      );
 
-    await expectLater(
-      repository.setNumber(patchId: patchId, sceneId: sceneAId, sceneNumber: 1),
-      completes,
-    );
-  });
+      await expectLater(
+        repository.setNumber(
+          patchId: patchId,
+          sceneId: sceneAId,
+          sceneNumber: 1,
+        ),
+        completes,
+      );
+    },
+  );
 
   test('clearNumber removes it', () async {
     final repository = midiSceneNumberRepository(database);
-    await repository.setNumber(patchId: patchId, sceneId: sceneAId, sceneNumber: 1);
+    await repository.setNumber(
+      patchId: patchId,
+      sceneId: sceneAId,
+      sceneNumber: 1,
+    );
 
     await repository.clearNumber(sceneAId);
 

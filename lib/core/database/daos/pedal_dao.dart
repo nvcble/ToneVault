@@ -43,9 +43,12 @@ class PedalDao extends DatabaseAccessor<AppDatabase> with _$PedalDaoMixin {
   /// The same rows as [watchComponentPedals], read once rather than
   /// subscribed to - for a one-off computation, such as a preset import, that
   /// has no reason to keep listening afterwards.
-  Future<List<Pedal>> componentPedals(int hostPedalId) => _componentPedalsQuery(hostPedalId).get();
+  Future<List<Pedal>> componentPedals(int hostPedalId) =>
+      _componentPedalsQuery(hostPedalId).get();
 
-  SimpleSelectStatement<$PedalsTable, Pedal> _componentPedalsQuery(int hostPedalId) {
+  SimpleSelectStatement<$PedalsTable, Pedal> _componentPedalsQuery(
+    int hostPedalId,
+  ) {
     return select(pedals)
       ..where((row) => row.hostPedalId.equals(hostPedalId))
       ..orderBy([(row) => OrderingTerm.asc(row.name.collate(Collate.noCase))]);

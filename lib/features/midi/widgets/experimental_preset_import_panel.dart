@@ -35,7 +35,8 @@ class ExperimentalPresetImportPanel extends ConsumerWidget {
     final snapshot = ref.watch(midiConnectionProvider(profileId));
     final controller = ref.read(midiConnectionProvider(profileId).notifier);
     final isConnected = snapshot.state == MidiConnectionState.connected;
-    final captureCount = ref.watch(midiPresetCapturesProvider(unitId)).valueOrNull?.length ?? 0;
+    final captureCount =
+        ref.watch(midiPresetCapturesProvider(unitId)).valueOrNull?.length ?? 0;
 
     return SingleChildScrollView(
       padding: const EdgeInsets.all(AppSpacing.md),
@@ -44,7 +45,10 @@ class ExperimentalPresetImportPanel extends ConsumerWidget {
         children: [
           Row(
             children: [
-              Icon(Icons.science_outlined, color: Theme.of(context).colorScheme.tertiary),
+              Icon(
+                Icons.science_outlined,
+                color: Theme.of(context).colorScheme.tertiary,
+              ),
               const SizedBox(width: AppSpacing.sm),
               Expanded(
                 child: Text(
@@ -88,7 +92,8 @@ class ExperimentalPresetImportPanel extends ConsumerWidget {
             OutlinedButton.icon(
               icon: const Icon(Icons.folder_open),
               label: Text('Review $captureCount Captured Preset(s)'),
-              onPressed: () => context.push(Routes.midiCapturedPresetImport(profileId)),
+              onPressed: () =>
+                  context.push(Routes.midiCapturedPresetImport(profileId)),
             ),
           ],
         ],

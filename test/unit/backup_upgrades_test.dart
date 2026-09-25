@@ -179,13 +179,18 @@ void main() {
     expect(tables['midiSceneNumbers'], isEmpty);
   });
 
-  test('a file from before the Patch Browser had nothing starred or recent', () {
-    final tables = upgradeBackupTables({'pedals': const <dynamic>[]}, from: 19);
+  test(
+    'a file from before the Patch Browser had nothing starred or recent',
+    () {
+      final tables = upgradeBackupTables({
+        'pedals': const <dynamic>[],
+      }, from: 19);
 
-    // v20 is what added favorites and "Recently Used" in the first place.
-    expect(tables['midiPatchFavorites'], isEmpty);
-    expect(tables['midiPatchRecents'], isEmpty);
-  });
+      // v20 is what added favorites and "Recently Used" in the first place.
+      expect(tables['midiPatchFavorites'], isEmpty);
+      expect(tables['midiPatchRecents'], isEmpty);
+    },
+  );
 
   test('the snapshots of an older file are left where they are', () {
     final tables = upgradeBackupTables({

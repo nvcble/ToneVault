@@ -14,7 +14,11 @@ void main() {
   final patches = [_patch(1, 'Zeta'), _patch(2, 'alpha'), _patch(3, 'Mid')];
 
   test('A-Z sorts by name regardless of case', () {
-    final sorted = sortMidiPatches(patches, sort: MidiPatchSort.name, numbers: const {});
+    final sorted = sortMidiPatches(
+      patches,
+      sort: MidiPatchSort.name,
+      numbers: const {},
+    );
 
     expect(sorted.map((p) => p.name), ['alpha', 'Mid', 'Zeta']);
   });
@@ -41,15 +45,18 @@ void main() {
     expect(sorted.map((p) => p.name), ['Zeta', 'alpha', 'Mid']);
   });
 
-  test('patches sharing a number fall back to the name, never to row order', () {
-    final sorted = sortMidiPatches(
-      patches,
-      sort: MidiPatchSort.programNumber,
-      numbers: const {1: 3, 2: 3, 3: 3},
-    );
+  test(
+    'patches sharing a number fall back to the name, never to row order',
+    () {
+      final sorted = sortMidiPatches(
+        patches,
+        sort: MidiPatchSort.programNumber,
+        numbers: const {1: 3, 2: 3, 3: 3},
+      );
 
-    expect(sorted.map((p) => p.name), ['alpha', 'Mid', 'Zeta']);
-  });
+      expect(sorted.map((p) => p.name), ['alpha', 'Mid', 'Zeta']);
+    },
+  );
 
   test('leaves the caller\'s list untouched', () {
     sortMidiPatches(patches, sort: MidiPatchSort.name, numbers: const {});

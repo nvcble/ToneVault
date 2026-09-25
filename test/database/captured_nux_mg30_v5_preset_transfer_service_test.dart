@@ -59,7 +59,10 @@ void main() {
     expect(presets, hasLength(1));
     expect(presets.single.programNumber, 5);
     expect(presets.single.name, 'AB');
-    expect(presets.single.confidence, MidiSupportLevel.needsHardwareVerification);
+    expect(
+      presets.single.confidence,
+      MidiSupportLevel.needsHardwareVerification,
+    );
   });
 
   test('skips a capture that does not decode instead of throwing', () async {
@@ -83,25 +86,30 @@ void main() {
     expect(presets.map((p) => p.programNumber), [2]);
   });
 
-  test('reports progress across every stored capture, decodable or not', () async {
-    final captures = midiPresetCaptureRepository(database);
-    await captures.saveCapture(
-      pedalId: unitId,
-      deviceProfileId: 'nux_mg30_v5',
-      programNumber: 1,
-      rawSysEx: Uint8List.fromList([0x00]),
-    );
-    await captures.saveCapture(
-      pedalId: unitId,
-      deviceProfileId: 'nux_mg30_v5',
-      programNumber: 2,
-      rawSysEx: _validCapture(2),
-    );
-    final service = CapturedNuxMg30V5PresetTransferService(captures, unitId);
-    final progress = <(int, int)>[];
+  test(
+    'reports progress across every stored capture, decodable or not',
+    () async {
+      final captures = midiPresetCaptureRepository(database);
+      await captures.saveCapture(
+        pedalId: unitId,
+        deviceProfileId: 'nux_mg30_v5',
+        programNumber: 1,
+        rawSysEx: Uint8List.fromList([0x00]),
+      );
+      await captures.saveCapture(
+        pedalId: unitId,
+        deviceProfileId: 'nux_mg30_v5',
+        programNumber: 2,
+        rawSysEx: _validCapture(2),
+      );
+      final service = CapturedNuxMg30V5PresetTransferService(captures, unitId);
+      final progress = <(int, int)>[];
 
-    await service.importAllPresets(onProgress: (completed, total) => progress.add((completed, total)));
+      await service.importAllPresets(
+        onProgress: (completed, total) => progress.add((completed, total)),
+      );
 
-    expect(progress, [(1, 2), (2, 2)]);
-  });
+      expect(progress, [(1, 2), (2, 2)]);
+    },
+  );
 }

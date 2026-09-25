@@ -39,11 +39,14 @@ void main() {
     expect(banks.single.bankNumber, 32);
   });
 
-  test('a program number the user assigned outside any tidy range still lands in a bank', () {
-    final banks = groupPatchesByBank([_numbered(0), _numbered(37)]);
+  test(
+    'a program number the user assigned outside any tidy range still lands in a bank',
+    () {
+      final banks = groupPatchesByBank([_numbered(0), _numbered(37)]);
 
-    expect(banks.map((b) => b.bankNumber), [1, 10]);
-  });
+      expect(banks.map((b) => b.bankNumber), [1, 10]);
+    },
+  );
 
   test('returns nothing for an empty patch list', () {
     expect(groupPatchesByBank(const []), isEmpty);

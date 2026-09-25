@@ -35,7 +35,5 @@ class MidiParameterOverrides extends Table {
   ];
 
   @override
-  List<String> get customConstraints => [
-    'CHECK (cc_number BETWEEN 0 AND 127)',
-  ];
+  List<String> get customConstraints => ['CHECK (cc_number BETWEEN 0 AND 127)'];
 }

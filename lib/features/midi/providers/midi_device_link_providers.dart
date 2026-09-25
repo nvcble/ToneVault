@@ -14,18 +14,20 @@ import '../data/midi_scene_number_repository.dart';
 import '../data/midi_scene_send_service.dart';
 import 'midi_engine_providers.dart';
 
-final Provider<MidiDeviceLinkDao> midiDeviceLinkDaoProvider = Provider<MidiDeviceLinkDao>(
-  (ref) => MidiDeviceLinkDao(ref.watch(appDatabaseProvider)),
-);
+final Provider<MidiDeviceLinkDao> midiDeviceLinkDaoProvider =
+    Provider<MidiDeviceLinkDao>(
+      (ref) => MidiDeviceLinkDao(ref.watch(appDatabaseProvider)),
+    );
 
 final Provider<MidiPatchProgramNumberDao> midiPatchProgramNumberDaoProvider =
     Provider<MidiPatchProgramNumberDao>(
       (ref) => MidiPatchProgramNumberDao(ref.watch(appDatabaseProvider)),
     );
 
-final Provider<MidiSceneNumberDao> midiSceneNumberDaoProvider = Provider<MidiSceneNumberDao>(
-  (ref) => MidiSceneNumberDao(ref.watch(appDatabaseProvider)),
-);
+final Provider<MidiSceneNumberDao> midiSceneNumberDaoProvider =
+    Provider<MidiSceneNumberDao>(
+      (ref) => MidiSceneNumberDao(ref.watch(appDatabaseProvider)),
+    );
 
 final Provider<MidiDeviceLinkRepository> midiDeviceLinkRepositoryProvider =
     Provider<MidiDeviceLinkRepository>(
@@ -38,7 +40,9 @@ final Provider<MidiDeviceLinkRepository> midiDeviceLinkRepositoryProvider =
 
 final Provider<MidiPatchProgramRepository> midiPatchProgramRepositoryProvider =
     Provider<MidiPatchProgramRepository>(
-      (ref) => MidiPatchProgramRepository(ref.watch(midiPatchProgramNumberDaoProvider)),
+      (ref) => MidiPatchProgramRepository(
+        ref.watch(midiPatchProgramNumberDaoProvider),
+      ),
     );
 
 final Provider<MidiSceneNumberRepository> midiSceneNumberRepositoryProvider =
@@ -46,30 +50,41 @@ final Provider<MidiSceneNumberRepository> midiSceneNumberRepositoryProvider =
       (ref) => MidiSceneNumberRepository(ref.watch(midiSceneNumberDaoProvider)),
     );
 
-final Provider<MidiSceneSendService> midiSceneSendServiceProvider = Provider<MidiSceneSendService>(
-  (ref) => MidiSceneSendService(SceneDao(ref.watch(appDatabaseProvider)), ref.watch(midiEngineProvider)),
-);
+final Provider<MidiSceneSendService> midiSceneSendServiceProvider =
+    Provider<MidiSceneSendService>(
+      (ref) => MidiSceneSendService(
+        SceneDao(ref.watch(appDatabaseProvider)),
+        ref.watch(midiEngineProvider),
+      ),
+    );
 
 /// The pedal linked to one device profile, or null when it has not been
 /// added as gear yet.
-final StreamProviderFamily<Pedal?, String> linkedPedalProvider = StreamProvider.family<Pedal?, String>(
-  (ref, deviceProfileId) =>
-      ref.watch(midiDeviceLinkRepositoryProvider).watchLinkedPedal(deviceProfileId),
-);
+final StreamProviderFamily<Pedal?, String> linkedPedalProvider =
+    StreamProvider.family<Pedal?, String>(
+      (ref, deviceProfileId) => ref
+          .watch(midiDeviceLinkRepositoryProvider)
+          .watchLinkedPedal(deviceProfileId),
+    );
 
-final StreamProviderFamily<MidiPatchProgramNumber?, int> patchProgramNumberProvider =
+final StreamProviderFamily<MidiPatchProgramNumber?, int>
+patchProgramNumberProvider =
     StreamProvider.family<MidiPatchProgramNumber?, int>(
-      (ref, patchId) => ref.watch(midiPatchProgramRepositoryProvider).watchNumber(patchId),
+      (ref, patchId) =>
+          ref.watch(midiPatchProgramRepositoryProvider).watchNumber(patchId),
     );
 
 final StreamProviderFamily<MidiSceneNumber?, int> sceneNumberProvider =
     StreamProvider.family<MidiSceneNumber?, int>(
-      (ref, sceneId) => ref.watch(midiSceneNumberRepositoryProvider).watchNumber(sceneId),
+      (ref, sceneId) =>
+          ref.watch(midiSceneNumberRepositoryProvider).watchNumber(sceneId),
     );
 
 /// One unit's numbered patches, in cycling order - what Live Control's
 /// Previous/Next read.
 final StreamProviderFamily<List<NumberedPatch>, int> numberedPatchesProvider =
     StreamProvider.family<List<NumberedPatch>, int>(
-      (ref, pedalId) => ref.watch(midiPatchProgramRepositoryProvider).watchNumberedPatches(pedalId),
+      (ref, pedalId) => ref
+          .watch(midiPatchProgramRepositoryProvider)
+          .watchNumberedPatches(pedalId),
     );

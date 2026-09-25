@@ -33,27 +33,53 @@ void main() {
 
   setUp(() async {
     database = AppDatabase(NativeDatabase.memory());
-    unitId = await midiDeviceLinkRepository(database).createLinkedGear(_profile);
+    unitId = await midiDeviceLinkRepository(
+      database,
+    ).createLinkedGear(_profile);
   });
 
   tearDown(() => database.close());
 
-  Future<void> pumpFlow(WidgetTester tester, PresetImportService service) async {
+  Future<void> pumpFlow(
+    WidgetTester tester,
+    PresetImportService service,
+  ) async {
     await tester.pumpWidget(
-      MaterialApp(home: Scaffold(body: PresetImportFlow(unitId: unitId, service: service))),
+      MaterialApp(
+        home: Scaffold(
+          body: PresetImportFlow(unitId: unitId, service: service),
+        ),
+      ),
     );
     await tester.tap(find.text('Scan Device for Presets'));
     await tester.pumpAndSettle();
   }
 
-  testWidgets('Cancel All leaves the library exactly as it was', (tester) async {
-    final patchId = await patchRepository(database).createPatch(unitId, const PatchDraft(name: 'Old Lead'));
-    await midiPatchProgramRepository(database).setNumber(patchId: patchId, programNumber: 1);
+  testWidgets('Cancel All leaves the library exactly as it was', (
+    tester,
+  ) async {
+    final patchId = await patchRepository(
+      database,
+    ).createPatch(unitId, const PatchDraft(name: 'Old Lead'));
+    await midiPatchProgramRepository(
+      database,
+    ).setNumber(patchId: patchId, programNumber: 1);
     const presets = [
-      ImportedPreset(programNumber: 1, name: 'New Lead', confidence: MidiSupportLevel.unknown),
-      ImportedPreset(programNumber: 2, name: 'New Clean', confidence: MidiSupportLevel.unknown),
+      ImportedPreset(
+        programNumber: 1,
+        name: 'New Lead',
+        confidence: MidiSupportLevel.unknown,
+      ),
+      ImportedPreset(
+        programNumber: 2,
+        name: 'New Clean',
+        confidence: MidiSupportLevel.unknown,
+      ),
     ];
-    final service = presetImportService(database, const _FakeTransferService(presets));
+    final service = presetImportService(
+      database,
+      const _FakeTransferService(presets),
+    );
     await pumpFlow(tester, service);
 
     await tester.tap(find.text('Import 2 presets'));
@@ -65,18 +91,37 @@ void main() {
 
     // Back on the review list, nothing imported.
     expect(find.text('Import 2 presets'), findsOneWidget);
-    final numbered = await midiPatchProgramRepository(database).numberedPatches(unitId);
+    final numbered = await midiPatchProgramRepository(
+      database,
+    ).numberedPatches(unitId);
     expect(numbered.single.patch.name, 'Old Lead');
   });
 
-  testWidgets('Overwrite All replaces every conflict without asking again', (tester) async {
-    final patchId = await patchRepository(database).createPatch(unitId, const PatchDraft(name: 'Old Lead'));
-    await midiPatchProgramRepository(database).setNumber(patchId: patchId, programNumber: 1);
+  testWidgets('Overwrite All replaces every conflict without asking again', (
+    tester,
+  ) async {
+    final patchId = await patchRepository(
+      database,
+    ).createPatch(unitId, const PatchDraft(name: 'Old Lead'));
+    await midiPatchProgramRepository(
+      database,
+    ).setNumber(patchId: patchId, programNumber: 1);
     const presets = [
-      ImportedPreset(programNumber: 1, name: 'New Lead', confidence: MidiSupportLevel.unknown),
-      ImportedPreset(programNumber: 2, name: 'New Clean', confidence: MidiSupportLevel.unknown),
+      ImportedPreset(
+        programNumber: 1,
+        name: 'New Lead',
+        confidence: MidiSupportLevel.unknown,
+      ),
+      ImportedPreset(
+        programNumber: 2,
+        name: 'New Clean',
+        confidence: MidiSupportLevel.unknown,
+      ),
     ];
-    final service = presetImportService(database, const _FakeTransferService(presets));
+    final service = presetImportService(
+      database,
+      const _FakeTransferService(presets),
+    );
     await pumpFlow(tester, service);
 
     await tester.tap(find.text('Import 2 presets'));
@@ -84,22 +129,42 @@ void main() {
     await tester.tap(find.text('Overwrite All (1)'));
     await tester.pumpAndSettle();
 
-    expect(find.textContaining('Imported 1, overwritten 1, skipped 0.'), findsOneWidget);
-    final numbered = await midiPatchProgramRepository(database).numberedPatches(unitId);
-    expect(numbered.map((row) => row.patch.name), containsAll(['New Lead', 'New Clean']));
+    expect(
+      find.textContaining('Imported 1, overwritten 1, skipped 0.'),
+      findsOneWidget,
+    );
+    final numbered = await midiPatchProgramRepository(
+      database,
+    ).numberedPatches(unitId);
+    expect(
+      numbered.map((row) => row.patch.name),
+      containsAll(['New Lead', 'New Clean']),
+    );
   });
 
-  testWidgets('no dialog at all when nothing would be overwritten', (tester) async {
+  testWidgets('no dialog at all when nothing would be overwritten', (
+    tester,
+  ) async {
     const presets = [
-      ImportedPreset(programNumber: 1, name: 'New Lead', confidence: MidiSupportLevel.unknown),
+      ImportedPreset(
+        programNumber: 1,
+        name: 'New Lead',
+        confidence: MidiSupportLevel.unknown,
+      ),
     ];
-    final service = presetImportService(database, const _FakeTransferService(presets));
+    final service = presetImportService(
+      database,
+      const _FakeTransferService(presets),
+    );
     await pumpFlow(tester, service);
 
     await tester.tap(find.text('Import 1 presets'));
     await tester.pumpAndSettle();
 
     expect(find.text('Import Presets'), findsNothing);
-    expect(find.textContaining('Imported 1, overwritten 0, skipped 0.'), findsOneWidget);
+    expect(
+      find.textContaining('Imported 1, overwritten 0, skipped 0.'),
+      findsOneWidget,
+    );
   });
 }

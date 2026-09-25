@@ -88,21 +88,31 @@ class _PatchNumberCarouselState extends State<PatchNumberCarousel> {
             ),
           ],
         ),
-        Text(_labelFor(widget.selected), style: Theme.of(context).textTheme.titleSmall),
+        Text(
+          _labelFor(widget.selected),
+          style: Theme.of(context).textTheme.titleSmall,
+        ),
       ],
     );
   }
 
-  String _labelFor(int number) => widget.patchNames[number] ?? 'Patch ${number + 1}';
+  String _labelFor(int number) =>
+      widget.patchNames[number] ?? 'Patch ${number + 1}';
 
   // A carousel slide rather than a jump cut - the transition the brief asks
   // for when the page changes, whether by chevron or by swipe.
-  void _goTo(int page) =>
-      _controller.animateToPage(page, duration: const Duration(milliseconds: 250), curve: Curves.ease);
+  void _goTo(int page) => _controller.animateToPage(
+    page,
+    duration: const Duration(milliseconds: 250),
+    curve: Curves.ease,
+  );
 
   Widget _buildPage(int page) {
     final first = page * PatchNumberCarousel.perPage;
-    final count = (PatchNumberCarousel.totalSlots - first).clamp(0, PatchNumberCarousel.perPage);
+    final count = (PatchNumberCarousel.totalSlots - first).clamp(
+      0,
+      PatchNumberCarousel.perPage,
+    );
     return GridView.builder(
       physics: const NeverScrollableScrollPhysics(),
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(

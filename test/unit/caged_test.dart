@@ -45,11 +45,10 @@ void main() {
   });
 
   test('a quality held fewer ways says which shapes it has not got', () {
-    expect(cagedVoicings(chord('C', ChordType.minor)).map((each) => each.name), [
-      'A shape',
-      'E shape',
-      'D shape',
-    ]);
+    expect(
+      cagedVoicings(chord('C', ChordType.minor)).map((each) => each.name),
+      ['A shape', 'E shape', 'D shape'],
+    );
     expect(cagedGaps(ChordType.minor), ['C shape', 'G shape']);
     expect(cagedGaps(ChordType.major), isEmpty);
   });

@@ -12,7 +12,11 @@ import 'preset_import_summary_view.dart';
 /// already-captured diagnostic data. The flow itself does not know or care
 /// which; that distinction is made by whoever constructs the service.
 class PresetImportFlow extends StatefulWidget {
-  const PresetImportFlow({required this.unitId, required this.service, super.key});
+  const PresetImportFlow({
+    required this.unitId,
+    required this.service,
+    super.key,
+  });
 
   final int unitId;
   final PresetImportService service;
@@ -34,7 +38,10 @@ class _PresetImportFlowState extends State<PresetImportFlow> {
   Widget build(BuildContext context) {
     return switch (_stage) {
       _Stage.idle => Center(
-        child: FilledButton(onPressed: _scan, child: const Text('Scan Device for Presets')),
+        child: FilledButton(
+          onPressed: _scan,
+          child: const Text('Scan Device for Presets'),
+        ),
       ),
       _Stage.fetching => Center(
         child: Padding(
@@ -43,7 +50,9 @@ class _PresetImportFlowState extends State<PresetImportFlow> {
             mainAxisSize: MainAxisSize.min,
             children: [
               LinearProgressIndicator(
-                value: _progressTotal == 0 ? null : _progressCompleted / _progressTotal,
+                value: _progressTotal == 0
+                    ? null
+                    : _progressCompleted / _progressTotal,
               ),
               const SizedBox(height: AppSpacing.md),
               Text('Read $_progressCompleted of $_progressTotal presets...'),
@@ -51,30 +60,36 @@ class _PresetImportFlowState extends State<PresetImportFlow> {
           ),
         ),
       ),
-      _Stage.ready => _presets.isEmpty
-          ? const EmptyState(icon: Icons.folder_off, title: 'No presets found')
-          : Column(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(AppSpacing.md),
-                  child: FilledButton(
-                    onPressed: _importAll,
-                    child: Text('Import ${_presets.length} presets'),
+      _Stage.ready =>
+        _presets.isEmpty
+            ? const EmptyState(
+                icon: Icons.folder_off,
+                title: 'No presets found',
+              )
+            : Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(AppSpacing.md),
+                    child: FilledButton(
+                      onPressed: _importAll,
+                      child: Text('Import ${_presets.length} presets'),
+                    ),
                   ),
-                ),
-                Expanded(
-                  child: ListView(
-                    children: [
-                      for (final preset in _presets)
-                        ListTile(
-                          title: Text('${preset.programNumber} — ${preset.name}'),
-                          subtitle: Text(preset.confidence.label),
-                        ),
-                    ],
+                  Expanded(
+                    child: ListView(
+                      children: [
+                        for (final preset in _presets)
+                          ListTile(
+                            title: Text(
+                              '${preset.programNumber} — ${preset.name}',
+                            ),
+                            subtitle: Text(preset.confidence.label),
+                          ),
+                      ],
+                    ),
                   ),
-                ),
-              ],
-            ),
+                ],
+              ),
       _Stage.importing => const Center(child: CircularProgressIndicator()),
       _Stage.done => PresetImportSummaryView(
         summary: _summary!,
@@ -115,7 +130,10 @@ class _PresetImportFlowState extends State<PresetImportFlow> {
   }
 
   Future<void> _importAll() async {
-    final overwrites = await widget.service.countOverwrites(widget.unitId, _presets);
+    final overwrites = await widget.service.countOverwrites(
+      widget.unitId,
+      _presets,
+    );
     if (overwrites > 0 && !await _confirmOverwriteAll(overwrites)) {
       return; // Cancel All: the dialog closes, nothing about the library changes.
     }

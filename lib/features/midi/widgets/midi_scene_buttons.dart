@@ -8,7 +8,11 @@ import '../../../app/theme/app_spacing.dart';
 /// implementation detail of `MidiParameterSender`, resolved from the
 /// "Scene" parameter the same way every other named parameter is.
 class MidiSceneButtons extends StatelessWidget {
-  const MidiSceneButtons({required this.onSelect, this.selectedScene, super.key});
+  const MidiSceneButtons({
+    required this.onSelect,
+    this.selectedScene,
+    super.key,
+  });
 
   /// Null disables every button - there is nothing to send to, or nothing
   /// the user has allowed sending yet.
@@ -25,7 +29,13 @@ class MidiSceneButtons extends StatelessWidget {
       children: [
         for (var scene = 1; scene <= 3; scene++) ...[
           if (scene > 1) const SizedBox(width: AppSpacing.sm),
-          Expanded(child: _SceneButton(scene: scene, selected: scene == selectedScene, onSelect: onSelect)),
+          Expanded(
+            child: _SceneButton(
+              scene: scene,
+              selected: scene == selectedScene,
+              onSelect: onSelect,
+            ),
+          ),
         ],
       ],
     );
@@ -33,7 +43,11 @@ class MidiSceneButtons extends StatelessWidget {
 }
 
 class _SceneButton extends StatelessWidget {
-  const _SceneButton({required this.scene, required this.selected, required this.onSelect});
+  const _SceneButton({
+    required this.scene,
+    required this.selected,
+    required this.onSelect,
+  });
 
   final int scene;
   final bool selected;
@@ -42,7 +56,9 @@ class _SceneButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final style = ButtonStyle(
-      minimumSize: const WidgetStatePropertyAll(Size.fromHeight(AppSpacing.minTouchTarget * 1.4)),
+      minimumSize: const WidgetStatePropertyAll(
+        Size.fromHeight(AppSpacing.minTouchTarget * 1.4),
+      ),
     );
     final onPressed = onSelect == null ? null : () => onSelect!(scene);
     final label = Text('Scene $scene');

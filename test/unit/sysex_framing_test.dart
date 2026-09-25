@@ -43,16 +43,19 @@ void main() {
   /// which `toBytes` framed a second time into 220 bytes of `F0 F0 ... F7 F7`.
   /// Both of `isPresetDataResponse`'s conditions then failed - the length, and
   /// the byte after `F0` being `0xF0` instead of `0x43`.
-  test('a received frame round-trips to the same 218 bytes and is recognised', () {
-    final frame = presetDataFrame(21);
+  test(
+    'a received frame round-trips to the same 218 bytes and is recognised',
+    () {
+      final frame = presetDataFrame(21);
 
-    final message = SysExMessage(payload: sysExPayload(frame));
+      final message = SysExMessage(payload: sysExPayload(frame));
 
-    expect(message.toBytes(), frame);
-    expect(message.toBytes(), hasLength(218));
-    expect(NuxMg30V5SysEx.isPresetDataResponse(message), isTrue);
-    expect(NuxMg30V5SysEx.presetResponseProgramNumber(message), 21);
-  });
+      expect(message.toBytes(), frame);
+      expect(message.toBytes(), hasLength(218));
+      expect(NuxMg30V5SysEx.isPresetDataResponse(message), isTrue);
+      expect(NuxMg30V5SysEx.presetResponseProgramNumber(message), 21);
+    },
+  );
 
   test('double-framing a received frame is what the matcher rejects', () {
     // Guards the fix by showing the old behaviour really was unrecognisable,

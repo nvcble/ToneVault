@@ -6,17 +6,15 @@ import 'midi_patch_browser_providers.dart';
 
 /// On by default: Bank Select / Program Change is confirmed working, so
 /// there is nothing left for the user to opt into before loading a patch.
-final StateProvider<bool> experimentalProgramChangeEnabledProvider = StateProvider<bool>(
-  (ref) => true,
-);
+final StateProvider<bool> experimentalProgramChangeEnabledProvider =
+    StateProvider<bool>((ref) => true);
 
 /// The patch number the previous/next/load controls act on, per device
 /// profile. Not a reading from the device - there is no confirmed way to ask
 /// the MG-30 which patch it is on - only the last number this app asked it to
 /// load, or 0 - the device's first slot - until it has asked for anything.
-final StateProviderFamily<int, String> currentPatchNumberProvider = StateProvider.family<int, String>(
-  (ref, deviceProfileId) => 0,
-);
+final StateProviderFamily<int, String> currentPatchNumberProvider =
+    StateProvider.family<int, String>((ref, deviceProfileId) => 0);
 
 /// The patch number last successfully loaded (double-tapped) onto the device,
 /// per device profile - distinct from [currentPatchNumberProvider], which

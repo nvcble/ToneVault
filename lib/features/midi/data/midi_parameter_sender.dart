@@ -29,8 +29,13 @@ class MidiParameterSender {
       value: value,
     );
     if (message == null) {
-      throw AppFailure('"$parameterName" has no CC mapped to it, so it cannot be sent.');
+      throw AppFailure(
+        '"$parameterName" has no CC mapped to it, so it cannot be sent.',
+      );
     }
-    await guardFailure(() => _engine.send(message), 'Could not send "$parameterName".');
+    await guardFailure(
+      () => _engine.send(message),
+      'Could not send "$parameterName".',
+    );
   }
 }

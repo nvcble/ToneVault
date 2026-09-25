@@ -1,6 +1,7 @@
 import 'package:go_router/go_router.dart';
 
 import '../../../app/router/routes.dart';
+import '../hotone_ampero_mini/screens/hotone_ampero_mini_patch_list_screen.dart';
 import '../screens/captured_preset_import_screen.dart';
 import '../screens/live_control_screen.dart';
 import '../screens/midi_capture_log_screen.dart';
@@ -30,8 +31,17 @@ List<RouteBase> midiRoutes() {
       routes: [
         GoRoute(
           path: Routes.midiConnectSegment,
-          builder: (context, state) =>
-              MidiConnectionScreen(profileId: _deviceId(state)),
+          builder: (context, state) {
+            final deviceId = _deviceId(state);
+            return MidiConnectionScreen(
+              profileId: deviceId,
+              onOpenControl: () => context.push(_controlRouteFor(deviceId)),
+            );
+          },
+        ),
+        GoRoute(
+          path: Routes.hotoneAmperoMiniPatchesSegment,
+          builder: (context, state) => const HotoneAmperoMiniPatchListScreen(),
         ),
         GoRoute(
           path: Routes.midiControlSegment,
@@ -54,7 +64,8 @@ List<RouteBase> midiRoutes() {
         ),
         GoRoute(
           path: Routes.midiDiagnosticsSegment,
-          builder: (context, state) => MidiDiagnosticsScreen(profileId: _deviceId(state)),
+          builder: (context, state) =>
+              MidiDiagnosticsScreen(profileId: _deviceId(state)),
         ),
         GoRoute(
           path: Routes.midiCaptureLogSegment,
@@ -62,11 +73,13 @@ List<RouteBase> midiRoutes() {
         ),
         GoRoute(
           path: Routes.liveControlSegment,
-          builder: (context, state) => LiveControlScreen(profileId: _deviceId(state)),
+          builder: (context, state) =>
+              LiveControlScreen(profileId: _deviceId(state)),
         ),
         GoRoute(
           path: Routes.midiPatchBrowserSegment,
-          builder: (context, state) => MidiPatchBrowserScreen(profileId: _deviceId(state)),
+          builder: (context, state) =>
+              MidiPatchBrowserScreen(profileId: _deviceId(state)),
         ),
         GoRoute(
           path: Routes.midiPatchesSegment,
@@ -75,11 +88,13 @@ List<RouteBase> midiRoutes() {
         ),
         GoRoute(
           path: Routes.midiPresetImportSegment,
-          builder: (context, state) => PresetImportScreen(profileId: _deviceId(state)),
+          builder: (context, state) =>
+              PresetImportScreen(profileId: _deviceId(state)),
         ),
         GoRoute(
           path: Routes.midiCapturedPresetImportSegment,
-          builder: (context, state) => CapturedPresetImportScreen(profileId: _deviceId(state)),
+          builder: (context, state) =>
+              CapturedPresetImportScreen(profileId: _deviceId(state)),
         ),
         GoRoute(
           path: Routes.midiPatchScenesSegment,
@@ -101,7 +116,16 @@ List<RouteBase> midiRoutes() {
   ];
 }
 
-String _deviceId(GoRouterState state) => state.pathParameters[Routes.midiDeviceIdParam] ?? '';
+/// Where "Open control" on the connection screen goes - the Ampero Mini's
+/// own patch list for that device, `MidiControlScreen` for every other one.
+/// Decided here, at the routing layer, rather than inside
+/// `MidiConnectionScreen` itself, which knows nothing about either screen.
+String _controlRouteFor(String deviceId) => deviceId == 'hotone_ampero_mini'
+    ? Routes.hotoneAmperoMiniPatches(deviceId)
+    : Routes.midiControl(deviceId);
+
+String _deviceId(GoRouterState state) =>
+    state.pathParameters[Routes.midiDeviceIdParam] ?? '';
 
 int _patchId(GoRouterState state) =>
     int.tryParse(state.pathParameters[Routes.midiPatchIdParam] ?? '') ?? -1;

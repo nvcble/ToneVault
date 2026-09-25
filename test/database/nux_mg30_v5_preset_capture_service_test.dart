@@ -19,7 +19,11 @@ import '../support/fake_midi_transport.dart';
 import '../support/repositories.dart';
 
 const _profile = NuxMg30V5Profile();
-const _endpoint = MidiEndpoint(id: 'dev-1', name: 'MG-30', type: MidiTransportType.usb);
+const _endpoint = MidiEndpoint(
+  id: 'dev-1',
+  name: 'MG-30',
+  type: MidiTransportType.usb,
+);
 const _fastTimeout = Duration(milliseconds: 50);
 
 /// A 218-byte "get preset data" reply for [programNumber] - just enough
@@ -67,60 +71,73 @@ void main() {
         return;
       }
       final bytes = entry.message.toBytes();
-      if (bytes.length == 15 && bytes[4] == 0x0B && !dropRequestsFor.contains(bytes[6])) {
+      if (bytes.length == 15 &&
+          bytes[4] == 0x0B &&
+          !dropRequestsFor.contains(bytes[6])) {
         transport.receive(_replyFor(bytes[6]));
       }
     });
   }
 
-  test('captures every program number in range and reports the summary', () async {
-    autoReply();
-    final service = NuxMg30V5PresetCaptureService(
-      NuxMg30V5PresetReader(engine),
-      midiPresetCaptureRepository(database),
-    );
+  test(
+    'captures every program number in range and reports the summary',
+    () async {
+      autoReply();
+      final service = NuxMg30V5PresetCaptureService(
+        NuxMg30V5PresetReader(engine),
+        midiPresetCaptureRepository(database),
+      );
 
-    final summary = await service.captureAll(
-      unitId: unitId,
-      deviceProfileId: 'nux_mg30_v5',
-      onDuplicate: PresetCaptureDecision.skip,
-      lastProgramNumber: 2,
-      readTimeout: _fastTimeout,
-    );
+      final summary = await service.captureAll(
+        unitId: unitId,
+        deviceProfileId: 'nux_mg30_v5',
+        onDuplicate: PresetCaptureDecision.skip,
+        lastProgramNumber: 2,
+        readTimeout: _fastTimeout,
+      );
 
-    expect(summary.captured, 3);
-    expect(summary.overwritten, 0);
-    expect(summary.skipped, 0);
-    expect(summary.failures, isEmpty);
+      expect(summary.captured, 3);
+      expect(summary.overwritten, 0);
+      expect(summary.skipped, 0);
+      expect(summary.failures, isEmpty);
 
-    final captures = await midiPresetCaptureRepository(database).watchCaptures(unitId).first;
-    expect(captures.map((c) => c.programNumber), [0, 1, 2]);
-  });
+      final captures = await midiPresetCaptureRepository(
+        database,
+      ).watchCaptures(unitId).first;
+      expect(captures.map((c) => c.programNumber), [0, 1, 2]);
+    },
+  );
 
-  test('skips a program number already captured when told to keep it', () async {
-    final captures = midiPresetCaptureRepository(database);
-    await captures.saveCapture(
-      pedalId: unitId,
-      deviceProfileId: 'nux_mg30_v5',
-      programNumber: 1,
-      rawSysEx: Uint8List.fromList([0x00]),
-    );
-    autoReply();
-    final service = NuxMg30V5PresetCaptureService(NuxMg30V5PresetReader(engine), captures);
+  test(
+    'skips a program number already captured when told to keep it',
+    () async {
+      final captures = midiPresetCaptureRepository(database);
+      await captures.saveCapture(
+        pedalId: unitId,
+        deviceProfileId: 'nux_mg30_v5',
+        programNumber: 1,
+        rawSysEx: Uint8List.fromList([0x00]),
+      );
+      autoReply();
+      final service = NuxMg30V5PresetCaptureService(
+        NuxMg30V5PresetReader(engine),
+        captures,
+      );
 
-    final summary = await service.captureAll(
-      unitId: unitId,
-      deviceProfileId: 'nux_mg30_v5',
-      onDuplicate: PresetCaptureDecision.skip,
-      lastProgramNumber: 1,
-      readTimeout: _fastTimeout,
-    );
+      final summary = await service.captureAll(
+        unitId: unitId,
+        deviceProfileId: 'nux_mg30_v5',
+        onDuplicate: PresetCaptureDecision.skip,
+        lastProgramNumber: 1,
+        readTimeout: _fastTimeout,
+      );
 
-    expect(summary.captured, 1);
-    expect(summary.skipped, 1);
-    final row = await captures.findByProgramNumber(unitId, 1);
-    expect(row!.rawSysEx, [0x00]);
-  });
+      expect(summary.captured, 1);
+      expect(summary.skipped, 1);
+      final row = await captures.findByProgramNumber(unitId, 1);
+      expect(row!.rawSysEx, [0x00]);
+    },
+  );
 
   test('overwrites an already-captured slot when told to replace it', () async {
     final captures = midiPresetCaptureRepository(database);
@@ -131,7 +148,10 @@ void main() {
       rawSysEx: Uint8List.fromList([0x00]),
     );
     autoReply();
-    final service = NuxMg30V5PresetCaptureService(NuxMg30V5PresetReader(engine), captures);
+    final service = NuxMg30V5PresetCaptureService(
+      NuxMg30V5PresetReader(engine),
+      captures,
+    );
 
     final summary = await service.captureAll(
       unitId: unitId,
@@ -147,70 +167,83 @@ void main() {
     expect(row!.rawSysEx, isNot([0x00]));
   });
 
-  test('records a timeout as a failure without stopping the rest of the run', () async {
-    autoReply(dropRequestsFor: {0});
-    final service = NuxMg30V5PresetCaptureService(
-      NuxMg30V5PresetReader(engine),
-      midiPresetCaptureRepository(database),
-    );
+  test(
+    'records a timeout as a failure without stopping the rest of the run',
+    () async {
+      autoReply(dropRequestsFor: {0});
+      final service = NuxMg30V5PresetCaptureService(
+        NuxMg30V5PresetReader(engine),
+        midiPresetCaptureRepository(database),
+      );
 
-    final summary = await service.captureAll(
-      unitId: unitId,
-      deviceProfileId: 'nux_mg30_v5',
-      onDuplicate: PresetCaptureDecision.skip,
-      lastProgramNumber: 1,
-      readTimeout: _fastTimeout,
-    );
+      final summary = await service.captureAll(
+        unitId: unitId,
+        deviceProfileId: 'nux_mg30_v5',
+        onDuplicate: PresetCaptureDecision.skip,
+        lastProgramNumber: 1,
+        readTimeout: _fastTimeout,
+      );
 
-    expect(summary.captured, 1);
-    expect(summary.failures.map((f) => f.programNumber), [0]);
-    expect(summary.stoppedEarly, isFalse);
-    expect(summary.failures.single.message, isNotEmpty);
-  });
+      expect(summary.captured, 1);
+      expect(summary.failures.map((f) => f.programNumber), [0]);
+      expect(summary.stoppedEarly, isFalse);
+      expect(summary.failures.single.message, isNotEmpty);
+    },
+  );
 
-  test('gives up rather than working through a whole bank that cannot answer', () async {
-    // Nothing replies, which is what a wrong command or a device that does not
-    // support this read looks like. 128 slots x the read timeout is minutes of
-    // waiting to be told the same thing 128 times.
-    final service = NuxMg30V5PresetCaptureService(
-      NuxMg30V5PresetReader(engine),
-      midiPresetCaptureRepository(database),
-    );
+  test(
+    'gives up rather than working through a whole bank that cannot answer',
+    () async {
+      // Nothing replies, which is what a wrong command or a device that does not
+      // support this read looks like. 128 slots x the read timeout is minutes of
+      // waiting to be told the same thing 128 times.
+      final service = NuxMg30V5PresetCaptureService(
+        NuxMg30V5PresetReader(engine),
+        midiPresetCaptureRepository(database),
+      );
 
-    final summary = await service.captureAll(
-      unitId: unitId,
-      deviceProfileId: 'nux_mg30_v5',
-      onDuplicate: PresetCaptureDecision.skip,
-      readTimeout: _fastTimeout,
-      giveUpAfterConsecutiveFailures: 3,
-    );
+      final summary = await service.captureAll(
+        unitId: unitId,
+        deviceProfileId: 'nux_mg30_v5',
+        onDuplicate: PresetCaptureDecision.skip,
+        readTimeout: _fastTimeout,
+        giveUpAfterConsecutiveFailures: 3,
+      );
 
-    expect(summary.stoppedEarly, isTrue);
-    expect(summary.failures, hasLength(3));
-    expect(summary.captured, 0);
-  });
+      expect(summary.stoppedEarly, isTrue);
+      expect(summary.failures, hasLength(3));
+      expect(summary.captured, 0);
+    },
+  );
 
-  test('reports a refused send as the reason, not just a slot number', () async {
-    // Disconnected, so the transport refuses every send - the case a capture
-    // that showed only "Failed: 0, 1, 2..." could not be told apart from a
-    // device that simply never answered.
-    await engine.disconnect();
-    final service = NuxMg30V5PresetCaptureService(
-      NuxMg30V5PresetReader(engine),
-      midiPresetCaptureRepository(database),
-    );
+  test(
+    'reports a refused send as the reason, not just a slot number',
+    () async {
+      // Disconnected, so the transport refuses every send - the case a capture
+      // that showed only "Failed: 0, 1, 2..." could not be told apart from a
+      // device that simply never answered.
+      await engine.disconnect();
+      final service = NuxMg30V5PresetCaptureService(
+        NuxMg30V5PresetReader(engine),
+        midiPresetCaptureRepository(database),
+      );
 
-    final summary = await service.captureAll(
-      unitId: unitId,
-      deviceProfileId: 'nux_mg30_v5',
-      onDuplicate: PresetCaptureDecision.skip,
-      readTimeout: _fastTimeout,
-      giveUpAfterConsecutiveFailures: 2,
-    );
+      final summary = await service.captureAll(
+        unitId: unitId,
+        deviceProfileId: 'nux_mg30_v5',
+        onDuplicate: PresetCaptureDecision.skip,
+        readTimeout: _fastTimeout,
+        giveUpAfterConsecutiveFailures: 2,
+      );
 
-    final groups = groupCaptureFailures(summary.failures);
-    expect(groups, hasLength(1), reason: 'one reason, however many slots hit it');
-    expect(groups.single.count, 2);
-    expect(groups.single.message, contains('while disconnected'));
-  });
+      final groups = groupCaptureFailures(summary.failures);
+      expect(
+        groups,
+        hasLength(1),
+        reason: 'one reason, however many slots hit it',
+      );
+      expect(groups.single.count, 2);
+      expect(groups.single.message, contains('while disconnected'));
+    },
+  );
 }

@@ -115,13 +115,21 @@ abstract final class Routes {
 
   /// The bounded capture/raw-sender tool - see `MidiDiagnosticsScreen`.
   /// Distinct from [midiMonitor], which is an always-on rolling log.
-  static String midiDiagnostics(String deviceId) => '$midi/$deviceId/diagnostics';
+  static String midiDiagnostics(String deviceId) =>
+      '$midi/$deviceId/diagnostics';
 
   /// What the open capture has recorded - see `MidiCaptureLogScreen`. A page of
   /// its own rather than a list on [midiDiagnostics], which it would bury.
-  static String midiCaptureLog(String deviceId) => '$midi/$deviceId/capture-log';
+  static String midiCaptureLog(String deviceId) =>
+      '$midi/$deviceId/capture-log';
 
   static String midiPatches(String deviceId) => '$midi/$deviceId/patches';
+
+  /// The Hotone Ampero Mini's own patch browser - see
+  /// `HotoneAmperoMiniPatchListScreen`. A distinct path from [midiPatches],
+  /// which belongs to the pedal-linked patch flow this device does not use.
+  static String hotoneAmperoMiniPatches(String deviceId) =>
+      '$midi/$deviceId/ampero-patches';
 
   /// A patch's own scenes, reached through the device rather than through a
   /// pedal id: the MIDI module knows a patch by which device it belongs to,
@@ -140,7 +148,8 @@ abstract final class Routes {
   /// Reviewing already-captured presets against the experimental decoder -
   /// see `CapturedPresetImportScreen`. Distinct from [midiPresetImport],
   /// which is the real (currently unavailable) transfer.
-  static String midiCapturedPresetImport(String deviceId) => '$midi/$deviceId/captured-presets';
+  static String midiCapturedPresetImport(String deviceId) =>
+      '$midi/$deviceId/captured-presets';
 
   /// A scene's own signal chain, for turning blocks on and off and editing
   /// their knobs before sending. See `MidiPatchEditorScreen`.
@@ -157,11 +166,15 @@ abstract final class Routes {
   static const String liveControlSegment = ':$midiDeviceIdParam/live';
   static const String midiPatchBrowserSegment = ':$midiDeviceIdParam/browse';
   static const String midiPresetImportSegment = ':$midiDeviceIdParam/import';
-  static const String midiCapturedPresetImportSegment = ':$midiDeviceIdParam/captured-presets';
+  static const String midiCapturedPresetImportSegment =
+      ':$midiDeviceIdParam/captured-presets';
   static const String midiMonitorSegment = ':$midiDeviceIdParam/monitor';
-  static const String midiDiagnosticsSegment = ':$midiDeviceIdParam/diagnostics';
+  static const String midiDiagnosticsSegment =
+      ':$midiDeviceIdParam/diagnostics';
   static const String midiCaptureLogSegment = ':$midiDeviceIdParam/capture-log';
   static const String midiPatchesSegment = ':$midiDeviceIdParam/patches';
+  static const String hotoneAmperoMiniPatchesSegment =
+      ':$midiDeviceIdParam/ampero-patches';
   static const String midiPatchScenesSegment =
       ':$midiDeviceIdParam/patches/:$midiPatchIdParam/scenes';
   static const String midiSceneEditorSegment =

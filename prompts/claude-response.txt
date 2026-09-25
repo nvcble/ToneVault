@@ -1,0 +1,54 @@
+Q: why is that F01-1 to F33-3 can only be selected on the pedal itself? What's your blocker on this?
+
+Straight answer: it isn't a limitation I proved. It's one unlogged observation plus a decision I made, and both
+  parts are weaker than my wording implied.
+
+  What I actually have
+
+  Your report that the pedal didn't move when you double-tapped F01-1. That's real evidence, but I checked the
+  capture file again and it contains no outgoing traffic at all — MidiEngine does log TX (midi_engine.dart:156) and
+  the exporter writes it as "TX", so if your F01-1 tap had happened inside that 8-second window, the Program Change
+  would be in the JSON. It isn't. The capture covers 23:17:33–41 only; your attempt happened outside it.
+
+  So I never saw PC 99 on the wire, and I can't distinguish:
+
+  1. the pedal ignores a Program Change for factory patches, or
+  2. the pedal was already on F01-1, so a correct PC 99 would look like nothing happening, or
+  3. the send failed somewhere in the app.
+
+  (3) is unlikely — the old code only marked the tile selected after selectPatch resolved — but (2) I cannot rule
+  out at all. Writing "has to be chosen on the pedal itself" in that snackbar states more than I know, and I'll
+  soften it regardless of what we do next.
+
+  What is solid
+
+  198 patches, 128 Program Change values. At least 70 patches need some mechanism beyond a bare PC — that's
+  arithmetic, not a guess. The standard mechanism is Bank Select (CC 0 MSB, CC 32 LSB, then PC), and Hotone
+  documents Bank Select for the Ampero II, the Mini's sibling.
+
+  The part where I was too cautious
+
+  I lumped Bank Select in with the blind-SysEx probing I refused to do. Those aren't comparable risks:
+
+  ┌───────────────────┬───────────────────────────────────────────────┬────────────────────────────────────────┐
+  │                   │                  Blind SysEx                  │              Bank Select               │
+  ├───────────────────┼───────────────────────────────────────────────┼────────────────────────────────────────┤
+  │ What it might hit │ Factory reset, firmware mode — real,          │ CC 0 / CC 32, reserved by the MIDI     │
+  │                   │ documented dangers on pedals                  │ spec for exactly this                  │
+  ├───────────────────┼───────────────────────────────────────────────┼────────────────────────────────────────┤
+  │ Worst realistic   │ Unrecoverable, since we have no backup        │ Nothing happens, or it lands on an     │
+  │ outcome           │ capability                                    │ unexpected patch                       │
+  ├───────────────────┼───────────────────────────────────────────────┼────────────────────────────────────────┤
+  │ Undo              │ None                                          │ Press a footswitch                     │
+  └───────────────────┴───────────────────────────────────────────────┴────────────────────────────────────────┘
+
+  Bank Select is a cheap, safe, reversible experiment with your pedal in front of you, and I treated it as if it
+  carried the SysEx risk. That was the wrong call. The infrastructure is already there and device-agnostic —
+  buildPatchSelectionMessages takes usesBankSelect + MSB/LSB (midi_patch_selection.dart:25), so this is a small
+  probe UI, not new protocol code.
+
+  Candidates worth sweeping: MSB/LSB of (0,1) and (1,0), with the program number as both the absolute index (99) and
+  the within-half index (0). Four combinations, one of which is the conventional layout for a 2×99 device.
+
+  The one thing that would settle it outright is still the Ampero Editor capture of the editor selecting F01-1 —
+  that shows the real answer instead of a guess. But that's a bigger errand than a four-message experiment.

@@ -9,13 +9,18 @@ void main() {
     await tester.pumpWidget(
       MaterialApp(
         home: Scaffold(
-          body: MidiSceneButtons(selectedScene: selectedScene, onSelect: (_) {}),
+          body: MidiSceneButtons(
+            selectedScene: selectedScene,
+            onSelect: (_) {},
+          ),
         ),
       ),
     );
   }
 
-  testWidgets('the selected scene is filled, the other two are outlined', (tester) async {
+  testWidgets('the selected scene is filled, the other two are outlined', (
+    tester,
+  ) async {
     await pump(tester, 2);
 
     expect(find.byType(FilledButton), findsOneWidget);
@@ -36,14 +41,20 @@ void main() {
   testWidgets('a null onSelect disables every button', (tester) async {
     await tester.pumpWidget(
       const MaterialApp(
-        home: Scaffold(body: MidiSceneButtons(selectedScene: 1, onSelect: null)),
+        home: Scaffold(
+          body: MidiSceneButtons(selectedScene: 1, onSelect: null),
+        ),
       ),
     );
 
-    for (final button in tester.widgetList<FilledButton>(find.byType(FilledButton))) {
+    for (final button in tester.widgetList<FilledButton>(
+      find.byType(FilledButton),
+    )) {
       expect(button.onPressed, isNull);
     }
-    for (final button in tester.widgetList<OutlinedButton>(find.byType(OutlinedButton))) {
+    for (final button in tester.widgetList<OutlinedButton>(
+      find.byType(OutlinedButton),
+    )) {
       expect(button.onPressed, isNull);
     }
   });

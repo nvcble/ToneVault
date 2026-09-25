@@ -19,14 +19,19 @@ import 'midi_preset_capture_providers.dart';
 /// import pipeline - the app's own graph never does, so no screen a real
 /// user opens can end up showing simulated data as if it came from their
 /// device.
-final ProviderFamily<NuxMg30V5PresetTransferService?, String> presetTransferServiceProvider =
-    Provider.family<NuxMg30V5PresetTransferService?, String>((ref, deviceProfileId) => null);
+final ProviderFamily<NuxMg30V5PresetTransferService?, String>
+presetTransferServiceProvider =
+    Provider.family<NuxMg30V5PresetTransferService?, String>(
+      (ref, deviceProfileId) => null,
+    );
 
 /// Null under the same condition as [presetTransferServiceProvider], since
 /// there is nothing for it to import from.
 final ProviderFamily<PresetImportService?, String> presetImportServiceProvider =
     Provider.family<PresetImportService?, String>((ref, deviceProfileId) {
-      final transfer = ref.watch(presetTransferServiceProvider(deviceProfileId));
+      final transfer = ref.watch(
+        presetTransferServiceProvider(deviceProfileId),
+      );
       if (transfer == null) {
         return null;
       }
@@ -46,7 +51,8 @@ final ProviderFamily<PresetImportService?, String> presetImportServiceProvider =
 /// null, because it never needs the device - it only replays raw captures
 /// already saved for [unitId] in MIDI Diagnostics. See
 /// [CapturedNuxMg30V5PresetTransferService].
-final ProviderFamily<PresetImportService, int> experimentalCapturedPresetImportServiceProvider =
+final ProviderFamily<PresetImportService, int>
+experimentalCapturedPresetImportServiceProvider =
     Provider.family<PresetImportService, int>((ref, unitId) {
       final transfer = CapturedNuxMg30V5PresetTransferService(
         ref.watch(midiPresetCaptureRepositoryProvider),

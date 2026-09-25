@@ -9,7 +9,11 @@ import 'package:tone_vault/features/midi/providers/midi_capture_controller.dart'
 import '../support/fake_midi_transport.dart';
 
 const _profile = NuxMg30V5Profile();
-const _endpoint = MidiEndpoint(id: 'dev-1', name: 'MG-30', type: MidiTransportType.usb);
+const _endpoint = MidiEndpoint(
+  id: 'dev-1',
+  name: 'MG-30',
+  type: MidiTransportType.usb,
+);
 
 void main() {
   test('only records entries logged between start and stop', () async {
@@ -28,13 +32,17 @@ void main() {
     // is what actually guarantees the capture controller's own listener has
     // run by the time the assertion below reads its state.
     var delivered = engine.log.first;
-    await engine.send(const ControlChangeMessage(channel: 0, controller: 80, value: 1));
+    await engine.send(
+      const ControlChangeMessage(channel: 0, controller: 80, value: 1),
+    );
     await delivered;
     expect(controller.state.entries, hasLength(1));
 
     controller.stop();
     delivered = engine.log.first;
-    await engine.send(const ControlChangeMessage(channel: 0, controller: 80, value: 2));
+    await engine.send(
+      const ControlChangeMessage(channel: 0, controller: 80, value: 2),
+    );
     await delivered;
     expect(controller.state.entries, hasLength(1));
   });

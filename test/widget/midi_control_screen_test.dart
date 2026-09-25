@@ -22,7 +22,11 @@ import '../support/fake_midi_transport.dart';
 /// device is connected, or it doesn't because it isn't.
 void main() {
   const profile = NuxMg30V5Profile();
-  const endpoint = MidiEndpoint(id: 'dev-1', name: 'MG-30', type: MidiTransportType.usb);
+  const endpoint = MidiEndpoint(
+    id: 'dev-1',
+    name: 'MG-30',
+    type: MidiTransportType.usb,
+  );
 
   late AppDatabase database;
   late MidiEngine engine;
@@ -32,7 +36,8 @@ void main() {
   void prepare() {
     database = AppDatabase(NativeDatabase.memory());
     transport = FakeMidiTransport(endpoints: const [endpoint]);
-    engine = MidiEngine()..attach(profile: profile, transportBuilder: () => transport);
+    engine = MidiEngine()
+      ..attach(profile: profile, transportBuilder: () => transport);
     container = ProviderContainer(
       overrides: [
         appDatabaseProvider.overrideWithValue(database),
@@ -64,7 +69,9 @@ void main() {
     await tester.pumpAndSettle();
   }
 
-  testWidgets('has no toggle and no hardware-verification warning', (tester) async {
+  testWidgets('has no toggle and no hardware-verification warning', (
+    tester,
+  ) async {
     prepare();
 
     await pumpControl(tester);
@@ -73,7 +80,9 @@ void main() {
     expect(find.textContaining('verification'), findsNothing);
   });
 
-  testWidgets('there is no separate Load Patch section any more', (tester) async {
+  testWidgets('there is no separate Load Patch section any more', (
+    tester,
+  ) async {
     prepare();
 
     await pumpControl(tester);
@@ -81,16 +90,21 @@ void main() {
     expect(find.text('Load patch'), findsNothing);
   });
 
-  testWidgets('a single tap on a patch tile only pre-selects it', (tester) async {
+  testWidgets('a single tap on a patch tile only pre-selects it', (
+    tester,
+  ) async {
     prepare();
     await container.read(midiConnectionProvider(profile.id).notifier).connect();
 
     await pumpControl(tester);
-    transport.sent.clear(); // drop the auto-selected default scene sent on connect
+    transport.sent
+        .clear(); // drop the auto-selected default scene sent on connect
     await tester.tap(find.text('02'));
     await tester.pumpAndSettle(kDoubleTapTimeout);
 
-    final tile = tester.widget<PatchGridTile>(find.widgetWithText(PatchGridTile, '02'));
+    final tile = tester.widget<PatchGridTile>(
+      find.widgetWithText(PatchGridTile, '02'),
+    );
     expect(tile.selected, isTrue);
     expect(tile.loaded, isFalse);
     expect(transport.sent, isEmpty);
@@ -107,7 +121,12 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(transport.sent, isNotEmpty);
-    expect(tester.widget<PatchGridTile>(find.widgetWithText(PatchGridTile, '02')).loaded, isTrue);
+    expect(
+      tester
+          .widget<PatchGridTile>(find.widgetWithText(PatchGridTile, '02'))
+          .loaded,
+      isTrue,
+    );
   });
 
   testWidgets('the selected patch name shows below the pager', (tester) async {
@@ -115,7 +134,10 @@ void main() {
 
     await pumpControl(tester);
 
-    expect(find.text('Patch 1'), findsNWidgets(2)); // the default tile, and this line
+    expect(
+      find.text('Patch 1'),
+      findsNWidgets(2),
+    ); // the default tile, and this line
 
     await tester.tap(find.text('02'));
     await tester.pumpAndSettle(kDoubleTapTimeout);
@@ -136,7 +158,9 @@ void main() {
     expect(find.widgetWithText(OutlinedButton, 'Scene 3'), findsOneWidget);
   });
 
-  testWidgets('scene 1 is selected on its own once the device connects', (tester) async {
+  testWidgets('scene 1 is selected on its own once the device connects', (
+    tester,
+  ) async {
     prepare();
     await container.read(midiConnectionProvider(profile.id).notifier).connect();
 

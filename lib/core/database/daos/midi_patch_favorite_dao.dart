@@ -19,10 +19,16 @@ class MidiPatchFavoriteDao extends DatabaseAccessor<AppDatabase>
     ).watch().map((rows) => {for (final row in rows) row.patchId});
   }
 
-  Future<void> setFavorite({required int patchId, required bool isFavorite}) async {
+  Future<void> setFavorite({
+    required int patchId,
+    required bool isFavorite,
+  }) async {
     if (isFavorite) {
       await into(midiPatchFavorites).insert(
-        MidiPatchFavoritesCompanion.insert(patchId: patchId, createdAt: DateTime.now()),
+        MidiPatchFavoritesCompanion.insert(
+          patchId: patchId,
+          createdAt: DateTime.now(),
+        ),
         mode: InsertMode.insertOrIgnore,
       );
     } else {

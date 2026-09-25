@@ -18,7 +18,11 @@ void main() {
 
   group('ControlChangeMessage', () {
     test('encodes controller and value into three bytes', () {
-      const message = ControlChangeMessage(channel: 0, controller: 21, value: 127);
+      const message = ControlChangeMessage(
+        channel: 0,
+        controller: 21,
+        value: 127,
+      );
 
       expect(message.toBytes(), [0xB0, 21, 127]);
     });
@@ -26,13 +30,23 @@ void main() {
 
   group('NoteMessage', () {
     test('uses the note-on status byte when isNoteOn is true', () {
-      const message = NoteMessage(channel: 0, note: 60, velocity: 100, isNoteOn: true);
+      const message = NoteMessage(
+        channel: 0,
+        note: 60,
+        velocity: 100,
+        isNoteOn: true,
+      );
 
       expect(message.toBytes(), [0x90, 60, 100]);
     });
 
     test('uses the note-off status byte when isNoteOn is false', () {
-      const message = NoteMessage(channel: 0, note: 60, velocity: 0, isNoteOn: false);
+      const message = NoteMessage(
+        channel: 0,
+        note: 60,
+        velocity: 0,
+        isNoteOn: false,
+      );
 
       expect(message.toBytes(), [0x80, 60, 0]);
     });
@@ -47,10 +61,13 @@ void main() {
   });
 
   group('UnknownMessage', () {
-    test('returns the raw bytes unchanged, for whatever this app cannot decode', () {
-      const message = UnknownMessage(raw: [0xE0, 0x00, 0x40]);
+    test(
+      'returns the raw bytes unchanged, for whatever this app cannot decode',
+      () {
+        const message = UnknownMessage(raw: [0xE0, 0x00, 0x40]);
 
-      expect(message.toBytes(), [0xE0, 0x00, 0x40]);
-    });
+        expect(message.toBytes(), [0xE0, 0x00, 0x40]);
+      },
+    );
   });
 }

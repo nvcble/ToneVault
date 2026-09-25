@@ -87,6 +87,31 @@
                 "Count out loud. A note played while you are counting is rarely early.",
                 "Turn the click up until it is louder than the guitar, not the other way round."
               ],
+              "nextSkill": "Reading Notation and Tab"
+            }
+          ]
+        },
+        {
+          "slug": "reading-the-page-lead",
+          "title": "Reading the Page",
+          "summary": "How the lines in this course are written, so every lesson after this one can lean on it.",
+          "lessons": [
+            {
+              "slug": "reading-notation-and-tab-lead",
+              "title": "Reading Notation and Tab",
+              "kind": "concept",
+              "estimatedMinutes": 15,
+              "body": "Lead lines are usually written as **tab**, sometimes paired with standard notation above it for the rhythm.\n\nTab is six lines, one per string - top line the high E, bottom line the low E. A number is a fret on that string, and numbers reading left to right are played one after another: a melody rather than a chord. Two numbers stacked are played together.\n\n**Standard notation**, when it is there, sits above the tab and supplies what tab cannot: how long each note lasts. Read the two together - the staff for rhythm, the tab for where to put your fingers.\n\nA handful of symbols carry most of a lead line's phrasing:\n\n- **h** - hammer-on, from a lower fret to a higher one without picking again.\n- **p** - pull-off, the same thing in reverse.\n- **/** - slide into the next number, up or down depending on which one is higher.\n- **b** - bend the string up to the pitch shown, and **r** releases it back.\n- **~** - vibrato on the note it follows.\n\nA line full of these is not decoration - it is the actual instruction. Skipping past a **b** because it looks like clutter is skipping the bend.",
+              "objective": "Read a single-note tab line left to right, including hammer-ons, pull-offs, slides and bends, and place each on the right fret and string.",
+              "commonMistakes": [
+                "Ignoring the technique symbols and picking every note plainly, which is not what the line asked for.",
+                "Reading tab numbers as which finger to use, rather than which fret.",
+                "Skipping the standard notation above the tab and guessing at the rhythm."
+              ],
+              "practiceTips": [
+                "Say the symbol out loud as you reach it - hammer, slide, bend - until reading it is as automatic as reading the fret number.",
+                "Play a line slowly enough that every hammer-on and pull-off is deliberate, not a note you happened to catch."
+              ],
               "nextSkill": "The Minor Pentatonic, Shape One"
             }
           ]

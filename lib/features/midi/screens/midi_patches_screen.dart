@@ -56,7 +56,11 @@ class MidiPatchesScreen extends ConsumerWidget {
         ),
         data: (pedal) => pedal == null
             ? _LinkGearPrompt(profile: profile)
-            : _PatchList(profileId: profileId, profile: profile, unitId: pedal.id),
+            : _PatchList(
+                profileId: profileId,
+                profile: profile,
+                unitId: pedal.id,
+              ),
       ),
     );
   }
@@ -78,7 +82,9 @@ class _LinkGearPrompt extends ConsumerWidget {
       action: FilledButton(
         onPressed: () async {
           try {
-            await ref.read(midiDeviceLinkRepositoryProvider).createLinkedGear(profile);
+            await ref
+                .read(midiDeviceLinkRepositoryProvider)
+                .createLinkedGear(profile);
           } catch (error) {
             if (context.mounted) showFailureSnackBar(context, error);
           }
@@ -91,7 +97,11 @@ class _LinkGearPrompt extends ConsumerWidget {
 
 /// The patches themselves, in whichever order the user picked.
 class _PatchList extends ConsumerStatefulWidget {
-  const _PatchList({required this.profileId, required this.profile, required this.unitId});
+  const _PatchList({
+    required this.profileId,
+    required this.profile,
+    required this.unitId,
+  });
 
   final String profileId;
   final MidiDeviceProfile profile;
@@ -129,7 +139,9 @@ class _PatchListState extends ConsumerState<_PatchList> {
         final numbered =
             ref.watch(numberedPatchesProvider(widget.unitId)).valueOrNull ??
             const <NumberedPatch>[];
-        final numbers = {for (final row in numbered) row.patch.id: row.programNumber};
+        final numbers = {
+          for (final row in numbered) row.patch.id: row.programNumber,
+        };
         final sorted = sortMidiPatches(patches, sort: _sort, numbers: numbers);
 
         final canLoad =
@@ -142,11 +154,14 @@ class _PatchListState extends ConsumerState<_PatchList> {
           secondLabel: MidiPatchSort.programNumber.label,
           showingSecond: _sort == MidiPatchSort.programNumber,
           onChanged: (byNumber) => setState(
-            () => _sort = byNumber ? MidiPatchSort.programNumber : MidiPatchSort.name,
+            () => _sort = byNumber
+                ? MidiPatchSort.programNumber
+                : MidiPatchSort.name,
           ),
           child: ListView.builder(
             itemCount: sorted.length,
-            itemBuilder: (context, index) => _tile(sorted[index], numbers, canLoad),
+            itemBuilder: (context, index) =>
+                _tile(sorted[index], numbers, canLoad),
           ),
         );
       },
@@ -158,9 +173,12 @@ class _PatchListState extends ConsumerState<_PatchList> {
     return MidiPatchListTile(
       name: patch.name,
       programNumber: programNumber,
-      onTap: () => context.push(Routes.midiPatchScenes(widget.profileId, patch.id)),
+      onTap: () =>
+          context.push(Routes.midiPatchScenes(widget.profileId, patch.id)),
       onNumberChanged: (number) => _setNumber(patch.id, number),
-      onLoad: canLoad && programNumber != null ? () => _load(patch.id, programNumber) : null,
+      onLoad: canLoad && programNumber != null
+          ? () => _load(patch.id, programNumber)
+          : null,
     );
   }
 
@@ -179,13 +197,15 @@ class _PatchListState extends ConsumerState<_PatchList> {
       final override = await ref.read(
         patchSelectionOverrideProvider(widget.profileId).future,
       );
-      await ref.read(patchControlControllerProvider).loadPatch(
-        profile: widget.profile,
-        patchNumber: programNumber,
-        patchId: patchId,
-        override: override,
-        experimentalEnabled: true,
-      );
+      await ref
+          .read(patchControlControllerProvider)
+          .loadPatch(
+            profile: widget.profile,
+            patchNumber: programNumber,
+            patchId: patchId,
+            override: override,
+            experimentalEnabled: true,
+          );
     } catch (error) {
       if (mounted) showFailureSnackBar(context, error);
     }

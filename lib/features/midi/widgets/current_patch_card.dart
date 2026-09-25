@@ -10,7 +10,11 @@ import '../../../core/database/daos/midi_patch_program_number_dao.dart';
 /// `MidiPatchBrowserScreen`) until the MG-30's real numbering scheme is
 /// confirmed.
 class CurrentPatchCard extends StatelessWidget {
-  const CurrentPatchCard({required this.current, this.onChangePatch, super.key});
+  const CurrentPatchCard({
+    required this.current,
+    this.onChangePatch,
+    super.key,
+  });
 
   final NumberedPatch? current;
   final VoidCallback? onChangePatch;
@@ -24,13 +28,18 @@ class CurrentPatchCard extends StatelessWidget {
         Text('CURRENT PATCH', style: theme.textTheme.labelLarge),
         const SizedBox(height: AppSpacing.xs),
         Text(
-          current == null ? '—' : '${current!.programNumber} — ${current!.patch.name}',
+          current == null
+              ? '—'
+              : '${current!.programNumber} — ${current!.patch.name}',
           style: theme.textTheme.headlineMedium,
           textAlign: TextAlign.center,
         ),
         if (onChangePatch != null) ...[
           const SizedBox(height: AppSpacing.sm),
-          OutlinedButton(onPressed: onChangePatch, child: const Text('Change Patch')),
+          OutlinedButton(
+            onPressed: onChangePatch,
+            child: const Text('Change Patch'),
+          ),
         ],
       ],
     );

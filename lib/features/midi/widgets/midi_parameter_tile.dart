@@ -6,7 +6,11 @@ import '../../../core/midi/midi_parameter_definition.dart';
 /// One parameter's value, changed locally and sent only when asked - see
 /// section 11 of the MIDI module brief on preferring explicit sends.
 class MidiParameterTile extends StatefulWidget {
-  const MidiParameterTile({required this.definition, required this.onSend, super.key});
+  const MidiParameterTile({
+    required this.definition,
+    required this.onSend,
+    super.key,
+  });
 
   final MidiParameterDefinition definition;
   final void Function(int value) onSend;
@@ -30,7 +34,10 @@ class _MidiParameterTileState extends State<MidiParameterTile> {
     final divisions = (definition.max - definition.min).round();
 
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md, vertical: AppSpacing.xs),
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppSpacing.md,
+        vertical: AppSpacing.xs,
+      ),
       child: Row(
         children: [
           Expanded(

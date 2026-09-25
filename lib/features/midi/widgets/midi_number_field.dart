@@ -3,7 +3,11 @@ import 'package:flutter/material.dart';
 /// A small integer assigned to something - a patch's program number, a
 /// scene's Pro Scene slot - editable in place.
 class MidiNumberField extends StatefulWidget {
-  const MidiNumberField({required this.value, required this.onChanged, super.key});
+  const MidiNumberField({
+    required this.value,
+    required this.onChanged,
+    super.key,
+  });
 
   final int? value;
   final void Function(int value) onChanged;

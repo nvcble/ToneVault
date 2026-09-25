@@ -131,8 +131,9 @@ int? midiMessageChannel(MidiMessage message) => switch (message) {
 /// [bytes] as space-separated, upper-case hex pairs - e.g. "F0 43 10 F7" -
 /// the shape a MIDI capture or a hardware spec is read in, so the Monitor and
 /// any exported capture show the same thing someone would see in a spec sheet.
-String hexBytes(List<int> bytes) =>
-    bytes.map((byte) => byte.toRadixString(16).padLeft(2, '0').toUpperCase()).join(' ');
+String hexBytes(List<int> bytes) => bytes
+    .map((byte) => byte.toRadixString(16).padLeft(2, '0').toUpperCase())
+    .join(' ');
 
 /// Parses a hex string such as "F0 43 10 F7" (whitespace between pairs
 /// optional, case-insensitive) back into bytes, for the diagnostic raw SysEx
@@ -148,6 +149,7 @@ List<int> parseHexBytes(String text) {
     throw const FormatException('Bytes must be hex pairs, e.g. "F0 43 10 F7".');
   }
   return [
-    for (var i = 0; i < cleaned.length; i += 2) int.parse(cleaned.substring(i, i + 2), radix: 16),
+    for (var i = 0; i < cleaned.length; i += 2)
+      int.parse(cleaned.substring(i, i + 2), radix: 16),
   ];
 }

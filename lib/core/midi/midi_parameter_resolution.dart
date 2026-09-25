@@ -14,7 +14,9 @@ List<MidiParameterDefinition> applyParameterOverrides(
   List<MidiParameterDefinition> defaults,
   List<MidiParameterOverride> overrides,
 ) {
-  final ccByName = {for (final override in overrides) override.parameterName: override.ccNumber};
+  final ccByName = {
+    for (final override in overrides) override.parameterName: override.ccNumber,
+  };
 
   return [
     for (final definition in defaults)
@@ -46,7 +48,11 @@ MidiMessage? buildParameterMessage({
     return null;
   }
 
-  return ControlChangeMessage(channel: channel, controller: definition.ccNumber!, value: value);
+  return ControlChangeMessage(
+    channel: channel,
+    controller: definition.ccNumber!,
+    value: value,
+  );
 }
 
 /// One control's stored value, named the way `buildParameterMessage` reads a

@@ -15,7 +15,8 @@ import 'midi_preset_capture_repository.dart';
 /// [MidiSupportLevel.needsHardwareVerification]: decoding a capture with the
 /// same logic used elsewhere does not make the MG-30 V5 protocol confirmed,
 /// only reachable to review before trusting it.
-class CapturedNuxMg30V5PresetTransferService implements NuxMg30V5PresetTransferService {
+class CapturedNuxMg30V5PresetTransferService
+    implements NuxMg30V5PresetTransferService {
   const CapturedNuxMg30V5PresetTransferService(this._captures, this._unitId);
 
   final MidiPresetCaptureRepository _captures;

@@ -29,7 +29,8 @@ class ControlRepository {
 
   /// A one-off read of [watchControls], for a computation that just needs
   /// the current controls rather than to keep watching them.
-  Future<List<PedalControl>> controlsOf(int pedalId) => _dao.controlsOf(pedalId);
+  Future<List<PedalControl>> controlsOf(int pedalId) =>
+      _dao.controlsOf(pedalId);
 
   Stream<PedalControl?> watchControl(int controlId) =>
       _dao.watchControl(controlId);

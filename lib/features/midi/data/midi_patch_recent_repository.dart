@@ -26,7 +26,9 @@ List<NumberedPatch> recentNumberedPatches(
   List<NumberedPatch> numberedPatches, {
   required List<MidiPatchRecent> recents,
 }) {
-  final byPatchId = {for (final patch in numberedPatches) patch.patch.id: patch};
+  final byPatchId = {
+    for (final patch in numberedPatches) patch.patch.id: patch,
+  };
 
   return [
     for (final recent in recents)

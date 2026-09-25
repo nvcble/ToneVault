@@ -61,7 +61,8 @@ class MidiCaptureController extends StateNotifier<MidiCaptureState> {
   }
 }
 
-final StateNotifierProvider<MidiCaptureController, MidiCaptureState> midiCaptureProvider =
+final StateNotifierProvider<MidiCaptureController, MidiCaptureState>
+midiCaptureProvider =
     StateNotifierProvider<MidiCaptureController, MidiCaptureState>(
       (ref) => MidiCaptureController(ref.watch(midiEngineProvider)),
     );

@@ -50,7 +50,9 @@ class _MidiMappingTileState extends State<MidiMappingTile> {
   Widget build(BuildContext context) {
     return ListTile(
       title: Text(widget.definition.name),
-      subtitle: widget.isOverridden ? const Text('Customized') : const Text('Default'),
+      subtitle: widget.isOverridden
+          ? const Text('Customized')
+          : const Text('Default'),
       trailing: Row(
         mainAxisSize: MainAxisSize.min,
         children: [

@@ -37,7 +37,10 @@ class _RawSysExSenderState extends ConsumerState<RawSysExSender> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Send Raw SysEx', style: Theme.of(context).textTheme.titleSmall),
+            Text(
+              'Send Raw SysEx',
+              style: Theme.of(context).textTheme.titleSmall,
+            ),
             const SizedBox(height: AppSpacing.xs),
             const Text(
               'Bytes you type are sent exactly as written. ToneVault does not '

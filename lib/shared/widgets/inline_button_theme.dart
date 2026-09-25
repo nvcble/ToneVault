@@ -24,8 +24,9 @@ class InlineButtonTheme extends StatelessWidget {
   Widget build(BuildContext context) {
     return FilledButtonTheme(
       data: FilledButtonThemeData(
-        style: (Theme.of(context).filledButtonTheme.style ?? const ButtonStyle())
-            .copyWith(minimumSize: minimumSize),
+        style:
+            (Theme.of(context).filledButtonTheme.style ?? const ButtonStyle())
+                .copyWith(minimumSize: minimumSize),
       ),
       child: child,
     );

@@ -136,17 +136,20 @@ class MidiEngine {
     required bool Function(MidiMessage message) matches,
     Duration timeout = const Duration(seconds: 3),
   }) async {
-    final response = incoming.firstWhere(matches).timeout(
-      timeout,
-      onTimeout: () => throw const MidiRequestTimedOut(),
-    );
+    final response = incoming
+        .firstWhere(matches)
+        .timeout(timeout, onTimeout: () => throw const MidiRequestTimedOut());
     await send(message);
     return response;
   }
 
   void _logIncoming(MidiMessage message) {
     _record(
-      MidiLogEntry(direction: MidiDirection.incoming, message: message, timestamp: DateTime.now()),
+      MidiLogEntry(
+        direction: MidiDirection.incoming,
+        message: message,
+        timestamp: DateTime.now(),
+      ),
     );
   }
 

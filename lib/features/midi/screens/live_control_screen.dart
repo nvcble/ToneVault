@@ -55,7 +55,11 @@ class LiveControlScreen extends ConsumerWidget {
               message: 'Add this device as gear from its Patches screen first.',
             );
           }
-          return _LiveControlBody(profileId: profileId, profile: profile, unitId: pedal.id);
+          return _LiveControlBody(
+            profileId: profileId,
+            profile: profile,
+            unitId: pedal.id,
+          );
         },
       ),
     );
@@ -63,7 +67,11 @@ class LiveControlScreen extends ConsumerWidget {
 }
 
 class _LiveControlBody extends ConsumerWidget {
-  const _LiveControlBody({required this.profileId, required this.profile, required this.unitId});
+  const _LiveControlBody({
+    required this.profileId,
+    required this.profile,
+    required this.unitId,
+  });
 
   final String profileId;
   final MidiDeviceProfile profile;
@@ -72,7 +80,8 @@ class _LiveControlBody extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final connected =
-        ref.watch(midiConnectionProvider(profileId)).state == MidiConnectionState.connected;
+        ref.watch(midiConnectionProvider(profileId)).state ==
+        MidiConnectionState.connected;
     final patchesAsync = ref.watch(numberedPatchesProvider(unitId));
 
     return patchesAsync.when(
@@ -87,14 +96,18 @@ class _LiveControlBody extends ConsumerWidget {
           return const EmptyState(
             icon: Icons.list_alt,
             title: 'No numbered patches yet',
-            message: 'Give at least one patch a program number on the Patches screen.',
+            message:
+                'Give at least one patch a program number on the Patches screen.',
           );
         }
 
         final currentNumber = ref.watch(currentPatchNumberProvider(profileId));
-        final current = patches.where((p) => p.programNumber == currentNumber).firstOrNull;
+        final current = patches
+            .where((p) => p.programNumber == currentNumber)
+            .firstOrNull;
         final currentScene = ref.watch(currentSceneNumberProvider(profileId));
-        final canAct = connected && ref.watch(experimentalProgramChangeEnabledProvider);
+        final canAct =
+            connected && ref.watch(experimentalProgramChangeEnabledProvider);
 
         return Padding(
           padding: const EdgeInsets.all(AppSpacing.lg),
@@ -107,12 +120,15 @@ class _LiveControlBody extends ConsumerWidget {
                 ),
               CurrentPatchCard(
                 current: current,
-                onChangePatch: () => context.push(Routes.midiPatchBrowser(profileId)),
+                onChangePatch: () =>
+                    context.push(Routes.midiPatchBrowser(profileId)),
               ),
               const Spacer(),
               MidiSceneButtons(
                 selectedScene: currentScene,
-                onSelect: canAct ? (scene) => _sendScene(context, ref, scene) : null,
+                onSelect: canAct
+                    ? (scene) => _sendScene(context, ref, scene)
+                    : null,
               ),
               const SizedBox(height: AppSpacing.lg),
               Row(
@@ -120,7 +136,9 @@ class _LiveControlBody extends ConsumerWidget {
                   Expanded(
                     child: FilledButton(
                       style: FilledButton.styleFrom(
-                        minimumSize: const Size.fromHeight(AppSpacing.minTouchTarget * 1.4),
+                        minimumSize: const Size.fromHeight(
+                          AppSpacing.minTouchTarget * 1.4,
+                        ),
                       ),
                       onPressed: canAct
                           ? () => _step(context, ref, patches, current, -1)
@@ -132,9 +150,13 @@ class _LiveControlBody extends ConsumerWidget {
                   Expanded(
                     child: FilledButton(
                       style: FilledButton.styleFrom(
-                        minimumSize: const Size.fromHeight(AppSpacing.minTouchTarget * 1.4),
+                        minimumSize: const Size.fromHeight(
+                          AppSpacing.minTouchTarget * 1.4,
+                        ),
                       ),
-                      onPressed: canAct ? () => _step(context, ref, patches, current, 1) : null,
+                      onPressed: canAct
+                          ? () => _step(context, ref, patches, current, 1)
+                          : null,
                       child: const Text('Next patch'),
                     ),
                   ),
@@ -154,15 +176,25 @@ class _LiveControlBody extends ConsumerWidget {
     NumberedPatch? current,
     int direction,
   ) async {
-    final target = nextLiveControlPatch(patches: patches, current: current, direction: direction);
+    final target = nextLiveControlPatch(
+      patches: patches,
+      current: current,
+      direction: direction,
+    );
     if (target != null) {
       await _load(context, ref, target);
     }
   }
 
-  Future<void> _load(BuildContext context, WidgetRef ref, NumberedPatch target) async {
+  Future<void> _load(
+    BuildContext context,
+    WidgetRef ref,
+    NumberedPatch target,
+  ) async {
     try {
-      final override = await ref.read(patchSelectionOverrideProvider(profileId).future);
+      final override = await ref.read(
+        patchSelectionOverrideProvider(profileId).future,
+      );
       await ref
           .read(patchControlControllerProvider)
           .loadPatch(
@@ -172,15 +204,22 @@ class _LiveControlBody extends ConsumerWidget {
             override: override,
             experimentalEnabled: true,
           );
-      ref.read(currentPatchNumberProvider(profileId).notifier).state = target.programNumber;
+      ref.read(currentPatchNumberProvider(profileId).notifier).state =
+          target.programNumber;
     } catch (error) {
       if (context.mounted) showFailureSnackBar(context, error);
     }
   }
 
-  Future<void> _sendScene(BuildContext context, WidgetRef ref, int scene) async {
+  Future<void> _sendScene(
+    BuildContext context,
+    WidgetRef ref,
+    int scene,
+  ) async {
     try {
-      final parameters = await ref.read(effectiveParametersProvider(profileId).future);
+      final parameters = await ref.read(
+        effectiveParametersProvider(profileId).future,
+      );
       await ref
           .read(midiParameterSenderProvider)
           .send(

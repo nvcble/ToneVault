@@ -57,7 +57,9 @@ class PatchGridTile extends StatelessWidget {
             ),
             Text(
               label,
-              style: Theme.of(context).textTheme.bodySmall?.copyWith(color: foreground),
+              style: Theme.of(
+                context,
+              ).textTheme.bodySmall?.copyWith(color: foreground),
               textAlign: TextAlign.center,
               maxLines: 1,
               overflow: TextOverflow.ellipsis,

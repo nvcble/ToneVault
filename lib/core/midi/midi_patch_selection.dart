@@ -30,12 +30,20 @@ List<MidiMessage> buildPatchSelectionMessages({
   if (usesBankSelect) {
     if (bankSelectMsb != null) {
       messages.add(
-        ControlChangeMessage(channel: channel, controller: bankSelectMsbCc, value: bankSelectMsb),
+        ControlChangeMessage(
+          channel: channel,
+          controller: bankSelectMsbCc,
+          value: bankSelectMsb,
+        ),
       );
     }
     if (bankSelectLsb != null) {
       messages.add(
-        ControlChangeMessage(channel: channel, controller: bankSelectLsbCc, value: bankSelectLsb),
+        ControlChangeMessage(
+          channel: channel,
+          controller: bankSelectLsbCc,
+          value: bankSelectLsb,
+        ),
       );
     }
   }

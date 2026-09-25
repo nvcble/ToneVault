@@ -55,7 +55,10 @@ class MidiBlockEditorTile extends ConsumerWidget {
                 _ControlValueSlider(
                   sceneId: sceneId,
                   control: control,
-                  value: values[control.id] ?? control.defaultValue ?? control.minValue,
+                  value:
+                      values[control.id] ??
+                      control.defaultValue ??
+                      control.minValue,
                 ),
             ]
           : const [],
@@ -64,14 +67,19 @@ class MidiBlockEditorTile extends ConsumerWidget {
 }
 
 class _ControlValueSlider extends ConsumerStatefulWidget {
-  const _ControlValueSlider({required this.sceneId, required this.control, required this.value});
+  const _ControlValueSlider({
+    required this.sceneId,
+    required this.control,
+    required this.value,
+  });
 
   final int sceneId;
   final PedalControl control;
   final double value;
 
   @override
-  ConsumerState<_ControlValueSlider> createState() => _ControlValueSliderState();
+  ConsumerState<_ControlValueSlider> createState() =>
+      _ControlValueSliderState();
 }
 
 class _ControlValueSliderState extends ConsumerState<_ControlValueSlider> {
@@ -114,7 +122,11 @@ class _ControlValueSliderState extends ConsumerState<_ControlValueSlider> {
                 try {
                   await ref
                       .read(sceneValueRepositoryProvider)
-                      .setValue(sceneId: widget.sceneId, controlId: control.id, value: value);
+                      .setValue(
+                        sceneId: widget.sceneId,
+                        controlId: control.id,
+                        value: value,
+                      );
                 } catch (error) {
                   if (context.mounted) showFailureSnackBar(context, error);
                 }

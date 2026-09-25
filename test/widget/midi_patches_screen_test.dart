@@ -54,10 +54,16 @@ void main() {
   /// A unit with three patches, numbered so that name order and number order
   /// disagree - otherwise either sort would pass the test.
   Future<void> seedUnit() async {
-    final unitId = await midiDeviceLinkRepository(database).createLinkedGear(profile);
+    final unitId = await midiDeviceLinkRepository(
+      database,
+    ).createLinkedGear(profile);
     final patches = patchRepository(database);
     final numbers = midiPatchProgramRepository(database);
-    for (final (name, number) in const [('Zeta', 0), ('Ambient', 7), ('Mid', 127)]) {
+    for (final (name, number) in const [
+      ('Zeta', 0),
+      ('Ambient', 7),
+      ('Mid', 127),
+    ]) {
       final patchId = await patches.createPatch(unitId, PatchDraft(name: name));
       await numbers.setNumber(patchId: patchId, programNumber: number);
     }
@@ -115,7 +121,9 @@ void main() {
     expect(rowsInOrder(tester), [('Zeta', 0), ('Ambient', 7), ('Mid', 127)]);
   });
 
-  screenTest('offers the link prompt when the unit is not gear yet', (tester) async {
+  screenTest('offers the link prompt when the unit is not gear yet', (
+    tester,
+  ) async {
     await pumpPatches(tester);
 
     expect(find.text('Add ${profile.displayName} as gear'), findsOneWidget);

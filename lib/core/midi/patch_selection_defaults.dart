@@ -29,7 +29,11 @@ class PatchSelectionDefaults {
 /// kept separate from the CC-mapping overrides: this is a strategy, not a
 /// single named parameter.
 class PatchSelectionOverride {
-  const PatchSelectionOverride({this.usesBankSelect, this.bankSelectMsb, this.bankSelectLsb});
+  const PatchSelectionOverride({
+    this.usesBankSelect,
+    this.bankSelectMsb,
+    this.bankSelectLsb,
+  });
 
   final bool? usesBankSelect;
   final int? bankSelectMsb;

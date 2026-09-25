@@ -73,7 +73,8 @@ Future<T> runWithProgressDialog<T>(
   BuildContext context, {
   required String title,
   required String Function(JobProgress progress) label,
-  required Future<T> Function(void Function(int completed, int total) report) job,
+  required Future<T> Function(void Function(int completed, int total) report)
+  job,
 }) async {
   final progress = ValueNotifier(const JobProgress());
   // Captured up front: the dialog is closed in a `finally`, by which point
@@ -82,12 +83,14 @@ Future<T> runWithProgressDialog<T>(
   final closed = showDialog<void>(
     context: context,
     barrierDismissible: false,
-    builder: (context) => ProgressDialog(title: title, progress: progress, label: label),
+    builder: (context) =>
+        ProgressDialog(title: title, progress: progress, label: label),
   );
 
   try {
     return await job(
-      (completed, total) => progress.value = JobProgress(completed: completed, total: total),
+      (completed, total) =>
+          progress.value = JobProgress(completed: completed, total: total),
     );
   } finally {
     navigator.pop();

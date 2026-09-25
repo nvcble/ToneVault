@@ -52,16 +52,25 @@ class MidiPatchBrowserScreen extends ConsumerWidget {
             ? const EmptyState(
                 icon: Icons.link_off,
                 title: 'Not gear yet',
-                message: 'Add this device as gear from its Patches screen first.',
+                message:
+                    'Add this device as gear from its Patches screen first.',
               )
-            : _Browser(profileId: profileId, profile: profile, unitId: pedal.id),
+            : _Browser(
+                profileId: profileId,
+                profile: profile,
+                unitId: pedal.id,
+              ),
       ),
     );
   }
 }
 
 class _Browser extends ConsumerStatefulWidget {
-  const _Browser({required this.profileId, required this.profile, required this.unitId});
+  const _Browser({
+    required this.profileId,
+    required this.profile,
+    required this.unitId,
+  });
 
   final String profileId;
   final MidiDeviceProfile profile;
@@ -98,14 +107,21 @@ class _BrowserState extends ConsumerState<_Browser> {
           return const EmptyState(
             icon: Icons.list_alt,
             title: 'No numbered patches yet',
-            message: 'Give at least one patch a program number on the Patches screen.',
+            message:
+                'Give at least one patch a program number on the Patches screen.',
           );
         }
 
-        final favorites = ref.watch(favoritePatchIdsProvider).valueOrNull ?? const {};
-        final recentRows = ref.watch(patchRecentsProvider).valueOrNull ?? const [];
-        final currentNumber = ref.watch(currentPatchNumberProvider(widget.profileId));
-        final current = patches.where((p) => p.programNumber == currentNumber).firstOrNull;
+        final favorites =
+            ref.watch(favoritePatchIdsProvider).valueOrNull ?? const {};
+        final recentRows =
+            ref.watch(patchRecentsProvider).valueOrNull ?? const [];
+        final currentNumber = ref.watch(
+          currentPatchNumberProvider(widget.profileId),
+        );
+        final current = patches
+            .where((p) => p.programNumber == currentNumber)
+            .firstOrNull;
 
         final query = _query.trim().toLowerCase();
         final filtered = query.isEmpty
@@ -144,7 +160,9 @@ class _BrowserState extends ConsumerState<_Browser> {
                         if (favorites.isNotEmpty)
                           ..._section(
                             '★ Favorites',
-                            patches.where((p) => favorites.contains(p.patch.id)).toList(),
+                            patches
+                                .where((p) => favorites.contains(p.patch.id))
+                                .toList(),
                             favorites,
                           ),
                         if (recentRows.isNotEmpty)
@@ -154,8 +172,12 @@ class _BrowserState extends ConsumerState<_Browser> {
                             favorites,
                           ),
                         for (final bank in groupPatchesByBank(patches)) ...[
-                          SectionLabel('Bank ${bank.bankNumber.toString().padLeft(2, '0')}'),
-                          ...bank.patches.map((patch) => _tile(patch, favorites)),
+                          SectionLabel(
+                            'Bank ${bank.bankNumber.toString().padLeft(2, '0')}',
+                          ),
+                          ...bank.patches.map(
+                            (patch) => _tile(patch, favorites),
+                          ),
                         ],
                       ],
                     ),
@@ -169,11 +191,20 @@ class _BrowserState extends ConsumerState<_Browser> {
   Widget _list(List<NumberedPatch> patches, Set<int> favorites) {
     return patches.isEmpty
         ? const EmptyState(icon: Icons.search_off, title: 'No patches match')
-        : ListView(children: patches.map((patch) => _tile(patch, favorites)).toList());
+        : ListView(
+            children: patches.map((patch) => _tile(patch, favorites)).toList(),
+          );
   }
 
-  List<Widget> _section(String title, List<NumberedPatch> patches, Set<int> favorites) {
-    return [SectionLabel(title), ...patches.map((patch) => _tile(patch, favorites))];
+  List<Widget> _section(
+    String title,
+    List<NumberedPatch> patches,
+    Set<int> favorites,
+  ) {
+    return [
+      SectionLabel(title),
+      ...patches.map((patch) => _tile(patch, favorites)),
+    ];
   }
 
   Widget _tile(NumberedPatch patch, Set<int> favorites) {
@@ -184,13 +215,17 @@ class _BrowserState extends ConsumerState<_Browser> {
       onTap: () => _select(patch),
       onToggleFavorite: () => ref
           .read(midiPatchFavoriteRepositoryProvider)
-          .setFavorite(patchId: patch.patch.id, isFavorite: !favorites.contains(patch.patch.id)),
+          .setFavorite(
+            patchId: patch.patch.id,
+            isFavorite: !favorites.contains(patch.patch.id),
+          ),
     );
   }
 
   Future<void> _select(NumberedPatch patch) async {
     final connected =
-        ref.read(midiConnectionProvider(widget.profileId)).state == MidiConnectionState.connected;
+        ref.read(midiConnectionProvider(widget.profileId)).state ==
+        MidiConnectionState.connected;
     if (!connected) {
       showFailureSnackBar(context, const AppFailure('MG-30 is not connected.'));
       return;
@@ -198,7 +233,9 @@ class _BrowserState extends ConsumerState<_Browser> {
 
     setState(() => _selectingPatchId = patch.patch.id);
     try {
-      final override = await ref.read(patchSelectionOverrideProvider(widget.profileId).future);
+      final override = await ref.read(
+        patchSelectionOverrideProvider(widget.profileId).future,
+      );
       await ref
           .read(patchControlControllerProvider)
           .loadPatch(
@@ -208,7 +245,8 @@ class _BrowserState extends ConsumerState<_Browser> {
             override: override,
             experimentalEnabled: true,
           );
-      ref.read(currentPatchNumberProvider(widget.profileId).notifier).state = patch.programNumber;
+      ref.read(currentPatchNumberProvider(widget.profileId).notifier).state =
+          patch.programNumber;
       if (mounted) await Navigator.of(context).maybePop();
     } catch (error) {
       if (mounted) showFailureSnackBar(context, error);

@@ -5,6 +5,7 @@ import 'package:tone_vault/core/database/daos/academy_progress_dao.dart';
 import 'package:tone_vault/core/database/daos/backup_dao.dart';
 import 'package:tone_vault/core/database/daos/change_log_dao.dart';
 import 'package:tone_vault/core/database/daos/configuration_dao.dart';
+import 'package:tone_vault/core/database/daos/hotone_ampero_mini_patch_dao.dart';
 import 'package:tone_vault/core/database/daos/midi_device_link_dao.dart';
 import 'package:tone_vault/core/database/daos/midi_parameter_override_dao.dart';
 import 'package:tone_vault/core/database/daos/midi_patch_favorite_dao.dart';
@@ -40,6 +41,7 @@ import 'package:tone_vault/features/midi/data/midi_scene_number_repository.dart'
 import 'package:tone_vault/features/midi/data/patch_control_controller.dart';
 import 'package:tone_vault/features/midi/data/patch_selection_repository.dart';
 import 'package:tone_vault/features/midi/data/preset_import_service.dart';
+import 'package:tone_vault/features/midi/hotone_ampero_mini/data/hotone_ampero_mini_patch_repository.dart';
 import 'package:tone_vault/features/patches/data/patch_repository.dart';
 import 'package:tone_vault/features/patches/data/scene_duplicator.dart';
 import 'package:tone_vault/features/patches/data/scene_pedal_repository.dart';
@@ -224,7 +226,9 @@ BookmarkRepository bookmarkRepository(
   return BookmarkRepository(AcademyBookmarkDao(database), clock: clock);
 }
 
-MidiParameterMappingRepository midiParameterMappingRepository(AppDatabase database) {
+MidiParameterMappingRepository midiParameterMappingRepository(
+  AppDatabase database,
+) {
   return MidiParameterMappingRepository(MidiParameterOverrideDao(database));
 }
 
@@ -264,9 +268,24 @@ MidiPresetCaptureRepository midiPresetCaptureRepository(AppDatabase database) {
   return MidiPresetCaptureRepository(MidiPresetCaptureDao(database));
 }
 
+/// The Hotone Ampero Mini's own, pedal-independent patch library - see
+/// `hotone_ampero_mini_patches_table.dart`.
+HotoneAmperoMiniPatchRepository hotoneAmperoMiniPatchRepository(
+  AppDatabase database, {
+  String deviceProfileId = 'hotone_ampero_mini',
+}) {
+  return HotoneAmperoMiniPatchRepository(
+    HotoneAmperoMiniPatchDao(database),
+    deviceProfileId,
+  );
+}
+
 /// A patch-control controller wired the way the provider wires it, for tests
 /// that exercise `loadPatch`'s "Recently Used" side effect.
-PatchControlController patchControlController(AppDatabase database, MidiEngine engine) {
+PatchControlController patchControlController(
+  AppDatabase database,
+  MidiEngine engine,
+) {
   return PatchControlController(engine, midiPatchRecentRepository(database));
 }
 

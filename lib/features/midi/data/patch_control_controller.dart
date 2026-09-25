@@ -34,7 +34,9 @@ class PatchControlController {
 
     final defaults = profile.patchSelectionDefaults;
     if (defaults == null) {
-      throw AppFailure('${profile.displayName} has no known way to select a patch yet.');
+      throw AppFailure(
+        '${profile.displayName} has no known way to select a patch yet.',
+      );
     }
 
     final messages = buildPatchSelectionMessages(
@@ -44,7 +46,10 @@ class PatchControlController {
       patchNumber: patchNumber,
     );
 
-    await guardFailure(() => _engine.sendAll(messages), 'Could not load that patch.');
+    await guardFailure(
+      () => _engine.sendAll(messages),
+      'Could not load that patch.',
+    );
 
     if (patchId != null) {
       await _recents.recordUsed(patchId);

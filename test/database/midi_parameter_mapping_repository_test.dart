@@ -17,7 +17,9 @@ void main() {
   test('reads the device profile defaults with no overrides stored', () async {
     final repository = midiParameterMappingRepository(database);
 
-    final parameters = await repository.watchEffectiveParameters(_profile).first;
+    final parameters = await repository
+        .watchEffectiveParameters(_profile)
+        .first;
 
     expect(parameters, hasLength(86));
     expect(parameters.firstWhere((p) => p.name == 'Scene').ccNumber, 80);
@@ -26,8 +28,14 @@ void main() {
   test('an override replaces the default CC for that parameter only', () async {
     final repository = midiParameterMappingRepository(database);
 
-    await repository.setOverride(profile: _profile, parameterName: 'Scene', ccNumber: 90);
-    final parameters = await repository.watchEffectiveParameters(_profile).first;
+    await repository.setOverride(
+      profile: _profile,
+      parameterName: 'Scene',
+      ccNumber: 90,
+    );
+    final parameters = await repository
+        .watchEffectiveParameters(_profile)
+        .first;
 
     expect(parameters.firstWhere((p) => p.name == 'Scene').ccNumber, 90);
     expect(parameters.firstWhere((p) => p.name == 'Pedal').ccNumber, 79);
@@ -37,7 +45,11 @@ void main() {
     final repository = midiParameterMappingRepository(database);
 
     await expectLater(
-      repository.setOverride(profile: _profile, parameterName: 'Made up', ccNumber: 1),
+      repository.setOverride(
+        profile: _profile,
+        parameterName: 'Made up',
+        ccNumber: 1,
+      ),
       throwsA(isA<AppFailure>()),
     );
   });
@@ -46,29 +58,54 @@ void main() {
     final repository = midiParameterMappingRepository(database);
 
     await expectLater(
-      repository.setOverride(profile: _profile, parameterName: 'Scene', ccNumber: 128),
+      repository.setOverride(
+        profile: _profile,
+        parameterName: 'Scene',
+        ccNumber: 128,
+      ),
       throwsA(isA<AppFailure>()),
     );
     await expectLater(
-      repository.setOverride(profile: _profile, parameterName: 'Scene', ccNumber: -1),
+      repository.setOverride(
+        profile: _profile,
+        parameterName: 'Scene',
+        ccNumber: -1,
+      ),
       throwsA(isA<AppFailure>()),
     );
   });
 
   test('resetOverride restores the default CC', () async {
     final repository = midiParameterMappingRepository(database);
-    await repository.setOverride(profile: _profile, parameterName: 'Scene', ccNumber: 90);
+    await repository.setOverride(
+      profile: _profile,
+      parameterName: 'Scene',
+      ccNumber: 90,
+    );
 
-    await repository.resetOverride(deviceProfileId: _profile.id, parameterName: 'Scene');
+    await repository.resetOverride(
+      deviceProfileId: _profile.id,
+      parameterName: 'Scene',
+    );
 
-    final parameters = await repository.watchEffectiveParameters(_profile).first;
+    final parameters = await repository
+        .watchEffectiveParameters(_profile)
+        .first;
     expect(parameters.firstWhere((p) => p.name == 'Scene').ccNumber, 80);
   });
 
   test('resetAllOverrides clears every remapped parameter at once', () async {
     final repository = midiParameterMappingRepository(database);
-    await repository.setOverride(profile: _profile, parameterName: 'Scene', ccNumber: 90);
-    await repository.setOverride(profile: _profile, parameterName: 'Pedal', ccNumber: 91);
+    await repository.setOverride(
+      profile: _profile,
+      parameterName: 'Scene',
+      ccNumber: 90,
+    );
+    await repository.setOverride(
+      profile: _profile,
+      parameterName: 'Pedal',
+      ccNumber: 91,
+    );
 
     await repository.resetAllOverrides(_profile.id);
 
@@ -76,12 +113,21 @@ void main() {
     expect(overridden, isEmpty);
   });
 
-  test('watchOverriddenNames names only what has actually been remapped', () async {
-    final repository = midiParameterMappingRepository(database);
-    await repository.setOverride(profile: _profile, parameterName: 'Scene', ccNumber: 90);
+  test(
+    'watchOverriddenNames names only what has actually been remapped',
+    () async {
+      final repository = midiParameterMappingRepository(database);
+      await repository.setOverride(
+        profile: _profile,
+        parameterName: 'Scene',
+        ccNumber: 90,
+      );
 
-    final overridden = await repository.watchOverriddenNames(_profile.id).first;
+      final overridden = await repository
+          .watchOverriddenNames(_profile.id)
+          .first;
 
-    expect(overridden, {'Scene'});
-  });
+      expect(overridden, {'Scene'});
+    },
+  );
 }

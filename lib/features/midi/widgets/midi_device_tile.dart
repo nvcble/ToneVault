@@ -17,7 +17,9 @@ class MidiDeviceTile extends StatelessWidget {
       child: ListTile(
         leading: const Icon(Icons.settings_input_component),
         title: Text(profile.displayName),
-        subtitle: Text('${profile.manufacturer} · Firmware ${profile.firmwareVersion}'),
+        subtitle: Text(
+          '${profile.manufacturer} · Firmware ${profile.firmwareVersion}',
+        ),
         trailing: const Icon(Icons.chevron_right),
         onTap: onTap,
       ),

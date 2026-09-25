@@ -53,7 +53,9 @@ void main() {
     await tester.pump();
   }
 
-  testWidgets('shows the job title, its progress and why not to leave', (tester) async {
+  testWidgets('shows the job title, its progress and why not to leave', (
+    tester,
+  ) async {
     await pumpAndStart(tester);
 
     expect(find.text('Capturing Presets'), findsOneWidget);
@@ -62,7 +64,9 @@ void main() {
     // Indeterminate until the job says how much work there is, rather than an
     // empty bar that reads as "nothing has happened".
     expect(
-      tester.widget<LinearProgressIndicator>(find.byType(LinearProgressIndicator)).value,
+      tester
+          .widget<LinearProgressIndicator>(find.byType(LinearProgressIndicator))
+          .value,
       isNull,
     );
 
@@ -71,7 +75,9 @@ void main() {
 
     expect(find.text('Reading preset 32 of 128...'), findsOneWidget);
     expect(
-      tester.widget<LinearProgressIndicator>(find.byType(LinearProgressIndicator)).value,
+      tester
+          .widget<LinearProgressIndicator>(find.byType(LinearProgressIndicator))
+          .value,
       0.25,
     );
 
@@ -82,7 +88,9 @@ void main() {
     expect(result, 'done');
   });
 
-  testWidgets('cannot be dismissed while the job is still running', (tester) async {
+  testWidgets('cannot be dismissed while the job is still running', (
+    tester,
+  ) async {
     await pumpAndStart(tester);
     // Determinate before any pumpAndSettle: an indeterminate progress bar
     // animates forever, so the tree never settles while one is on screen.

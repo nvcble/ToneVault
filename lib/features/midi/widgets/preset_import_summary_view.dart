@@ -6,7 +6,11 @@ import '../data/preset_import_service.dart';
 /// What one import run did: how many patches arrived, replaced or were left
 /// alone, and which ones failed and why.
 class PresetImportSummaryView extends StatelessWidget {
-  const PresetImportSummaryView({required this.summary, required this.onDone, super.key});
+  const PresetImportSummaryView({
+    required this.summary,
+    required this.onDone,
+    super.key,
+  });
 
   final PresetImportSummary summary;
   final VoidCallback onDone;

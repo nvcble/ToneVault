@@ -76,7 +76,9 @@ class MidiDiagnosticsScreen extends ConsumerWidget {
                 // Firmware and transport are what this profile was built
                 // for, not something read off the connected unit - nothing
                 // yet queries the device's own firmware version.
-                Text('Firmware: ${profile.firmwareVersion} (assumed, not detected)'),
+                Text(
+                  'Firmware: ${profile.firmwareVersion} (assumed, not detected)',
+                ),
                 Text(
                   'Transport: ${profile.connectionTypes.map((t) => t.label).join(', ')}',
                 ),
@@ -87,7 +89,9 @@ class MidiDiagnosticsScreen extends ConsumerWidget {
                   FilledButton(
                     onPressed: snapshot.isBusy
                         ? null
-                        : ref.read(midiConnectionProvider(profileId).notifier).connect,
+                        : ref
+                              .read(midiConnectionProvider(profileId).notifier)
+                              .connect,
                     child: const Text('Connect'),
                   ),
               ],
@@ -105,15 +109,21 @@ class MidiDiagnosticsScreen extends ConsumerWidget {
                 runSpacing: AppSpacing.sm,
                 children: [
                   FilledButton(
-                    onPressed: capture.isCapturing ? null : captureController.start,
+                    onPressed: capture.isCapturing
+                        ? null
+                        : captureController.start,
                     child: const Text('Start Capture'),
                   ),
                   OutlinedButton(
-                    onPressed: capture.isCapturing ? captureController.stop : null,
+                    onPressed: capture.isCapturing
+                        ? captureController.stop
+                        : null,
                     child: const Text('Stop Capture'),
                   ),
                   OutlinedButton(
-                    onPressed: capture.entries.isEmpty ? null : captureController.clear,
+                    onPressed: capture.entries.isEmpty
+                        ? null
+                        : captureController.clear,
                     child: const Text('Clear'),
                   ),
                 ],
@@ -146,13 +156,19 @@ class MidiDiagnosticsScreen extends ConsumerWidget {
             const SectionLabel('Preset Import (Milestone 1)'),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
-              child: NuxMg30V5PresetReadPanel(profileId: profileId, unitId: unitId),
+              child: NuxMg30V5PresetReadPanel(
+                profileId: profileId,
+                unitId: unitId,
+              ),
             ),
             if (unitId != null) ...[
               const SizedBox(height: AppSpacing.md),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
-                child: NuxMg30V5CaptureAllPanel(profileId: profileId, unitId: unitId),
+                child: NuxMg30V5CaptureAllPanel(
+                  profileId: profileId,
+                  unitId: unitId,
+                ),
               ),
             ],
           ],

@@ -18,7 +18,10 @@ typedef PatchBank = ({int bankNumber, List<NumberedPatch> patches});
 /// [slotsPerBank] defaults to 4, matching the brief's own "01A/01B/01C/01D"
 /// example; it is a display convenience, not a verified device constant, so
 /// it stays a parameter rather than a device-profile field.
-List<PatchBank> groupPatchesByBank(List<NumberedPatch> patches, {int slotsPerBank = 4}) {
+List<PatchBank> groupPatchesByBank(
+  List<NumberedPatch> patches, {
+  int slotsPerBank = 4,
+}) {
   final banks = <int, List<NumberedPatch>>{};
   for (final patch in patches) {
     final bankNumber = (patch.programNumber ~/ slotsPerBank) + 1;

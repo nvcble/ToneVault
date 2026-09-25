@@ -35,7 +35,8 @@ class MidiMonitorController extends StateNotifier<List<MidiLogEntry>> {
   }
 }
 
-final StateNotifierProvider<MidiMonitorController, List<MidiLogEntry>> midiMonitorProvider =
+final StateNotifierProvider<MidiMonitorController, List<MidiLogEntry>>
+midiMonitorProvider =
     StateNotifierProvider<MidiMonitorController, List<MidiLogEntry>>(
       (ref) => MidiMonitorController(ref.watch(midiEngineProvider)),
     );

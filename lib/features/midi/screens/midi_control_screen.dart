@@ -60,7 +60,8 @@ class _MidiControlScreenState extends ConsumerState<MidiControlScreen> {
   }
 
   void _selectDefaultSceneOnceConnected(MidiConnectionSnapshot snapshot) {
-    if (_selectedDefaultScene || snapshot.state != MidiConnectionState.connected) {
+    if (_selectedDefaultScene ||
+        snapshot.state != MidiConnectionState.connected) {
       return;
     }
     final profile = MidiDeviceRegistry.findById(widget.profileId);
@@ -83,16 +84,28 @@ class _MidiControlScreenState extends ConsumerState<MidiControlScreen> {
     final connected =
         ref.watch(midiConnectionProvider(widget.profileId)).state ==
         MidiConnectionState.connected;
-    final currentPatch = ref.watch(currentPatchNumberProvider(widget.profileId));
-    final loadedPatch = ref.watch(currentLoadedPatchNumberProvider(widget.profileId));
-    final currentScene = ref.watch(currentSceneNumberProvider(widget.profileId));
+    final currentPatch = ref.watch(
+      currentPatchNumberProvider(widget.profileId),
+    );
+    final loadedPatch = ref.watch(
+      currentLoadedPatchNumberProvider(widget.profileId),
+    );
+    final currentScene = ref.watch(
+      currentSceneNumberProvider(widget.profileId),
+    );
     // Names the grid can show alongside a slot's number, for whichever slots
     // this unit's owner has actually given a patch to.
-    final unitId = ref.watch(linkedPedalProvider(widget.profileId)).valueOrNull?.id;
+    final unitId = ref
+        .watch(linkedPedalProvider(widget.profileId))
+        .valueOrNull
+        ?.id;
     final numbered = unitId == null
         ? const <NumberedPatch>[]
-        : ref.watch(numberedPatchesProvider(unitId)).valueOrNull ?? const <NumberedPatch>[];
-    final patchNames = {for (final row in numbered) row.programNumber: row.patch.name};
+        : ref.watch(numberedPatchesProvider(unitId)).valueOrNull ??
+              const <NumberedPatch>[];
+    final patchNames = {
+      for (final row in numbered) row.programNumber: row.patch.name,
+    };
 
     return Scaffold(
       appBar: AppBar(
@@ -106,7 +119,8 @@ class _MidiControlScreenState extends ConsumerState<MidiControlScreen> {
             child: FilledButton.icon(
               icon: const Icon(Icons.search),
               label: const Text('Select Patch'),
-              onPressed: () => context.push(Routes.midiPatchBrowser(widget.profileId)),
+              onPressed: () =>
+                  context.push(Routes.midiPatchBrowser(widget.profileId)),
             ),
           ),
           const SectionLabel('Patch selection'),
@@ -117,7 +131,14 @@ class _MidiControlScreenState extends ConsumerState<MidiControlScreen> {
               loaded: loadedPatch,
               patchNames: patchNames,
               onSelected: (number) =>
-                  ref.read(currentPatchNumberProvider(widget.profileId).notifier).state = number,
+                  ref
+                          .read(
+                            currentPatchNumberProvider(
+                              widget.profileId,
+                            ).notifier,
+                          )
+                          .state =
+                      number,
               onLoad: (number) => _load(context, profile, number),
             ),
           ),
@@ -131,7 +152,9 @@ class _MidiControlScreenState extends ConsumerState<MidiControlScreen> {
             padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
             child: MidiSceneButtons(
               selectedScene: currentScene,
-              onSelect: connected ? (scene) => _sendScene(context, profile, scene) : null,
+              onSelect: connected
+                  ? (scene) => _sendScene(context, profile, scene)
+                  : null,
             ),
           ),
         ],
@@ -139,7 +162,11 @@ class _MidiControlScreenState extends ConsumerState<MidiControlScreen> {
     );
   }
 
-  Future<void> _load(BuildContext context, MidiDeviceProfile profile, int patchNumber) async {
+  Future<void> _load(
+    BuildContext context,
+    MidiDeviceProfile profile,
+    int patchNumber,
+  ) async {
     // Program numbers run 0-127; stepping past either end does nothing rather
     // than sending a value the wire cannot carry.
     if (patchNumber < 0 || patchNumber > 127) {
@@ -155,10 +182,16 @@ class _MidiControlScreenState extends ConsumerState<MidiControlScreen> {
             profile: profile,
             patchNumber: patchNumber,
             override: override,
-            experimentalEnabled: ref.read(experimentalProgramChangeEnabledProvider),
+            experimentalEnabled: ref.read(
+              experimentalProgramChangeEnabledProvider,
+            ),
           );
-      ref.read(currentPatchNumberProvider(widget.profileId).notifier).state = patchNumber;
-      ref.read(currentLoadedPatchNumberProvider(widget.profileId).notifier).state = patchNumber;
+      ref.read(currentPatchNumberProvider(widget.profileId).notifier).state =
+          patchNumber;
+      ref
+              .read(currentLoadedPatchNumberProvider(widget.profileId).notifier)
+              .state =
+          patchNumber;
       // A patch change resets which scene is active on the device itself,
       // so the app follows it back to the same default rather than showing
       // a scene that no longer matches what actually loaded.
@@ -168,7 +201,11 @@ class _MidiControlScreenState extends ConsumerState<MidiControlScreen> {
     }
   }
 
-  Future<void> _sendScene(BuildContext context, MidiDeviceProfile profile, int scene) async {
+  Future<void> _sendScene(
+    BuildContext context,
+    MidiDeviceProfile profile,
+    int scene,
+  ) async {
     try {
       final parameters = await ref.read(
         effectiveParametersProvider(widget.profileId).future,
@@ -181,7 +218,8 @@ class _MidiControlScreenState extends ConsumerState<MidiControlScreen> {
             parameterName: 'Scene',
             value: scene - 1,
           );
-      ref.read(currentSceneNumberProvider(widget.profileId).notifier).state = scene;
+      ref.read(currentSceneNumberProvider(widget.profileId).notifier).state =
+          scene;
     } catch (error) {
       if (context.mounted) showFailureSnackBar(context, error);
     }

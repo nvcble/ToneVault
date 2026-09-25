@@ -11,23 +11,36 @@ import '../data/key_facts.dart';
 import '../providers/theory_providers.dart';
 import 'circle_combination_card.dart';
 import 'circle_key_card.dart';
+import 'circle_neighbours_card.dart';
+import 'circle_note_dot.dart';
+import 'circle_wheel_painter.dart';
 
-/// The circle of fifths, as something to press rather than something to read.
+/// The circle of fifths, as something to draw on rather than something to read.
 ///
-/// Twelve notes, each a fifth clockwise from the last. Pressing them does two things at
-/// once, because for a player they are one thing: the notes stack up into a chord that is
-/// named underneath, and the browser changes key to whatever they built. A player pressing
-/// one note is choosing a key the fast way; a player pressing three is asking what they
-/// have got, in the key it is read in.
+/// Twelve notes, each a fifth clockwise from the last. Dragging a finger across them
+/// connects whichever ones it passes over, in the order it reaches them, and that is
+/// one thing for a player: the notes stack up into a chord that is named underneath, and
+/// the browser changes key to whatever they built. Touching one note alone is choosing a
+/// key the fast way; drawing a line through three is asking what they have got, in the
+/// key it is read in.
 ///
 /// The circle itself is the lesson either way. Notes next to each other on it are the
 /// chords that follow each other in songs, and keys next to each other share six of their
 /// seven notes - which is why a song moves between neighbours without anybody feeling it.
-class CircleOfFifthsWheel extends ConsumerWidget {
+class CircleOfFifthsWheel extends ConsumerStatefulWidget {
   const CircleOfFifthsWheel({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<CircleOfFifthsWheel> createState() =>
+      _CircleOfFifthsWheelState();
+}
+
+class _CircleOfFifthsWheelState extends ConsumerState<CircleOfFifthsWheel> {
+  /// Where the finger is right now, while a line is being drawn - null once it lifts.
+  Offset? _dragPoint;
+
+  @override
+  Widget build(BuildContext context) {
     final notes = circleNotes();
     final picked = ref.watch(combinedNotesProvider);
     final key = ref.watch(theoryKeyProvider);
@@ -38,20 +51,62 @@ class CircleOfFifthsWheel extends ConsumerWidget {
       children: [
         AspectRatio(
           aspectRatio: 1,
-          child: Stack(
-            children: [
-              for (var index = 0; index < notes.length; index++)
-                Align(
-                  alignment: _at(index, notes.length),
-                  child: _NoteDot(
-                    note: notes[index],
-                    picked: picked.contains(notes[index]),
-                    isKey: notes[index] == key.root,
-                    onTap: () => _press(ref, notes[index]),
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              final size = constraints.biggest.shortestSide;
+              final positions = [
+                for (var index = 0; index < notes.length; index++)
+                  _pointAt(index, notes.length, size),
+              ];
+
+              return Stack(
+                children: [
+                  CustomPaint(
+                    size: Size.square(size),
+                    painter: CircleWheelPainter(
+                      points: [
+                        for (final note in picked)
+                          positions[notes.indexOf(note)],
+                      ],
+                      dragPoint: _dragPoint,
+                      color: Theme.of(context).colorScheme.primary,
+                    ),
                   ),
-                ),
-              Center(child: _Middle(facts: facts)),
-            ],
+                  for (var index = 0; index < notes.length; index++)
+                    Align(
+                      alignment: _at(index, notes.length),
+                      // Each dot owns its own gesture: a line only starts from an actual
+                      // note, so a drag anywhere else on the wheel is free to scroll the
+                      // page instead. Once started, it still tracks the finger anywhere.
+                      child: GestureDetector(
+                        onPanDown: (_) =>
+                            _startLine(notes[index], positions[index]),
+                        onPanStart: (details) => _extendLine(
+                          _localize(context, details.globalPosition),
+                          notes,
+                          positions,
+                        ),
+                        onPanUpdate: (details) => _extendLine(
+                          _localize(context, details.globalPosition),
+                          notes,
+                          positions,
+                        ),
+                        onPanEnd: (_) => _endLine(),
+                        // A tap that never moved enough to be recognised as a drag is
+                        // cancelled rather than ended - still a line finished, just a
+                        // one-note one.
+                        onPanCancel: _endLine,
+                        child: CircleNoteDot(
+                          note: notes[index],
+                          picked: picked.contains(notes[index]),
+                          isKey: notes[index] == key.root,
+                        ),
+                      ),
+                    ),
+                  Center(child: _Middle(facts: facts)),
+                ],
+              );
+            },
           ),
         ),
         const SizedBox(height: AppSpacing.md),
@@ -59,7 +114,7 @@ class CircleOfFifthsWheel extends ConsumerWidget {
         const SizedBox(height: AppSpacing.sm),
         const CircleKeyCard(),
         const SizedBox(height: AppSpacing.sm),
-        _Neighbours(facts: facts),
+        CircleNeighboursCard(facts: facts),
       ],
     );
   }
@@ -71,21 +126,35 @@ class CircleOfFifthsWheel extends ConsumerWidget {
     return Alignment(sin(angle), -cos(angle));
   }
 
-  /// A note pressed: into the combination or out of it again, and the key follows whatever
-  /// the combination now spells.
+  /// The same point, in pixels rather than alignment - where [Align] actually puts a
+  /// dot's centre once it has been squeezed in by the dot's own size.
+  Offset _pointAt(int index, int count, double size) {
+    final align = _at(index, count);
+    final radius = (size - AppSpacing.minTouchTarget) / 2;
+    return Offset(size / 2 + align.x * radius, size / 2 + align.y * radius);
+  }
+
+  /// A fresh line starting on the note whose own dot was touched: whatever was combined
+  /// before is let go of, so a new drag is always a new chord rather than an addition to
+  /// the last one.
+  void _startLine(PitchClass note, Offset point) {
+    ref.read(combinedNotesProvider.notifier).state = [note];
+    setState(() => _dragPoint = point);
+  }
+
+  void _extendLine(Offset point, List<PitchClass> notes, List<Offset> positions) {
+    setState(() => _dragPoint = point);
+    _connect(point, notes, positions);
+  }
+
+  /// The line let go of: the key follows whatever the combination now spells.
   ///
-  /// The root of the chord they built, or the note itself where there is no chord yet -
-  /// either way the key ends up where the player is looking. Which flavour it is stays
-  /// with the picker above the tabs, because major or minor is a decision about the music
-  /// and not something three notes can settle.
-  void _press(WidgetRef ref, PitchClass note) {
-    final notes = ref.read(combinedNotesProvider);
-    ref.read(combinedNotesProvider.notifier).state = notes.contains(note)
-        ? [
-            for (final picked in notes)
-              if (picked != note) picked,
-          ]
-        : [...notes, note];
+  /// The root of the chord that was drawn, or the note itself where there is no chord
+  /// yet - either way the key ends up where the player was looking. Which flavour it is
+  /// stays with the picker above the tabs, because major or minor is a decision about
+  /// the music and not something a line of notes can settle.
+  void _endLine() {
+    setState(() => _dragPoint = null);
 
     final chords = ref.read(combinedChordsProvider);
     final picked = ref.read(combinedNotesProvider);
@@ -98,59 +167,31 @@ class CircleOfFifthsWheel extends ConsumerWidget {
       ref.read(theoryKeyProvider.notifier).state = Scale(root, key.type);
     }
   }
-}
 
-class _NoteDot extends StatelessWidget {
-  const _NoteDot({
-    required this.note,
-    required this.picked,
-    required this.isKey,
-    required this.onTap,
-  });
+  /// Adds whichever note the line has just reached, if it has reached one it had not
+  /// already connected.
+  void _connect(Offset point, List<PitchClass> notes, List<Offset> positions) {
+    const hitRadius = AppSpacing.minTouchTarget / 1.6;
 
-  final PitchClass note;
+    for (var index = 0; index < notes.length; index++) {
+      if ((point - positions[index]).distance > hitRadius) {
+        continue;
+      }
 
-  /// Whether it is one of the notes being combined.
-  final bool picked;
-
-  /// Whether it is the note the browser's key is read from.
-  final bool isKey;
-
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    final scheme = Theme.of(context).colorScheme;
-
-    return InkResponse(
-      onTap: onTap,
-      radius: AppSpacing.minTouchTarget,
-      child: Container(
-        width: AppSpacing.minTouchTarget,
-        height: AppSpacing.minTouchTarget,
-        alignment: Alignment.center,
-        decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          color: picked ? scheme.primary : scheme.surfaceContainerHighest,
-          // The key is ringed rather than filled, so a note can be both the key and part
-          // of the chord being built without the two saying the same thing.
-          border: Border.all(
-            color: isKey ? scheme.primary : scheme.outlineVariant,
-            width: isKey ? 2 : 1,
-          ),
-        ),
-        child: Text(
-          // Each note spelled the way it is usually written rather than the way the key
-          // spells it: this is the whole circle, and the flat side of it reads as flats
-          // on every chart a player has seen.
-          note.name(flats: note.prefersFlats),
-          style: Theme.of(context).textTheme.labelLarge?.copyWith(
-            color: picked ? scheme.onPrimary : scheme.onSurface,
-          ),
-        ),
-      ),
-    );
+      final note = notes[index];
+      final picked = ref.read(combinedNotesProvider);
+      if (!picked.contains(note)) {
+        ref.read(combinedNotesProvider.notifier).state = [...picked, note];
+      }
+      return;
+    }
   }
+
+  /// A drag callback's global position, translated into the square's own coordinates -
+  /// the same space [positions] was computed in - so it keeps working once the finger
+  /// has moved off the dot that started the line.
+  Offset _localize(BuildContext context, Offset global) =>
+      (context.findRenderObject()! as RenderBox).globalToLocal(global);
 }
 
 /// What the chosen key is, in the middle of the wheel it is chosen on.
@@ -174,42 +215,6 @@ class _Middle extends StatelessWidget {
           ),
         ),
       ],
-    );
-  }
-}
-
-/// The keys next door, and why they are worth knowing.
-class _Neighbours extends StatelessWidget {
-  const _Neighbours({required this.facts});
-
-  final KeyFacts facts;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(AppSpacing.md),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text('Next door', style: theme.textTheme.titleSmall),
-            const SizedBox(height: AppSpacing.xs),
-            Text(
-              facts.neighbours.map((key) => key.label).join(',  '),
-              style: theme.textTheme.bodyMedium,
-            ),
-            const SizedBox(height: AppSpacing.sm),
-            Text(
-              'Each of these shares six of its seven notes with '
-              '${facts.key.label}, and ${facts.relative.label} shares all of '
-              'them - the same notes, heard from somewhere else.',
-              style: theme.textTheme.bodySmall,
-            ),
-          ],
-        ),
-      ),
     );
   }
 }

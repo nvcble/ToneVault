@@ -70,8 +70,9 @@ class NuxMg30V5Profile extends MidiDeviceProfile {
   /// Still untested against this app's own hardware, and confirmed only on
   /// v4.0.3 firmware, not V5 - see [MidiSupportLevel.needsHardwareVerification].
   @override
-  PatchSelectionDefaults get patchSelectionDefaults => const PatchSelectionDefaults(
-    usesBankSelect: false,
-    verificationStatus: MidiSupportLevel.needsHardwareVerification,
-  );
+  PatchSelectionDefaults get patchSelectionDefaults =>
+      const PatchSelectionDefaults(
+        usesBankSelect: false,
+        verificationStatus: MidiSupportLevel.needsHardwareVerification,
+      );
 }
