@@ -11,6 +11,7 @@ import 'migrations/schema_steps_v22.dart';
 import 'migrations/schema_steps_v23.dart';
 import 'migrations/schema_steps_v24.dart';
 import 'migrations/schema_steps_v25.dart';
+import 'migrations/schema_steps_v26.dart';
 import 'migrations/schema_steps_v2_v9.dart';
 
 /// Schema history. Every version bump gets an entry here and a matching branch
@@ -126,7 +127,12 @@ import 'migrations/schema_steps_v2_v9.dart';
 ///   names neither gets a banner drawn from its own kind and theory and a YouTube
 ///   search built from its title, which is worked out on the screen rather than
 ///   written a hundred times into the database.
-const int currentSchemaVersion = 25;
+/// - v26: mg30_patch_payloads, the exact MG-30 V5 bytes a library patch was
+///   decoded from. The V5 scene layout is only partly understood, so the record
+///   is kept whole and a later decoder can read more out of patches already
+///   imported. Purely additive: one new table and one index, no ALTER and no
+///   DROP.
+const int currentSchemaVersion = 26;
 
 MigrationStrategy buildMigrationStrategy(GeneratedDatabase database) {
   return MigrationStrategy(
@@ -150,6 +156,7 @@ MigrationStrategy buildMigrationStrategy(GeneratedDatabase database) {
       await upgradeThroughV23(database, from);
       await upgradeThroughV24(database, from);
       await upgradeThroughV25(database, from);
+      await upgradeThroughV26(database, from);
 
       if (to > currentSchemaVersion) {
         throw StateError('No migration registered up to schema $to.');

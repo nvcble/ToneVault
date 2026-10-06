@@ -47,6 +47,12 @@ class ScenePedalRepository {
   Stream<List<OwnedControl>> watchSceneControls(int sceneId) =>
       _dao.watchSceneControls(sceneId);
 
+  /// The same controls read once rather than subscribed to - for a computation
+  /// that only needs what the scene holds now, such as an import deciding which
+  /// control a decoded value belongs to.
+  Future<List<OwnedControl>> sceneControls(int sceneId) =>
+      _dao.sceneControlsOf(sceneId);
+
   /// Puts one of the unit's pedals into this scene, at whatever defaults its
   /// controls declare.
   ///

@@ -769,4 +769,55 @@ void main() {
     expect(patches.single.patchNumber, 5);
     expect(patches.single.rawSysEx, [0xF0, 0x21, 0x25, 0xF7]);
   });
+
+  test('the MG-30 payload table is created exactly as a fresh one is', () async {
+    const tables = ['mg30_patch_payloads'];
+
+    final fresh = AppDatabase(NativeDatabase.memory());
+    final expected = <String, List<String>>{
+      for (final table in tables) table: await schemaFor(fresh, table),
+    };
+    await fresh.close();
+
+    final upgraded = openV1Database();
+    addTearDown(upgraded.close);
+
+    for (final table in tables) {
+      expect(
+        await schemaFor(upgraded, table),
+        expected[table],
+        reason: '$table differs between an upgraded phone and a new install',
+      );
+    }
+  });
+
+  test('an upgraded database keeps the bytes a patch was read from', () async {
+    final db = openV1Database();
+    addTearDown(db.close);
+
+    final unitId = await pedalRepository(db).createPedal(
+      const PedalDraft(
+        name: 'NUX MG-30 (V5)',
+        type: PedalType.digital,
+        category: PedalCategory.multiEffects,
+      ),
+    );
+    final patchId = await patchRepository(
+      db,
+    ).createPatch(unitId, const PatchDraft(name: 'CT-RectoBeast'));
+
+    await db.mg30PatchPayloadDao.upsert(
+      Mg30PatchPayloadsCompanion.insert(
+        patchId: patchId,
+        slot: 0,
+        source: 'quicktone_file',
+        rawRecord: Uint8List.fromList([1, 2, 3]),
+        importedAt: DateTime.utc(2026, 10, 7),
+      ),
+    );
+
+    final payload = await db.mg30PatchPayloadDao.findByPatch(patchId);
+    expect(payload!.slot, 0);
+    expect(payload.rawRecord, [1, 2, 3]);
+  });
 }

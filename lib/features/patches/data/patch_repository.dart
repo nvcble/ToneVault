@@ -33,6 +33,11 @@ class PatchRepository {
 
   Stream<List<Patch>> watchPatches(int pedalId) => _dao.watchPatches(pedalId);
 
+  /// The same patches read once rather than subscribed to - for a computation
+  /// that only needs the unit's current patches, such as an import checking
+  /// which names are already taken.
+  Future<List<Patch>> patches(int pedalId) => _dao.patchesOf(pedalId);
+
   Stream<Patch?> watchPatch(int patchId) => _dao.watchPatch(patchId);
 
   Future<int> createPatch(int pedalId, PatchDraft draft) async {

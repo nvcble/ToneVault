@@ -8,11 +8,13 @@ import '../../../core/database/daos/midi_patch_program_number_dao.dart';
 import '../../../core/midi/midi_connection_state.dart';
 import '../../../core/midi/midi_device_profile.dart';
 import '../../../core/midi/midi_device_registry.dart';
+import '../../../core/midi/profiles/nux_mg30_v5/nux_mg30_v5_profile.dart';
 import '../../../shared/widgets/empty_state.dart';
 import '../../../shared/widgets/failure_snack_bar.dart';
 import '../../../shared/widgets/segmented_switch.dart';
 import '../../patches/providers/patch_providers.dart';
 import '../data/midi_patch_sort.dart';
+import '../devices/nux_mg30_v5/presentation/mg30_v5_import_file_tile.dart';
 import '../providers/midi_connection_controller.dart';
 import '../providers/midi_device_link_providers.dart';
 import '../providers/midi_mapping_providers.dart';
@@ -62,10 +64,21 @@ class MidiPatchesScreen extends ConsumerWidget {
         ),
         data: (pedal) => pedal == null
             ? _LinkGearPrompt(profile: profile)
-            : _PatchList(
-                profileId: profileId,
-                profile: profile,
-                unitId: pedal.id,
+            : Column(
+                children: [
+                  // A QuickTone export is the one patch source that needs no
+                  // hardware and no unverified protocol; see
+                  // `docs/nux_mg30_v5_patch_format.md`.
+                  if (profile is NuxMg30V5Profile)
+                    Mg30V5ImportFileTile(unitId: pedal.id),
+                  Expanded(
+                    child: _PatchList(
+                      profileId: profileId,
+                      profile: profile,
+                      unitId: pedal.id,
+                    ),
+                  ),
+                ],
               ),
       ),
     );

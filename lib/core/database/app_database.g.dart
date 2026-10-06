@@ -16167,6 +16167,483 @@ class HotoneAmperoMiniPatchesCompanion
   }
 }
 
+class $Mg30PatchPayloadsTable extends Mg30PatchPayloads
+    with TableInfo<$Mg30PatchPayloadsTable, Mg30PatchPayload> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $Mg30PatchPayloadsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'PRIMARY KEY AUTOINCREMENT',
+    ),
+  );
+  static const VerificationMeta _patchIdMeta = const VerificationMeta(
+    'patchId',
+  );
+  @override
+  late final GeneratedColumn<int> patchId = GeneratedColumn<int>(
+    'patch_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'UNIQUE REFERENCES patches (id) ON DELETE CASCADE',
+    ),
+  );
+  static const VerificationMeta _slotMeta = const VerificationMeta('slot');
+  @override
+  late final GeneratedColumn<int> slot = GeneratedColumn<int>(
+    'slot',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _sourceMeta = const VerificationMeta('source');
+  @override
+  late final GeneratedColumn<String> source = GeneratedColumn<String>(
+    'source',
+    aliasedName,
+    false,
+    additionalChecks: GeneratedColumn.checkTextLength(
+      minTextLength: 1,
+      maxTextLength: 20,
+    ),
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _firmwareLabelMeta = const VerificationMeta(
+    'firmwareLabel',
+  );
+  @override
+  late final GeneratedColumn<String> firmwareLabel = GeneratedColumn<String>(
+    'firmware_label',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _rawRecordMeta = const VerificationMeta(
+    'rawRecord',
+  );
+  @override
+  late final GeneratedColumn<Uint8List> rawRecord = GeneratedColumn<Uint8List>(
+    'raw_record',
+    aliasedName,
+    false,
+    type: DriftSqlType.blob,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _importedAtMeta = const VerificationMeta(
+    'importedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> importedAt = GeneratedColumn<DateTime>(
+    'imported_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    patchId,
+    slot,
+    source,
+    firmwareLabel,
+    rawRecord,
+    importedAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'mg30_patch_payloads';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<Mg30PatchPayload> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('patch_id')) {
+      context.handle(
+        _patchIdMeta,
+        patchId.isAcceptableOrUnknown(data['patch_id']!, _patchIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_patchIdMeta);
+    }
+    if (data.containsKey('slot')) {
+      context.handle(
+        _slotMeta,
+        slot.isAcceptableOrUnknown(data['slot']!, _slotMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_slotMeta);
+    }
+    if (data.containsKey('source')) {
+      context.handle(
+        _sourceMeta,
+        source.isAcceptableOrUnknown(data['source']!, _sourceMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_sourceMeta);
+    }
+    if (data.containsKey('firmware_label')) {
+      context.handle(
+        _firmwareLabelMeta,
+        firmwareLabel.isAcceptableOrUnknown(
+          data['firmware_label']!,
+          _firmwareLabelMeta,
+        ),
+      );
+    }
+    if (data.containsKey('raw_record')) {
+      context.handle(
+        _rawRecordMeta,
+        rawRecord.isAcceptableOrUnknown(data['raw_record']!, _rawRecordMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_rawRecordMeta);
+    }
+    if (data.containsKey('imported_at')) {
+      context.handle(
+        _importedAtMeta,
+        importedAt.isAcceptableOrUnknown(data['imported_at']!, _importedAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_importedAtMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  Mg30PatchPayload map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return Mg30PatchPayload(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      patchId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}patch_id'],
+      )!,
+      slot: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}slot'],
+      )!,
+      source: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}source'],
+      )!,
+      firmwareLabel: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}firmware_label'],
+      ),
+      rawRecord: attachedDatabase.typeMapping.read(
+        DriftSqlType.blob,
+        data['${effectivePrefix}raw_record'],
+      )!,
+      importedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}imported_at'],
+      )!,
+    );
+  }
+
+  @override
+  $Mg30PatchPayloadsTable createAlias(String alias) {
+    return $Mg30PatchPayloadsTable(attachedDatabase, alias);
+  }
+}
+
+class Mg30PatchPayload extends DataClass
+    implements Insertable<Mg30PatchPayload> {
+  final int id;
+  final int patchId;
+
+  /// 0-127, as the device numbers its slots.
+  final int slot;
+
+  /// `quicktone_file` for a `.mg30patch` export, `device_sysex` for bytes read
+  /// off the unit - never conflated, because only one of them is the device
+  /// answering.
+  final String source;
+
+  /// The firmware this is believed to be from, as a label rather than a parsed
+  /// version: null when nothing identified the device.
+  final String? firmwareLabel;
+  final Uint8List rawRecord;
+  final DateTime importedAt;
+  const Mg30PatchPayload({
+    required this.id,
+    required this.patchId,
+    required this.slot,
+    required this.source,
+    this.firmwareLabel,
+    required this.rawRecord,
+    required this.importedAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['patch_id'] = Variable<int>(patchId);
+    map['slot'] = Variable<int>(slot);
+    map['source'] = Variable<String>(source);
+    if (!nullToAbsent || firmwareLabel != null) {
+      map['firmware_label'] = Variable<String>(firmwareLabel);
+    }
+    map['raw_record'] = Variable<Uint8List>(rawRecord);
+    map['imported_at'] = Variable<DateTime>(importedAt);
+    return map;
+  }
+
+  Mg30PatchPayloadsCompanion toCompanion(bool nullToAbsent) {
+    return Mg30PatchPayloadsCompanion(
+      id: Value(id),
+      patchId: Value(patchId),
+      slot: Value(slot),
+      source: Value(source),
+      firmwareLabel: firmwareLabel == null && nullToAbsent
+          ? const Value.absent()
+          : Value(firmwareLabel),
+      rawRecord: Value(rawRecord),
+      importedAt: Value(importedAt),
+    );
+  }
+
+  factory Mg30PatchPayload.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return Mg30PatchPayload(
+      id: serializer.fromJson<int>(json['id']),
+      patchId: serializer.fromJson<int>(json['patchId']),
+      slot: serializer.fromJson<int>(json['slot']),
+      source: serializer.fromJson<String>(json['source']),
+      firmwareLabel: serializer.fromJson<String?>(json['firmwareLabel']),
+      rawRecord: serializer.fromJson<Uint8List>(json['rawRecord']),
+      importedAt: serializer.fromJson<DateTime>(json['importedAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'patchId': serializer.toJson<int>(patchId),
+      'slot': serializer.toJson<int>(slot),
+      'source': serializer.toJson<String>(source),
+      'firmwareLabel': serializer.toJson<String?>(firmwareLabel),
+      'rawRecord': serializer.toJson<Uint8List>(rawRecord),
+      'importedAt': serializer.toJson<DateTime>(importedAt),
+    };
+  }
+
+  Mg30PatchPayload copyWith({
+    int? id,
+    int? patchId,
+    int? slot,
+    String? source,
+    Value<String?> firmwareLabel = const Value.absent(),
+    Uint8List? rawRecord,
+    DateTime? importedAt,
+  }) => Mg30PatchPayload(
+    id: id ?? this.id,
+    patchId: patchId ?? this.patchId,
+    slot: slot ?? this.slot,
+    source: source ?? this.source,
+    firmwareLabel: firmwareLabel.present
+        ? firmwareLabel.value
+        : this.firmwareLabel,
+    rawRecord: rawRecord ?? this.rawRecord,
+    importedAt: importedAt ?? this.importedAt,
+  );
+  Mg30PatchPayload copyWithCompanion(Mg30PatchPayloadsCompanion data) {
+    return Mg30PatchPayload(
+      id: data.id.present ? data.id.value : this.id,
+      patchId: data.patchId.present ? data.patchId.value : this.patchId,
+      slot: data.slot.present ? data.slot.value : this.slot,
+      source: data.source.present ? data.source.value : this.source,
+      firmwareLabel: data.firmwareLabel.present
+          ? data.firmwareLabel.value
+          : this.firmwareLabel,
+      rawRecord: data.rawRecord.present ? data.rawRecord.value : this.rawRecord,
+      importedAt: data.importedAt.present
+          ? data.importedAt.value
+          : this.importedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('Mg30PatchPayload(')
+          ..write('id: $id, ')
+          ..write('patchId: $patchId, ')
+          ..write('slot: $slot, ')
+          ..write('source: $source, ')
+          ..write('firmwareLabel: $firmwareLabel, ')
+          ..write('rawRecord: $rawRecord, ')
+          ..write('importedAt: $importedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    patchId,
+    slot,
+    source,
+    firmwareLabel,
+    $driftBlobEquality.hash(rawRecord),
+    importedAt,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is Mg30PatchPayload &&
+          other.id == this.id &&
+          other.patchId == this.patchId &&
+          other.slot == this.slot &&
+          other.source == this.source &&
+          other.firmwareLabel == this.firmwareLabel &&
+          $driftBlobEquality.equals(other.rawRecord, this.rawRecord) &&
+          other.importedAt == this.importedAt);
+}
+
+class Mg30PatchPayloadsCompanion extends UpdateCompanion<Mg30PatchPayload> {
+  final Value<int> id;
+  final Value<int> patchId;
+  final Value<int> slot;
+  final Value<String> source;
+  final Value<String?> firmwareLabel;
+  final Value<Uint8List> rawRecord;
+  final Value<DateTime> importedAt;
+  const Mg30PatchPayloadsCompanion({
+    this.id = const Value.absent(),
+    this.patchId = const Value.absent(),
+    this.slot = const Value.absent(),
+    this.source = const Value.absent(),
+    this.firmwareLabel = const Value.absent(),
+    this.rawRecord = const Value.absent(),
+    this.importedAt = const Value.absent(),
+  });
+  Mg30PatchPayloadsCompanion.insert({
+    this.id = const Value.absent(),
+    required int patchId,
+    required int slot,
+    required String source,
+    this.firmwareLabel = const Value.absent(),
+    required Uint8List rawRecord,
+    required DateTime importedAt,
+  }) : patchId = Value(patchId),
+       slot = Value(slot),
+       source = Value(source),
+       rawRecord = Value(rawRecord),
+       importedAt = Value(importedAt);
+  static Insertable<Mg30PatchPayload> custom({
+    Expression<int>? id,
+    Expression<int>? patchId,
+    Expression<int>? slot,
+    Expression<String>? source,
+    Expression<String>? firmwareLabel,
+    Expression<Uint8List>? rawRecord,
+    Expression<DateTime>? importedAt,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (patchId != null) 'patch_id': patchId,
+      if (slot != null) 'slot': slot,
+      if (source != null) 'source': source,
+      if (firmwareLabel != null) 'firmware_label': firmwareLabel,
+      if (rawRecord != null) 'raw_record': rawRecord,
+      if (importedAt != null) 'imported_at': importedAt,
+    });
+  }
+
+  Mg30PatchPayloadsCompanion copyWith({
+    Value<int>? id,
+    Value<int>? patchId,
+    Value<int>? slot,
+    Value<String>? source,
+    Value<String?>? firmwareLabel,
+    Value<Uint8List>? rawRecord,
+    Value<DateTime>? importedAt,
+  }) {
+    return Mg30PatchPayloadsCompanion(
+      id: id ?? this.id,
+      patchId: patchId ?? this.patchId,
+      slot: slot ?? this.slot,
+      source: source ?? this.source,
+      firmwareLabel: firmwareLabel ?? this.firmwareLabel,
+      rawRecord: rawRecord ?? this.rawRecord,
+      importedAt: importedAt ?? this.importedAt,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (patchId.present) {
+      map['patch_id'] = Variable<int>(patchId.value);
+    }
+    if (slot.present) {
+      map['slot'] = Variable<int>(slot.value);
+    }
+    if (source.present) {
+      map['source'] = Variable<String>(source.value);
+    }
+    if (firmwareLabel.present) {
+      map['firmware_label'] = Variable<String>(firmwareLabel.value);
+    }
+    if (rawRecord.present) {
+      map['raw_record'] = Variable<Uint8List>(rawRecord.value);
+    }
+    if (importedAt.present) {
+      map['imported_at'] = Variable<DateTime>(importedAt.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('Mg30PatchPayloadsCompanion(')
+          ..write('id: $id, ')
+          ..write('patchId: $patchId, ')
+          ..write('slot: $slot, ')
+          ..write('source: $source, ')
+          ..write('firmwareLabel: $firmwareLabel, ')
+          ..write('rawRecord: $rawRecord, ')
+          ..write('importedAt: $importedAt')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
@@ -16231,6 +16708,8 @@ abstract class _$AppDatabase extends GeneratedDatabase {
       $MidiPresetCapturesTable(this);
   late final $HotoneAmperoMiniPatchesTable hotoneAmperoMiniPatches =
       $HotoneAmperoMiniPatchesTable(this);
+  late final $Mg30PatchPayloadsTable mg30PatchPayloads =
+      $Mg30PatchPayloadsTable(this);
   late final Index idxPedalsStatus = Index(
     'idx_pedals_status',
     'CREATE INDEX idx_pedals_status ON pedals (status)',
@@ -16319,6 +16798,10 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     'idx_midi_device_links_profile',
     'CREATE INDEX idx_midi_device_links_profile ON midi_device_links (device_profile_id)',
   );
+  late final Index idxMg30PatchPayloadsSlot = Index(
+    'idx_mg30_patch_payloads_slot',
+    'CREATE INDEX idx_mg30_patch_payloads_slot ON mg30_patch_payloads (slot)',
+  );
   late final PedalDao pedalDao = PedalDao(this as AppDatabase);
   late final PedalControlDao pedalControlDao = PedalControlDao(
     this as AppDatabase,
@@ -16364,6 +16847,9 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   );
   late final HotoneAmperoMiniPatchDao hotoneAmperoMiniPatchDao =
       HotoneAmperoMiniPatchDao(this as AppDatabase);
+  late final Mg30PatchPayloadDao mg30PatchPayloadDao = Mg30PatchPayloadDao(
+    this as AppDatabase,
+  );
   late final BackupDao backupDao = BackupDao(this as AppDatabase);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
@@ -16404,6 +16890,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     midiPatchRecents,
     midiPresetCaptures,
     hotoneAmperoMiniPatches,
+    mg30PatchPayloads,
     idxPedalsStatus,
     idxPedalsName,
     idxPedalsHost,
@@ -16426,6 +16913,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     idxAcademyPracticeSessionsLesson,
     idxMidiParameterOverridesDevice,
     idxMidiDeviceLinksProfile,
+    idxMg30PatchPayloadsSlot,
   ];
   @override
   StreamQueryUpdateRules get streamUpdateRules => const StreamQueryUpdateRules([
@@ -16623,6 +17111,13 @@ abstract class _$AppDatabase extends GeneratedDatabase {
         limitUpdateKind: UpdateKind.delete,
       ),
       result: [TableUpdate('midi_preset_captures', kind: UpdateKind.delete)],
+    ),
+    WritePropagation(
+      on: TableUpdateQuery.onTableName(
+        'patches',
+        limitUpdateKind: UpdateKind.delete,
+      ),
+      result: [TableUpdate('mg30_patch_payloads', kind: UpdateKind.delete)],
     ),
   ]);
   @override
@@ -19950,6 +20445,27 @@ final class $$PatchesTableReferences
       manager.$state.copyWith(prefetchedData: cache),
     );
   }
+
+  static MultiTypedResultKey<$Mg30PatchPayloadsTable, List<Mg30PatchPayload>>
+  _mg30PatchPayloadsRefsTable(_$AppDatabase db) =>
+      MultiTypedResultKey.fromTable(
+        db.mg30PatchPayloads,
+        aliasName: 'patches__id__mg30_patch_payloads__patch_id',
+      );
+
+  $$Mg30PatchPayloadsTableProcessedTableManager get mg30PatchPayloadsRefs {
+    final manager = $$Mg30PatchPayloadsTableTableManager(
+      $_db,
+      $_db.mg30PatchPayloads,
+    ).filter((f) => f.patchId.id.sqlEquals($_itemColumn<int>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(
+      _mg30PatchPayloadsRefsTable($_db),
+    );
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
 }
 
 class $$PatchesTableFilterComposer
@@ -20101,6 +20617,31 @@ class $$PatchesTableFilterComposer
           }) => $$MidiPatchRecentsTableFilterComposer(
             $db: $db,
             $table: $db.midiPatchRecents,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+
+  Expression<bool> mg30PatchPayloadsRefs(
+    Expression<bool> Function($$Mg30PatchPayloadsTableFilterComposer f) f,
+  ) {
+    final $$Mg30PatchPayloadsTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.mg30PatchPayloads,
+      getReferencedColumn: (t) => t.patchId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$Mg30PatchPayloadsTableFilterComposer(
+            $db: $db,
+            $table: $db.mg30PatchPayloads,
             $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
             joinBuilder: joinBuilder,
             $removeJoinBuilderFromRootComposer:
@@ -20318,6 +20859,32 @@ class $$PatchesTableAnnotationComposer
     );
     return f(composer);
   }
+
+  Expression<T> mg30PatchPayloadsRefs<T extends Object>(
+    Expression<T> Function($$Mg30PatchPayloadsTableAnnotationComposer a) f,
+  ) {
+    final $$Mg30PatchPayloadsTableAnnotationComposer composer =
+        $composerBuilder(
+          composer: this,
+          getCurrentColumn: (t) => t.id,
+          referencedTable: $db.mg30PatchPayloads,
+          getReferencedColumn: (t) => t.patchId,
+          builder:
+              (
+                joinBuilder, {
+                $addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer,
+              }) => $$Mg30PatchPayloadsTableAnnotationComposer(
+                $db: $db,
+                $table: $db.mg30PatchPayloads,
+                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                joinBuilder: joinBuilder,
+                $removeJoinBuilderFromRootComposer:
+                    $removeJoinBuilderFromRootComposer,
+              ),
+        );
+    return f(composer);
+  }
 }
 
 class $$PatchesTableTableManager
@@ -20339,6 +20906,7 @@ class $$PatchesTableTableManager
             bool midiPatchProgramNumbersRefs,
             bool midiPatchFavoritesRefs,
             bool midiPatchRecentsRefs,
+            bool mg30PatchPayloadsRefs,
           })
         > {
   $$PatchesTableTableManager(_$AppDatabase db, $PatchesTable table)
@@ -20399,6 +20967,7 @@ class $$PatchesTableTableManager
                 midiPatchProgramNumbersRefs = false,
                 midiPatchFavoritesRefs = false,
                 midiPatchRecentsRefs = false,
+                mg30PatchPayloadsRefs = false,
               }) {
                 return PrefetchHooks(
                   db: db,
@@ -20407,6 +20976,7 @@ class $$PatchesTableTableManager
                     if (midiPatchProgramNumbersRefs) db.midiPatchProgramNumbers,
                     if (midiPatchFavoritesRefs) db.midiPatchFavorites,
                     if (midiPatchRecentsRefs) db.midiPatchRecents,
+                    if (mg30PatchPayloadsRefs) db.mg30PatchPayloads,
                   ],
                   addJoins:
                       <
@@ -20522,6 +21092,27 @@ class $$PatchesTableTableManager
                               ),
                           typedResults: items,
                         ),
+                      if (mg30PatchPayloadsRefs)
+                        await $_getPrefetchedData<
+                          Patch,
+                          $PatchesTable,
+                          Mg30PatchPayload
+                        >(
+                          currentTable: table,
+                          referencedTable: $$PatchesTableReferences
+                              ._mg30PatchPayloadsRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$PatchesTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).mg30PatchPayloadsRefs,
+                          referencedItemsForCurrentItem:
+                              (item, referencedItems) => referencedItems.where(
+                                (e) => e.patchId == item.id,
+                              ),
+                          typedResults: items,
+                        ),
                     ];
                   },
                 );
@@ -20548,6 +21139,7 @@ typedef $$PatchesTableProcessedTableManager =
         bool midiPatchProgramNumbersRefs,
         bool midiPatchFavoritesRefs,
         bool midiPatchRecentsRefs,
+        bool mg30PatchPayloadsRefs,
       })
     >;
 typedef $$ScenesTableCreateCompanionBuilder =
@@ -32947,6 +33539,375 @@ typedef $$HotoneAmperoMiniPatchesTableProcessedTableManager =
       HotoneAmperoMiniPatch,
       PrefetchHooks Function()
     >;
+typedef $$Mg30PatchPayloadsTableCreateCompanionBuilder =
+    Mg30PatchPayloadsCompanion Function({
+      Value<int> id,
+      required int patchId,
+      required int slot,
+      required String source,
+      Value<String?> firmwareLabel,
+      required Uint8List rawRecord,
+      required DateTime importedAt,
+    });
+typedef $$Mg30PatchPayloadsTableUpdateCompanionBuilder =
+    Mg30PatchPayloadsCompanion Function({
+      Value<int> id,
+      Value<int> patchId,
+      Value<int> slot,
+      Value<String> source,
+      Value<String?> firmwareLabel,
+      Value<Uint8List> rawRecord,
+      Value<DateTime> importedAt,
+    });
+
+final class $$Mg30PatchPayloadsTableReferences
+    extends
+        BaseReferences<
+          _$AppDatabase,
+          $Mg30PatchPayloadsTable,
+          Mg30PatchPayload
+        > {
+  $$Mg30PatchPayloadsTableReferences(
+    super.$_db,
+    super.$_table,
+    super.$_typedResult,
+  );
+
+  static $PatchesTable _patchIdTable(_$AppDatabase db) =>
+      db.patches.createAlias('mg30_patch_payloads__patch_id__patches__id');
+
+  $$PatchesTableProcessedTableManager get patchId {
+    final $_column = $_itemColumn<int>('patch_id')!;
+
+    final manager = $$PatchesTableTableManager(
+      $_db,
+      $_db.patches,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_patchIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+}
+
+class $$Mg30PatchPayloadsTableFilterComposer
+    extends Composer<_$AppDatabase, $Mg30PatchPayloadsTable> {
+  $$Mg30PatchPayloadsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get slot => $composableBuilder(
+    column: $table.slot,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get source => $composableBuilder(
+    column: $table.source,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get firmwareLabel => $composableBuilder(
+    column: $table.firmwareLabel,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<Uint8List> get rawRecord => $composableBuilder(
+    column: $table.rawRecord,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get importedAt => $composableBuilder(
+    column: $table.importedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  $$PatchesTableFilterComposer get patchId {
+    final $$PatchesTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.patchId,
+      referencedTable: $db.patches,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$PatchesTableFilterComposer(
+            $db: $db,
+            $table: $db.patches,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$Mg30PatchPayloadsTableOrderingComposer
+    extends Composer<_$AppDatabase, $Mg30PatchPayloadsTable> {
+  $$Mg30PatchPayloadsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get slot => $composableBuilder(
+    column: $table.slot,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get source => $composableBuilder(
+    column: $table.source,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get firmwareLabel => $composableBuilder(
+    column: $table.firmwareLabel,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<Uint8List> get rawRecord => $composableBuilder(
+    column: $table.rawRecord,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get importedAt => $composableBuilder(
+    column: $table.importedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  $$PatchesTableOrderingComposer get patchId {
+    final $$PatchesTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.patchId,
+      referencedTable: $db.patches,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$PatchesTableOrderingComposer(
+            $db: $db,
+            $table: $db.patches,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$Mg30PatchPayloadsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $Mg30PatchPayloadsTable> {
+  $$Mg30PatchPayloadsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<int> get slot =>
+      $composableBuilder(column: $table.slot, builder: (column) => column);
+
+  GeneratedColumn<String> get source =>
+      $composableBuilder(column: $table.source, builder: (column) => column);
+
+  GeneratedColumn<String> get firmwareLabel => $composableBuilder(
+    column: $table.firmwareLabel,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<Uint8List> get rawRecord =>
+      $composableBuilder(column: $table.rawRecord, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get importedAt => $composableBuilder(
+    column: $table.importedAt,
+    builder: (column) => column,
+  );
+
+  $$PatchesTableAnnotationComposer get patchId {
+    final $$PatchesTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.patchId,
+      referencedTable: $db.patches,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$PatchesTableAnnotationComposer(
+            $db: $db,
+            $table: $db.patches,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$Mg30PatchPayloadsTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $Mg30PatchPayloadsTable,
+          Mg30PatchPayload,
+          $$Mg30PatchPayloadsTableFilterComposer,
+          $$Mg30PatchPayloadsTableOrderingComposer,
+          $$Mg30PatchPayloadsTableAnnotationComposer,
+          $$Mg30PatchPayloadsTableCreateCompanionBuilder,
+          $$Mg30PatchPayloadsTableUpdateCompanionBuilder,
+          (Mg30PatchPayload, $$Mg30PatchPayloadsTableReferences),
+          Mg30PatchPayload,
+          PrefetchHooks Function({bool patchId})
+        > {
+  $$Mg30PatchPayloadsTableTableManager(
+    _$AppDatabase db,
+    $Mg30PatchPayloadsTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$Mg30PatchPayloadsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$Mg30PatchPayloadsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$Mg30PatchPayloadsTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<int> patchId = const Value.absent(),
+                Value<int> slot = const Value.absent(),
+                Value<String> source = const Value.absent(),
+                Value<String?> firmwareLabel = const Value.absent(),
+                Value<Uint8List> rawRecord = const Value.absent(),
+                Value<DateTime> importedAt = const Value.absent(),
+              }) => Mg30PatchPayloadsCompanion(
+                id: id,
+                patchId: patchId,
+                slot: slot,
+                source: source,
+                firmwareLabel: firmwareLabel,
+                rawRecord: rawRecord,
+                importedAt: importedAt,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                required int patchId,
+                required int slot,
+                required String source,
+                Value<String?> firmwareLabel = const Value.absent(),
+                required Uint8List rawRecord,
+                required DateTime importedAt,
+              }) => Mg30PatchPayloadsCompanion.insert(
+                id: id,
+                patchId: patchId,
+                slot: slot,
+                source: source,
+                firmwareLabel: firmwareLabel,
+                rawRecord: rawRecord,
+                importedAt: importedAt,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable(table),
+                  $$Mg30PatchPayloadsTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: ({patchId = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [],
+              addJoins:
+                  <
+                    T extends TableManagerState<
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic
+                    >
+                  >(state) {
+                    if (patchId) {
+                      state =
+                          state.withJoin(
+                                currentTable: table,
+                                currentColumn: table.patchId,
+                                referencedTable:
+                                    $$Mg30PatchPayloadsTableReferences
+                                        ._patchIdTable(db),
+                                referencedColumn:
+                                    $$Mg30PatchPayloadsTableReferences
+                                        ._patchIdTable(db)
+                                        .id,
+                              )
+                              as T;
+                    }
+
+                    return state;
+                  },
+              getPrefetchedDataCallback: (items) async {
+                return [];
+              },
+            );
+          },
+        ),
+      );
+}
+
+typedef $$Mg30PatchPayloadsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $Mg30PatchPayloadsTable,
+      Mg30PatchPayload,
+      $$Mg30PatchPayloadsTableFilterComposer,
+      $$Mg30PatchPayloadsTableOrderingComposer,
+      $$Mg30PatchPayloadsTableAnnotationComposer,
+      $$Mg30PatchPayloadsTableCreateCompanionBuilder,
+      $$Mg30PatchPayloadsTableUpdateCompanionBuilder,
+      (Mg30PatchPayload, $$Mg30PatchPayloadsTableReferences),
+      Mg30PatchPayload,
+      PrefetchHooks Function({bool patchId})
+    >;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -33038,4 +33999,6 @@ class $AppDatabaseManager {
         _db,
         _db.hotoneAmperoMiniPatches,
       );
+  $$Mg30PatchPayloadsTableTableManager get mg30PatchPayloads =>
+      $$Mg30PatchPayloadsTableTableManager(_db, _db.mg30PatchPayloads);
 }

@@ -26,6 +26,7 @@ import 'daos/backup_dao.dart';
 import 'daos/change_log_dao.dart';
 import 'daos/configuration_dao.dart';
 import 'daos/hotone_ampero_mini_patch_dao.dart';
+import 'daos/mg30_patch_payload_dao.dart';
 import 'daos/midi_device_link_dao.dart';
 import 'daos/midi_parameter_override_dao.dart';
 import 'daos/midi_patch_favorite_dao.dart';
@@ -52,6 +53,7 @@ import 'tables/change_logs_table.dart';
 import 'tables/configuration_values_table.dart';
 import 'tables/configurations_table.dart';
 import 'tables/hotone_ampero_mini_patches_table.dart';
+import 'tables/mg30_patch_payloads_table.dart';
 import 'tables/midi_device_links_table.dart';
 import 'tables/midi_parameter_overrides_table.dart';
 import 'tables/midi_patch_favorites_table.dart';
@@ -127,6 +129,7 @@ part 'app_database.g.dart';
     MidiPatchRecents,
     MidiPresetCaptures,
     HotoneAmperoMiniPatches,
+    Mg30PatchPayloads,
   ],
   daos: [
     PedalDao,
@@ -148,6 +151,7 @@ part 'app_database.g.dart';
     MidiPatchRecentDao,
     MidiPresetCaptureDao,
     HotoneAmperoMiniPatchDao,
+    Mg30PatchPayloadDao,
     BackupDao,
   ],
 )

@@ -6,6 +6,7 @@ import 'package:tone_vault/core/database/daos/backup_dao.dart';
 import 'package:tone_vault/core/database/daos/change_log_dao.dart';
 import 'package:tone_vault/core/database/daos/configuration_dao.dart';
 import 'package:tone_vault/core/database/daos/hotone_ampero_mini_patch_dao.dart';
+import 'package:tone_vault/core/database/daos/mg30_patch_payload_dao.dart';
 import 'package:tone_vault/core/database/daos/midi_device_link_dao.dart';
 import 'package:tone_vault/core/database/daos/midi_parameter_override_dao.dart';
 import 'package:tone_vault/core/database/daos/midi_patch_favorite_dao.dart';
@@ -41,6 +42,7 @@ import 'package:tone_vault/features/midi/data/midi_scene_number_repository.dart'
 import 'package:tone_vault/features/midi/data/patch_control_controller.dart';
 import 'package:tone_vault/features/midi/data/patch_selection_repository.dart';
 import 'package:tone_vault/features/midi/data/preset_import_service.dart';
+import 'package:tone_vault/features/midi/devices/nux_mg30_v5/data/mg30_v5_patch_library_importer.dart';
 import 'package:tone_vault/features/midi/hotone_ampero_mini/data/hotone_ampero_mini_patch_repository.dart';
 import 'package:tone_vault/features/patches/data/patch_repository.dart';
 import 'package:tone_vault/features/patches/data/scene_duplicator.dart';
@@ -318,5 +320,21 @@ SceneValueRepository sceneValueRepository(
     PatchDao(database),
     changeLog ?? changeLogRepository(database, clock: clock),
     clock: clock,
+  );
+}
+
+/// The MG-30 V5 patch-library importer, wired as its provider will wire it.
+Mg30V5PatchLibraryImporter mg30V5PatchLibraryImporter(
+  AppDatabase database, {
+  DateTime Function()? clock,
+}) {
+  return Mg30V5PatchLibraryImporter(
+    patchRepository(database, clock: clock),
+    sceneRepository(database, clock: clock),
+    scenePedalRepository(database, clock: clock),
+    sceneValueRepository(database, clock: clock),
+    midiPatchProgramRepository(database),
+    pedalRepository(database, clock: clock),
+    Mg30PatchPayloadDao(database),
   );
 }
