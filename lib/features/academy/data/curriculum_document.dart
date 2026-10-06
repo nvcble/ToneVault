@@ -32,6 +32,10 @@ const int _maxObjective = 240;
 const int _maxNote = 200;
 const int _maxNextSkill = 160;
 
+/// A link to a picture or a video, matching the columns they are written into. Long
+/// enough for a YouTube watch URL with its parameters on it.
+const int _maxUrl = 500;
+
 /// Reads a curriculum file, or refuses it in words the user can act on.
 ///
 /// Nothing is written anywhere: this turns text into [CourseSpec]s, so a file that
@@ -146,6 +150,8 @@ LessonSpec _lesson(CurriculumReader reader, String moduleAt) {
     ),
     theoryKeys: reader.textList('theoryKeys', at: at, max: _maxTitle),
     exercises: exercises,
+    imageUrl: reader.optionalUrl('imageUrl', at: at, max: _maxUrl),
+    videoUrl: reader.optionalUrl('videoUrl', at: at, max: _maxUrl),
   );
 }
 

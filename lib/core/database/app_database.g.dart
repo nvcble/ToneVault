@@ -9476,6 +9476,30 @@ class $AcademyLessonsTable extends AcademyLessons
     type: DriftSqlType.dateTime,
     requiredDuringInsert: true,
   );
+  static const VerificationMeta _imageUrlMeta = const VerificationMeta(
+    'imageUrl',
+  );
+  @override
+  late final GeneratedColumn<String> imageUrl = GeneratedColumn<String>(
+    'image_url',
+    aliasedName,
+    true,
+    additionalChecks: GeneratedColumn.checkTextLength(maxTextLength: 500),
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _videoUrlMeta = const VerificationMeta(
+    'videoUrl',
+  );
+  @override
+  late final GeneratedColumn<String> videoUrl = GeneratedColumn<String>(
+    'video_url',
+    aliasedName,
+    true,
+    additionalChecks: GeneratedColumn.checkTextLength(maxTextLength: 500),
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
   @override
   List<GeneratedColumn> get $columns => [
     id,
@@ -9496,6 +9520,8 @@ class $AcademyLessonsTable extends AcademyLessons
     position,
     createdAt,
     updatedAt,
+    imageUrl,
+    videoUrl,
   ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -9622,6 +9648,18 @@ class $AcademyLessonsTable extends AcademyLessons
     } else if (isInserting) {
       context.missing(_updatedAtMeta);
     }
+    if (data.containsKey('image_url')) {
+      context.handle(
+        _imageUrlMeta,
+        imageUrl.isAcceptableOrUnknown(data['image_url']!, _imageUrlMeta),
+      );
+    }
+    if (data.containsKey('video_url')) {
+      context.handle(
+        _videoUrlMeta,
+        videoUrl.isAcceptableOrUnknown(data['video_url']!, _videoUrlMeta),
+      );
+    }
     return context;
   }
 
@@ -9713,6 +9751,14 @@ class $AcademyLessonsTable extends AcademyLessons
         DriftSqlType.dateTime,
         data['${effectivePrefix}updated_at'],
       )!,
+      imageUrl: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}image_url'],
+      ),
+      videoUrl: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}video_url'],
+      ),
     );
   }
 
@@ -9778,6 +9824,21 @@ class AcademyLesson extends DataClass implements Insertable<AcademyLesson> {
   final int position;
   final DateTime createdAt;
   final DateTime updatedAt;
+
+  /// A picture of what the lesson teaches, and a video of somebody teaching it.
+  ///
+  /// Both nullable, and both left null by every lesson the app ships. Where a lesson
+  /// says nothing, the screen shows a banner drawn from what the lesson already has -
+  /// its kind and its theory - and a YouTube search built from its title, so a player
+  /// who learns by watching is never sent away empty-handed by a curriculum that has
+  /// not been curated yet. A lesson that does name one is preferred over both.
+  ///
+  /// Declared last, out of the reading order they belong in, because that is where
+  /// v25's ADD COLUMN puts them on a phone that already had the Academy. A new
+  /// install has to write the same table as an upgraded one, or the two stop being
+  /// the same database.
+  final String? imageUrl;
+  final String? videoUrl;
   const AcademyLesson({
     required this.id,
     required this.moduleId,
@@ -9797,6 +9858,8 @@ class AcademyLesson extends DataClass implements Insertable<AcademyLesson> {
     required this.position,
     required this.createdAt,
     required this.updatedAt,
+    this.imageUrl,
+    this.videoUrl,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -9845,6 +9908,12 @@ class AcademyLesson extends DataClass implements Insertable<AcademyLesson> {
     map['position'] = Variable<int>(position);
     map['created_at'] = Variable<DateTime>(createdAt);
     map['updated_at'] = Variable<DateTime>(updatedAt);
+    if (!nullToAbsent || imageUrl != null) {
+      map['image_url'] = Variable<String>(imageUrl);
+    }
+    if (!nullToAbsent || videoUrl != null) {
+      map['video_url'] = Variable<String>(videoUrl);
+    }
     return map;
   }
 
@@ -9886,6 +9955,12 @@ class AcademyLesson extends DataClass implements Insertable<AcademyLesson> {
       position: Value(position),
       createdAt: Value(createdAt),
       updatedAt: Value(updatedAt),
+      imageUrl: imageUrl == null && nullToAbsent
+          ? const Value.absent()
+          : Value(imageUrl),
+      videoUrl: videoUrl == null && nullToAbsent
+          ? const Value.absent()
+          : Value(videoUrl),
     );
   }
 
@@ -9919,6 +9994,8 @@ class AcademyLesson extends DataClass implements Insertable<AcademyLesson> {
       position: serializer.fromJson<int>(json['position']),
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
       updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
+      imageUrl: serializer.fromJson<String?>(json['imageUrl']),
+      videoUrl: serializer.fromJson<String?>(json['videoUrl']),
     );
   }
   @override
@@ -9949,6 +10026,8 @@ class AcademyLesson extends DataClass implements Insertable<AcademyLesson> {
       'position': serializer.toJson<int>(position),
       'createdAt': serializer.toJson<DateTime>(createdAt),
       'updatedAt': serializer.toJson<DateTime>(updatedAt),
+      'imageUrl': serializer.toJson<String?>(imageUrl),
+      'videoUrl': serializer.toJson<String?>(videoUrl),
     };
   }
 
@@ -9971,6 +10050,8 @@ class AcademyLesson extends DataClass implements Insertable<AcademyLesson> {
     int? position,
     DateTime? createdAt,
     DateTime? updatedAt,
+    Value<String?> imageUrl = const Value.absent(),
+    Value<String?> videoUrl = const Value.absent(),
   }) => AcademyLesson(
     id: id ?? this.id,
     moduleId: moduleId ?? this.moduleId,
@@ -9996,6 +10077,8 @@ class AcademyLesson extends DataClass implements Insertable<AcademyLesson> {
     position: position ?? this.position,
     createdAt: createdAt ?? this.createdAt,
     updatedAt: updatedAt ?? this.updatedAt,
+    imageUrl: imageUrl.present ? imageUrl.value : this.imageUrl,
+    videoUrl: videoUrl.present ? videoUrl.value : this.videoUrl,
   );
   AcademyLesson copyWithCompanion(AcademyLessonsCompanion data) {
     return AcademyLesson(
@@ -10029,6 +10112,8 @@ class AcademyLesson extends DataClass implements Insertable<AcademyLesson> {
       position: data.position.present ? data.position.value : this.position,
       createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
       updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+      imageUrl: data.imageUrl.present ? data.imageUrl.value : this.imageUrl,
+      videoUrl: data.videoUrl.present ? data.videoUrl.value : this.videoUrl,
     );
   }
 
@@ -10052,7 +10137,9 @@ class AcademyLesson extends DataClass implements Insertable<AcademyLesson> {
           ..write('theoryKeys: $theoryKeys, ')
           ..write('position: $position, ')
           ..write('createdAt: $createdAt, ')
-          ..write('updatedAt: $updatedAt')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('imageUrl: $imageUrl, ')
+          ..write('videoUrl: $videoUrl')
           ..write(')'))
         .toString();
   }
@@ -10077,6 +10164,8 @@ class AcademyLesson extends DataClass implements Insertable<AcademyLesson> {
     position,
     createdAt,
     updatedAt,
+    imageUrl,
+    videoUrl,
   );
   @override
   bool operator ==(Object other) =>
@@ -10099,7 +10188,9 @@ class AcademyLesson extends DataClass implements Insertable<AcademyLesson> {
           other.theoryKeys == this.theoryKeys &&
           other.position == this.position &&
           other.createdAt == this.createdAt &&
-          other.updatedAt == this.updatedAt);
+          other.updatedAt == this.updatedAt &&
+          other.imageUrl == this.imageUrl &&
+          other.videoUrl == this.videoUrl);
 }
 
 class AcademyLessonsCompanion extends UpdateCompanion<AcademyLesson> {
@@ -10121,6 +10212,8 @@ class AcademyLessonsCompanion extends UpdateCompanion<AcademyLesson> {
   final Value<int> position;
   final Value<DateTime> createdAt;
   final Value<DateTime> updatedAt;
+  final Value<String?> imageUrl;
+  final Value<String?> videoUrl;
   const AcademyLessonsCompanion({
     this.id = const Value.absent(),
     this.moduleId = const Value.absent(),
@@ -10140,6 +10233,8 @@ class AcademyLessonsCompanion extends UpdateCompanion<AcademyLesson> {
     this.position = const Value.absent(),
     this.createdAt = const Value.absent(),
     this.updatedAt = const Value.absent(),
+    this.imageUrl = const Value.absent(),
+    this.videoUrl = const Value.absent(),
   });
   AcademyLessonsCompanion.insert({
     this.id = const Value.absent(),
@@ -10160,6 +10255,8 @@ class AcademyLessonsCompanion extends UpdateCompanion<AcademyLesson> {
     required int position,
     required DateTime createdAt,
     required DateTime updatedAt,
+    this.imageUrl = const Value.absent(),
+    this.videoUrl = const Value.absent(),
   }) : moduleId = Value(moduleId),
        slug = Value(slug),
        title = Value(title),
@@ -10187,6 +10284,8 @@ class AcademyLessonsCompanion extends UpdateCompanion<AcademyLesson> {
     Expression<int>? position,
     Expression<DateTime>? createdAt,
     Expression<DateTime>? updatedAt,
+    Expression<String>? imageUrl,
+    Expression<String>? videoUrl,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
@@ -10207,6 +10306,8 @@ class AcademyLessonsCompanion extends UpdateCompanion<AcademyLesson> {
       if (position != null) 'position': position,
       if (createdAt != null) 'created_at': createdAt,
       if (updatedAt != null) 'updated_at': updatedAt,
+      if (imageUrl != null) 'image_url': imageUrl,
+      if (videoUrl != null) 'video_url': videoUrl,
     });
   }
 
@@ -10229,6 +10330,8 @@ class AcademyLessonsCompanion extends UpdateCompanion<AcademyLesson> {
     Value<int>? position,
     Value<DateTime>? createdAt,
     Value<DateTime>? updatedAt,
+    Value<String?>? imageUrl,
+    Value<String?>? videoUrl,
   }) {
     return AcademyLessonsCompanion(
       id: id ?? this.id,
@@ -10249,6 +10352,8 @@ class AcademyLessonsCompanion extends UpdateCompanion<AcademyLesson> {
       position: position ?? this.position,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
+      imageUrl: imageUrl ?? this.imageUrl,
+      videoUrl: videoUrl ?? this.videoUrl,
     );
   }
 
@@ -10317,6 +10422,12 @@ class AcademyLessonsCompanion extends UpdateCompanion<AcademyLesson> {
     if (updatedAt.present) {
       map['updated_at'] = Variable<DateTime>(updatedAt.value);
     }
+    if (imageUrl.present) {
+      map['image_url'] = Variable<String>(imageUrl.value);
+    }
+    if (videoUrl.present) {
+      map['video_url'] = Variable<String>(videoUrl.value);
+    }
     return map;
   }
 
@@ -10340,7 +10451,9 @@ class AcademyLessonsCompanion extends UpdateCompanion<AcademyLesson> {
           ..write('theoryKeys: $theoryKeys, ')
           ..write('position: $position, ')
           ..write('createdAt: $createdAt, ')
-          ..write('updatedAt: $updatedAt')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('imageUrl: $imageUrl, ')
+          ..write('videoUrl: $videoUrl')
           ..write(')'))
         .toString();
   }
@@ -15610,7 +15723,9 @@ class HotoneAmperoMiniPatch extends DataClass
   /// same way `MidiPresetCaptures.deviceProfileId` is.
   final String deviceProfileId;
 
-  /// The Program Change value this patch loads as (0-127).
+  /// The pedal's own zero-based slot index (0-197): 0-98 are the user patches
+  /// P01-1..P33-3, 99-197 the factory ones F01-1..F33-3. Not a Program Change
+  /// value - only the first 128 of these can be expressed as one.
   final int patchNumber;
 
   /// The decoder's best-effort name, or null until a sync has actually
@@ -27502,6 +27617,8 @@ typedef $$AcademyLessonsTableCreateCompanionBuilder =
       required int position,
       required DateTime createdAt,
       required DateTime updatedAt,
+      Value<String?> imageUrl,
+      Value<String?> videoUrl,
     });
 typedef $$AcademyLessonsTableUpdateCompanionBuilder =
     AcademyLessonsCompanion Function({
@@ -27523,6 +27640,8 @@ typedef $$AcademyLessonsTableUpdateCompanionBuilder =
       Value<int> position,
       Value<DateTime> createdAt,
       Value<DateTime> updatedAt,
+      Value<String?> imageUrl,
+      Value<String?> videoUrl,
     });
 
 final class $$AcademyLessonsTableReferences
@@ -27711,6 +27830,16 @@ class $$AcademyLessonsTableFilterComposer
 
   ColumnFilters<DateTime> get updatedAt => $composableBuilder(
     column: $table.updatedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get imageUrl => $composableBuilder(
+    column: $table.imageUrl,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get videoUrl => $composableBuilder(
+    column: $table.videoUrl,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -27908,6 +28037,16 @@ class $$AcademyLessonsTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<String> get imageUrl => $composableBuilder(
+    column: $table.imageUrl,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get videoUrl => $composableBuilder(
+    column: $table.videoUrl,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   $$AcademyModulesTableOrderingComposer get moduleId {
     final $$AcademyModulesTableOrderingComposer composer = $composerBuilder(
       composer: this,
@@ -28004,6 +28143,12 @@ class $$AcademyLessonsTableAnnotationComposer
 
   GeneratedColumn<DateTime> get updatedAt =>
       $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+
+  GeneratedColumn<String> get imageUrl =>
+      $composableBuilder(column: $table.imageUrl, builder: (column) => column);
+
+  GeneratedColumn<String> get videoUrl =>
+      $composableBuilder(column: $table.videoUrl, builder: (column) => column);
 
   $$AcademyModulesTableAnnotationComposer get moduleId {
     final $$AcademyModulesTableAnnotationComposer composer = $composerBuilder(
@@ -28159,6 +28304,8 @@ class $$AcademyLessonsTableTableManager
                 Value<int> position = const Value.absent(),
                 Value<DateTime> createdAt = const Value.absent(),
                 Value<DateTime> updatedAt = const Value.absent(),
+                Value<String?> imageUrl = const Value.absent(),
+                Value<String?> videoUrl = const Value.absent(),
               }) => AcademyLessonsCompanion(
                 id: id,
                 moduleId: moduleId,
@@ -28178,6 +28325,8 @@ class $$AcademyLessonsTableTableManager
                 position: position,
                 createdAt: createdAt,
                 updatedAt: updatedAt,
+                imageUrl: imageUrl,
+                videoUrl: videoUrl,
               ),
           createCompanionCallback:
               ({
@@ -28199,6 +28348,8 @@ class $$AcademyLessonsTableTableManager
                 required int position,
                 required DateTime createdAt,
                 required DateTime updatedAt,
+                Value<String?> imageUrl = const Value.absent(),
+                Value<String?> videoUrl = const Value.absent(),
               }) => AcademyLessonsCompanion.insert(
                 id: id,
                 moduleId: moduleId,
@@ -28218,6 +28369,8 @@ class $$AcademyLessonsTableTableManager
                 position: position,
                 createdAt: createdAt,
                 updatedAt: updatedAt,
+                imageUrl: imageUrl,
+                videoUrl: videoUrl,
               ),
           withReferenceMapper: (p0) => p0
               .map(

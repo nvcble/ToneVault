@@ -179,6 +179,40 @@
                 "Four clean repetitions, then two BPM up. Stop at the first tempo that is not clean and stay there.",
                 "At high tempos try quarter notes. Half the notes at twice the speed is still twice as fast."
               ],
+              "nextSkill": "Hand and Finger Exercises"
+            }
+          ]
+        },
+        {
+          "slug": "finger-conditioning-lead-professional",
+          "title": "Hand and Finger Conditioning",
+          "summary": "Conditioning aimed at breaking the hand's default order, not at reach.",
+          "lessons": [
+            {
+              "slug": "hand-and-finger-exercises-lead-professional",
+              "title": "Hand and Finger Exercises",
+              "kind": "technique",
+              "estimatedMinutes": 10,
+              "body": "At this level the drill is not about reach - it is about breaking the hand's default order and holding one finger still while the others move.\n\n**The reversed spider** - frets 1 2 3 4, but in the order 1 3 2 4: first finger, third, second, fourth, then back. The pattern fights the hand's habit of moving in sequence, which is exactly what an unpredictable line asks for.\n\n**Anchor and move** - hold the first finger down on fret 1 and, without lifting it, hammer and pull the second, third and fourth fingers on the frets above in any order called out or chosen at random. One finger stays still while the rest do the work around it.\n\nBoth are fast at this level - the reversed spider run at a real tempo, the anchor drill fast enough that the held finger's stillness is actually being tested.",
+              "exercises": [
+                {
+                  "title": "Reversed spider at speed",
+                  "instructions": "Frets 1 2 3 4 in the order 1-3-2-4, one finger per fret, across all six strings, ascending and descending without slowing at the string change.",
+                  "startBpm": 90,
+                  "targetBpm": 150,
+                  "timeSignature": "fourFour"
+                }
+              ],
+              "objective": "Run the 1-3-2-4 spider at tempo across all six strings, and hold the first finger anchored on a fret while the other three move above it in any order.",
+              "commonMistakes": [
+                "Falling back to the natural 1-2-3-4 order under speed, which is the habit the drill exists to break.",
+                "The anchored finger lifting or tensing every time another finger moves near it.",
+                "Practising only the order that is already comfortable and skipping the one that keeps breaking down."
+              ],
+              "practiceTips": [
+                "Say the order out loud - one, three, two, four - until the hand stops needing the beginner order as a fallback.",
+                "Check the anchored finger by ear: any buzz or squeak from it means it moved."
+              ],
               "nextSkill": "Transcription as a Working Method"
             }
           ]

@@ -131,7 +131,14 @@ void main() {
 
   screenTest('one course can be sent from the course itself', (tester) async {
     final courseId = await seedCourses(tester, andAnother: true);
-    await pump(tester, CourseScreen(courseId: courseId));
+    await pump(
+      tester,
+      CourseScreen(
+        courseId: courseId,
+        path: LearningPath.rhythm,
+        level: SkillLevel.beginner,
+      ),
+    );
 
     await tester.tap(find.byTooltip('Send this course on'));
     await tester.pumpAndSettle();
@@ -145,7 +152,14 @@ void main() {
   screenTest('and a course that is no longer there offers nothing to send', (
     tester,
   ) async {
-    await pump(tester, const CourseScreen(courseId: -1));
+    await pump(
+      tester,
+      const CourseScreen(
+        courseId: -1,
+        path: LearningPath.rhythm,
+        level: SkillLevel.beginner,
+      ),
+    );
 
     // A link kept from before an import that dropped the course. There is nothing
     // to export, so there is no button offering to.

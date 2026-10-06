@@ -69,7 +69,12 @@ void main() {
             modules: [
               moduleMap(
                 lessons: [
-                  lessonMap(genre: 'blues', theoryKeys: const ['Cmaj7', 'A7']),
+                  lessonMap(
+                    genre: 'blues',
+                    theoryKeys: const ['Cmaj7', 'A7'],
+                    imageUrl: 'https://example.com/em-and-am.jpg',
+                    videoUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
+                  ),
                 ],
               ),
             ],
@@ -98,6 +103,11 @@ void main() {
     // The keys are what the fretboard under the lesson is drawn from. A lesson that
     // arrived without them would read as prose about a chord it cannot show.
     expect(lesson.theoryKeys, contains('Cmaj7'));
+    // A curated picture and a curated video are the work of whoever wrote the
+    // course. A file that dropped them would hand the other phone a lesson that
+    // quietly went back to a search.
+    expect(lesson.imageUrl, 'https://example.com/em-and-am.jpg');
+    expect(lesson.videoUrl, 'https://www.youtube.com/watch?v=dQw4w9WgXcQ');
 
     final exercises = await curriculum.watchExercises(lesson.id).first;
     expect(exercises.single.title, 'One chord a bar');

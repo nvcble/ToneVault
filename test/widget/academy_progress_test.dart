@@ -158,7 +158,14 @@ void main() {
   ) async {
     await progressRepository(database).markCompleted(lessonIds.first);
 
-    await pump(tester, CourseScreen(courseId: courseId));
+    await pump(
+      tester,
+      CourseScreen(
+        courseId: courseId,
+        path: LearningPath.rhythm,
+        level: SkillLevel.beginner,
+      ),
+    );
 
     expect(find.text('1 of 2 lessons - 50%'), findsOne);
   });
@@ -208,7 +215,7 @@ void main() {
     expect(find.text('Carry on'), findsNothing);
   });
 
-  screenTest('carrying on lands on the lesson itself, already open', (
+  screenTest('carrying on lands on the lesson itself, not on its course', (
     tester,
   ) async {
     await progressRepository(database).markOpened(lessonIds.last);
@@ -217,9 +224,9 @@ void main() {
     await tester.tap(find.text('C and G'));
     await tester.pumpAndSettle();
 
-    // The course screen, with the one lesson expanded. Landing on the course and
-    // hunting for the lesson again is the work the section exists to save.
-    expect(find.widgetWithText(AppBar, 'First Chords'), findsOne);
+    // The lesson's own page, open at its text. Landing on the course and hunting for
+    // the lesson again is the work the section exists to save.
+    expect(find.widgetWithText(AppBar, 'C and G'), findsOne);
     expect(find.textContaining('Two fingers'), findsOne);
   });
 }

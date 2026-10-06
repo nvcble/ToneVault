@@ -62,6 +62,27 @@ class CurriculumReader {
   String? optionalText(String field, {required String at, int? max}) =>
       _fields[field] == null ? null : text(field, at: at, max: max);
 
+  /// A link, or nothing where the file did not give one.
+  ///
+  /// Only `http` and `https` are taken. A curriculum is a file that arrives from
+  /// somewhere else, and a lesson that could hand the app any scheme it liked to open
+  /// is a lesson that could point at something other than a page.
+  String? optionalUrl(String field, {required String at, required int max}) {
+    final value = optionalText(field, at: at, max: max);
+    if (value == null) {
+      return null;
+    }
+
+    final url = Uri.tryParse(value);
+    if (url == null || (url.scheme != 'http' && url.scheme != 'https')) {
+      throw AppFailure(
+        'The $field of the $at in that curriculum is not a web address.',
+        cause: value,
+      );
+    }
+    return value;
+  }
+
   /// An enum by its own name, so a file reads as the app does: `fourFour`, not a
   /// number nobody can check.
   T oneOf<T extends Enum>(String field, List<T> values, {required String at}) {

@@ -142,6 +142,40 @@
                 "Play the same four shapes at the nut, at fret 2 and at fret 4, naming the sounding key each time.",
                 "One guitar in barre chords, the other capoed in open shapes. Same chords, and the arrangement gains depth."
               ],
+              "nextSkill": "Hand and Finger Exercises"
+            }
+          ]
+        },
+        {
+          "slug": "finger-conditioning-rhythm-intermediate",
+          "title": "Hand and Finger Conditioning",
+          "summary": "Barre-chord conditioning: a first finger that holds while the rest of the hand works.",
+          "lessons": [
+            {
+              "slug": "hand-and-finger-exercises-rhythm-intermediate",
+              "title": "Hand and Finger Exercises",
+              "kind": "technique",
+              "estimatedMinutes": 10,
+              "body": "Barre chords ask something the open shapes did not: the first finger has to hold a full barre while the others move freely on top of it.\n\n**Barre and lift** - hold an E-shape barre at fret 3 (G) and lift the second, third and fourth fingers off one at a time, then replace them, without the barre losing a single string.\n\n**Shape-to-shape, no gap** - switch between an E-shape barre and an A-shape barre a few frets apart, on the beat, keeping the strumming hand moving through the change the way an open-chord switch already does.\n\nThe barre itself is the warm-up target here: a first finger that holds six strings while the rest of the hand works is what the whole module above this rests on.",
+              "exercises": [
+                {
+                  "title": "Barre and lift, twenty times",
+                  "instructions": "Hold an E-shape barre at fret 3, lift and replace fingers two, three and four one at a time, twenty times, checking the barre after every lift.",
+                  "startBpm": 50,
+                  "targetBpm": 70,
+                  "timeSignature": "fourFour"
+                }
+              ],
+              "objective": "Hold a barre chord while lifting and replacing the other three fingers without losing a string, and switch between two barre shapes on the beat.",
+              "commonMistakes": [
+                "The barre loosening the moment another finger moves, which is the whole thing this drill is checking for.",
+                "Switching shapes by letting go and starting over, rather than moving the block as one piece.",
+                "Stopping the strumming hand during the switch, the same habit the open-chord changes already had to unlearn."
+              ],
+              "practiceTips": [
+                "Check the barre by ear after every lift - any buzz means it moved.",
+                "Practise the shape switch silently first, then add the strum once the change itself is clean."
+              ],
               "nextSkill": "Counting in Sixteenths"
             }
           ]

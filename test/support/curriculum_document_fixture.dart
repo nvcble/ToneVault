@@ -58,6 +58,8 @@ Map<String, dynamic> lessonMap({
   Object? suggestedBpm = 60,
   Object? timeSignature = 'fourFour',
   List<String> theoryKeys = const ['Em', 'Am'],
+  Object? imageUrl,
+  Object? videoUrl,
   List<Map<String, dynamic>>? exercises,
 }) {
   return {
@@ -74,6 +76,10 @@ Map<String, dynamic> lessonMap({
     'suggestedBpm': suggestedBpm,
     'timeSignature': timeSignature,
     'theoryKeys': theoryKeys,
+    // Null as the shipped curriculum leaves them: a lesson names a picture or a
+    // video only where one was curated for it.
+    'imageUrl': imageUrl,
+    'videoUrl': videoUrl,
     'exercises': exercises ?? [exerciseMap()],
   };
 }

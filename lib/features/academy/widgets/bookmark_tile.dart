@@ -80,10 +80,11 @@ class BookmarkTile extends ConsumerWidget {
     }
 
     await context.push<void>(
-      Routes.academyCourse(
+      Routes.academyLesson(
         place.course.path,
         place.course.level,
         place.course.id,
+        place.lesson.id,
       ),
     );
   }

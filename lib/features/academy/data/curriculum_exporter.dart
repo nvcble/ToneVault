@@ -106,6 +106,8 @@ class CurriculumExporter {
           suggestedBpm: lesson.suggestedBpm,
           timeSignature: lesson.timeSignature,
           theoryKeys: decodeTheoryKeys(lesson.theoryKeys),
+          imageUrl: lesson.imageUrl,
+          videoUrl: lesson.videoUrl,
           exercises: await _exercises(lesson.id),
         ),
     ];

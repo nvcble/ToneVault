@@ -63,6 +63,8 @@ class LessonSpec {
     this.timeSignature,
     this.theoryKeys = const [],
     this.exercises = const [],
+    this.imageUrl,
+    this.videoUrl,
   });
 
   final String slug;
@@ -95,6 +97,15 @@ class LessonSpec {
   /// shows a real fretboard without the diagram being drawn into its text.
   final List<String> theoryKeys;
   final List<ExerciseSpec> exercises;
+
+  /// A picture of what this teaches, and a video of somebody teaching it.
+  ///
+  /// Both optional, and both absent from the curriculum the app ships. A lesson that
+  /// names neither is not a lesson without either: the screen draws its own banner
+  /// from the lesson's kind and theory, and searches YouTube for its title. Naming
+  /// them here is how a curriculum overrides that with something chosen.
+  final String? imageUrl;
+  final String? videoUrl;
 }
 
 class ExerciseSpec {

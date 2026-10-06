@@ -133,6 +133,40 @@
                 "Play the scale, then improvise short phrases ending on A, then on D. Same notes; let the resolution do the work.",
                 "Learn the one interval that matters in each: dorian raises the sixth, mixolydian flattens the seventh."
               ],
+              "nextSkill": "Hand and Finger Exercises"
+            }
+          ]
+        },
+        {
+          "slug": "finger-conditioning-lead-intermediate",
+          "title": "Hand and Finger Conditioning",
+          "summary": "A step up from the beginner warm-up: the same idea, moved across strings and sped up.",
+          "lessons": [
+            {
+              "slug": "hand-and-finger-exercises-lead-intermediate",
+              "title": "Hand and Finger Exercises",
+              "kind": "technique",
+              "estimatedMinutes": 10,
+              "body": "One level up from the beginner spider: the same idea, moved across strings and sped up.\n\n**The chromatic spider** - one finger per fret, frets 1 2 3 4, crossing all six strings in one continuous run rather than string by string: low E frets 1-4, then A frets 1-4, and on up the neck and back, no gap at the string change.\n\n**String-skip drops** - the same four-finger order, but skip a string each time (low E, D, B, then back). The hand has to travel further per note without losing the order.\n\nBoth drills are about the hand crossing strings cleanly while the fingers keep their order - the thing a fast lead line actually asks for.",
+              "exercises": [
+                {
+                  "title": "Chromatic spider, six strings",
+                  "instructions": "Frets 1 to 4, one finger per fret, straight across all six strings and back, no pause at the string change.",
+                  "startBpm": 55,
+                  "targetBpm": 100,
+                  "timeSignature": "fourFour"
+                }
+              ],
+              "objective": "Run the four-finger chromatic pattern across all six strings without a gap, and repeat it skipping a string each time without losing the finger order.",
+              "commonMistakes": [
+                "A gap or a glance at the string change, which is exactly the moment the drill is training away.",
+                "Losing the finger order under the skip pattern and falling back to one-two-three-four regardless of string.",
+                "Speeding past the point where the crossing is still clean."
+              ],
+              "practiceTips": [
+                "Run it straight across first, then only add the skip once the straight run has no gap in it.",
+                "Keep the pick hand's motion as even as the fret hand's - a fast line is both hands agreeing."
+              ],
               "nextSkill": "Hammer-Ons, Pull-Offs and Legato"
             }
           ]

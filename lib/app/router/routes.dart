@@ -43,22 +43,26 @@ abstract final class Routes {
   /// A course by its row id rather than its slug. The slug is what a curriculum
   /// file uses to say which course it means; inside the app a course is a row, and
   /// a link that survives the course being re-imported is one that names the row.
-  ///
-  /// [lessonId] names one lesson of it to arrive with already open. The course is
-  /// still the route - a lesson is not a screen of its own - so the lesson is a
-  /// query parameter and a link without one lands on the course closed.
   static String academyCourse(
     LearningPath path,
     SkillLevel level,
-    int courseId, {
-    int? lessonId,
-  }) {
-    final course = '${academyLevel(path, level)}/$courseId';
-    return lessonId == null ? course : '$course?$lessonQuery=$lessonId';
-  }
+    int courseId,
+  ) => '${academyLevel(path, level)}/$courseId';
 
-  /// The name of the query parameter both the course screen and the metronome use
-  /// to say which lesson they were opened for.
+  /// One lesson, which is a page of its own under the course that teaches it.
+  ///
+  /// A segment rather than a query parameter on the course: a lesson is somewhere the
+  /// player goes and comes back from, so it gets a route, a title and a back arrow
+  /// rather than being a state the course screen is in.
+  static String academyLesson(
+    LearningPath path,
+    SkillLevel level,
+    int courseId,
+    int lessonId,
+  ) => '${academyCourse(path, level, courseId)}/lessons/$lessonId';
+
+  /// The name of the query parameter the metronome uses to say which lesson it was
+  /// opened for, so the practice it counts is credited to that lesson.
   static const String lessonQuery = 'lesson';
 
   /// Ear training, which belongs to no path: a player drills their ears whether they
@@ -251,6 +255,7 @@ abstract final class Routes {
   static const String academyPathSegment = ':path';
   static const String academyLevelSegment = ':level';
   static const String academyCourseSegment = ':courseId';
+  static const String academyLessonSegment = 'lessons/:lessonId';
 
   /// Declared before [academyPathSegment], which would otherwise match `ear`,
   /// `theory`, `bookmarks`, `search` or `curriculum` as the name of a learning path.

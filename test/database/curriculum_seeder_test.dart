@@ -39,17 +39,49 @@ void main() {
     expect(await curriculum.hasAnyCourse(), isTrue);
   });
 
-  test('every launch after that writes nothing', () async {
+  test('every launch after that leaves one copy, not another one', () async {
     final seeder = seederOf({'rhythm.json': curriculumJson()});
 
     expect(await seeder.seed(), 1);
-    expect(await seeder.seed(), 0);
-    expect(await seeder.seed(), 0);
+    expect(await seeder.seed(), 1);
+    expect(await seeder.seed(), 1);
     expect(
       await curriculum
           .watchCourses(LearningPath.rhythm, SkillLevel.beginner)
           .first,
       hasLength(1),
+    );
+  });
+
+  test('a lesson added to a shipped course arrives on the next launch', () async {
+    // The reason the seeder refreshes rather than skips. Before it did, a course
+    // the phone already had could never gain the lesson a later version taught
+    // inside it, and there was nothing the user could do about that.
+    await seederOf({'rhythm.json': curriculumJson()}).seed();
+
+    await seederOf({
+      'rhythm.json': curriculumJson(
+        courses: [
+          courseMap(
+            modules: [
+              moduleMap(lessons: [lessonMap(), lessonMap(slug: 'the-new-one')]),
+            ],
+          ),
+        ],
+      ),
+    }).seed();
+
+    final course =
+        (await curriculum
+                .watchCourses(LearningPath.rhythm, SkillLevel.beginner)
+                .first)
+            .single;
+    final module = (await curriculum.watchModules(course.id).first).single;
+    expect(
+      (await curriculum.watchLessons(module.id).first).map(
+        (lesson) => lesson.slug,
+      ),
+      ['em-and-am', 'the-new-one'],
     );
   });
 
@@ -60,7 +92,7 @@ void main() {
       // one never had, and the ones the player is working through are untouched.
       await seederOf({'rhythm.json': curriculumJson()}).seed();
 
-      final added = await seederOf({
+      final written = await seederOf({
         'rhythm.json': curriculumJson(
           courses: [
             courseMap(),
@@ -69,7 +101,7 @@ void main() {
         ),
       }).seed();
 
-      expect(added, 1);
+      expect(written, 2);
       expect(
         (await curriculum
                 .watchCourses(LearningPath.rhythm, SkillLevel.beginner)

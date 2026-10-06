@@ -19,6 +19,15 @@
               "kind": "technique",
               "estimatedMinutes": 10,
               "body": "Hold the pick between the side of the first finger and the pad of the thumb, with a few millimetres showing. Firm enough that it does not rotate, loose enough that the wrist can stay relaxed.\n\nThe movement comes from the wrist. If the forearm is moving, everything above about 100 BPM will be a fight.\n\nRest the heel of the hand lightly on the strings you are not playing. That mute is not optional in lead playing - it is what stops the other five strings ringing along with your line.",
+              "exercises": [
+                {
+                  "title": "Six strums, six checks",
+                  "instructions": "Strum an open chord once per click. After each strum, glance at the pick's angle and reset the grip the moment it has rotated.",
+                  "startBpm": 50,
+                  "targetBpm": 80,
+                  "timeSignature": "fourFour"
+                }
+              ],
               "objective": "Hold a pick so it cannot rotate and drive it from the wrist, so that nothing you play above 100 BPM turns into a fight with your own hand.",
               "commonMistakes": [
                 "Gripping so hard that the forearm takes over the movement from the wrist.",
@@ -87,6 +96,40 @@
                 "Count out loud. A note played while you are counting is rarely early.",
                 "Turn the click up until it is louder than the guitar, not the other way round."
               ],
+              "nextSkill": "Hand and Finger Exercises"
+            }
+          ]
+        },
+        {
+          "slug": "finger-conditioning-lead-beginner",
+          "title": "Hand and Finger Conditioning",
+          "summary": "A short warm-up for the fretting hand, before the fret is asked to do anything.",
+          "lessons": [
+            {
+              "slug": "hand-and-finger-exercises-lead-beginner",
+              "title": "Hand and Finger Exercises",
+              "kind": "technique",
+              "estimatedMinutes": 10,
+              "body": "A short warm-up before anything else, so the hand is ready before the fret is asked to do anything.\n\n**The spider** - one finger per fret, frets 1 2 3 4 on the low E string. First finger on 1, second on 2, third on 3, fourth on 4, one at a time, then back down. Every finger lands just behind its fret and lifts only far enough to clear the string.\n\nMove the same shape up a string. Six strings, same four frets, same order. Nothing about the exercise changes - only which string is under it.\n\nThe point is not speed. It is a finger that lands in the same place every time, felt through the fingertip rather than checked by eye.",
+              "exercises": [
+                {
+                  "title": "The spider, string by string",
+                  "instructions": "One finger per fret, frets 1 to 4, ascending and descending on each string in turn, low E to high E. Every finger the same length, same volume.",
+                  "startBpm": 40,
+                  "targetBpm": 70,
+                  "timeSignature": "fourFour"
+                }
+              ],
+              "objective": "Play the four-finger spider - one finger per fret, in order - across all six strings without looking at the fretting hand.",
+              "commonMistakes": [
+                "Lifting the fingers high off the string between frets, which wastes the whole point of the exercise.",
+                "Speeding up before the fourth finger lands as cleanly as the first.",
+                "Watching the fretting hand instead of feeling for whether each finger landed just behind its fret."
+              ],
+              "practiceTips": [
+                "Play it silently first - fret without picking - so the ear is not covering for a finger that is late.",
+                "Two minutes before anything else, every session. It is a warm-up, not a scale to master."
+              ],
               "nextSkill": "Reading Notation and Tab"
             }
           ]
@@ -102,6 +145,15 @@
               "kind": "concept",
               "estimatedMinutes": 15,
               "body": "Lead lines are usually written as **tab**, sometimes paired with standard notation above it for the rhythm.\n\nTab is six lines, one per string - top line the high E, bottom line the low E. A number is a fret on that string, and numbers reading left to right are played one after another: a melody rather than a chord. Two numbers stacked are played together.\n\n**Standard notation**, when it is there, sits above the tab and supplies what tab cannot: how long each note lasts. Read the two together - the staff for rhythm, the tab for where to put your fingers.\n\nA handful of symbols carry most of a lead line's phrasing:\n\n- **h** - hammer-on, from a lower fret to a higher one without picking again.\n- **p** - pull-off, the same thing in reverse.\n- **/** - slide into the next number, up or down depending on which one is higher.\n- **b** - bend the string up to the pitch shown, and **r** releases it back.\n- **~** - vibrato on the note it follows.\n\nA line full of these is not decoration - it is the actual instruction. Skipping past a **b** because it looks like clutter is skipping the bend.",
+              "exercises": [
+                {
+                  "title": "Read and play four",
+                  "instructions": "Read a four-bar tab line combining a hammer-on, a pull-off, a slide and a bend, and play exactly what is written before speeding it up.",
+                  "startBpm": 50,
+                  "targetBpm": 70,
+                  "timeSignature": "fourFour"
+                }
+              ],
               "objective": "Read a single-note tab line left to right, including hammer-ons, pull-offs, slides and bends, and place each on the right fret and string.",
               "commonMistakes": [
                 "Ignoring the technique symbols and picking every note plainly, which is not what the line asked for.",
@@ -161,6 +213,15 @@
                 "A minor pentatonic"
               ],
               "body": "The natural minor scale has seven notes: **A B C D E F G**. The minor pentatonic is that scale with two taken out - the second (B) and the sixth (F).\n\nThose two are the notes most likely to clash with a chord underneath. Remove them and almost every remaining note sits comfortably over almost every chord in the key. That is not a rule of taste; it is why a beginner can improvise over a whole song with one shape and sound fine.\n\nLater you put B and F back deliberately, for the tension they create. First you learn what the safe five sound like.",
+              "exercises": [
+                {
+                  "title": "Seven, then five",
+                  "instructions": "Play the seven-note A natural minor scale, then the five-note pentatonic, back to back over a held A minor sound. Listen for what the two extra notes did.",
+                  "startBpm": 50,
+                  "targetBpm": 90,
+                  "timeSignature": "fourFour"
+                }
+              ],
               "objective": "Say which two notes the minor pentatonic leaves out of the natural minor scale, and why leaving them out is what makes it safe.",
               "commonMistakes": [
                 "Treating the pentatonic as a separate scale rather than the minor scale with two notes taken out.",

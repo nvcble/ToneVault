@@ -3,6 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../app/theme/app_spacing.dart';
 import '../../../core/database/app_database.dart';
+import '../../../core/enums/learning_path.dart';
+import '../../../core/enums/skill_level.dart';
 import '../../../shared/widgets/async_list_section.dart';
 import '../../../shared/widgets/empty_state.dart';
 import '../data/lesson_tally.dart';
@@ -12,25 +14,31 @@ import '../widgets/course_export_action.dart';
 import '../widgets/module_section.dart';
 import '../widgets/tally_bar.dart';
 
-/// One course, as its modules and the lessons inside them.
+/// One course, as its modules and the lessons in them.
 ///
-/// The lessons are here rather than on a screen of their own. A lesson is a page of
-/// reading and a handful of exercises, and a player working through a module opens
-/// four or five of them in a sitting: keeping them on the course screen means that
-/// is four taps rather than eight, and the one they finished stays in view above the
-/// one they are starting.
+/// A list of what there is to learn, and nothing more: each lesson is one row, and
+/// reading one happens on its own page. A course is six modules of six lessons, and
+/// opening them in place put a page of text and a fretboard between one row and the
+/// next - which made the screen a thing to scroll through rather than to choose from.
 ///
 /// The course's progress is above the modules rather than inside the list, so it
 /// stays put while the lessons scroll under it. It is the answer to "how much of
 /// this is left", and a player asks that while looking at what is left.
 class CourseScreen extends ConsumerWidget {
-  const CourseScreen({required this.courseId, this.openLessonId, super.key});
+  const CourseScreen({
+    required this.courseId,
+    required this.path,
+    required this.level,
+    super.key,
+  });
 
   final int courseId;
 
-  /// One lesson of it to arrive with already open, where the player was sent here
-  /// to carry on with that lesson rather than to choose one.
-  final int? openLessonId;
+  /// Where the course sits, taken from the route rather than from its row: it is what
+  /// the link to one of its lessons is built from, and a lesson row arriving before
+  /// the course row would otherwise leave a tappable lesson with nowhere to go.
+  final LearningPath path;
+  final SkillLevel level;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -79,7 +87,8 @@ class CourseScreen extends ConsumerWidget {
               itemBuilder: (context, module) => ModuleSection(
                 module: module,
                 courseId: courseId,
-                openLessonId: openLessonId,
+                path: path,
+                level: level,
               ),
             ),
           ),

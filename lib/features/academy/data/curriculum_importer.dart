@@ -11,14 +11,15 @@ enum CurriculumConflict {
   /// user did not know they had lost.
   refuse,
 
-  /// Leave the stored course exactly as it is and go on to the next one. What the
-  /// seeder uses: it runs at every launch, and the course a player is half-way
-  /// through is not to be touched just because the app started again.
+  /// Leave the stored course exactly as it is and go on to the next one. For an
+  /// import that is only meant to fill gaps, adding the courses the app does not
+  /// have and saying nothing about the ones it does.
   keep,
 
   /// Bring the stored course up to what the file says, keeping the lessons the
   /// player has practised against. What a user gets after being told plainly what
-  /// will be replaced.
+  /// will be replaced, and what the seeder uses so an update that adds to a shipped
+  /// course reaches a phone that already has it.
   update,
 }
 

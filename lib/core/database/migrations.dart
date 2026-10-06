@@ -10,6 +10,7 @@ import 'migrations/schema_steps_v21.dart';
 import 'migrations/schema_steps_v22.dart';
 import 'migrations/schema_steps_v23.dart';
 import 'migrations/schema_steps_v24.dart';
+import 'migrations/schema_steps_v25.dart';
 import 'migrations/schema_steps_v2_v9.dart';
 
 /// Schema history. Every version bump gets an entry here and a matching branch
@@ -119,7 +120,13 @@ import 'migrations/schema_steps_v2_v9.dart';
 /// - v24: hotone_ampero_mini_patches.local_label, the name the user typed for
 ///   a patch slot themselves - kept apart from `name`, which holds only what
 ///   was decoded from the device's own bytes. Purely additive: one ADD COLUMN.
-const int currentSchemaVersion = 24;
+/// - v25: academy_lessons.image_url and .video_url, so a lesson can show a picture
+///   of what it teaches and hand the player a video of somebody teaching it. Two
+///   nullable columns, purely additive, and neither is backfilled: a lesson that
+///   names neither gets a banner drawn from its own kind and theory and a YouTube
+///   search built from its title, which is worked out on the screen rather than
+///   written a hundred times into the database.
+const int currentSchemaVersion = 25;
 
 MigrationStrategy buildMigrationStrategy(GeneratedDatabase database) {
   return MigrationStrategy(
@@ -142,6 +149,7 @@ MigrationStrategy buildMigrationStrategy(GeneratedDatabase database) {
       await upgradeThroughV22(database, from);
       await upgradeThroughV23(database, from);
       await upgradeThroughV24(database, from);
+      await upgradeThroughV25(database, from);
 
       if (to > currentSchemaVersion) {
         throw StateError('No migration registered up to schema $to.');

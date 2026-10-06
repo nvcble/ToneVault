@@ -14,6 +14,7 @@ import '../screens/curriculum_screen.dart';
 import '../screens/ear_drill_screen.dart';
 import '../screens/ear_training_screen.dart';
 import '../screens/learning_path_screen.dart';
+import '../screens/lesson_screen.dart';
 import '../screens/lesson_search_screen.dart';
 import '../screens/level_screen.dart';
 
@@ -80,8 +81,16 @@ List<RouteBase> academyRoutes() {
                   path: Routes.academyCourseSegment,
                   builder: (context, state) => CourseScreen(
                     courseId: _courseId(state),
-                    openLessonId: _lessonId(state),
+                    path: _path(state) ?? LearningPath.rhythm,
+                    level: _level(state) ?? SkillLevel.beginner,
                   ),
+                  routes: [
+                    GoRoute(
+                      path: Routes.academyLessonSegment,
+                      builder: (context, state) =>
+                          LessonScreen(lessonId: _lessonId(state)),
+                    ),
+                  ],
                 ),
               ],
             ),
@@ -122,7 +131,6 @@ SkillLevel? _level(GoRouterState state) => SkillLevel.values
 int _courseId(GoRouterState state) =>
     int.tryParse(state.pathParameters['courseId'] ?? '') ?? -1;
 
-/// The lesson to arrive with open, where the link named one. Null is the ordinary
-/// case: a course opened from a level, with every lesson closed.
-int? _lessonId(GoRouterState state) =>
-    int.tryParse(state.uri.queryParameters[Routes.lessonQuery] ?? '');
+/// The same for a lesson, which lands on "this lesson is not here".
+int _lessonId(GoRouterState state) =>
+    int.tryParse(state.pathParameters['lessonId'] ?? '') ?? -1;

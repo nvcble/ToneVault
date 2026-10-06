@@ -16,6 +16,7 @@ import 'package:tone_vault/features/controls/data/control_draft.dart';
 import 'package:tone_vault/features/history/data/change_entry.dart';
 import 'package:tone_vault/features/patches/data/patch_draft.dart';
 import 'package:tone_vault/features/pedals/data/pedal_draft.dart';
+import '../support/curriculum_document_fixture.dart';
 import '../support/repositories.dart';
 import '../support/v1_database.dart';
 import '../support/v21_database.dart';
@@ -222,6 +223,40 @@ void main() {
     // on the next launch rather than written into the upgrade.
     expect(await db.select(db.academyCourses).get(), isEmpty);
   });
+
+  test(
+    'a lesson on an upgraded database can name a picture and a video',
+    () async {
+      // v25's two columns are added by ALTER on a phone that already had the
+      // Academy, so the only proof they are the same columns a new install writes is
+      // storing something in them and reading it back.
+      final db = openV1Database();
+      addTearDown(db.close);
+
+      await curriculumImporter(db).importFile(
+        curriculumJson(
+          courses: [
+            courseMap(
+              modules: [
+                moduleMap(
+                  lessons: [
+                    lessonMap(
+                      imageUrl: 'https://example.com/em-and-am.jpg',
+                      videoUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ],
+        ),
+      );
+
+      final lesson = await db.select(db.academyLessons).getSingle();
+      expect(lesson.imageUrl, 'https://example.com/em-and-am.jpg');
+      expect(lesson.videoUrl, 'https://www.youtube.com/watch?v=dQw4w9WgXcQ');
+    },
+  );
 
   test('an upgraded database can hold a patch', () async {
     final db = openV1Database();

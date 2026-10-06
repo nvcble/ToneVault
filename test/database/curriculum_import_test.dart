@@ -55,6 +55,67 @@ void main() {
     expect(await curriculum.watchExercises(lesson.id).first, hasLength(1));
   });
 
+  test('a lesson can name a picture of itself and a video to watch', () async {
+    await importer.importFile(
+      curriculumJson(
+        courses: [
+          courseMap(
+            modules: [
+              moduleMap(
+                lessons: [
+                  lessonMap(
+                    imageUrl: 'https://example.com/em-and-am.jpg',
+                    videoUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+
+    final lesson = (await storedLessons()).single;
+    expect(lesson.imageUrl, 'https://example.com/em-and-am.jpg');
+    expect(lesson.videoUrl, 'https://www.youtube.com/watch?v=dQw4w9WgXcQ');
+  });
+
+  test('and says neither where the file does not', () async {
+    // Which is every lesson the app ships. Null rather than a URL written a hundred
+    // times over: the screen works both out from the lesson itself.
+    await importer.importFile(curriculumJson());
+
+    final lesson = (await storedLessons()).single;
+    expect(lesson.imageUrl, isNull);
+    expect(lesson.videoUrl, isNull);
+  });
+
+  test('a video that is not a web address is refused', () {
+    // A file is something a player can be sent, so a link in one is something the
+    // app is about to open on their phone. `javascript:` and `file:` are not videos.
+    // Refused while the file is being read, before the database is opened at all.
+    final file = curriculumJson(
+      courses: [
+        courseMap(
+          modules: [
+            moduleMap(lessons: [lessonMap(videoUrl: 'javascript:alert(1)')]),
+          ],
+        ),
+      ],
+    );
+
+    expect(
+      () => importer.importFile(file),
+      throwsA(
+        isA<AppFailure>().having(
+          (failure) => failure.message,
+          'message',
+          contains('not a web address'),
+        ),
+      ),
+    );
+  });
+
   test(
     'the order courses are written in is the order they come back',
     () async {

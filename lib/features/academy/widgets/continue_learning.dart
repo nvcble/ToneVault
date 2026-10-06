@@ -47,15 +47,15 @@ class ContinueLearning extends ConsumerWidget {
             // already underway does not look like a third path to choose from.
             color: theme.colorScheme.surfaceContainerHighest,
             child: InkWell(
+              // Straight onto the lesson, not onto the course it is in. Landing on the
+              // course and hunting for the lesson again is the work this section
+              // exists to save.
               onTap: () => context.push(
-                Routes.academyCourse(
+                Routes.academyLesson(
                   course.path,
                   course.level,
                   course.id,
-                  // Named, so the lesson is open when the course appears. Landing on
-                  // the course and hunting for the lesson again is the work this
-                  // section exists to save.
-                  lessonId: place.lesson.id,
+                  place.lesson.id,
                 ),
               ),
               child: Padding(

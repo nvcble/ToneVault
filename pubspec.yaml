@@ -43,6 +43,11 @@ dependencies:
   image_picker: ^1.2.0
   path_provider: ^2.1.6
 
+  # Opening a lesson's video in YouTube, in the app if it is installed and in the
+  # browser if it is not. Already here transitively behind share_plus's desktop
+  # fallback; named directly because the Academy calls launchUrl itself.
+  url_launcher: ^6.3.2
+
   # Sound: the chords the ear training plays, and the metronome's click.
   #
   # Both are generated rather than recorded - the app builds a WAV in memory from

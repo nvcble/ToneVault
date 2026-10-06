@@ -63,11 +63,14 @@ class _LessonResultTile extends StatelessWidget {
         '${place.course.path.label}',
       ),
       trailing: const Icon(Icons.chevron_right),
+      // The lesson itself, because that is what was searched for. Its course is one
+      // back arrow away.
       onTap: () => context.push<void>(
-        Routes.academyCourse(
+        Routes.academyLesson(
           place.course.path,
           place.course.level,
           place.course.id,
+          place.lesson.id,
         ),
       ),
     );

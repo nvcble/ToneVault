@@ -20,6 +20,15 @@
               "estimatedMinutes": 10,
               "body": "The six strings of a guitar in standard tuning are, from the thickest to the thinnest, **E A D G B E**.\n\nFive of the six gaps are a fourth - five frets. The gap between the G and the B string is a third - four frets. That one exception is why chord shapes look lopsided, and it is worth knowing now rather than being puzzled by later.\n\nTune the low E first against a reference, then tune each string to the one below it: fret 5 of the low E sounds the open A, fret 5 of the A sounds the open D, fret 5 of the D sounds the open G, **fret 4** of the G sounds the open B, and fret 5 of the B sounds the high E.",
               "theoryKeys": [],
+              "exercises": [
+                {
+                  "title": "Tune, then check by ear",
+                  "instructions": "Tune all six strings from a reference, then play each pair of adjacent strings together and listen for the wobble to slow to a stop.",
+                  "startBpm": 60,
+                  "targetBpm": 60,
+                  "timeSignature": "fourFour"
+                }
+              ],
               "objective": "Name the six open strings and tune the guitar to itself, knowing that the gap between the G and B strings is the one exception.",
               "commonMistakes": [
                 "Using fret 5 on the G string, when the B string is tuned from fret 4.",
@@ -38,6 +47,15 @@
               "kind": "concept",
               "estimatedMinutes": 10,
               "body": "There are twelve notes, and then they start again an octave higher.\n\n**A A# B C C# D D# E F F# G G#**\n\nOne fret is one of those steps. B to C and E to F have no fret between them - no sharp, no flat, they are neighbours. Every other pair does.\n\nThat is the whole naming system. The low E string at fret 3 is G because E, F, F#, G is three steps. You do not need to memorise the fretboard; you need to be able to work out any note on it in a couple of seconds, and the rest comes from use.",
+              "exercises": [
+                {
+                  "title": "Name twenty frets",
+                  "instructions": "Pick twenty random frets on the low E and A strings and name each one within a couple of seconds, checking against a chart.",
+                  "startBpm": 40,
+                  "targetBpm": 60,
+                  "timeSignature": "fourFour"
+                }
+              ],
               "objective": "Work out the name of any note on the neck in a couple of seconds, using the twelve names and the two pairs with no fret between them.",
               "commonMistakes": [
                 "Trying to memorise the whole fretboard instead of learning to count to a note.",
@@ -75,6 +93,40 @@
                 "Strumming and hoping tells you something is wrong; picking string by string tells you which finger to move.",
                 "Slow the click down until every note rings. Speed here is not the thing being practised."
               ],
+              "nextSkill": "Hand and Finger Exercises"
+            }
+          ]
+        },
+        {
+          "slug": "finger-conditioning-rhythm-beginner",
+          "title": "Hand and Finger Conditioning",
+          "summary": "A short warm-up for the fretting hand, before it is asked to hold a shape.",
+          "lessons": [
+            {
+              "slug": "hand-and-finger-exercises-rhythm-beginner",
+              "title": "Hand and Finger Exercises",
+              "kind": "technique",
+              "estimatedMinutes": 10,
+              "body": "A short warm-up for the fretting hand before it is asked to hold a shape.\n\n**Finger drops** - hover all four fingers over the low E string, frets 1 2 3 4, then drop them onto the string one at a time without the others pressing down too. Lift, drop the next.\n\n**One chord, one finger at a time** - hold an Em shape, but place the fingers one after another rather than together, checking after each one that the others have not tensed up.\n\nA hand that moves one finger without the rest following is a hand that can hold a chord shape and still add or lift a finger on top of it later.",
+              "exercises": [
+                {
+                  "title": "Four drops, two strings",
+                  "instructions": "Frets 1 to 4 on the low E, one finger dropped at a time, then the same on the A string. No strumming - just the drop and the check.",
+                  "startBpm": 40,
+                  "targetBpm": 60,
+                  "timeSignature": "fourFour"
+                }
+              ],
+              "objective": "Drop each finger onto its own fret without the others tensing or following, and place a chord shape one finger at a time rather than as one clench.",
+              "commonMistakes": [
+                "Tensing the whole hand every time one finger moves, which is the opposite of what the drill is for.",
+                "Rushing through the four drops instead of checking each one lands alone.",
+                "Gripping the neck with the thumb to help a finger press, which stiffens everything above it."
+              ],
+              "practiceTips": [
+                "Do it slowly enough to feel which finger the others try to follow.",
+                "Once it is easy on the low E, try it on the A string too - the hand does not automatically know it moved."
+              ],
               "nextSkill": "Reading Notation and Tab"
             }
           ]
@@ -90,6 +142,15 @@
               "kind": "concept",
               "estimatedMinutes": 15,
               "body": "Two systems for writing down what to play, and rhythm guitar mostly meets them as chord charts.\n\n**Standard notation** puts pitch on a five-line staff, in treble clef for guitar. It says exactly which note and how long it lasts, but not where on the neck to play it.\n\n**Tablature (tab)** is six lines instead of five, one per string - top line the high E, bottom line the low E. A number on a line is a fret: a 3 on the bottom line is fret 3 on the low E. Numbers stacked on top of each other are played together, which is how tab shows a chord.\n\nMost rhythm parts are written as a **chord chart** instead: chord names above the staff, with slash marks below them showing when to strum rather than which notes to fret. One slash per beat is the default - the chord name says what to hold, the slash says when to hit it.\n\nA few symbols worth knowing on sight: **x** above a string means mute it, and a bar line marks off one bar from the next.",
+              "exercises": [
+                {
+                  "title": "Read a chart cold",
+                  "instructions": "Read a one-page chord chart with slash rhythm you have not seen before and strum through it without stopping, even if a change is late.",
+                  "startBpm": 60,
+                  "targetBpm": 80,
+                  "timeSignature": "fourFour"
+                }
+              ],
               "objective": "Read a chord chart's chord names and slash rhythm well enough to play through it without stopping to work out what a symbol means.",
               "commonMistakes": [
                 "Reading tab numbers as fingers instead of frets.",
@@ -121,6 +182,15 @@
                 "Am"
               ],
               "body": "Start here because these two are nearly the same shape moved across one string.\n\n**Em** - second finger on the A string at fret 2, third finger on the D string at fret 2. Strum all six.\n\n**Am** - the same two fingers move up one string each, and the first finger takes the B string at fret 1. Strum five, from the A string down.\n\nPractise changing between them by moving the pair together as one block instead of placing each finger separately.",
+              "exercises": [
+                {
+                  "title": "Block change, twenty times",
+                  "instructions": "Change between Em and Am as one block, twenty times, without strumming, watching only the fingers. Then add the strum.",
+                  "startBpm": 60,
+                  "targetBpm": 90,
+                  "timeSignature": "fourFour"
+                }
+              ],
               "objective": "Play Em and Am cleanly and change between them by moving the two fingers together as one block.",
               "commonMistakes": [
                 "Placing each finger separately, which makes an easy change into a slow one.",

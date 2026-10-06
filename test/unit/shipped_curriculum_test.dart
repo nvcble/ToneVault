@@ -153,6 +153,19 @@ void main() {
     expect(thin, isEmpty);
   });
 
+  test('and gives the player something to do, not only to read', () {
+    // Practice tips are advice; an exercise is the activity, with a tempo to work up
+    // through and a tick of its own. A lesson that ships without one is a page the
+    // player reads and closes, so every shipped lesson has at least one.
+    expect(
+      _lessonsOf(shipped)
+          .where((lesson) => lesson.exercises.isEmpty)
+          .map((lesson) => lesson.slug),
+      isEmpty,
+      reason: 'these lessons have no exercise to practise',
+    );
+  });
+
   test('and hands the player on to the lesson that follows it', () {
     // The next skill is searched for rather than linked by slug, so a title it
     // does not match exactly would send someone to a page of near misses. Only

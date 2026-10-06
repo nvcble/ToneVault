@@ -68,6 +68,8 @@ Map<String, dynamic> _lesson(LessonSpec lesson) => {
   if (lesson.suggestedBpm != null) 'suggestedBpm': lesson.suggestedBpm,
   if (lesson.timeSignature != null) 'timeSignature': lesson.timeSignature!.name,
   if (lesson.theoryKeys.isNotEmpty) 'theoryKeys': lesson.theoryKeys,
+  if (lesson.imageUrl != null) 'imageUrl': lesson.imageUrl,
+  if (lesson.videoUrl != null) 'videoUrl': lesson.videoUrl,
   if (lesson.exercises.isNotEmpty)
     'exercises': [for (final exercise in lesson.exercises) _exercise(exercise)],
 };

@@ -73,6 +73,22 @@ class AcademyLessons extends Table {
 
   DateTimeColumn get updatedAt => dateTime()();
 
+  /// A picture of what the lesson teaches, and a video of somebody teaching it.
+  ///
+  /// Both nullable, and both left null by every lesson the app ships. Where a lesson
+  /// says nothing, the screen shows a banner drawn from what the lesson already has -
+  /// its kind and its theory - and a YouTube search built from its title, so a player
+  /// who learns by watching is never sent away empty-handed by a curriculum that has
+  /// not been curated yet. A lesson that does name one is preferred over both.
+  ///
+  /// Declared last, out of the reading order they belong in, because that is where
+  /// v25's ADD COLUMN puts them on a phone that already had the Academy. A new
+  /// install has to write the same table as an upgraded one, or the two stop being
+  /// the same database.
+  TextColumn get imageUrl => text().withLength(max: 500).nullable()();
+
+  TextColumn get videoUrl => text().withLength(max: 500).nullable()();
+
   @override
   List<Set<Column<Object>>> get uniqueKeys => [
     {moduleId, slug},

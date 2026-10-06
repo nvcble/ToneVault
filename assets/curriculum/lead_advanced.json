@@ -108,6 +108,40 @@
                 "Four bars of Am, Dm, E7, Am, changing scale for one bar only. Play it until the change is automatic.",
                 "Find the raised seventh in the shape you already improvise in, rather than learning a new fingering for it."
               ],
+              "nextSkill": "Hand and Finger Exercises"
+            }
+          ]
+        },
+        {
+          "slug": "finger-conditioning-lead-advanced",
+          "title": "Hand and Finger Conditioning",
+          "summary": "Conditioning that trades picking for legato and adds a stretch.",
+          "lessons": [
+            {
+              "slug": "hand-and-finger-exercises-lead-advanced",
+              "title": "Hand and Finger Exercises",
+              "kind": "technique",
+              "estimatedMinutes": 10,
+              "body": "Advanced conditioning trades picking for legato and adds a stretch: the hand has to be strong enough to sound clean without picking every note.\n\n**Legato spider** - the same one-finger-per-fret spider, frets 1 2 3 4, but only the first note of each string is picked; everything else is hammered on going up and pulled off coming down.\n\n**The wide stretch** - fingers 1, 2 and 4 only, skipping fret 3: frets 1 2 4, then move up a fret and repeat. The gap trains the fourth finger to reach without the hand collapsing behind it.\n\nBoth drills ask the same question a fast passage asks on stage: can the hand stay quiet and even when the pick is doing less of the work.",
+              "exercises": [
+                {
+                  "title": "Legato spider, six strings",
+                  "instructions": "One-finger-per-fret spider across all six strings, picked once per string, the rest hammered and pulled.",
+                  "startBpm": 70,
+                  "targetBpm": 120,
+                  "timeSignature": "fourFour"
+                }
+              ],
+              "objective": "Play the four-finger spider almost entirely by hammer-on and pull-off, and reach the 1-2-4 stretch pattern up the neck without the hand tensing behind it.",
+              "commonMistakes": [
+                "Picking notes that should be hammered or pulled, which defeats the drill.",
+                "Letting the hand tense or the thumb creep over the top of the neck to reach the stretch.",
+                "Losing volume on the pulled-off notes, which is the finger not committing to the pull."
+              ],
+              "practiceTips": [
+                "Start the stretch drill slow enough that the fourth finger lands cleanly every time before asking for speed.",
+                "Alternate a set of legato spider with a set of the stretch - they use the hand differently and neither should be practised to fatigue alone."
+              ],
               "nextSkill": "Arpeggios Through a Progression"
             }
           ]

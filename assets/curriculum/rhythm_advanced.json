@@ -139,6 +139,40 @@
                 "Find the voice that has to move a semitone and build the next voicing around it.",
                 "Loop four chords in one position until no change needs a jump. Then move the loop up two frets."
               ],
+              "nextSkill": "Hand and Finger Exercises"
+            }
+          ]
+        },
+        {
+          "slug": "finger-conditioning-rhythm-advanced",
+          "title": "Hand and Finger Conditioning",
+          "summary": "Quick shape rotation, and one finger moving while the rest of the chord holds still.",
+          "lessons": [
+            {
+              "slug": "hand-and-finger-exercises-rhythm-advanced",
+              "title": "Hand and Finger Exercises",
+              "kind": "technique",
+              "estimatedMinutes": 10,
+              "body": "Extended voicings ask for two things a beginner switch never did: several shapes in quick rotation, and one finger moving alone while the rest of the chord holds still.\n\n**Four-voicing rotation** - four different shapes of the same chord (or a short ii-V-I-vi loop), one per beat, so the hand is choosing and landing a new shape four times a bar rather than once every four bars.\n\n**Hold and add** - fret a chord, then lift the third finger only, to swap a note for the one next to it, and put it back, without the rest of the chord flinching.\n\nBoth drills are the same conditioning the voice-leading work above asks for, just isolated and sped up.",
+              "exercises": [
+                {
+                  "title": "Four voicings, four beats",
+                  "instructions": "One voicing per beat, looping four shapes of the same chord (or a short ii-V-I-vi), for two minutes without a shape landing late.",
+                  "startBpm": 60,
+                  "targetBpm": 100,
+                  "timeSignature": "fourFour"
+                }
+              ],
+              "objective": "Rotate through four chord voicings at one per beat without a late landing, and move one finger of a held chord without disturbing the rest.",
+              "commonMistakes": [
+                "A shape landing on the off-beat, which is the rotation losing its own tempo.",
+                "The whole chord tensing when only one finger was meant to move.",
+                "Practising the rotation slower and slower instead of stopping at the last clean tempo."
+              ],
+              "practiceTips": [
+                "Loop four voicings in one position before moving the loop anywhere else on the neck.",
+                "Isolate the moving finger by playing the chord, lifting it alone, and checking the rest still rings."
+              ],
               "nextSkill": "Three Against Four"
             }
           ]

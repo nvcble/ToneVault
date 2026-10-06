@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
+import '../../../app/router/routes.dart';
 import '../../../app/theme/app_spacing.dart';
 import '../../../core/database/app_database.dart';
+import '../../../core/enums/learning_path.dart';
+import '../../../core/enums/skill_level.dart';
 import '../../../shared/widgets/section_label.dart';
 import '../providers/academy_providers.dart';
 import 'lesson_card.dart';
@@ -16,17 +20,18 @@ class ModuleSection extends ConsumerWidget {
   const ModuleSection({
     required this.module,
     required this.courseId,
-    this.openLessonId,
+    required this.path,
+    required this.level,
     super.key,
   });
 
   final AcademyModule module;
   final int courseId;
 
-  /// The one lesson of the course to open on arrival, passed straight through: a
-  /// module does not know whether the lesson is one of its own, so every module
-  /// checks and at most one of them matches.
-  final int? openLessonId;
+  /// Where the course sits, which is what the link to each of its lessons is built
+  /// from.
+  final LearningPath path;
+  final SkillLevel level;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -61,7 +66,9 @@ class ModuleSection extends ConsumerWidget {
           LessonCard(
             lesson: lesson,
             progress: progress.valueOrNull?[lesson.id],
-            startOpen: lesson.id == openLessonId,
+            onTap: () => context.push<void>(
+              Routes.academyLesson(path, level, courseId, lesson.id),
+            ),
           ),
       ],
     );

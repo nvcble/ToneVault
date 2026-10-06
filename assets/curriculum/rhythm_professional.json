@@ -144,6 +144,40 @@
                 "Melody note first, then the chord under it, then the inversion that puts the melody on top.",
                 "Go as slowly as it takes. This is a choosing exercise, not a playing one."
               ],
+              "nextSkill": "Hand and Finger Exercises"
+            }
+          ]
+        },
+        {
+          "slug": "finger-conditioning-rhythm-professional",
+          "title": "Hand and Finger Conditioning",
+          "summary": "The fastest chord-hand conditioning in the course: rapid substitution and an independent little finger.",
+          "lessons": [
+            {
+              "slug": "hand-and-finger-exercises-rhythm-professional",
+              "title": "Hand and Finger Exercises",
+              "kind": "technique",
+              "estimatedMinutes": 10,
+              "body": "Chord melody and fast reharmonisation both come down to the same physical thing: the hand choosing and landing a new voicing far more often than an open-chord player ever has to, with the little finger doing real, independent work.\n\n**Substitution at speed** - one chord, four different voicings of it, one per beat, looped without a break. The hand has to release a shape completely and land the next one, not slide from one to another.\n\n**The independent little finger** - hold a chord with the first three fingers and use the fourth alone to walk a melody note above it, one fret at a time, without the other three fingers reacting to it.\n\nThis is the fastest chord-hand conditioning in the whole course, and it is worth running on its own before a set where either skill is actually needed.",
+              "exercises": [
+                {
+                  "title": "Four voicings a bar",
+                  "instructions": "One chord, four different voicings, one per beat, looped for two minutes without a shape landing late or half-formed.",
+                  "startBpm": 70,
+                  "targetBpm": 120,
+                  "timeSignature": "fourFour"
+                }
+              ],
+              "objective": "Rotate through four voicings of one chord at one per beat without a late landing, and walk the fourth finger through a melody line above a held chord without disturbing it.",
+              "commonMistakes": [
+                "Sliding from one voicing into the next instead of releasing and landing cleanly.",
+                "The first three fingers reacting every time the fourth moves, which defeats the drill.",
+                "Running the loop faster than the hand can land each shape whole."
+              ],
+              "practiceTips": [
+                "Release the shape completely between voicings at first - the clean landing matters more than the speed.",
+                "Watch only the fourth finger while the other three hold. Any twitch in them is the thing to fix."
+              ],
               "nextSkill": "Charts, Repeats and Road Maps"
             }
           ]
