@@ -4,6 +4,7 @@ import '../../../core/enums/control_type.dart';
 import '../../../core/enums/pedal_category.dart';
 import '../../../core/enums/pedal_type.dart';
 import '../../../core/errors/app_failure.dart';
+import '../../../core/midi/midi_block_definition.dart';
 import '../../../core/midi/midi_device_profile.dart';
 import '../../controls/data/control_draft.dart';
 import '../../controls/data/control_repository.dart';
@@ -60,47 +61,7 @@ class MidiDeviceLinkRepository {
     );
 
     for (final block in profile.blockDefinitions) {
-      final blockId = await _pedals.createPedal(
-        PedalDraft(
-          name: block.label,
-          type: PedalType.digital,
-          category: PedalCategory.other,
-        ).insideUnit(unitId),
-      );
-
-      // A block with only one possible model - Noise Gate, on the MG-30 -
-      // has nothing to select, and a control whose maximum cannot exceed its
-      // minimum is refused by the same validation a hand-entered one goes
-      // through.
-      if (block.modelCount > 1) {
-        await _controls.createControl(
-          blockId,
-          ControlDraft(
-            name: block.modelParameterName,
-            type: ControlType.numeric,
-            minValue: 1,
-            maxValue: block.modelCount.toDouble(),
-            step: 1,
-          ),
-        );
-      }
-
-      for (final knobName in block.knobParameterNames) {
-        final definition = profile.parameterDefinitions.firstWhere(
-          (candidate) => candidate.name == knobName,
-        );
-        final isPercentage = definition.min == 0 && definition.max == 100;
-        await _controls.createControl(
-          blockId,
-          ControlDraft(
-            name: knobName,
-            type: isPercentage ? ControlType.percentage : ControlType.numeric,
-            minValue: definition.min,
-            maxValue: definition.max,
-            step: isPercentage ? null : 1,
-          ),
-        );
-      }
+      await _seedBlock(unitId, profile, block);
     }
 
     await _dao.insertLink(
@@ -112,5 +73,96 @@ class MidiDeviceLinkRepository {
     );
 
     return unitId;
+  }
+
+  /// Seeds whichever of [profile]'s blocks the linked unit does not have yet,
+  /// and returns how many were added.
+  ///
+  /// For a unit linked before the profile named a block - the MG-30's
+  /// Send/Return and Volume - so its chain can be brought up to the unit's
+  /// without unlinking and losing the patches already imported onto it. Blocks
+  /// already there are left alone, including any control the user renamed.
+  Future<int> addMissingBlocks(MidiDeviceProfile profile) async {
+    final link = await _dao.findLink(profile.id);
+    if (link == null) {
+      throw AppFailure('${profile.displayName} is not linked to a pedal yet.');
+    }
+
+    final existing = {
+      for (final block in await _pedals.componentPedals(link.pedalId))
+        block.name,
+    };
+
+    var added = 0;
+    for (final block in profile.blockDefinitions) {
+      if (existing.contains(block.label)) {
+        continue;
+      }
+      await _seedBlock(link.pedalId, profile, block);
+      added++;
+    }
+    return added;
+  }
+
+  /// One block of [profile] as a pedal inside [unitId], with a control per
+  /// parameter it has.
+  Future<void> _seedBlock(
+    int unitId,
+    MidiDeviceProfile profile,
+    MidiBlockDefinition block,
+  ) async {
+    final blockId = await _pedals.createPedal(
+      PedalDraft(
+        name: block.label,
+        type: PedalType.digital,
+        category: PedalCategory.other,
+      ).insideUnit(unitId),
+    );
+
+    // Named models where the profile has them: a selection stores the position
+    // it is on, and bypass is position 0, so the stored value is the model code
+    // the device's own type-select CC expects. Without names, the plain number
+    // is all there is to offer - and a block with one model and no name table
+    // has nothing to select at all.
+    if (block.modelNames.isNotEmpty) {
+      await _controls.createControl(
+        blockId,
+        ControlDraft(
+          name: block.modelParameterName,
+          type: ControlType.selection,
+          minValue: 0,
+          maxValue: block.modelNames.length.toDouble(),
+          options: ['BYPASS', ...block.modelNames],
+        ),
+      );
+    } else if (block.modelCount > 1) {
+      await _controls.createControl(
+        blockId,
+        ControlDraft(
+          name: block.modelParameterName,
+          type: ControlType.numeric,
+          minValue: 1,
+          maxValue: block.modelCount.toDouble(),
+          step: 1,
+        ),
+      );
+    }
+
+    for (final knobName in block.knobParameterNames) {
+      final definition = profile.parameterDefinitions.firstWhere(
+        (candidate) => candidate.name == knobName,
+      );
+      final isPercentage = definition.min == 0 && definition.max == 100;
+      await _controls.createControl(
+        blockId,
+        ControlDraft(
+          name: knobName,
+          type: isPercentage ? ControlType.percentage : ControlType.numeric,
+          minValue: definition.min,
+          maxValue: definition.max,
+          step: isPercentage ? null : 1,
+        ),
+      );
+    }
   }
 }

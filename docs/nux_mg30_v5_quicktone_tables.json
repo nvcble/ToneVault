@@ -1,0 +1,3052 @@
+{
+ "WAH": [
+  {
+   "index": 1,
+   "name": "CLYDE",
+   "knobs": []
+  },
+  {
+   "index": 2,
+   "name": "CRY BB",
+   "knobs": []
+  },
+  {
+   "index": 3,
+   "name": "V847",
+   "knobs": []
+  },
+  {
+   "index": 4,
+   "name": "HORSE WAH",
+   "knobs": [
+    {
+     "knob": 0,
+     "label": "CONTOUR",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 1,
+     "label": "RANGE",
+     "min": 0,
+     "max": 5
+    }
+   ]
+  },
+  {
+   "index": 5,
+   "name": "OCTAVE-SHIFT",
+   "knobs": []
+  }
+ ],
+ "CMP": [
+  {
+   "index": 1,
+   "name": "ROSE COMP",
+   "knobs": [
+    {
+     "knob": 0,
+     "label": "SUSTAIN",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 1,
+     "label": "LEVEL",
+     "min": 0,
+     "max": 100
+    }
+   ]
+  },
+  {
+   "index": 2,
+   "name": "K COMP",
+   "knobs": [
+    {
+     "knob": 0,
+     "label": "SUSTAIN",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 1,
+     "label": "LEVEL",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 2,
+     "label": "CLIPPING",
+     "min": 0,
+     "max": 100
+    }
+   ]
+  },
+  {
+   "index": 3,
+   "name": "STUDIO COMP",
+   "knobs": [
+    {
+     "knob": 0,
+     "label": "THR",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 1,
+     "label": "RATIO",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 2,
+     "label": "GAIN",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 3,
+     "label": "RELEASE",
+     "min": 0,
+     "max": 100
+    }
+   ]
+  }
+ ],
+ "NR": [
+  {
+   "index": 1,
+   "name": "NOISE GATE",
+   "knobs": [
+    {
+     "knob": 0,
+     "label": "SENS",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 1,
+     "label": "DECAY",
+     "min": 0,
+     "max": 100
+    }
+   ]
+  }
+ ],
+ "EFX": [
+  {
+   "index": 1,
+   "name": "DISTORTION+",
+   "knobs": [
+    {
+     "knob": 0,
+     "label": "OUTPUT",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 1,
+     "label": "SENSITIVITY",
+     "min": 0,
+     "max": 100
+    }
+   ]
+  },
+  {
+   "index": 2,
+   "name": "RC BOOST",
+   "knobs": [
+    {
+     "knob": 0,
+     "label": "GAIN",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 1,
+     "label": "VOL",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 2,
+     "label": "BASS",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 3,
+     "label": "TREBLE",
+     "min": 0,
+     "max": 100
+    }
+   ]
+  },
+  {
+   "index": 3,
+   "name": "AC BOOST",
+   "knobs": [
+    {
+     "knob": 0,
+     "label": "GAIN",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 1,
+     "label": "VOL",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 2,
+     "label": "BASS",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 3,
+     "label": "TREBLE",
+     "min": 0,
+     "max": 100
+    }
+   ]
+  },
+  {
+   "index": 4,
+   "name": "DIST ONE",
+   "knobs": [
+    {
+     "knob": 0,
+     "label": "LEVEL",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 1,
+     "label": "TONE",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 2,
+     "label": "DRIVE",
+     "min": 0,
+     "max": 100
+    }
+   ]
+  },
+  {
+   "index": 5,
+   "name": "T SCREAM",
+   "knobs": [
+    {
+     "knob": 0,
+     "label": "DRIVE",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 1,
+     "label": "TONE",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 2,
+     "label": "LEVEL",
+     "min": 0,
+     "max": 100
+    }
+   ]
+  },
+  {
+   "index": 6,
+   "name": "BLUES DRV",
+   "knobs": [
+    {
+     "knob": 0,
+     "label": "LEVEL",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 1,
+     "label": "TONE",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 2,
+     "label": "GAIN",
+     "min": 0,
+     "max": 100
+    }
+   ]
+  },
+  {
+   "index": 7,
+   "name": "MORNING DRV",
+   "knobs": [
+    {
+     "knob": 0,
+     "label": "VOLUME",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 1,
+     "label": "DRIVE",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 2,
+     "label": "TONE",
+     "min": 0,
+     "max": 100
+    }
+   ]
+  },
+  {
+   "index": 8,
+   "name": "EAT DIST",
+   "knobs": [
+    {
+     "knob": 0,
+     "label": "DISTORTION",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 1,
+     "label": "FILTER",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 2,
+     "label": "VOLUME",
+     "min": 0,
+     "max": 100
+    }
+   ]
+  },
+  {
+   "index": 9,
+   "name": "RED DIRT",
+   "knobs": [
+    {
+     "knob": 0,
+     "label": "DRIVE",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 1,
+     "label": "TONE",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 2,
+     "label": "LEVEL",
+     "min": 0,
+     "max": 100
+    }
+   ]
+  },
+  {
+   "index": 10,
+   "name": "CRUNCH",
+   "knobs": [
+    {
+     "knob": 0,
+     "label": "VOLUME",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 1,
+     "label": "TONE",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 2,
+     "label": "GAIN",
+     "min": 0,
+     "max": 100
+    }
+   ]
+  },
+  {
+   "index": 11,
+   "name": "MUFF FUZZ",
+   "knobs": [
+    {
+     "knob": 0,
+     "label": "VOLUME",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 1,
+     "label": "TONE",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 2,
+     "label": "SUSTAIN",
+     "min": 0,
+     "max": 100
+    }
+   ]
+  },
+  {
+   "index": 12,
+   "name": "KATANA",
+   "knobs": [
+    {
+     "knob": 0,
+     "label": "BOOST",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 1,
+     "label": "VOLUME",
+     "min": 0,
+     "max": 100
+    }
+   ]
+  },
+  {
+   "index": 13,
+   "name": "ST SINGER",
+   "knobs": [
+    {
+     "knob": 0,
+     "label": "VOLUME",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 1,
+     "label": "GAIN",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 2,
+     "label": "FILTER",
+     "min": 0,
+     "max": 100
+    }
+   ]
+  },
+  {
+   "index": 14,
+   "name": "RED FUZZ",
+   "knobs": [
+    {
+     "knob": 0,
+     "label": "GAIN",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 1,
+     "label": "TONE",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 2,
+     "label": "OUTPUT",
+     "min": 0,
+     "max": 100
+    }
+   ]
+  },
+  {
+   "index": 15,
+   "name": "TOUCH WAH",
+   "knobs": [
+    {
+     "knob": 0,
+     "label": "MODE",
+     "min": 0,
+     "max": 3
+    },
+    {
+     "knob": 1,
+     "label": "DECAY",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 2,
+     "label": "SENS",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 4,
+     "label": "LEVEL",
+     "min": 0,
+     "max": 100
+    }
+   ]
+  }
+ ],
+ "AMP": [
+  {
+   "index": 1,
+   "name": "JAZZ CLEAN",
+   "knobs": [
+    {
+     "knob": 0,
+     "label": "GAIN",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 1,
+     "label": "MASTER",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 2,
+     "label": "BASS",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 3,
+     "label": "MIDDLE",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 4,
+     "label": "TREB",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 5,
+     "label": "BRIGHT",
+     "min": 0,
+     "max": 1
+    },
+    {
+     "knob": 6,
+     "label": "LEVEL",
+     "min": 0,
+     "max": 100
+    }
+   ]
+  },
+  {
+   "index": 2,
+   "name": "DELXUE RVB",
+   "knobs": [
+    {
+     "knob": 0,
+     "label": "GAIN",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 1,
+     "label": "MASTER",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 2,
+     "label": "BASS",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 3,
+     "label": "MIDDLE",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 4,
+     "label": "TREB",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 5,
+     "label": "BIAS",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 6,
+     "label": "LEVEL",
+     "min": 0,
+     "max": 100
+    }
+   ]
+  },
+  {
+   "index": 3,
+   "name": "BASSMATE",
+   "knobs": [
+    {
+     "knob": 0,
+     "label": "GAIN",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 1,
+     "label": "MASTER",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 2,
+     "label": "BASS",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 3,
+     "label": "MIDDLE",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 4,
+     "label": "TREB",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 5,
+     "label": "PRES",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 6,
+     "label": "BIAS",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 7,
+     "label": "LEVEL",
+     "min": 0,
+     "max": 100
+    }
+   ]
+  },
+  {
+   "index": 4,
+   "name": "TWEEDY",
+   "knobs": [
+    {
+     "knob": 0,
+     "label": "GAIN",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 1,
+     "label": "TONE",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 2,
+     "label": "MASTER",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 3,
+     "label": "LEVEL",
+     "min": 0,
+     "max": 100
+    }
+   ]
+  },
+  {
+   "index": 5,
+   "name": "TWIN RVB",
+   "knobs": [
+    {
+     "knob": 0,
+     "label": "GAIN",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 1,
+     "label": "MASTER",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 2,
+     "label": "BASS",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 3,
+     "label": "MIDDLE",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 4,
+     "label": "TREB",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 5,
+     "label": "BRIGHT",
+     "min": 0,
+     "max": 1
+    },
+    {
+     "knob": 6,
+     "label": "BIAS",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 7,
+     "label": "LEVEL",
+     "min": 0,
+     "max": 100
+    }
+   ]
+  },
+  {
+   "index": 6,
+   "name": "HIWIRE",
+   "knobs": [
+    {
+     "knob": 0,
+     "label": "GAIN",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 1,
+     "label": "MASTER",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 2,
+     "label": "BASS",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 3,
+     "label": "MIDDLE",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 4,
+     "label": "TREB",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 5,
+     "label": "PRES",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 6,
+     "label": "BIAS",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 7,
+     "label": "LEVEL",
+     "min": 0,
+     "max": 100
+    }
+   ]
+  },
+  {
+   "index": 7,
+   "name": "CALI CRUNCH",
+   "knobs": [
+    {
+     "knob": 0,
+     "label": "GAIN",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 1,
+     "label": "MASTER",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 2,
+     "label": "BASS",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 3,
+     "label": "MIDDLE",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 4,
+     "label": "TREB",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 5,
+     "label": "PRES",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 6,
+     "label": "BIAS",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 7,
+     "label": "LEVEL",
+     "min": 0,
+     "max": 100
+    }
+   ]
+  },
+  {
+   "index": 8,
+   "name": "CLASS A15",
+   "knobs": [
+    {
+     "knob": 0,
+     "label": "GAIN",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 1,
+     "label": "MASTER",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 2,
+     "label": "CUT",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 3,
+     "label": "BASS",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 4,
+     "label": "TREB",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 5,
+     "label": "LEVEL",
+     "min": 0,
+     "max": 100
+    }
+   ]
+  },
+  {
+   "index": 9,
+   "name": "CLASS A30",
+   "knobs": [
+    {
+     "knob": 0,
+     "label": "GAIN",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 1,
+     "label": "MASTER",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 2,
+     "label": "CUT",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 3,
+     "label": "BASS",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 4,
+     "label": "TREB",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 5,
+     "label": "LEVEL",
+     "min": 0,
+     "max": 100
+    }
+   ]
+  },
+  {
+   "index": 10,
+   "name": "PLEXI 100",
+   "knobs": [
+    {
+     "knob": 0,
+     "label": "GAIN",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 1,
+     "label": "MASTER",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 2,
+     "label": "BASS",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 3,
+     "label": "MIDDLE",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 4,
+     "label": "TREB",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 5,
+     "label": "PRES",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 6,
+     "label": "BIAS",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 7,
+     "label": "LEVEL",
+     "min": 0,
+     "max": 100
+    }
+   ]
+  },
+  {
+   "index": 11,
+   "name": "PLEXI 45",
+   "knobs": [
+    {
+     "knob": 0,
+     "label": "GAIN",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 1,
+     "label": "MASTER",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 2,
+     "label": "BASS",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 3,
+     "label": "MIDDLE",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 4,
+     "label": "TREB",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 5,
+     "label": "PRES",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 6,
+     "label": "BIAS",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 7,
+     "label": "LEVEL",
+     "min": 0,
+     "max": 100
+    }
+   ]
+  },
+  {
+   "index": 12,
+   "name": "BRIT 800",
+   "knobs": [
+    {
+     "knob": 0,
+     "label": "GAIN",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 1,
+     "label": "MASTER",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 2,
+     "label": "BASS",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 3,
+     "label": "MIDDLE",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 4,
+     "label": "TREB",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 5,
+     "label": "PRES",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 6,
+     "label": "BIAS",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 7,
+     "label": "LEVEL",
+     "min": 0,
+     "max": 100
+    }
+   ]
+  },
+  {
+   "index": 13,
+   "name": "1987 X 50",
+   "knobs": [
+    {
+     "knob": 0,
+     "label": "GAIN",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 1,
+     "label": "MASTER",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 2,
+     "label": "BASS",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 3,
+     "label": "MIDDLE",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 4,
+     "label": "TREB",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 5,
+     "label": "PRES",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 6,
+     "label": "BIAS",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 7,
+     "label": "LEVEL",
+     "min": 0,
+     "max": 100
+    }
+   ]
+  },
+  {
+   "index": 14,
+   "name": "SLO 100",
+   "knobs": [
+    {
+     "knob": 0,
+     "label": "GAIN",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 1,
+     "label": "MASTER",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 2,
+     "label": "BASS",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 3,
+     "label": "MIDDLE",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 4,
+     "label": "TREB",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 5,
+     "label": "PRES",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 6,
+     "label": "BIAS",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 7,
+     "label": "LEVEL",
+     "min": 0,
+     "max": 100
+    }
+   ]
+  },
+  {
+   "index": 15,
+   "name": "FIREMAN HBE",
+   "knobs": [
+    {
+     "knob": 0,
+     "label": "GAIN",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 1,
+     "label": "MASTER",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 2,
+     "label": "BASS",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 3,
+     "label": "MIDDLE",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 4,
+     "label": "TREB",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 5,
+     "label": "PRES",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 6,
+     "label": "BIAS",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 7,
+     "label": "LEVEL",
+     "min": 0,
+     "max": 100
+    }
+   ]
+  },
+  {
+   "index": 16,
+   "name": "DUAL RECT",
+   "knobs": [
+    {
+     "knob": 0,
+     "label": "GAIN",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 1,
+     "label": "MASTER",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 2,
+     "label": "BASS",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 3,
+     "label": "MIDDLE",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 4,
+     "label": "TREB",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 5,
+     "label": "PRES",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 6,
+     "label": "BIAS",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 7,
+     "label": "LEVEL",
+     "min": 0,
+     "max": 100
+    }
+   ]
+  },
+  {
+   "index": 17,
+   "name": "DIE VH4",
+   "knobs": [
+    {
+     "knob": 0,
+     "label": "GAIN",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 1,
+     "label": "MASTER",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 2,
+     "label": "BASS",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 3,
+     "label": "MIDDLE",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 4,
+     "label": "TREB",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 5,
+     "label": "PRES",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 6,
+     "label": "BIAS",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 7,
+     "label": "LEVEL",
+     "min": 0,
+     "max": 100
+    }
+   ]
+  },
+  {
+   "index": 18,
+   "name": "VIBRO KING",
+   "knobs": [
+    {
+     "knob": 0,
+     "label": "GAIN",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 1,
+     "label": "MASTER",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 2,
+     "label": "BASS",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 3,
+     "label": "MIDDLE",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 4,
+     "label": "TREB",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 5,
+     "label": "PRES",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 6,
+     "label": "BIAS",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 7,
+     "label": "LEVEL",
+     "min": 0,
+     "max": 100
+    }
+   ]
+  },
+  {
+   "index": 19,
+   "name": "BUDDA",
+   "knobs": [
+    {
+     "knob": 0,
+     "label": "GAIN",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 1,
+     "label": "MASTER",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 2,
+     "label": "CUT",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 3,
+     "label": "BASS",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 4,
+     "label": "MIDDLE",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 5,
+     "label": "TREB",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 6,
+     "label": "LEVEL",
+     "min": 0,
+     "max": 100
+    }
+   ]
+  },
+  {
+   "index": 20,
+   "name": "MR.Z 38",
+   "knobs": [
+    {
+     "knob": 0,
+     "label": "GAIN",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 1,
+     "label": "MASTER",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 2,
+     "label": "CUT",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 3,
+     "label": "BASS",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 4,
+     "label": "MIDDLE",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 5,
+     "label": "TREB",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 6,
+     "label": "LEVEL",
+     "min": 0,
+     "max": 100
+    }
+   ]
+  },
+  {
+   "index": 21,
+   "name": "SUPER RVB",
+   "knobs": [
+    {
+     "knob": 0,
+     "label": "GAIN",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 1,
+     "label": "MASTER",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 2,
+     "label": "BASS",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 3,
+     "label": "MIDDLE",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 4,
+     "label": "TREB",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 5,
+     "label": "BRIGHT",
+     "min": 0,
+     "max": 1
+    },
+    {
+     "knob": 6,
+     "label": "BIAS",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 7,
+     "label": "LEVEL",
+     "min": 0,
+     "max": 100
+    }
+   ]
+  },
+  {
+   "index": 22,
+   "name": "BRIT BLUES",
+   "knobs": [
+    {
+     "knob": 0,
+     "label": "GAIN",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 1,
+     "label": "MASTER",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 2,
+     "label": "BASS",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 3,
+     "label": "MIDDLE",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 4,
+     "label": "TREB",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 5,
+     "label": "PRES",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 6,
+     "label": "BIAS",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 7,
+     "label": "LEVEL",
+     "min": 0,
+     "max": 100
+    }
+   ]
+  },
+  {
+   "index": 23,
+   "name": "MATCH",
+   "knobs": [
+    {
+     "knob": 0,
+     "label": "GAIN",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 1,
+     "label": "MASTER",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 2,
+     "label": "CUT",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 3,
+     "label": "BASS",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 4,
+     "label": "TREB",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 5,
+     "label": "LEVEL",
+     "min": 0,
+     "max": 100
+    }
+   ]
+  },
+  {
+   "index": 24,
+   "name": "BRIT 2000",
+   "knobs": [
+    {
+     "knob": 0,
+     "label": "GAIN",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 1,
+     "label": "MASTER",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 2,
+     "label": "BASS",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 3,
+     "label": "MIDDLE",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 4,
+     "label": "TREB",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 5,
+     "label": "PRES",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 6,
+     "label": "BIAS",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 7,
+     "label": "LEVEL",
+     "min": 0,
+     "max": 100
+    }
+   ]
+  },
+  {
+   "index": 25,
+   "name": "UBER",
+   "knobs": [
+    {
+     "knob": 0,
+     "label": "GAIN",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 1,
+     "label": "MASTER",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 2,
+     "label": "BASS",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 3,
+     "label": "MIDDLE",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 4,
+     "label": "TREB",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 5,
+     "label": "PRES",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 6,
+     "label": "BIAS",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 7,
+     "label": "LEVEL",
+     "min": 0,
+     "max": 100
+    }
+   ]
+  },
+  {
+   "index": 26,
+   "name": "AGL",
+   "knobs": [
+    {
+     "knob": 0,
+     "label": "GAIN",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 1,
+     "label": "MASTER",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 2,
+     "label": "BASS",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 3,
+     "label": "MIDDLE",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 4,
+     "label": "AMP_M.FREQ",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 5,
+     "label": "TREB",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 6,
+     "label": "LEVEL",
+     "min": 0,
+     "max": 100
+    }
+   ]
+  },
+  {
+   "index": 27,
+   "name": "BASSGUY",
+   "knobs": [
+    {
+     "knob": 0,
+     "label": "GAIN",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 1,
+     "label": "MASTER",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 2,
+     "label": "BASS",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 3,
+     "label": "MIDDLE",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 4,
+     "label": "TREB",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 5,
+     "label": "PRES",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 6,
+     "label": "LEVEL",
+     "min": 0,
+     "max": 100
+    }
+   ]
+  },
+  {
+   "index": 28,
+   "name": "MLD",
+   "knobs": [
+    {
+     "knob": 0,
+     "label": "GAIN",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 1,
+     "label": "MASTER",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 2,
+     "label": "BASS",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 3,
+     "label": "MIDDLE",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 4,
+     "label": "AMP_M.FREQ",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 5,
+     "label": "TREB",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 6,
+     "label": "LEVEL",
+     "min": 0,
+     "max": 100
+    }
+   ]
+  },
+  {
+   "index": 29,
+   "name": "OPTIMA AIR",
+   "knobs": [
+    {
+     "knob": 0,
+     "label": "GAIN",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 1,
+     "label": "MASTER",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 2,
+     "label": "BASS",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 3,
+     "label": "MIDDLE",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 4,
+     "label": "TREB",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 5,
+     "label": "LEVEL",
+     "min": 0,
+     "max": 100
+    }
+   ]
+  },
+  {
+   "index": 30,
+   "name": "STAGEMAN",
+   "knobs": [
+    {
+     "knob": 0,
+     "label": "GAIN",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 1,
+     "label": "MASTER",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 2,
+     "label": "BASS",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 3,
+     "label": "MIDDLE",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 4,
+     "label": "TREB",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 5,
+     "label": "LEVEL",
+     "min": 0,
+     "max": 100
+    }
+   ]
+  },
+  {
+   "index": 31,
+   "name": "DGLASS",
+   "knobs": [
+    {
+     "knob": 0,
+     "label": "MASTER",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 1,
+     "label": "BASS",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 3,
+     "label": "AMP_LO MIDS",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 4,
+     "label": "AMP_HI MIDS",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 6,
+     "label": "TREB",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 7,
+     "label": "LEVEL",
+     "min": 0,
+     "max": 100
+    }
+   ]
+  },
+  {
+   "index": 32,
+   "name": "STARLIFT",
+   "knobs": [
+    {
+     "knob": 0,
+     "label": "BASS",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 1,
+     "label": "MID",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 2,
+     "label": "AMP_MID FREQ",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 3,
+     "label": "TREB",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 4,
+     "label": "CONTOUR",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 5,
+     "label": "VOLUME",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 6,
+     "label": "LEVEL",
+     "min": 0,
+     "max": 100
+    }
+   ]
+  },
+  {
+   "index": 33,
+   "name": "VIVO",
+   "knobs": [
+    {
+     "knob": 0,
+     "label": "GAIN",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 1,
+     "label": "MASTER",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 2,
+     "label": "BASS",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 3,
+     "label": "MIDDLE",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 4,
+     "label": "TREB",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 5,
+     "label": "PRES",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 6,
+     "label": "BIAS",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 7,
+     "label": "LEVEL",
+     "min": 0,
+     "max": 100
+    }
+   ]
+  },
+  {
+   "index": 34,
+   "name": "F PRINCETON",
+   "knobs": [
+    {
+     "knob": 0,
+     "label": "VOLUME",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 1,
+     "label": "TREB",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 2,
+     "label": "BASS",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 3,
+     "label": "BIAS",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 4,
+     "label": "LEVEL",
+     "min": 0,
+     "max": 100
+    }
+   ]
+  },
+  {
+   "index": 35,
+   "name": "L STAR",
+   "knobs": [
+    {
+     "knob": 0,
+     "label": "GAIN",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 1,
+     "label": "MASTER",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 2,
+     "label": "BASS",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 3,
+     "label": "MIDDLE",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 4,
+     "label": "TREB",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 5,
+     "label": "PRES",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 6,
+     "label": "BIAS",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 7,
+     "label": "LEVEL",
+     "min": 0,
+     "max": 100
+    }
+   ]
+  }
+ ],
+ "IR": [
+  {
+   "index": 1,
+   "name": "JZ120",
+   "knobs": []
+  },
+  {
+   "index": 2,
+   "name": "DR112",
+   "knobs": []
+  },
+  {
+   "index": 3,
+   "name": "BS410",
+   "knobs": []
+  },
+  {
+   "index": 4,
+   "name": "A212",
+   "knobs": []
+  },
+  {
+   "index": 5,
+   "name": "TR212",
+   "knobs": []
+  },
+  {
+   "index": 6,
+   "name": "1960",
+   "knobs": []
+  },
+  {
+   "index": 7,
+   "name": "GB412",
+   "knobs": []
+  },
+  {
+   "index": 8,
+   "name": "V412",
+   "knobs": []
+  },
+  {
+   "index": 9,
+   "name": "SWAMP THANG",
+   "knobs": []
+  },
+  {
+   "index": 10,
+   "name": "CANNABIS REX 12",
+   "knobs": []
+  },
+  {
+   "index": 11,
+   "name": "LEGEND 1058",
+   "knobs": []
+  },
+  {
+   "index": 12,
+   "name": "CV-75",
+   "knobs": []
+  },
+  {
+   "index": 13,
+   "name": "AGL DB810",
+   "knobs": []
+  },
+  {
+   "index": 14,
+   "name": "AMP SV810",
+   "knobs": []
+  },
+  {
+   "index": 15,
+   "name": "AMP SV410",
+   "knobs": []
+  },
+  {
+   "index": 16,
+   "name": "AMP SV212",
+   "knobs": []
+  },
+  {
+   "index": 17,
+   "name": "MKB 410",
+   "knobs": []
+  },
+  {
+   "index": 18,
+   "name": "TRC 410",
+   "knobs": []
+  },
+  {
+   "index": 19,
+   "name": "EDEN 410",
+   "knobs": []
+  },
+  {
+   "index": 20,
+   "name": "BASSGUY 410",
+   "knobs": []
+  },
+  {
+   "index": 21,
+   "name": "M-D45",
+   "knobs": []
+  },
+  {
+   "index": 22,
+   "name": "G-HBIRD",
+   "knobs": []
+  },
+  {
+   "index": 23,
+   "name": "G-J15",
+   "knobs": []
+  },
+  {
+   "index": 24,
+   "name": "USER",
+   "knobs": []
+  },
+  {
+   "index": 25,
+   "name": "COLLECTION",
+   "knobs": []
+  }
+ ],
+ "EQ": [
+  {
+   "index": 1,
+   "name": "6-BAND EQ",
+   "knobs": []
+  },
+  {
+   "index": 2,
+   "name": "ALIGN EQ",
+   "knobs": [
+    {
+     "knob": 0,
+     "label": "HPF",
+     "min": 0,
+     "max": 2
+    }
+   ]
+  },
+  {
+   "index": 3,
+   "name": "10-BAND EQ",
+   "knobs": []
+  },
+  {
+   "index": 4,
+   "name": "PARA EQ",
+   "knobs": []
+  }
+ ],
+ "MOD": [
+  {
+   "index": 1,
+   "name": "CE-1",
+   "knobs": [
+    {
+     "knob": 0,
+     "label": "INTEN",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 1,
+     "label": "DEPTH",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 2,
+     "label": "RATE",
+     "min": 0,
+     "max": 100
+    }
+   ]
+  },
+  {
+   "index": 2,
+   "name": "CE-2",
+   "knobs": [
+    {
+     "knob": 0,
+     "label": "RATE",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 1,
+     "label": "DEPTH",
+     "min": 0,
+     "max": 100
+    }
+   ]
+  },
+  {
+   "index": 3,
+   "name": "ST.CHORUS",
+   "knobs": [
+    {
+     "knob": 0,
+     "label": "INTEN",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 1,
+     "label": "WIDTH",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 2,
+     "label": "RATE",
+     "min": 0,
+     "max": 100
+    }
+   ]
+  },
+  {
+   "index": 4,
+   "name": "VIBRATOR",
+   "knobs": [
+    {
+     "knob": 0,
+     "label": "RATE",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 1,
+     "label": "DEPTH",
+     "min": 0,
+     "max": 100
+    }
+   ]
+  },
+  {
+   "index": 5,
+   "name": "DETUNE",
+   "knobs": [
+    {
+     "knob": 0,
+     "label": "MOD_SHIFT-L",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 1,
+     "label": "MIX",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 2,
+     "label": "MOD_SHIFT-R",
+     "min": 0,
+     "max": 100
+    }
+   ]
+  },
+  {
+   "index": 6,
+   "name": "FLANGER",
+   "knobs": [
+    {
+     "knob": 0,
+     "label": "DEPTH",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 1,
+     "label": "RATE",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 2,
+     "label": "WIDTH",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 3,
+     "label": "MOD_F.BACK",
+     "min": 0,
+     "max": 100
+    }
+   ]
+  },
+  {
+   "index": 7,
+   "name": "PHASE 90",
+   "knobs": [
+    {
+     "knob": 0,
+     "label": "SPEED",
+     "min": 0,
+     "max": 100
+    }
+   ]
+  },
+  {
+   "index": 8,
+   "name": "PHASE 100",
+   "knobs": [
+    {
+     "knob": 0,
+     "label": "INTENSITY",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 1,
+     "label": "SPEED",
+     "min": 0,
+     "max": 100
+    }
+   ]
+  },
+  {
+   "index": 9,
+   "name": "S.C.F",
+   "knobs": [
+    {
+     "knob": 0,
+     "label": "SPEED",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 1,
+     "label": "WIDTH",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 3,
+     "label": "INTEN",
+     "min": 0,
+     "max": 100
+    }
+   ]
+  },
+  {
+   "index": 10,
+   "name": "U-VIBE",
+   "knobs": [
+    {
+     "knob": 0,
+     "label": "SPEED",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 1,
+     "label": "VOLUME",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 2,
+     "label": "INTEN",
+     "min": 0,
+     "max": 100
+    }
+   ]
+  },
+  {
+   "index": 11,
+   "name": "TREMOLO",
+   "knobs": [
+    {
+     "knob": 0,
+     "label": "RATE",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 1,
+     "label": "DEPTH",
+     "min": 0,
+     "max": 100
+    }
+   ]
+  },
+  {
+   "index": 12,
+   "name": "ROTARY SPEAKER",
+   "knobs": [
+    {
+     "knob": 0,
+     "label": "BALANCE",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 1,
+     "label": "SPEED",
+     "min": 0,
+     "max": 100
+    }
+   ]
+  },
+  {
+   "index": 13,
+   "name": "HARMONIST",
+   "knobs": [
+    {
+     "knob": 2,
+     "label": "HARMO",
+     "min": 0,
+     "max": 9
+    },
+    {
+     "knob": 3,
+     "label": "BLEND",
+     "min": 0,
+     "max": 100
+    }
+   ]
+  },
+  {
+   "index": 14,
+   "name": "SCH-1",
+   "knobs": [
+    {
+     "knob": 0,
+     "label": "RATE",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 1,
+     "label": "DEPTH",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 2,
+     "label": "TONE",
+     "min": 0,
+     "max": 100
+    }
+   ]
+  }
+ ],
+ "DLY": [
+  {
+   "index": 1,
+   "name": "ANALOG DELAY",
+   "knobs": [
+    {
+     "knob": 0,
+     "label": "RATE",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 1,
+     "label": "ECHO",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 2,
+     "label": "INTEN",
+     "min": 0,
+     "max": 100
+    }
+   ]
+  },
+  {
+   "index": 2,
+   "name": "DIGITAL DELAY",
+   "knobs": [
+    {
+     "knob": 0,
+     "label": "DLY_E.LEVEL",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 1,
+     "label": "DLY_F.BACK",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 2,
+     "label": "DLY_D.TIME",
+     "min": 0,
+     "max": 100
+    }
+   ]
+  },
+  {
+   "index": 3,
+   "name": "MODULATION",
+   "knobs": [
+    {
+     "knob": 0,
+     "label": "TIME",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 1,
+     "label": "LEVEL",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 2,
+     "label": "MOD",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 3,
+     "label": "REPEAT",
+     "min": 0,
+     "max": 100
+    }
+   ]
+  },
+  {
+   "index": 4,
+   "name": "TAPE ECHO",
+   "knobs": [
+    {
+     "knob": 0,
+     "label": "TIME",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 1,
+     "label": "LEVEL",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 2,
+     "label": "REPEAT",
+     "min": 0,
+     "max": 100
+    }
+   ]
+  },
+  {
+   "index": 5,
+   "name": "REVERSE",
+   "knobs": [
+    {
+     "knob": 0,
+     "label": "TIME",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 1,
+     "label": "MIX",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 2,
+     "label": "DLY_F.BACK",
+     "min": 0,
+     "max": 100
+    }
+   ]
+  },
+  {
+   "index": 6,
+   "name": "PAN DELAY",
+   "knobs": [
+    {
+     "knob": 0,
+     "label": "TIME",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 1,
+     "label": "REPEAT",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 2,
+     "label": "DLY_D.LEVEL",
+     "min": 0,
+     "max": 100
+    }
+   ]
+  },
+  {
+   "index": 7,
+   "name": "DUOTIME",
+   "knobs": [
+    {
+     "knob": 0,
+     "label": "LEVEL",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 1,
+     "label": "TIME1",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 3,
+     "label": "REP1",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 4,
+     "label": "TIME2",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 6,
+     "label": "REP2",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 7,
+     "label": "PARA",
+     "min": 0,
+     "max": 100
+    }
+   ]
+  },
+  {
+   "index": 8,
+   "name": "PHI DELAY",
+   "knobs": [
+    {
+     "knob": 0,
+     "label": "MIX",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 1,
+     "label": "REPEATS",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 2,
+     "label": "TIME",
+     "min": 0,
+     "max": 100
+    }
+   ]
+  }
+ ],
+ "RVB": [
+  {
+   "index": 1,
+   "name": "ROOM",
+   "knobs": [
+    {
+     "knob": 0,
+     "label": "DECAY",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 1,
+     "label": "TONE",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 2,
+     "label": "LEVEL",
+     "min": 0,
+     "max": 100
+    }
+   ]
+  },
+  {
+   "index": 2,
+   "name": "HALL",
+   "knobs": [
+    {
+     "knob": 0,
+     "label": "DECAY",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 1,
+     "label": "RVB_PRE.D",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 2,
+     "label": "LIVELINESS",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 3,
+     "label": "LEVEL",
+     "min": 0,
+     "max": 100
+    }
+   ]
+  },
+  {
+   "index": 3,
+   "name": "PLATE",
+   "knobs": [
+    {
+     "knob": 0,
+     "label": "DECAY",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 1,
+     "label": "LEVEL",
+     "min": 0,
+     "max": 100
+    }
+   ]
+  },
+  {
+   "index": 4,
+   "name": "SPRING",
+   "knobs": [
+    {
+     "knob": 0,
+     "label": "DECAY",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 1,
+     "label": "LEVEL",
+     "min": 0,
+     "max": 100
+    }
+   ]
+  },
+  {
+   "index": 5,
+   "name": "SHIMMER",
+   "knobs": [
+    {
+     "knob": 0,
+     "label": "MIX",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 1,
+     "label": "DECAY",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 2,
+     "label": "SHIM",
+     "min": 0,
+     "max": 100
+    }
+   ]
+  },
+  {
+   "index": 6,
+   "name": "DAMP",
+   "knobs": [
+    {
+     "knob": 0,
+     "label": "MIX",
+     "min": 0,
+     "max": 100
+    },
+    {
+     "knob": 1,
+     "label": "DEPTH",
+     "min": 0,
+     "max": 100
+    }
+   ]
+  }
+ ],
+ "SR": [
+  {
+   "index": 1,
+   "name": "SEND/RETURN",
+   "knobs": []
+  }
+ ],
+ "VOL": [
+  {
+   "index": 1,
+   "name": "PATCH LEVEL",
+   "knobs": []
+  }
+ ]
+}

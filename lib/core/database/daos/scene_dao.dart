@@ -24,10 +24,11 @@ part 'scene_dao.g.dart';
 class SceneDao extends DatabaseAccessor<AppDatabase> with _$SceneDaoMixin {
   SceneDao(super.attachedDatabase);
 
-  /// The pedals one scene uses, by name.
+  /// The pedals one scene uses, in the order the unit holds them.
   ///
-  /// Name order rather than an order of its own: a scene is a set of sounds
-  /// switched on together, so there is no chain position to preserve.
+  /// The unit's own order rather than one of the scene's: a scene switches on
+  /// some of the unit's blocks, and reading them in a different order from the
+  /// unit's chain is how the same patch comes to look like two different ones.
   Stream<List<Pedal>> watchScenePedals(int sceneId) =>
       _pedalsIn(sceneId).watch().map(_pedals);
 
@@ -39,7 +40,7 @@ class SceneDao extends DatabaseAccessor<AppDatabase> with _$SceneDaoMixin {
         scenePedals,
       ).join([innerJoin(pedals, pedals.id.equalsExp(scenePedals.pedalId))])
       ..where(scenePedals.sceneId.equals(sceneId))
-      ..orderBy([OrderingTerm.asc(pedals.name.collate(Collate.noCase))]);
+      ..orderBy([OrderingTerm.asc(pedals.id)]);
   }
 
   List<Pedal> _pedals(List<TypedResult> rows) => [
@@ -88,7 +89,8 @@ class SceneDao extends DatabaseAccessor<AppDatabase> with _$SceneDaoMixin {
     return row == null ? null : _owned([row]).single;
   }
 
-  /// The scene's pedals by name, and within each the order the user arranged its
+  /// The scene's pedals in the unit's own order - the same one
+  /// [watchScenePedals] reads - and within each the order the user arranged its
   /// controls, so a scene reads down the same way every time.
   JoinedSelectStatement<HasResultSet, dynamic> _controlsIn(int sceneId) {
     return select(scenePedals).join([
@@ -100,7 +102,7 @@ class SceneDao extends DatabaseAccessor<AppDatabase> with _$SceneDaoMixin {
       ])
       ..where(scenePedals.sceneId.equals(sceneId))
       ..orderBy([
-        OrderingTerm.asc(pedals.name.collate(Collate.noCase)),
+        OrderingTerm.asc(pedals.id),
         OrderingTerm.asc(pedalControls.displayOrder),
         OrderingTerm.asc(pedalControls.name.collate(Collate.noCase)),
       ]);

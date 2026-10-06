@@ -163,15 +163,20 @@ void main() {
     expect(await patches.watchPatches(unitId).first, isEmpty);
   });
 
-  test('a unit with a patch on it cannot be deleted', () async {
-    await patches.createPatch(unitId, const PatchDraft(name: 'Worship Clean'));
-
-    // `patches` references `pedals` with ON DELETE RESTRICT, the same rule that
-    // keeps a pedal with configurations: gear is retired, not erased.
-    expect(
-      () => pedalRepository(database).deletePedal(unitId),
-      throwsA(isA<AppFailure>()),
+  test('deleting a unit takes its patches with it', () async {
+    final patchId = await patches.createPatch(
+      unitId,
+      const PatchDraft(name: 'Worship Clean'),
     );
+    await scenes.createScene(patchId, const SceneDraft(name: 'Verse'));
+
+    // A patch is a sound of one unit and of nothing else, so it has nowhere to
+    // be once the unit is gone. Keeping it would hold the unit in place, since
+    // `patches` references `pedals` with ON DELETE RESTRICT.
+    await pedalRepository(database).deletePedal(unitId);
+
+    expect(await database.patchDao.patchesOf(unitId), isEmpty);
+    expect(await database.patchDao.scenesOf(patchId), isEmpty);
   });
 
   test('a scene of a patch that is gone is refused, in words', () async {

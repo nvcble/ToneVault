@@ -1,6 +1,11 @@
 import 'package:drift/drift.dart';
 
 import '../app_database.dart';
+import '../tables/change_logs_table.dart';
+import '../tables/configurations_table.dart';
+import '../tables/midi_device_links_table.dart';
+import '../tables/patches_table.dart';
+import '../tables/pedal_controls_table.dart';
 import '../tables/pedals_table.dart';
 import '../tables/signal_blocks_table.dart';
 
@@ -11,8 +16,18 @@ part 'pedal_dao.g.dart';
 /// Timestamps, validation and error translation belong to `PedalRepository`;
 /// this class only reads and writes rows.
 ///
-/// `signal_blocks` is here for one reason: see [deletePedal].
-@DriftAccessor(tables: [Pedals, SignalBlocks])
+/// Every other table here is for one reason: see [deletePedal].
+@DriftAccessor(
+  tables: [
+    Pedals,
+    SignalBlocks,
+    Patches,
+    Configurations,
+    PedalControls,
+    ChangeLogs,
+    MidiDeviceLinks,
+  ],
+)
 class PedalDao extends DatabaseAccessor<AppDatabase> with _$PedalDaoMixin {
   PedalDao(super.attachedDatabase);
 
@@ -36,7 +51,12 @@ class PedalDao extends DatabaseAccessor<AppDatabase> with _$PedalDaoMixin {
         .watch();
   }
 
-  /// The pedals inside [hostPedalId], in the order they are named.
+  /// The pedals inside [hostPedalId], in the order they were added to it.
+  ///
+  /// Which is signal-chain order: the blocks of a linked unit are seeded in the
+  /// order its device profile lists them, and a block added by hand belongs
+  /// after the ones already there. Name order - what this used to use - put Amp
+  /// before Wah on an MG-30, a chain no unit has.
   Stream<List<Pedal>> watchComponentPedals(int hostPedalId) =>
       _componentPedalsQuery(hostPedalId).watch();
 
@@ -51,7 +71,7 @@ class PedalDao extends DatabaseAccessor<AppDatabase> with _$PedalDaoMixin {
   ) {
     return select(pedals)
       ..where((row) => row.hostPedalId.equals(hostPedalId))
-      ..orderBy([(row) => OrderingTerm.asc(row.name.collate(Collate.noCase))]);
+      ..orderBy([(row) => OrderingTerm.asc(row.id)]);
   }
 
   Stream<Pedal?> watchPedal(int pedalId) {
@@ -76,29 +96,55 @@ class PedalDao extends DatabaseAccessor<AppDatabase> with _$PedalDaoMixin {
     return changedRows > 0;
   }
 
-  /// Returns whether a row matched [pedalId].
+  /// Deletes [pedalId] with everything that exists only because of it, and
+  /// returns whether a row matched.
   ///
-  /// Any place this pedal held in an old rig's chain goes with it. Those rows
-  /// reference pedals with ON DELETE RESTRICT, and the screens that could once
-  /// take a pedal off a board are gone, so leaving them would make a pedal that
-  /// was ever on a rig impossible to delete for good. The rows are kept for
-  /// their record of how a board was wired, which is a record of the board and
-  /// not of the pedal; deleting whichever cables and sockets referred to this
-  /// block is left to the foreign keys, which already cascade.
+  /// Everything referencing a pedal does so with ON DELETE RESTRICT, so without
+  /// this sweep a pedal is deletable only while it is brand new and bare. That
+  /// made a multi-effects unit undeletable outright: the pedals inside it, its
+  /// patches and its MIDI link all held it in place, and clearing them by hand
+  /// was not something any screen offered. What goes is what the pedal owned -
+  /// the pedals it holds and all of theirs in turn, its patches (scenes and
+  /// their positions cascade), its controls and configurations, its MIDI link
+  /// and its history. What it shared with other gear does not: a replacement
+  /// record or a rig snapshot still restricts the delete, and `PedalRepository`
+  /// turns that into an offer to retire the pedal instead.
   ///
-  /// One transaction, so a pedal is never left with its chain rows cleared and
-  /// itself still there.
-  Future<bool> deletePedal(int pedalId) {
-    return transaction(() async {
-      await (delete(
-        signalBlocks,
-      )..where((row) => row.pedalId.equals(pedalId))).go();
+  /// A patch goes before the pedals inside the unit, because a scene of that
+  /// patch is what refers to them.
+  ///
+  /// One transaction, so a pedal is never left half swept with itself still
+  /// there.
+  Future<bool> deletePedal(int pedalId) => transaction(() => _delete(pedalId));
 
-      final deletedRows = await (delete(
-        pedals,
-      )..where((row) => row.id.equals(pedalId))).go();
+  Future<bool> _delete(int pedalId) async {
+    await _deleteByPedal(patches, (row) => row.pedalId, pedalId);
 
-      return deletedRows > 0;
-    });
+    for (final held in await componentPedals(pedalId)) {
+      await _delete(held.id);
+    }
+
+    await _deleteByPedal(changeLogs, (row) => row.pedalId, pedalId);
+    await _deleteByPedal(configurations, (row) => row.pedalId, pedalId);
+    await _deleteByPedal(pedalControls, (row) => row.pedalId, pedalId);
+    await _deleteByPedal(midiDeviceLinks, (row) => row.pedalId, pedalId);
+    await _deleteByPedal(signalBlocks, (row) => row.pedalId, pedalId);
+
+    final deletedRows = await (delete(
+      pedals,
+    )..where((row) => row.id.equals(pedalId))).go();
+
+    return deletedRows > 0;
+  }
+
+  /// Deletes every row of [table] whose pedal column holds [pedalId].
+  Future<void> _deleteByPedal<T extends Table, R>(
+    TableInfo<T, R> table,
+    Expression<int> Function(T row) pedalColumn,
+    int pedalId,
+  ) async {
+    await (delete(
+      table,
+    )..where((row) => pedalColumn(row).equals(pedalId))).go();
   }
 }

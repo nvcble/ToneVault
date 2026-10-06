@@ -144,7 +144,7 @@ void main() {
       );
     });
 
-    test('refuses to delete a pedal that has a configuration', () async {
+    test('takes the configurations of the pedal with it', () async {
       final pedalId = await repository.createPedal(draft);
       await database
           .into(database.configurations)
@@ -157,19 +157,17 @@ void main() {
             ),
           );
 
-      await expectLater(
-        repository.deletePedal(pedalId),
-        throwsA(
-          isA<AppFailure>().having(
-            (failure) => failure.message,
-            'message',
-            contains('Change its status'),
-          ),
-        ),
-      );
+      // A configuration is a setting of one pedal, so it goes with it. Keeping
+      // it would hold the pedal in place for good: every reference to a pedal
+      // is ON DELETE RESTRICT.
+      await repository.deletePedal(pedalId);
 
-      expect(await database.select(database.pedals).get(), hasLength(1));
+      expect(await database.select(database.pedals).get(), isEmpty);
+      expect(await database.select(database.configurations).get(), isEmpty);
     });
+
+    // What a pedal does *not* take with it - a replacement record, which is a
+    // record of two pedals - is pinned down in pedal_replacement_test.dart.
   });
 
   group('watchPedals', () {

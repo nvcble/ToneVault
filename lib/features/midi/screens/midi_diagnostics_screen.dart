@@ -17,6 +17,7 @@ import '../providers/midi_connection_controller.dart';
 import '../providers/midi_device_link_providers.dart';
 import '../widgets/midi_connection_status.dart';
 import '../widgets/nux_mg30_v5_capture_all_panel.dart';
+import '../widgets/nux_mg30_v5_layout_probe_panel.dart';
 import '../widgets/nux_mg30_v5_preset_read_panel.dart';
 import '../widgets/raw_sysex_sender.dart';
 
@@ -169,6 +170,11 @@ class MidiDiagnosticsScreen extends ConsumerWidget {
                   profileId: profileId,
                   unitId: unitId,
                 ),
+              ),
+              const SizedBox(height: AppSpacing.md),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
+                child: NuxMg30V5LayoutProbePanel(unitId: unitId),
               ),
             ],
           ],

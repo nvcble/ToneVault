@@ -13,7 +13,7 @@ import 'package:tone_vault/features/pedals/data/pedal_draft.dart';
 import '../support/repositories.dart';
 
 /// What the history layer guarantees: entries only ever accumulate, they come
-/// back newest first, and they hold a pedal in place for as long as they exist.
+/// back newest first, and they last exactly as long as the pedal they are about.
 /// What each edit records is covered by change_history_test.dart.
 void main() {
   late AppDatabase database;
@@ -170,7 +170,7 @@ void main() {
     expect(afterRemoval.first.entry.controlName, 'Volume');
   });
 
-  test('holds a pedal in place once anything is recorded about it', () async {
+  test('entries last as long as the pedal they are about', () async {
     final pedal = await addPedal('Caline PureSky');
     await repository.record(
       ChangeEntry.pedalStatusChanged(
@@ -179,14 +179,13 @@ void main() {
       ),
     );
 
-    // History outlives the urge to tidy up: the foreign key restricts the
-    // delete, and PedalRepository turns that into an offer to retire the pedal
-    // instead. There is deliberately no way to drop a pedal's entries.
-    await expectLater(
-      database.pedalDao.deletePedal(pedal.id),
-      throwsA(isNotNull),
-    );
-    expect(await database.changeLogDao.entriesOf(pedal.id), hasLength(1));
+    // There is still no way to edit an entry or drop one on its own. What ends a
+    // pedal's history is the pedal itself being deleted: an entry is about that
+    // pedal and about nothing else, and the history screens read it through a
+    // join on the pedal, so entries left behind could never be shown again.
+    // Keeping the gear and its record is what retiring a pedal is for.
+    expect(await database.pedalDao.deletePedal(pedal.id), isTrue);
+    expect(await database.changeLogDao.entriesOf(pedal.id), isEmpty);
   });
 
   test('reports a change it could not record in words', () async {

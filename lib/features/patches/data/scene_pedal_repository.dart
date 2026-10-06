@@ -84,6 +84,35 @@ class ScenePedalRepository {
     );
   }
 
+  /// Puts every pedal of the unit this scene is on into the scene, and returns
+  /// how many were added.
+  ///
+  /// The ones the scene already uses are skipped rather than refused, so this is
+  /// safe to run on a scene that is half filled in. Each arrives through
+  /// [addPedal], at its controls' own defaults.
+  ///
+  /// A multi-effects unit runs every block of its chain, so a patch read off one
+  /// uses all of them: this is how an imported patch is filled when the dump did
+  /// not say which blocks were on, and how the user fills a scene in one tap.
+  Future<int> addUnitPedals(int sceneId) async {
+    final scene = await _require(sceneId);
+    final patch = await _requirePatchOf(scene);
+    final inside = await _pedalDao.componentPedals(patch.pedalId);
+    final used = {
+      for (final pedal in await _dao.scenePedalsOf(sceneId)) pedal.id,
+    };
+
+    var added = 0;
+    for (final pedal in inside) {
+      if (used.contains(pedal.id)) {
+        continue;
+      }
+      await addPedal(sceneId: sceneId, pedalId: pedal.id);
+      added++;
+    }
+    return added;
+  }
+
   /// Creates a pedal inside this scene's unit, puts it straight into the scene,
   /// and returns its id.
   ///

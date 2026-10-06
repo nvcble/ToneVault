@@ -4,7 +4,6 @@ import 'package:tone_vault/core/database/app_database.dart';
 import 'package:tone_vault/core/enums/control_type.dart';
 import 'package:tone_vault/core/enums/pedal_category.dart';
 import 'package:tone_vault/core/enums/pedal_type.dart';
-import 'package:tone_vault/core/errors/app_failure.dart';
 import 'package:tone_vault/features/configurations/data/configuration_draft.dart';
 import 'package:tone_vault/features/controls/data/control_draft.dart';
 import 'package:tone_vault/features/pedals/data/pedal_draft.dart';
@@ -27,12 +26,6 @@ void main() {
   });
 
   tearDown(() => database.close());
-
-  /// A refusal the user can read, rather than a raw driver exception. Spelled out
-  /// here as the other database tests do.
-  Matcher failsWith(String message) => throwsA(
-    isA<AppFailure>().having((failure) => failure.message, 'message', message),
-  );
 
   Future<int> addUnit() {
     return repository.createPedal(
@@ -75,8 +68,11 @@ void main() {
     final owned = await repository.watchPedals().first;
     expect(owned.map((pedal) => pedal.name), ['Valeton GP-200']);
 
+    // In the order they were put inside the unit, which for a linked unit is the
+    // order its device profile lists the chain - not name order, which would put
+    // an MG-30's Amp before its Wah.
     final inside = await repository.watchComponentPedals(unitId).first;
-    expect(inside.map((pedal) => pedal.name), ['Hall Reverb', 'Tube Screamer']);
+    expect(inside.map((pedal) => pedal.name), ['Tube Screamer', 'Hall Reverb']);
   });
 
   test('a stomp keeps controls and configurations of its own', () async {
@@ -107,31 +103,37 @@ void main() {
     expect(configurations.single.name, 'Lead');
   });
 
-  test('a unit cannot be deleted while it still holds pedals', () async {
+  test('deleting a unit takes the pedals inside it with it', () async {
     final unitId = await addUnit();
-    await addStomp(unitId, 'Tube Screamer');
-
-    // The same refusal every other reference to a pedal earns, so nothing the
-    // unit holds is swept away with it.
-    await expectLater(
-      repository.deletePedal(unitId),
-      failsWith(
-        'This pedal holds other pedals, is used in a scene, or has '
-        'configurations or history attached. Change its status rather than '
-        'deleting it.',
+    final stompId = await addStomp(unitId, 'Tube Screamer');
+    await controlRepository(database).createControl(
+      stompId,
+      const ControlDraft(
+        name: 'Drive',
+        type: ControlType.clock,
+        minValue: 0,
+        maxValue: 1,
       ),
     );
 
-    expect(await database.pedalDao.findPedal(unitId), isNotNull);
+    // A stomp exists only inside its unit, and is reached only through it, so
+    // the unit going is the stomp going. Leaving them would make the unit
+    // undeletable: they reference it with ON DELETE RESTRICT, and no screen
+    // offers emptying a unit out first.
+    await repository.deletePedal(unitId);
+
+    expect(await database.pedalDao.findPedal(unitId), isNull);
+    expect(await database.pedalDao.findPedal(stompId), isNull);
+    expect(await database.pedalControlDao.controlsOf(stompId), isEmpty);
   });
 
-  test('an emptied unit can be deleted', () async {
+  test('a stomp can still be deleted on its own', () async {
     final unitId = await addUnit();
     final stompId = await addStomp(unitId, 'Tube Screamer');
 
     await repository.deletePedal(stompId);
-    await repository.deletePedal(unitId);
 
-    expect(await repository.watchPedals().first, isEmpty);
+    expect(await repository.watchComponentPedals(unitId).first, isEmpty);
+    expect(await database.pedalDao.findPedal(unitId), isNotNull);
   });
 }

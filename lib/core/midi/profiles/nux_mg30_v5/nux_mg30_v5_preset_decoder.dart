@@ -64,8 +64,11 @@ class DecodedNuxMg30V5Preset {
   final Set<String> unsupportedFields;
 }
 
-class _BlockSpec {
-  const _BlockSpec(
+/// One block's place in a v4.0.3 dump. Public so the layout probe can look for
+/// the same region in the V5 frame without a second copy of these offsets - see
+/// `nux_mg30_v5_layout_probe.dart`.
+class NuxMg30V5V403BlockSpec {
+  const NuxMg30V5V403BlockSpec(
     this.label,
     this.modelByteOffset,
     this.bypassMask,
@@ -82,26 +85,26 @@ class _BlockSpec {
 /// `_getDualCodeTypeBlock` call sites) - the same 12 block types (11 audio
 /// blocks plus a Volume block the CC protocol does not expose as a typed
 /// block) as `nuxMg30V5BlockDefinitions`, in the dump's own byte order.
-const List<_BlockSpec> _blockSpecs = [
-  _BlockSpec('Wah', 8, 2, 1),
-  _BlockSpec('Compressor', 9, 4, 1),
-  _BlockSpec('Effect', 11, 8, 1),
-  _BlockSpec('Amp', 12, 16, 1),
-  _BlockSpec('EQ', 14, 32, 1),
-  _BlockSpec('Noise Gate', 15, 64, 1),
-  _BlockSpec('Modulation', 17, 1, 0),
-  _BlockSpec('Delay', 18, 2, 0),
-  _BlockSpec('Reverb', 20, 1, 2),
-  _BlockSpec('IR', 21, 2, 2),
-  _BlockSpec('Send/Return', 22, 4, 2),
-  _BlockSpec('Volume', 24, 8, 2),
+const List<NuxMg30V5V403BlockSpec> nuxMg30V5V403BlockSpecs = [
+  NuxMg30V5V403BlockSpec('Wah', 8, 2, 1),
+  NuxMg30V5V403BlockSpec('Compressor', 9, 4, 1),
+  NuxMg30V5V403BlockSpec('Effect', 11, 8, 1),
+  NuxMg30V5V403BlockSpec('Amp', 12, 16, 1),
+  NuxMg30V5V403BlockSpec('EQ', 14, 32, 1),
+  NuxMg30V5V403BlockSpec('Noise Gate', 15, 64, 1),
+  NuxMg30V5V403BlockSpec('Modulation', 17, 1, 0),
+  NuxMg30V5V403BlockSpec('Delay', 18, 2, 0),
+  NuxMg30V5V403BlockSpec('Reverb', 20, 1, 2),
+  NuxMg30V5V403BlockSpec('IR', 21, 2, 2),
+  NuxMg30V5V403BlockSpec('Send/Return', 22, 4, 2),
+  NuxMg30V5V403BlockSpec('Volume', 24, 8, 2),
 ];
 
 /// Chain-order byte offsets and whether each is halved before use - see
 /// `mg30-controller`'s `_getEffectTypeChain`. Each decoded value is a block
-/// index into [_blockSpecs] (0-11), naming which block sits at that position
+/// index into [nuxMg30V5V403BlockSpecs] (0-11), naming which block sits at that position
 /// in the signal chain.
-const List<(int offset, bool halved)> _chainOrderOffsets = [
+const List<(int offset, bool halved)> nuxMg30V5V403ChainOrderOffsets = [
   (147, false),
   (149, true),
   (150, false),
@@ -166,7 +169,7 @@ DecodedNuxMg30V5Preset decodeNuxMg30V5Preset(MidiMessage response) {
   }
 
   final blocks = <DecodedNuxMg30V5Block>[];
-  for (final spec in _blockSpecs) {
+  for (final spec in nuxMg30V5V403BlockSpecs) {
     try {
       blocks.add(
         DecodedNuxMg30V5Block(
@@ -191,8 +194,8 @@ DecodedNuxMg30V5Preset decodeNuxMg30V5Preset(MidiMessage response) {
   var signalChainOrder = const <String>[];
   try {
     signalChainOrder = [
-      for (final (offset, halved) in _chainOrderOffsets)
-        _blockSpecs[halved ? bytes[offset] ~/ 2 : bytes[offset]].label,
+      for (final (offset, halved) in nuxMg30V5V403ChainOrderOffsets)
+        nuxMg30V5V403BlockSpecs[halved ? bytes[offset] ~/ 2 : bytes[offset]].label,
     ];
   } catch (_) {
     unsupported.add('signal chain order');

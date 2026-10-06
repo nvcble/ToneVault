@@ -71,6 +71,10 @@ class PatchEditor {
   Future<void> addPedal({required int sceneId, required int pedalId}) =>
       _scenePedals.addPedal(sceneId: sceneId, pedalId: pedalId);
 
+  /// Puts every pedal of the unit into this scene, reporting how many were
+  /// added - which is what the scene of an imported patch is filled with.
+  Future<int> addUnitPedals(int sceneId) => _scenePedals.addUnitPedals(sceneId);
+
   /// Creates a pedal inside this scene's unit and puts it straight into the
   /// scene, reporting its id so the caller can open it: setting its controls is
   /// what the user does next.

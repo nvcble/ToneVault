@@ -79,7 +79,7 @@ class PedalDetailScreen extends ConsumerWidget {
                   IconButton(
                     icon: const Icon(Icons.delete_outline),
                     tooltip: 'Delete',
-                    onPressed: () => _confirmDelete(context, ref, pedal.name),
+                    onPressed: () => _confirmDelete(context, ref, pedal),
                   ),
                 ],
           bottom: TabBar(
@@ -135,19 +135,26 @@ class PedalDetailScreen extends ConsumerWidget {
     );
   }
 
+  /// Deleting takes everything the pedal owns with it, so the dialog names it:
+  /// a unit's own parts are the pedals inside it and its patches, where an
+  /// ordinary pedal's are its controls and configurations.
   Future<void> _confirmDelete(
     BuildContext context,
     WidgetRef ref,
-    String name,
+    Pedal pedal,
   ) async {
+    final parts = pedal.category.hasOwnControls
+        ? 'its controls and configurations'
+        : 'the pedals inside it and its patches';
+
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (dialogContext) => AlertDialog(
         title: const Text('Delete pedal?'),
         content: Text(
-          '$name can only be deleted while nothing has been recorded about it. '
-          'Once it has controls, configurations or history, set its status to '
-          'Sold or Replaced instead, which keeps all of it.',
+          '${pedal.name} is deleted along with $parts, and its history goes '
+          'with it. To keep all of that, set its status to Sold or Replaced '
+          'instead.',
         ),
         actions: [
           TextButton(

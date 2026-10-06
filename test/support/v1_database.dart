@@ -2,6 +2,8 @@ import 'package:drift/drift.dart' show Variable;
 import 'package:drift/native.dart';
 import 'package:tone_vault/core/database/app_database.dart';
 
+import 'pedal_record_tables_at_v10.dart';
+
 /// The v1 schema and a row in it, spelled out rather than derived from the
 /// current table classes.
 ///
@@ -271,6 +273,7 @@ const List<String> _v10Rows = [
 AppDatabase openV10ChainDatabase() {
   return openAt(10, [
     _pedalsAtV7,
+    ...pedalRecordTablesAtV10,
     ..._snapshotTablesToV12,
     _pedalboardSlotsAtV10,
     ..._v10Rows,

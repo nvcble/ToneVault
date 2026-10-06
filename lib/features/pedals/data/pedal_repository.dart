@@ -107,19 +107,19 @@ class PedalRepository {
     );
   }
 
+  /// Deletes a pedal with everything it owned; see [PedalDao.deletePedal] for
+  /// what that covers and what it deliberately leaves alone.
   Future<void> deletePedal(int pedalId) async {
     bool deleted;
     try {
       deleted = await _dao.deletePedal(pedalId);
     } catch (error) {
-      // The only constraint a pedal delete can violate is a foreign key:
-      // configurations, change logs, replacement records, the pedals of a scene
-      // and the pedals inside a multi-effects unit all reference pedals with ON
-      // DELETE RESTRICT. Retiring is the intended path.
+      // The only constraint a pedal delete can still violate is a foreign key
+      // from a record it shares with other gear: a replacement, a rig snapshot,
+      // or a scene that is not one of its own. Retiring is the intended path.
       throw AppFailure(
-        'This pedal holds other pedals, is used in a scene, or has '
-        'configurations or history attached. Change its status rather than '
-        'deleting it.',
+        'This pedal is named by a replacement record, an old rig snapshot or '
+        'another unit\'s scene. Change its status rather than deleting it.',
         cause: error,
       );
     }

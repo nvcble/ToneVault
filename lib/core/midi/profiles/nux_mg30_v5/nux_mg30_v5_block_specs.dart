@@ -12,26 +12,46 @@ class NuxBlockSpec {
   const NuxBlockSpec({
     required this.block,
     required this.label,
-    required this.typeSelectCc,
     required this.modelCount,
-    required this.knobCcs,
+    this.typeSelectCc,
+    this.knobCcs = const [],
+    this.namedParameters = const [],
+    this.knobNames = const [],
   });
 
   final NuxMg30Block block;
   final String label;
 
-  /// CC that picks which model this block runs. The chart documents its valid
-  /// range as 1..[modelCount] rather than 0..[modelCount] - whether 0 bypasses
-  /// the block instead is not stated, so [MidiSupportLevel.partiallySupported]
-  /// is what `nuxMg30V5Capabilities` gives `MidiFeature.blockBypass`.
-  final int typeSelectCc;
+  /// CC that picks which model this block runs, or null for a block the chart
+  /// gives no CC at all - the Volume block, which the unit still shows in its
+  /// chain.
+  ///
+  /// The chart documents its valid range as 1..[modelCount] rather than
+  /// 0..[modelCount] - whether 0 bypasses the block instead is not stated, so
+  /// [MidiSupportLevel.partiallySupported] is what `nuxMg30V5Capabilities`
+  /// gives `MidiFeature.blockBypass`.
+  final int? typeSelectCc;
 
   final int modelCount;
   final List<int> knobCcs;
+
+  /// Controls the chart names rather than numbers, listed in
+  /// `nuxMg30V5GlobalParameters` - the Send/Return loop's Send, Return and SR
+  /// Routing. Used in place of [knobCcs] for that block.
+  final List<String> namedParameters;
+
+  /// What the unit itself calls each of [knobCcs], in the same order - "Gain",
+  /// "Bass", "Middle" and so on, from the MG-30 manual.
+  ///
+  /// Empty until that table is transcribed, and a block may be filled in on its
+  /// own: wherever it is empty the chart's own "Knob 1", "Knob 2"... is used, so
+  /// a knob is never given a name nothing confirmed.
+  final List<String> knobNames;
 }
 
-/// Every block of the NUX MG-30 (V5), in the order the chart lists them (IDs
-/// 1-10 for the type-select CCs, then IDs 13 onward for the knobs).
+/// Every block of the NUX MG-30 (V5) signal chain, in the order signal reaches
+/// them - which is the order the chart lists their type-select CCs (IDs 1-10,
+/// then IDs 13 onward for the knobs), and the order the unit shows them in.
 const List<NuxBlockSpec> nuxMg30V5Blocks = [
   NuxBlockSpec(
     block: NuxMg30Block.wah,
@@ -108,6 +128,11 @@ const List<NuxBlockSpec> nuxMg30V5Blocks = [
     label: 'Send/Return',
     typeSelectCc: 10,
     modelCount: 1,
-    knobCcs: [],
+    namedParameters: ['Send', 'Return', 'SR Routing'],
   ),
+  // Last in the chain and absent from the chart: no CC selects a model for it
+  // and none moves it, so it carries no controls. It is here because the unit
+  // lists it, and a chain the app shows without it is not the one in front of
+  // the player.
+  NuxBlockSpec(block: NuxMg30Block.volume, label: 'Volume', modelCount: 1),
 ];

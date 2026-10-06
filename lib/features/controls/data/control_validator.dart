@@ -18,8 +18,12 @@ abstract final class ControlValidator {
 
   /// Two positions is the minimum that makes a selection a choice, and the
   /// upper bound keeps a mistyped paste from producing an unusable control.
+  ///
+  /// Forty rather than twenty-four because a real model list runs that long: a
+  /// multi-effects unit's amp block offers 35 models plus bypass, and refusing
+  /// to store them would only push the user back to picking a number.
   static const int minOptions = 2;
-  static const int maxOptions = 24;
+  static const int maxOptions = 40;
 
   static String? name(String? value) {
     final trimmed = value?.trim() ?? '';

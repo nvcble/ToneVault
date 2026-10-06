@@ -126,17 +126,38 @@ void main() {
     expect(scene!.updatedAt, later);
   });
 
-  test('the scene\'s pedals read back in name order', () async {
-    await scenePedals.addPedal(sceneId: sceneId, pedalId: screamerId);
+  test('the scene\'s pedals read back in the unit\'s own order', () async {
+    // Added to the scene the other way round, to show the scene does not impose
+    // an order of its own.
     await scenePedals.addPedal(sceneId: sceneId, pedalId: delayId);
+    await scenePedals.addPedal(sceneId: sceneId, pedalId: screamerId);
 
-    // A scene is a set of sounds switched on together, so name order is the only
-    // order it has - and it is the same one every read.
+    // The unit's order, which is its signal chain: a scene switches on some of
+    // the unit's blocks, and reading them in another order makes one patch look
+    // like two different ones.
     final pedals = await scenePedals.watchScenePedals(sceneId).first;
     expect(pedals.map((pedal) => pedal.name), [
-      'Digital Delay',
       'Tube Screamer',
+      'Digital Delay',
     ]);
+  });
+
+  test('the whole unit goes in at once, skipping what is in', () async {
+    await scenePedals.addPedal(sceneId: sceneId, pedalId: screamerId);
+
+    // What fills the scene of a patch imported off a unit, and what the pick
+    // sheet's "all of the unit's pedals" does: the one already in is skipped
+    // rather than refused, so it is safe on a half-filled scene.
+    expect(await scenePedals.addUnitPedals(sceneId), 1);
+
+    final pedals = await scenePedals.watchScenePedals(sceneId).first;
+    expect(pedals.map((pedal) => pedal.name), [
+      'Tube Screamer',
+      'Digital Delay',
+    ]);
+    // And at the defaults the controls declare, the same as one added by hand.
+    expect(await scenePedals.addUnitPedals(sceneId), 0);
+    expect((await database.sceneDao.valuesOf(sceneId)).single.value, 0.5);
   });
 
   test('a scene reaches for a pedal once', () async {
@@ -199,8 +220,8 @@ void main() {
       database,
     ).watchComponentPedals(unitId).first;
     expect(inside.map((pedal) => pedal.name), [
-      'Digital Delay',
       'Tube Screamer',
+      'Digital Delay',
     ]);
   });
 

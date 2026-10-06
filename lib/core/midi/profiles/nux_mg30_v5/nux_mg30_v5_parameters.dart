@@ -1,11 +1,17 @@
 import '../../midi_block_definition.dart';
 import '../../midi_parameter_definition.dart';
 import 'nux_mg30_v5_block_specs.dart';
+import 'nux_mg30_v5_model_names.dart';
 
 String _modelParameterName(NuxBlockSpec block) => '${block.label} model';
 
+/// What the unit calls this knob, where that has been transcribed from the
+/// manual, and the chart's own numbering everywhere else - see
+/// [NuxBlockSpec.knobNames].
 String _knobParameterName(NuxBlockSpec block, int index) =>
-    '${block.label} Knob ${index + 1}';
+    index < block.knobNames.length
+    ? block.knobNames[index]
+    : '${block.label} Knob ${index + 1}';
 
 /// Knob CCs whose range is not the 0-100 every other knob uses, exactly as
 /// the chart states it: Modulation Knob 5 and Delay Knob 4 are 6-position
@@ -147,15 +153,20 @@ List<MidiParameterDefinition> _buildParameters() {
   final definitions = <MidiParameterDefinition>[];
 
   for (final block in nuxMg30V5Blocks) {
-    definitions.add(
-      MidiParameterDefinition(
-        name: _modelParameterName(block),
-        min: 1,
-        max: block.modelCount.toDouble(),
-        messageType: MidiParameterMessageType.controlChange,
-        ccNumber: block.typeSelectCc,
-      ),
-    );
+    final typeSelectCc = block.typeSelectCc;
+    // Null for the Volume block alone, which the chart gives no CC: nothing to
+    // list, and listing a made-up CC is how a wrong message gets sent.
+    if (typeSelectCc != null) {
+      definitions.add(
+        MidiParameterDefinition(
+          name: _modelParameterName(block),
+          min: 1,
+          max: block.modelCount.toDouble(),
+          messageType: MidiParameterMessageType.controlChange,
+          ccNumber: typeSelectCc,
+        ),
+      );
+    }
 
     for (var index = 0; index < block.knobCcs.length; index++) {
       final cc = block.knobCcs[index];
@@ -176,25 +187,34 @@ List<MidiParameterDefinition> _buildParameters() {
   return definitions;
 }
 
-/// One block definition per block that has something worth seeding as gear -
-/// the Send/Return block has a fixed one-model select and no knobs of its
-/// own (its real controls are global parameters, not persisted; see
-/// [nuxMg30V5GlobalParameters]), so it is left out.
+/// One definition per block of the chain, in chain order - every one of them,
+/// so the gear seeded for a linked unit is the chain the player sees on it.
+///
+/// Send/Return's controls are the ones the chart names rather than numbers, and
+/// Volume's are none at all: a block with nothing to set is still a block of the
+/// chain, and leaving it out is what made the app's list disagree with the unit.
 final List<MidiBlockDefinition> nuxMg30V5BlockDefinitions =
     _buildBlockDefinitions();
 
 List<MidiBlockDefinition> _buildBlockDefinitions() {
   return [
     for (final block in nuxMg30V5Blocks)
-      if (block.modelCount > 1 || block.knobCcs.isNotEmpty)
-        MidiBlockDefinition(
-          label: block.label,
-          modelParameterName: _modelParameterName(block),
-          modelCount: block.modelCount,
-          knobParameterNames: [
-            for (var index = 0; index < block.knobCcs.length; index++)
-              _knobParameterName(block, index),
-          ],
-        ),
+      MidiBlockDefinition(
+        label: block.label,
+        modelParameterName: _modelParameterName(block),
+        modelCount: block.modelCount,
+        // Only where the chart gives the block a type-select CC: naming the
+        // models of a block nothing can select would offer a control that
+        // silently sends nothing - the Volume block.
+        modelNames: block.typeSelectCc == null
+            ? const []
+            : nuxMg30V5ModelNames[block.block] ?? const [],
+        knobParameterNames: block.namedParameters.isNotEmpty
+            ? block.namedParameters
+            : [
+                for (var index = 0; index < block.knobCcs.length; index++)
+                  _knobParameterName(block, index),
+              ],
+      ),
   ];
 }

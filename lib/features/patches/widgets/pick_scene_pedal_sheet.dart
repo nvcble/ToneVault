@@ -68,6 +68,16 @@ class PickScenePedalSheet extends ConsumerWidget {
               ),
               onTap: () => _addNew(context),
             ),
+            // One tap for the whole chain: a patch read off a multi-effects unit
+            // uses every block it has, and filling such a scene one row at a
+            // time is a dozen taps for the same thing.
+            if (available.length > 1)
+              ListTile(
+                leading: const Icon(Icons.playlist_add_check),
+                title: const Text('All of the unit\'s pedals'),
+                subtitle: Text('Adds the remaining ${available.length}'),
+                onTap: () => _addAll(context, ref),
+              ),
             const Divider(height: 1),
             if (available.isEmpty)
               EmptyState(
@@ -103,6 +113,18 @@ class PickScenePedalSheet extends ConsumerWidget {
   void _addNew(BuildContext context) {
     Navigator.pop(context);
     context.go(Routes.scenePedalNew(pedalId, patchId, sceneId));
+  }
+
+  Future<void> _addAll(BuildContext context, WidgetRef ref) async {
+    Navigator.pop(context);
+
+    try {
+      await ref.read(patchEditorProvider).addUnitPedals(sceneId);
+    } catch (error) {
+      if (context.mounted) {
+        showFailureSnackBar(context, error);
+      }
+    }
   }
 
   Future<void> _add(BuildContext context, WidgetRef ref, int chosen) async {

@@ -155,6 +155,7 @@ class PresetImportService {
       const SceneDraft(name: 'Imported'),
     );
 
+    var matched = 0;
     for (final block in preset.blocks) {
       final pedal = blockPedalsByLabel[block.label];
       if (pedal == null) {
@@ -162,6 +163,7 @@ class PresetImportService {
         // the MG-30, which has no model or knob to seed a control for.
         continue;
       }
+      matched++;
       await _scenePedals.addPedal(sceneId: sceneId, pedalId: pedal.id);
       final controls = await _controls.controlsOf(pedal.id);
 
@@ -176,6 +178,15 @@ class PresetImportService {
       for (final entry in block.parameters.entries) {
         await _setValueByName(sceneId, controls, entry.key, entry.value);
       }
+    }
+
+    // A dump whose block bytes this app cannot read yet names no blocks at all -
+    // every preset off a real MG-30 V5 today, see `NuxMg30V5PresetLayout`. The
+    // patch still runs through the unit's whole chain, so the scene gets all of
+    // it at the controls' own defaults: an imported patch the user can switch
+    // blocks off in and dial in, rather than an empty one.
+    if (matched == 0) {
+      await _scenePedals.addUnitPedals(sceneId);
     }
   }
 

@@ -40,6 +40,12 @@ class MidiPatchesScreen extends ConsumerWidget {
       appBar: AppBar(
         title: const Text('Patches'),
         actions: [
+          if (pedalAsync.valueOrNull != null)
+            IconButton(
+              icon: const Icon(Icons.sync),
+              tooltip: 'Add missing blocks',
+              onPressed: () => _addMissingBlocks(context, ref, profile),
+            ),
           IconButton(
             icon: const Icon(Icons.download),
             tooltip: 'Import from device',
@@ -63,6 +69,34 @@ class MidiPatchesScreen extends ConsumerWidget {
               ),
       ),
     );
+  }
+}
+
+/// Brings a unit linked before the profile knew of a block up to the chain the
+/// player sees on the device - the MG-30's Send/Return and Volume. Nothing is
+/// replaced, so the patches already imported onto the unit stay as they are.
+Future<void> _addMissingBlocks(
+  BuildContext context,
+  WidgetRef ref,
+  MidiDeviceProfile profile,
+) async {
+  try {
+    final added = await ref
+        .read(midiDeviceLinkRepositoryProvider)
+        .addMissingBlocks(profile);
+    if (context.mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            added == 0
+                ? 'Every block of ${profile.displayName} is already here.'
+                : 'Added $added block(s) to ${profile.displayName}.',
+          ),
+        ),
+      );
+    }
+  } catch (error) {
+    if (context.mounted) showFailureSnackBar(context, error);
   }
 }
 

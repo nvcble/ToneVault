@@ -1,22 +1,28 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:tone_vault/core/midi/profiles/nux_mg30_v5/nux_mg30_v5_block_specs.dart';
+import 'package:tone_vault/core/midi/profiles/nux_mg30_v5/nux_mg30_v5_model_names.dart';
 import 'package:tone_vault/core/midi/profiles/nux_mg30_v5/nux_mg30_v5_parameters.dart';
 
 void main() {
   group('nuxMg30V5Blocks', () {
-    test(
-      'names eleven blocks, the real MG-30 chain rather than the shorthand',
-      () {
-        expect(nuxMg30V5Blocks, hasLength(11));
-      },
-    );
+    test('names the whole MG-30 chain, in the order signal reaches it', () {
+      // Twelve: the eleven the chart names, and the Volume block it does not,
+      // which the unit still shows last in its chain.
+      expect(nuxMg30V5Blocks, hasLength(12));
+      expect(nuxMg30V5Blocks.first.label, 'Wah');
+      expect(nuxMg30V5Blocks.last.label, 'Volume');
+    });
 
     test(
       'gives every block a distinct type-select CC and no knob CC overlap',
       () {
+        // Volume alone has no type-select CC: the chart gives it none, and a
+        // made-up one is how a wrong message gets sent.
         final typeSelectCcs = nuxMg30V5Blocks
             .map((block) => block.typeSelectCc)
+            .whereType<int>()
             .toList();
+        expect(typeSelectCcs, hasLength(nuxMg30V5Blocks.length - 1));
         expect(typeSelectCcs.toSet(), hasLength(typeSelectCcs.length));
 
         final allKnobCcs = [
@@ -25,6 +31,40 @@ void main() {
         expect(allKnobCcs.toSet(), hasLength(allKnobCcs.length));
       },
     );
+  });
+
+  group('nuxMg30V5ModelNames', () {
+    test('names exactly as many models as the chart counts, per block', () {
+      // Two independent sources - the V5 MIDI implementation chart for the
+      // counts, NUX's own editor for the names - agreeing block by block is
+      // what says the name lists are the right lists in the right order.
+      for (final block in nuxMg30V5Blocks) {
+        expect(
+          nuxMg30V5ModelNames[block.block],
+          hasLength(block.modelCount),
+          reason: block.label,
+        );
+      }
+    });
+
+    test('a model control stores the code its CC expects', () {
+      final amp = nuxMg30V5BlockDefinitions.firstWhere(
+        (block) => block.label == 'Amp',
+      );
+
+      // QuickTone lists BYPASS ahead of model 1, so position 12 of the seeded
+      // selection is model code 12 - the value the type-select CC takes.
+      expect(amp.modelNames, hasLength(35));
+      expect(amp.modelNames[11], 'BRIT 800');
+    });
+
+    test('the Volume block offers no models, having no CC to select one', () {
+      final volume = nuxMg30V5BlockDefinitions.firstWhere(
+        (block) => block.label == 'Volume',
+      );
+
+      expect(volume.modelNames, isEmpty);
+    });
   });
 
   group('nuxMg30V5Parameters', () {
