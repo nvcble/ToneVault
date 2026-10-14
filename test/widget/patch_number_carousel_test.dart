@@ -4,8 +4,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:tone_vault/features/midi/widgets/patch_grid_tile.dart';
 import 'package:tone_vault/features/midi/widgets/patch_number_carousel.dart';
 
-/// The grid a patch is picked from on the redesigned control landing page -
-/// 20 slots a page, sliding rather than cutting between pages.
+/// The grid a patch is picked from on the landscape control landing page -
+/// two rows of four a page, sliding rather than cutting between pages.
 void main() {
   Future<void> pump(
     WidgetTester tester, {
@@ -15,7 +15,7 @@ void main() {
     ValueChanged<int>? onSelected,
     ValueChanged<int>? onLoad,
   }) async {
-    tester.view.physicalSize = const Size(500, 700);
+    tester.view.physicalSize = const Size(900, 500);
     tester.view.devicePixelRatio = 1;
     addTearDown(tester.view.reset);
     await tester.pumpWidget(
@@ -40,13 +40,28 @@ void main() {
     matching: find.text(text),
   );
 
-  testWidgets('shows 20 tiles a page, numbered from 1', (tester) async {
+  testWidgets('shows 8 tiles a page, numbered from 1', (tester) async {
     await pump(tester);
 
-    expect(find.byType(PatchGridTile), findsNWidgets(20));
+    expect(find.byType(PatchGridTile), findsNWidgets(8));
     expect(find.text('01'), findsOneWidget);
-    expect(find.text('20'), findsOneWidget);
-    expect(find.text('Page 1 of 7'), findsOneWidget);
+    expect(find.text('08'), findsOneWidget);
+    expect(find.text('Page 1 of 16'), findsOneWidget);
+  });
+
+  testWidgets('the rows share out the height, so no page is left half empty', (
+    tester,
+  ) async {
+    await pump(tester);
+    final onShortScreen = tester.getSize(find.byType(PatchGridTile).first);
+
+    tester.view.physicalSize = const Size(900, 800);
+    await tester.pumpAndSettle();
+    final onTallScreen = tester.getSize(find.byType(PatchGridTile).first);
+
+    expect(onTallScreen.height, greaterThan(onShortScreen.height));
+    // Both rows plus the pager and the name line account for the whole screen.
+    expect(onTallScreen.height * 2, greaterThan(800 - 120));
   });
 
   testWidgets('a known patch name replaces the generic slot label', (
@@ -64,7 +79,7 @@ void main() {
     await pump(tester, selected: 4, names: {4: 'Core Lead'});
 
     expect(find.text('Core Lead'), findsNWidgets(2)); // the tile, and this line
-    expect(find.text('Page 1 of 7'), findsOneWidget);
+    expect(find.text('Page 1 of 16'), findsOneWidget);
   });
 
   testWidgets('falls back to the generic label when the slot is unnamed', (
@@ -99,24 +114,24 @@ void main() {
 
     await tester.tap(find.byIcon(Icons.chevron_right));
     await tester.pumpAndSettle();
-    expect(find.text('Page 2 of 7'), findsOneWidget);
-    expect(find.text('21'), findsOneWidget);
+    expect(find.text('Page 2 of 16'), findsOneWidget);
+    expect(find.text('09'), findsOneWidget);
 
     await tester.tap(find.byIcon(Icons.chevron_left));
     await tester.pumpAndSettle();
-    expect(find.text('Page 1 of 7'), findsOneWidget);
+    expect(find.text('Page 1 of 16'), findsOneWidget);
   });
 
-  testWidgets('the last page holds only the slots left over', (tester) async {
+  testWidgets('the last page ends on the device\'s last slot', (tester) async {
     await pump(tester);
 
-    for (var i = 0; i < 6; i++) {
+    for (var i = 0; i < 15; i++) {
       await tester.tap(find.byIcon(Icons.chevron_right));
       await tester.pumpAndSettle();
     }
 
-    expect(find.text('Page 7 of 7'), findsOneWidget);
-    // 120 full pages of 20 leaves 8 slots: 121-128.
+    expect(find.text('Page 16 of 16'), findsOneWidget);
+    // 128 slots divide evenly into sixteen pages of 8: 121-128 on the last.
     expect(find.byType(PatchGridTile), findsNWidgets(8));
     expect(find.text('128'), findsOneWidget);
     // Nothing left to page forward to.
@@ -131,9 +146,9 @@ void main() {
   });
 
   testWidgets('opens on the page holding the selected slot', (tester) async {
-    await pump(tester, selected: 25); // 0-based -> display 26, on page 2
+    await pump(tester, selected: 25); // 0-based -> display 26, on page 4
 
-    expect(find.text('Page 2 of 7'), findsOneWidget);
+    expect(find.text('Page 4 of 16'), findsOneWidget);
     expect(find.text('26'), findsOneWidget);
   });
 

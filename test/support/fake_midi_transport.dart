@@ -31,6 +31,11 @@ class FakeMidiTransport implements MidiTransport {
   final MidiConnectionFailure? connectFailure;
 
   final List<MidiMessage> sent = [];
+
+  /// Makes [send] throw even while connected - a port pulled out from under
+  /// a stream that is already running, which is not the same thing as never
+  /// having been connected. Mutable so a test can flip it mid-run.
+  bool failSend = false;
   final _stateController = StreamController<MidiConnectionState>.broadcast();
   final _incomingController = StreamController<MidiMessage>.broadcast();
   final _availabilityController = StreamController<void>.broadcast();
@@ -84,6 +89,9 @@ class FakeMidiTransport implements MidiTransport {
   Future<void> send(MidiMessage message) async {
     if (_currentState != MidiConnectionState.connected) {
       throw StateError('Cannot send a MIDI message while disconnected.');
+    }
+    if (failSend) {
+      throw StateError('The MIDI write failed.');
     }
     sent.add(message);
   }

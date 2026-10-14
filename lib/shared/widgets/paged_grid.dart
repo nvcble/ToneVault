@@ -6,10 +6,7 @@ import '../../app/theme/app_spacing.dart';
 /// chevrons and a "Page x of y" readout.
 ///
 /// Knows nothing about MIDI, patches or any device: it takes a count and a
-/// builder, so any list of small equal tiles can be paged this way. That is
-/// what makes it shareable - `PatchNumberCarousel` predates it and keeps its
-/// own copy, since changing a working device's screen to adopt this one would
-/// be a refactor of that device rather than a use of this widget.
+/// builder, so any list of small equal tiles can be paged this way.
 class PagedGrid extends StatefulWidget {
   const PagedGrid({
     required this.itemCount,
@@ -17,6 +14,8 @@ class PagedGrid extends StatefulWidget {
     this.columns = 3,
     this.rows = 4,
     this.tileHeight = 76,
+    this.initialPage = 0,
+    this.padding = const EdgeInsets.symmetric(horizontal: AppSpacing.md),
     super.key,
   });
 
@@ -30,6 +29,16 @@ class PagedGrid extends StatefulWidget {
   final int rows;
   final double tileHeight;
 
+  /// Around the tiles themselves, inside the pager. Zero where the grid is the
+  /// widest thing on its page and the page's own padding already holds it off
+  /// the edge.
+  final EdgeInsets padding;
+
+  /// The page open on first build - so a grid holding a current selection can
+  /// start where that selection is rather than at the beginning. Only read
+  /// once: after that the page is the user's to change.
+  final int initialPage;
+
   int get perPage => columns * rows;
 
   @override
@@ -37,8 +46,15 @@ class PagedGrid extends StatefulWidget {
 }
 
 class _PagedGridState extends State<PagedGrid> {
-  final _controller = PageController();
-  int _page = 0;
+  late final PageController _controller;
+  late int _page;
+
+  @override
+  void initState() {
+    super.initState();
+    _page = widget.initialPage;
+    _controller = PageController(initialPage: _page);
+  }
 
   @override
   void dispose() {
@@ -64,19 +80,15 @@ class _PagedGridState extends State<PagedGrid> {
 
   @override
   Widget build(BuildContext context) {
-    final gridHeight =
-        widget.rows * widget.tileHeight + (widget.rows - 1) * AppSpacing.sm;
+    final pages = PageView.builder(
+      controller: _controller,
+      itemCount: _pageCount,
+      onPageChanged: (page) => setState(() => _page = page),
+      itemBuilder: (context, page) => _buildPage(page),
+    );
     return Column(
       children: [
-        SizedBox(
-          height: gridHeight,
-          child: PageView.builder(
-            controller: _controller,
-            itemCount: _pageCount,
-            onPageChanged: (page) => setState(() => _page = page),
-            itemBuilder: (context, page) => _buildPage(page),
-          ),
-        ),
+        SizedBox(height: _gridHeight, child: pages),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -101,11 +113,16 @@ class _PagedGridState extends State<PagedGrid> {
     curve: Curves.ease,
   );
 
+  double get _gridHeight =>
+      widget.rows * widget.tileHeight +
+      (widget.rows - 1) * AppSpacing.sm +
+      widget.padding.vertical;
+
   Widget _buildPage(int page) {
     final first = page * widget.perPage;
     final count = (widget.itemCount - first).clamp(0, widget.perPage);
     return GridView.builder(
-      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
+      padding: widget.padding,
       physics: const NeverScrollableScrollPhysics(),
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: widget.columns,

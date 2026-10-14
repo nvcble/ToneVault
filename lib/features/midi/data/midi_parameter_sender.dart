@@ -30,7 +30,8 @@ class MidiParameterSender {
     );
     if (message == null) {
       throw AppFailure(
-        '"$parameterName" has no CC mapped to it, so it cannot be sent.',
+        '"$parameterName" has no CC mapped to it. Assign one on the CC '
+        'Mapping screen and it will send.',
       );
     }
     await guardFailure(

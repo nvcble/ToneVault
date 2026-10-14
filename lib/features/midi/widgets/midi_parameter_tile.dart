@@ -47,7 +47,7 @@ class _MidiParameterTileState extends State<MidiParameterTile> {
               children: [
                 Text(definition.name),
                 Text(
-                  'CC ${definition.ccNumber} · ${_value.round()}',
+                  '${definition.ccLabel} · ${_value.round()}',
                   style: Theme.of(context).textTheme.bodySmall,
                 ),
               ],

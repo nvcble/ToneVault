@@ -31,7 +31,14 @@ class MidiParameterDefinition {
   final int? midiChannel;
 
   /// Only meaningful when [messageType] is [MidiParameterMessageType.controlChange].
+  ///
+  /// Null for a control a device profile confirms exists but documents no CC
+  /// for, which stays unsendable until the user maps one - see
+  /// `nuxMg30V5AssignableParameters`.
   final int? ccNumber;
+
+  /// How this control's CC reads in the UI.
+  String get ccLabel => ccNumber == null ? 'No CC assigned' : 'CC $ccNumber';
 
   /// Maps an app-domain value onto the 0-127 MIDI range, where that mapping is
   /// not a plain linear scale across [min]..[max]. Null means linear.

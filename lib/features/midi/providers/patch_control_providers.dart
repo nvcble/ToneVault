@@ -1,6 +1,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/database/daos/midi_patch_program_number_dao.dart';
 import '../data/patch_control_controller.dart';
+import 'midi_device_link_providers.dart';
 import 'midi_engine_providers.dart';
 import 'midi_patch_browser_providers.dart';
 
@@ -28,6 +30,27 @@ final StateProviderFamily<int?, String> currentLoadedPatchNumberProvider =
 /// only the last one this app sent, or null until it has sent one.
 final StateProviderFamily<int?, String> currentSceneNumberProvider =
     StateProvider.family<int?, String>((ref, deviceProfileId) => null);
+
+/// Program number to patch name, for whichever of a device's slots its owner
+/// has actually given a patch to - what a patch grid shows under each number.
+///
+/// Empty, rather than absent, before the device is linked gear or while its
+/// patches are still loading: a grid of numbered slots is still worth showing
+/// without any names on it.
+final ProviderFamily<Map<int, String>, String> patchNamesByNumberProvider =
+    Provider.family<Map<int, String>, String>((ref, deviceProfileId) {
+      final unitId = ref
+          .watch(linkedPedalProvider(deviceProfileId))
+          .valueOrNull
+          ?.id;
+      if (unitId == null) {
+        return const {};
+      }
+      final numbered =
+          ref.watch(numberedPatchesProvider(unitId)).valueOrNull ??
+          const <NumberedPatch>[];
+      return {for (final row in numbered) row.programNumber: row.patch.name};
+    });
 
 final Provider<PatchControlController> patchControlControllerProvider =
     Provider<PatchControlController>(

@@ -45,12 +45,13 @@ class PatchGridTile extends StatelessWidget {
           ),
         ),
         alignment: Alignment.center,
+        padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xs),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             Text(
               number.toString().padLeft(2, '0'),
-              style: Theme.of(context).textTheme.titleMedium?.copyWith(
+              style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                 fontWeight: FontWeight.bold,
                 color: foreground,
               ),
@@ -59,9 +60,9 @@ class PatchGridTile extends StatelessWidget {
               label,
               style: Theme.of(
                 context,
-              ).textTheme.bodySmall?.copyWith(color: foreground),
+              ).textTheme.bodyMedium?.copyWith(color: foreground),
               textAlign: TextAlign.center,
-              maxLines: 1,
+              maxLines: 2,
               overflow: TextOverflow.ellipsis,
             ),
           ],

@@ -60,6 +60,28 @@ void main() {
     });
   });
 
+  group('RealTimeMessage', () {
+    test('is the one status byte, with no channel and no data', () {
+      expect(
+        const RealTimeMessage(MidiRealTime.timingClock).toBytes(),
+        [0xF8],
+      );
+      expect(const RealTimeMessage(MidiRealTime.start).toBytes(), [0xFA]);
+      expect(const RealTimeMessage(MidiRealTime.stop).toBytes(), [0xFC]);
+    });
+
+    test('is labelled by what it is, and carries no channel', () {
+      const message = RealTimeMessage(MidiRealTime.timingClock);
+
+      expect(midiMessageTypeLabel(message), 'Timing Clock');
+      expect(
+        midiMessageChannel(message),
+        isNull,
+        reason: 'a clock is addressed to the link, not to a channel',
+      );
+    });
+  });
+
   group('UnknownMessage', () {
     test(
       'returns the raw bytes unchanged, for whatever this app cannot decode',

@@ -101,14 +101,23 @@ class MidiEngine {
   /// A refused send used to be logged as nothing at all, so a diagnostic
   /// capture of a failing run looked identical to one where the app had never
   /// tried - see [MidiLogEntry.failure].
-  Future<void> send(MidiMessage message) async {
+  ///
+  /// [log] false is for a stream that sends far too fast to put one row per
+  /// message anywhere a person reads: a 120 BPM clock is 48 messages a
+  /// second, which would overwrite the whole of [history] every four seconds
+  /// and leave the Monitor rebuilding itself 48 times a second. A *failure*
+  /// is still logged, because it is the one thing a diagnostic needs to see
+  /// and whoever sends such a stream is expected to stop at the first one.
+  Future<void> send(MidiMessage message, {bool log = true}) async {
     try {
       final transport = _transport;
       if (transport == null) {
         throw StateError('No MIDI transport attached.');
       }
       await transport.send(message);
-      _recordOutgoing(message);
+      if (log) {
+        _recordOutgoing(message);
+      }
     } catch (error) {
       _recordOutgoing(message, failure: error.toString());
       rethrow;

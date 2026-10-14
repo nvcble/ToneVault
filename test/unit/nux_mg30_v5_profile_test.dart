@@ -65,7 +65,11 @@ void main() {
     );
 
     test('ships every CC the V5 chart and QuickTone confirm', () {
-      expect(profile.parameterDefinitions, hasLength(86));
+      final withCc = profile.parameterDefinitions.where(
+        (definition) => definition.ccNumber != null,
+      );
+
+      expect(withCc, hasLength(86));
     });
 
     test('offers a plain Program Change candidate, marked unverified', () {

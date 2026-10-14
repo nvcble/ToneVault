@@ -137,9 +137,9 @@ class UsbMidiTransport implements MidiTransport {
   }
 
   /// Every message shape [MidiMessage] itself knows about is decoded into it;
-  /// anything else the plugin can parse (pitch bend, aftertouch, clock,
-  /// NRPN/RPN) becomes [UnknownMessage] instead of being dropped, so a
-  /// diagnostic capture never loses bytes a real device actually sent.
+  /// anything else the plugin can parse (pitch bend, aftertouch, NRPN/RPN)
+  /// becomes [UnknownMessage] instead of being dropped, so a diagnostic
+  /// capture never loses bytes a real device actually sent.
   MidiMessage _translate(fmc.MidiMessage message) {
     return switch (message) {
       fmc.PCMessage m => ProgramChangeMessage(
@@ -167,8 +167,23 @@ class UsbMidiTransport implements MidiTransport {
       fmc.SysExMessage m => SysExMessage(
         payload: sysExPayload(m.rawData ?? m.headerData),
       ),
-      _ => UnknownMessage(raw: message.data),
+      _ => _translateRaw(message.data),
     };
+  }
+
+  /// The plugin has no typed shape for a System Real-Time byte, so the clock
+  /// stream would otherwise arrive as unknown bytes. Decoding it here is what
+  /// lets a capture say whether the *device* is sending clock - a different
+  /// question from whether it listens to ours.
+  MidiMessage _translateRaw(List<int> data) {
+    if (data.length == 1) {
+      for (final kind in MidiRealTime.values) {
+        if (kind.status == data.first) {
+          return RealTimeMessage(kind);
+        }
+      }
+    }
+    return UnknownMessage(raw: data);
   }
 
   void _setState(MidiConnectionState state) {

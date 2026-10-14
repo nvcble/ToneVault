@@ -33,4 +33,7 @@ const Map<MidiFeature, MidiSupportLevel> hotoneAmperoMiniCapabilities = {
   MidiFeature.patchTransfer: MidiSupportLevel.unknown,
 
   MidiFeature.irManagement: MidiSupportLevel.unknown,
+
+  // Nobody has looked: no clock stream has been sent to this unit.
+  MidiFeature.tempoSync: MidiSupportLevel.unknown,
 };

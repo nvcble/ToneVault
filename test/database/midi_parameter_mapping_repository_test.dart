@@ -21,7 +21,7 @@ void main() {
         .watchEffectiveParameters(_profile)
         .first;
 
-    expect(parameters, hasLength(86));
+    expect(parameters, hasLength(_profile.parameterDefinitions.length));
     expect(parameters.firstWhere((p) => p.name == 'Scene').ccNumber, 80);
   });
 

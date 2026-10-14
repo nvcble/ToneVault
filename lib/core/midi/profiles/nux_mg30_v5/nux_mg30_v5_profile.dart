@@ -19,6 +19,11 @@ import 'nux_mg30_v5_parameters.dart';
 /// for it, marked [MidiSupportLevel.needsHardwareVerification] rather than
 /// confirmed. No SysEx message is documented anywhere, so none is offered.
 ///
+/// Tap tempo and the two assignable footswitches are listed too, with no CC
+/// number at all, and QuickTone's Custom MIDI page turns out to have no row
+/// for them either - so no confirmed source offers any way to work them over
+/// MIDI. See [nuxMg30V5AssignableParameters].
+///
 /// See [nuxMg30V5Capabilities] for exactly what is and is not confirmed.
 class NuxMg30V5Profile extends MidiDeviceProfile {
   const NuxMg30V5Profile();

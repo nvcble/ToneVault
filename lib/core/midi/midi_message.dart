@@ -87,9 +87,46 @@ class SysExMessage extends MidiMessage {
   String toString() => 'SysEx(${payload.length} bytes)';
 }
 
+/// One of MIDI's System Real-Time messages: a single status byte, carrying
+/// no channel and no data at all.
+///
+/// Only the three a clock stream is made of are modelled. Continue (0xFB) is
+/// left out for the same reason Bluetooth has no transport yet: nothing in
+/// the app asks for it, and an unused case is a case nobody has tested.
+enum MidiRealTime {
+  timingClock(0xF8, 'Timing Clock'),
+  start(0xFA, 'Start'),
+  stop(0xFC, 'Stop');
+
+  const MidiRealTime(this.status, this.label);
+
+  /// The one byte this message is.
+  final int status;
+
+  final String label;
+}
+
+/// A System Real-Time message - the clock stream's Timing Clock, Start and
+/// Stop.
+///
+/// Channel-less by design: a clock is addressed to the whole link rather than
+/// to one of its sixteen channels, which is why [midiMessageChannel] gives
+/// null for it.
+class RealTimeMessage extends MidiMessage {
+  const RealTimeMessage(this.kind);
+
+  final MidiRealTime kind;
+
+  @override
+  Uint8List toBytes() => Uint8List.fromList([kind.status]);
+
+  @override
+  String toString() => 'RealTime(${kind.label})';
+}
+
 /// A message a transport received but this app has no typed shape for -
-/// pitch bend, aftertouch, clock, NRPN/RPN, or anything else outside the
-/// cases above.
+/// pitch bend, aftertouch, NRPN/RPN, or anything else outside the cases
+/// above.
 ///
 /// Exists so a diagnostic capture never silently drops bytes a real device
 /// sends just because nothing here knows what they mean yet: [raw] is exactly
@@ -115,6 +152,7 @@ String midiMessageTypeLabel(MidiMessage message) => switch (message) {
   NoteMessage(isNoteOn: true) => 'Note On',
   NoteMessage(isNoteOn: false) => 'Note Off',
   SysExMessage() => 'SysEx',
+  RealTimeMessage(kind: final kind) => kind.label,
   UnknownMessage() => 'Unknown',
 };
 
@@ -125,6 +163,7 @@ int? midiMessageChannel(MidiMessage message) => switch (message) {
   ControlChangeMessage(channel: final channel) => channel,
   NoteMessage(channel: final channel) => channel,
   SysExMessage() => null,
+  RealTimeMessage() => null,
   UnknownMessage() => null,
 };
 

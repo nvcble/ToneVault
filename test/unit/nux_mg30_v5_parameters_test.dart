@@ -3,6 +3,13 @@ import 'package:tone_vault/core/midi/profiles/nux_mg30_v5/nux_mg30_v5_block_spec
 import 'package:tone_vault/core/midi/profiles/nux_mg30_v5/nux_mg30_v5_model_names.dart';
 import 'package:tone_vault/core/midi/profiles/nux_mg30_v5/nux_mg30_v5_parameters.dart';
 
+/// Every CC the MG-30's parameters are actually bound to - which is not one per
+/// parameter: tap tempo and the two footswitches are bound to none.
+List<int> get _ccNumbers => nuxMg30V5Parameters
+    .map((definition) => definition.ccNumber)
+    .whereType<int>()
+    .toList();
+
 void main() {
   group('nuxMg30V5Blocks', () {
     test('names the whole MG-30 chain, in the order signal reaches it', () {
@@ -68,24 +75,30 @@ void main() {
   });
 
   group('nuxMg30V5Parameters', () {
-    test('has exactly the 86 rows the V5 chart documents', () {
-      expect(nuxMg30V5Parameters, hasLength(86));
+    test('has the 86 rows the V5 chart documents, plus the three with no CC', () {
+      expect(nuxMg30V5Parameters, hasLength(89));
+      expect(_ccNumbers, hasLength(86));
     });
 
     test('never repeats a CC number across blocks and global parameters', () {
-      final ccNumbers = nuxMg30V5Parameters
-          .map((definition) => definition.ccNumber)
-          .toList();
-
-      expect(ccNumbers.toSet(), hasLength(ccNumbers.length));
+      expect(_ccNumbers.toSet(), hasLength(_ccNumbers.length));
     });
 
     test('covers every CC from 0 to 85 with no gaps', () {
-      final ccNumbers = nuxMg30V5Parameters
-          .map((definition) => definition.ccNumber)
-          .toSet();
+      expect(
+        _ccNumbers.toSet(),
+        Set<int>.from(List.generate(86, (index) => index)),
+      );
+    });
 
-      expect(ccNumbers, Set<int>.from(List.generate(86, (index) => index)));
+    test('tap tempo and the footswitches ship with no CC to send on', () {
+      // A guessed CC here would not fail quietly - it would set a real knob on
+      // a real amp block. See `nuxMg30V5AssignableParameters`.
+      for (final definition in nuxMg30V5AssignableParameters) {
+        expect(definition.ccNumber, isNull, reason: definition.name);
+        expect(definition.ccLabel, 'No CC assigned');
+      }
+      expect(nuxMg30V5Parameters, containsAll(nuxMg30V5AssignableParameters));
     });
 
     test(

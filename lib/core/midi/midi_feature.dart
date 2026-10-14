@@ -12,7 +12,11 @@ enum MidiFeature {
   effectModelSelection,
   signalChainEditing,
   patchTransfer,
-  irManagement;
+  irManagement,
+
+  /// Taking tempo from an incoming MIDI Clock stream - a device following the
+  /// app's clock, never the app following the device's.
+  tempoSync;
 
   String get label => switch (this) {
     MidiFeature.patchSelection => 'Patch selection',
@@ -24,5 +28,6 @@ enum MidiFeature {
     MidiFeature.signalChainEditing => 'Signal-chain editing',
     MidiFeature.patchTransfer => 'Patch transfer',
     MidiFeature.irManagement => 'IR management',
+    MidiFeature.tempoSync => 'Tempo sync (MIDI Clock in)',
   };
 }

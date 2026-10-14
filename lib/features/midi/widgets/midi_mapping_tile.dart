@@ -29,14 +29,14 @@ class _MidiMappingTileState extends State<MidiMappingTile> {
   @override
   void initState() {
     super.initState();
-    _controller = TextEditingController(text: '${widget.definition.ccNumber}');
+    _controller = TextEditingController(text: widget.definition.ccNumber?.toString() ?? '');
   }
 
   @override
   void didUpdateWidget(MidiMappingTile oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.definition.ccNumber != widget.definition.ccNumber) {
-      _controller.text = '${widget.definition.ccNumber}';
+      _controller.text = widget.definition.ccNumber?.toString() ?? '';
     }
   }
 
@@ -50,9 +50,20 @@ class _MidiMappingTileState extends State<MidiMappingTile> {
   Widget build(BuildContext context) {
     return ListTile(
       title: Text(widget.definition.name),
-      subtitle: widget.isOverridden
-          ? const Text('Customized')
-          : const Text('Default'),
+      // A parameter the device profile ships no CC for reads as unassigned
+      // rather than as "Default": its default is nothing, and the control that
+      // uses it stays silent until this field is filled in. It also says that
+      // the device confirms no CC for it, because filling the field in is not
+      // the same as the unit listening - the MG-30's Tap Tempo has no CC in
+      // either of its confirmed sources, so a number put here goes to
+      // whatever that CC really means on the unit.
+      subtitle: Text(
+        widget.isOverridden
+            ? 'Customized'
+            : widget.definition.ccNumber == null
+            ? 'Not assigned. This device confirms no CC for it.'
+            : 'Default',
+      ),
       trailing: Row(
         mainAxisSize: MainAxisSize.min,
         children: [

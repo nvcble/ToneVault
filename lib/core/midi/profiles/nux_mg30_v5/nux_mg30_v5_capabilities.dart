@@ -57,4 +57,17 @@ const Map<MidiFeature, MidiSupportLevel> nuxMg30V5Capabilities = {
   // Managing IR files themselves - loading a user's own impulse response -
   // is not something a CC number can do and is not mentioned here.
   MidiFeature.irManagement: MidiSupportLevel.partiallySupported,
+
+  // Neither confirmed source mentions MIDI Clock in either direction, and
+  // neither has a row for tempo or BPM at all - the chart's 86 rows stop at
+  // CC 85, and QuickTone's Custom MIDI page has no Tap Tempo row either
+  // (checked on the real thing, 2026-10-14). So an incoming clock is now the
+  // *only* remaining candidate for getting a tempo into this unit over MIDI,
+  // which is why this is [MidiSupportLevel.needsHardwareVerification] rather
+  // than [unknown]: the unit has delay times that follow its own tap tempo,
+  // so there is something for a clock to drive, and the MIDI Clock Test panel
+  // sends a standards-compliant 0xF8 stream to try it with. Only watching a
+  // delay against that stream can settle it - see
+  // docs/nux_mg30_v5_midi_clock.md.
+  MidiFeature.tempoSync: MidiSupportLevel.needsHardwareVerification,
 };

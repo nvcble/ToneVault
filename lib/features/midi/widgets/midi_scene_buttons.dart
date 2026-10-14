@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../../app/theme/app_spacing.dart';
+import 'midi_trigger_controls.dart';
 
 /// Three large buttons for the MG-30's Pro Scene mode.
 ///
@@ -23,48 +23,19 @@ class MidiSceneButtons extends StatelessWidget {
   /// sent. Null shows all three the same way, before anything has been sent.
   final int? selectedScene;
 
+  static const int sceneCount = 3;
+
   @override
   Widget build(BuildContext context) {
-    return Row(
+    return MidiTriggerRow(
       children: [
-        for (var scene = 1; scene <= 3; scene++) ...[
-          if (scene > 1) const SizedBox(width: AppSpacing.sm),
-          Expanded(
-            child: _SceneButton(
-              scene: scene,
-              selected: scene == selectedScene,
-              onSelect: onSelect,
-            ),
+        for (var scene = 1; scene <= sceneCount; scene++)
+          MidiTriggerButton(
+            label: 'Scene $scene',
+            selected: scene == selectedScene,
+            onPressed: onSelect == null ? null : () => onSelect!(scene),
           ),
-        ],
       ],
     );
-  }
-}
-
-class _SceneButton extends StatelessWidget {
-  const _SceneButton({
-    required this.scene,
-    required this.selected,
-    required this.onSelect,
-  });
-
-  final int scene;
-  final bool selected;
-  final void Function(int sceneNumber)? onSelect;
-
-  @override
-  Widget build(BuildContext context) {
-    final style = ButtonStyle(
-      minimumSize: const WidgetStatePropertyAll(
-        Size.fromHeight(AppSpacing.minTouchTarget * 1.4),
-      ),
-    );
-    final onPressed = onSelect == null ? null : () => onSelect!(scene);
-    final label = Text('Scene $scene');
-
-    return selected
-        ? FilledButton(style: style, onPressed: onPressed, child: label)
-        : OutlinedButton(style: style, onPressed: onPressed, child: label);
   }
 }

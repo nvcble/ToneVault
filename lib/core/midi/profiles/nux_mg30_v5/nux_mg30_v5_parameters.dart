@@ -1,5 +1,6 @@
 import '../../midi_block_definition.dart';
 import '../../midi_parameter_definition.dart';
+import '../../midi_parameter_names.dart';
 import 'nux_mg30_v5_block_specs.dart';
 import 'nux_mg30_v5_model_names.dart';
 
@@ -100,7 +101,7 @@ const List<MidiParameterDefinition> nuxMg30V5GlobalParameters = [
   // (v4.0.3, see its `device.dart`) - a real conflict between the two
   // sources, unresolved until tried against this app's own V5 unit.
   MidiParameterDefinition(
-    name: 'Scene',
+    name: MidiParameterNames.scene,
     min: 0,
     max: 100,
     messageType: MidiParameterMessageType.controlChange,
@@ -143,10 +144,52 @@ const List<MidiParameterDefinition> nuxMg30V5GlobalParameters = [
   ),
 ];
 
+/// Tap tempo and the two assignable footswitches - controls the unit really
+/// has, with no CC number of their own here, and no known way to reach them
+/// over MIDI at all.
+///
+/// The chart's 86 rows stop at CC 85 and name none of these three. An earlier
+/// note here said QuickTone's Custom MIDI page was where a player points them
+/// at a CC of their choice; **that was wrong, and checking the real thing
+/// disproved it** (QuickTone 2.4.12.27, 2026-10-14): there is no Tap Tempo row
+/// on that page, and assigning a CC to Tap Tempo here and tapping it left the
+/// unit's tempo where it was. Switch A and B have not been checked the same
+/// way, so they are "no CC known" rather than "no CC exists" - but the page
+/// that was supposed to carry all three does not carry the one that was
+/// looked for.
+///
+/// They stay listed with [MidiParameterDefinition.ccNumber] null rather than
+/// with a guessed number, so the control appears and says plainly that nothing
+/// is assigned to it. Assigning one on the CC Mapping screen is still allowed
+/// - the user may yet find a route this app does not know about - but it is
+/// not expected to work, and a CC picked at random is likely to be a real amp
+/// parameter the unit *will* act on. Inventing a number here would have done
+/// that silently.
+const List<MidiParameterDefinition> nuxMg30V5AssignableParameters = [
+  MidiParameterDefinition(
+    name: MidiParameterNames.tapTempo,
+    min: 0,
+    max: 127,
+    messageType: MidiParameterMessageType.controlChange,
+  ),
+  MidiParameterDefinition(
+    name: MidiParameterNames.switchA,
+    min: 0,
+    max: 127,
+    messageType: MidiParameterMessageType.controlChange,
+  ),
+  MidiParameterDefinition(
+    name: MidiParameterNames.switchB,
+    min: 0,
+    max: 127,
+    messageType: MidiParameterMessageType.controlChange,
+  ),
+];
+
 /// Every CC the V5 MIDI implementation chart confirms, built from
 /// [nuxMg30V5Blocks] and [nuxMg30V5GlobalParameters] rather than transcribed
 /// by hand, so the block table stays the one place a chart correction has to
-/// be made.
+/// be made - plus [nuxMg30V5AssignableParameters], which carry no CC.
 final List<MidiParameterDefinition> nuxMg30V5Parameters = _buildParameters();
 
 List<MidiParameterDefinition> _buildParameters() {
@@ -184,6 +227,7 @@ List<MidiParameterDefinition> _buildParameters() {
   }
 
   definitions.addAll(nuxMg30V5GlobalParameters);
+  definitions.addAll(nuxMg30V5AssignableParameters);
   return definitions;
 }
 

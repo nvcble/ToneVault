@@ -15,6 +15,7 @@ import '../data/midi_connection_snapshot.dart';
 import '../providers/midi_capture_controller.dart';
 import '../providers/midi_connection_controller.dart';
 import '../providers/midi_device_link_providers.dart';
+import '../widgets/midi_clock_panel.dart';
 import '../widgets/midi_connection_status.dart';
 import '../widgets/nux_mg30_v5_capture_all_panel.dart';
 import '../widgets/nux_mg30_v5_layout_probe_panel.dart';
@@ -145,6 +146,12 @@ class MidiDiagnosticsScreen extends ConsumerWidget {
             ),
             trailing: const Icon(Icons.chevron_right),
             onTap: () => context.push(Routes.midiCaptureLog(profileId)),
+          ),
+          const SizedBox(height: AppSpacing.md),
+          SectionLabel('${profile.displayName} MIDI Clock Test'),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
+            child: MidiClockPanel(profileId: profileId),
           ),
           const SizedBox(height: AppSpacing.md),
           const SectionLabel('Manual Probe'),
