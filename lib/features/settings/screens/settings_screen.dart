@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import '../../../shared/widgets/section_label.dart';
 import '../../academy/widgets/academy_action.dart';
 import '../../midi/widgets/midi_action.dart';
+import '../widgets/app_version_tile.dart';
 import '../widgets/backup_tile.dart';
 import '../widgets/dev_seed_tile.dart';
 import '../widgets/restore_tile.dart';
@@ -26,6 +27,8 @@ class SettingsScreen extends StatelessWidget {
                 SectionLabel('Your gear, kept safe'),
                 BackupTile(),
                 RestoreTile(),
+                SectionLabel('About'),
+                AppVersionTile(),
               ],
             ),
           ),

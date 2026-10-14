@@ -62,6 +62,13 @@ dependencies:
   # engine, the device profiles, or any screen.
   flutter_midi_command: ^1.2.0
 
+  # Reads back the version this build was stamped with, for Settings to show.
+  #
+  # Asked of the platform rather than kept in a Dart constant, so `version:` at
+  # the top of this file stays the one place a version lives: Android gets it
+  # from here through `flutter.versionName`, and this hands the same string back.
+  package_info_plus: ^10.2.2
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
