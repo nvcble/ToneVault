@@ -1,7 +1,7 @@
 name: tone_vault
 description: "ToneVault - guitar pedal, configuration and rig manager."
 publish_to: 'none'
-version: 1.0.1+2
+version: 1.1.0+3
 
 environment:
   sdk: ^3.12.2
