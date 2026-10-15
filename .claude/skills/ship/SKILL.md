@@ -1,6 +1,6 @@
 ---
-name: git-commit-push
-description: Stage, commit and push the current work. Use when the user asks to commit, to push, or to "save this to git" - optionally for named files only.
+name: ship
+description: Stage, commit and push the current work. Use when the user asks to commit, to push, to ship, or to "save this to git" - optionally for named files only.
 allowed-tools: Read, Bash(git:*)
 ---
 

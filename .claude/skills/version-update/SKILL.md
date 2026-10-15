@@ -33,4 +33,4 @@ up, never resets - it is what the Play Store orders uploads by.
 3. Edit that one line.
 4. Report it as `1.0.0+1 → 1.1.0+2`, and say the change is not committed.
 
-Committing is a separate step - see the `git-commit-push` skill.
+Committing is a separate step - see the `ship` skill.
