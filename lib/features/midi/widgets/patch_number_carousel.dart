@@ -4,14 +4,15 @@ import '../../../app/theme/app_spacing.dart';
 import '../../../shared/widgets/paged_grid.dart';
 import 'patch_grid_tile.dart';
 
-/// The device's 128 Program Change slots, two rows of four to a page, sliding
-/// between pages like a carousel rather than cutting from one set of tiles to
-/// the next.
+/// The device's 128 Program Change slots, [columns] by [rows] to a page,
+/// sliding between pages like a carousel rather than cutting from one set of
+/// tiles to the next.
 ///
-/// Eight big slots a page rather than more small ones: this is the control a
-/// player hits mid-song. Each tile takes an equal share of whatever height the
-/// page has going spare, so the grid fills the screen instead of leaving a gap
-/// under itself, and a tile is wide enough to read a patch name off.
+/// A handful of big slots a page rather than many small ones: this is the
+/// control a player hits mid-song. Each tile takes an equal share of whatever
+/// height the page has going spare, so the grid fills the screen instead of
+/// leaving a gap under itself, and a tile is wide enough to read a patch name
+/// off.
 ///
 /// A tap pre-selects a slot; a double tap loads it - see [PatchGridTile]. The
 /// paging itself is the generic [PagedGrid].

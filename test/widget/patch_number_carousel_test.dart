@@ -4,8 +4,9 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:tone_vault/features/midi/widgets/patch_grid_tile.dart';
 import 'package:tone_vault/features/midi/widgets/patch_number_carousel.dart';
 
-/// The grid a patch is picked from on the landscape control landing page -
-/// two rows of four a page, sliding rather than cutting between pages.
+/// The grid a patch is picked from on the control landing page, at this
+/// widget's own default shape of two rows of four a page - the page itself
+/// asks for three by three. Sliding rather than cutting between pages.
 void main() {
   Future<void> pump(
     WidgetTester tester, {

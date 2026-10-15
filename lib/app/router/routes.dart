@@ -141,8 +141,6 @@ abstract final class Routes {
   static String midiPatchScenes(String deviceId, int patchId) =>
       '${midiPatches(deviceId)}/$patchId/scenes';
 
-  static String liveControl(String deviceId) => '$midi/$deviceId/live';
-
   /// Direct patch selection - see `MidiPatchBrowserScreen`.
   static String midiPatchBrowser(String deviceId) => '$midi/$deviceId/browse';
 
@@ -167,7 +165,6 @@ abstract final class Routes {
   static const String midiControlSegment = ':$midiDeviceIdParam/control';
   static const String midiParametersSegment = ':$midiDeviceIdParam/parameters';
   static const String midiMappingSegment = ':$midiDeviceIdParam/mapping';
-  static const String liveControlSegment = ':$midiDeviceIdParam/live';
   static const String midiPatchBrowserSegment = ':$midiDeviceIdParam/browse';
   static const String midiPresetImportSegment = ':$midiDeviceIdParam/import';
   static const String midiCapturedPresetImportSegment =

@@ -7,7 +7,7 @@ import '../../../app/theme/app_spacing.dart';
 /// Every other MIDI screen, behind one overflow button in the module header.
 ///
 /// One menu rather than a row of app-bar icons plus a "More" list further down:
-/// six destinations is more than an app bar holds as icons without squeezing
+/// five destinations is more than an app bar holds as icons without squeezing
 /// the title out, and splitting the same kind of navigation across two
 /// different widgets meant looking in two places for it.
 class MidiModuleMenu extends StatelessWidget {
@@ -18,11 +18,6 @@ class MidiModuleMenu extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final destinations = <(String, IconData, String)>[
-      (
-        'Live Control',
-        Icons.play_circle_outline,
-        Routes.liveControl(profileId),
-      ),
       ('Patches', Icons.folder_copy_outlined, Routes.midiPatches(profileId)),
       ('All Parameters', Icons.list, Routes.midiParameters(profileId)),
       ('CC Mapping', Icons.tune, Routes.midiMapping(profileId)),

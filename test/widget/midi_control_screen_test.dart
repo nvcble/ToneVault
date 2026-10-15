@@ -52,10 +52,12 @@ void main() {
     });
   }
 
-  Future<void> pumpControl(WidgetTester tester) async {
-    // The patch grid alone is taller than the default test surface; without
-    // this, Scenes never builds at all, being below the fold.
-    tester.view.physicalSize = const Size(1000, 2000);
+  /// A phone held upright, which is the only way this page is held.
+  Future<void> pumpControl(
+    WidgetTester tester, {
+    Size size = const Size(400, 800),
+  }) async {
+    tester.view.physicalSize = size;
     tester.view.devicePixelRatio = 1;
     addTearDown(tester.view.reset);
     await tester.pumpWidget(
@@ -70,31 +72,38 @@ void main() {
     await tester.pumpAndSettle();
   }
 
-  testWidgets('fits a phone held sideways, grid and controls side by side', (
+  testWidgets('fits nine slots and the scenes onto one upright screen', (
     tester,
   ) async {
     prepare();
-    // A real landscape phone, where height is the scarce dimension: an
-    // overflow here fails the test rather than only striping the screen.
-    tester.view.physicalSize = const Size(800, 360);
-    tester.view.devicePixelRatio = 1;
-    addTearDown(tester.view.reset);
 
-    await tester.pumpWidget(
-      UncontrolledProviderScope(
-        container: container,
-        child: MaterialApp(
-          theme: AppTheme.dark(),
-          home: const MidiControlScreen(profileId: 'nux_mg30_v5'),
-        ),
-      ),
-    );
-    await tester.pumpAndSettle();
+    await pumpControl(tester);
 
-    // Eight slots - two rows of four - with the scenes beside them, not below
-    // the fold.
-    expect(find.byType(PatchGridTile), findsNWidgets(8));
+    // Three rows of three, with the scenes under them - and an overflow here
+    // fails the test rather than only striping the screen.
+    expect(find.byType(PatchGridTile), findsNWidgets(9));
+    expect(find.text('Page 1 of 15'), findsOneWidget);
     expect(find.text('Scene 1'), findsOneWidget);
+    expect(find.text('Scene 3'), findsOneWidget);
+
+    // The scenes are at the foot of the page, below every patch tile.
+    expect(
+      tester.getRect(find.text('Scene 1')).top,
+      greaterThan(tester.getRect(find.byType(PatchGridTile).last).bottom),
+    );
+  });
+
+  testWidgets('and onto a small screen, with nothing below the fold', (
+    tester,
+  ) async {
+    prepare();
+
+    await pumpControl(tester, size: const Size(320, 560));
+
+    expect(find.byType(PatchGridTile), findsNWidgets(9));
+    // The last thing on the page ends on the page: there is nothing to scroll
+    // to, because there is nothing left over.
+    expect(tester.getRect(find.text('Scene 3')).bottom, lessThan(560));
   });
 
   testWidgets('the grid and the scenes are all this page has', (tester) async {
@@ -103,8 +112,7 @@ void main() {
     await pumpControl(tester);
 
     // Select Patch, tap tempo and the two footswitches were here and are
-    // gone: the browser is reached from Live Control, and the other three
-    // sent nothing the MG-30 acts on.
+    // gone: the other three sent nothing the MG-30 acts on.
     expect(find.text('Select Patch'), findsNothing);
     expect(find.text('Tap tempo'), findsNothing);
     expect(find.text(MidiParameterNames.switchA), findsNothing);

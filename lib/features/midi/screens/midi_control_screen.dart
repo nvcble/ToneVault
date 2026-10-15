@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../app/theme/app_spacing.dart';
@@ -9,14 +10,13 @@ import '../../../core/midi/midi_parameter_names.dart';
 import '../../../shared/widgets/empty_state.dart';
 import '../../../shared/widgets/failure_snack_bar.dart';
 import '../../../shared/widgets/orientation_lock.dart';
-import '../../../shared/widgets/split_pane.dart';
 import '../data/midi_connection_snapshot.dart';
 import '../providers/midi_connection_controller.dart';
 import '../providers/midi_engine_providers.dart';
 import '../providers/midi_mapping_providers.dart';
 import '../providers/patch_control_providers.dart';
 import '../widgets/midi_module_menu.dart';
-import '../widgets/midi_performance_rail.dart';
+import '../widgets/midi_scene_buttons.dart';
 import '../widgets/patch_number_carousel.dart';
 
 /// The scene switched to on first load and after every patch change - see
@@ -26,8 +26,9 @@ const _defaultScene = 1;
 /// Patch selection and scenes for one device: the page a player lands on and
 /// then plays from.
 ///
-/// Held sideways by default ([OrientationLock]): the patch grid wants width and
-/// the controls want to sit beside it rather than below the fold.
+/// Held upright ([OrientationLock]) and never scrolled: nine patch slots take
+/// whatever height is left over and the three scenes keep the foot of the
+/// page, so everything a player reaches for mid-song is on the one screen.
 class MidiControlScreen extends ConsumerStatefulWidget {
   const MidiControlScreen({required this.profileId, super.key});
 
@@ -91,6 +92,7 @@ class _MidiControlScreenState extends ConsumerState<MidiControlScreen> {
     );
 
     return OrientationLock(
+      orientations: const [DeviceOrientation.portraitUp],
       child: Scaffold(
         appBar: AppBar(
           title: Text('${profile.displayName} control'),
@@ -98,21 +100,27 @@ class _MidiControlScreenState extends ConsumerState<MidiControlScreen> {
         ),
         body: SafeArea(
           child: Padding(
-            // Tight vertically: on a phone held sideways the height all goes
-            // to the grid and the controls, not to margins.
+            // Tight vertically: the height all goes to the grid and the
+            // scenes, not to margins.
             padding: const EdgeInsets.symmetric(
               horizontal: AppSpacing.md,
               vertical: AppSpacing.sm,
             ),
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 if (!connected) const Text('Not connected.'),
-                Expanded(
-                  child: SplitPane(
-                    main: _patchGrid(profile, currentPatch),
-                    side: _rail(profile, connected),
+                // The grid sizes its rows to the height it is handed, so it
+                // fills what is left rather than overflowing or scrolling.
+                Expanded(child: _patchGrid(profile, currentPatch)),
+                const SizedBox(height: AppSpacing.sm),
+                MidiSceneButtons(
+                  selectedScene: ref.watch(
+                    currentSceneNumberProvider(widget.profileId),
                   ),
+                  onSelect: connected
+                      ? (scene) => _sendScene(profile, scene)
+                      : null,
                 ),
               ],
             ),
@@ -124,20 +132,17 @@ class _MidiControlScreenState extends ConsumerState<MidiControlScreen> {
 
   Widget _patchGrid(MidiDeviceProfile profile, int currentPatch) {
     return PatchNumberCarousel(
+      columns: 3,
+      rows: 3,
       selected: currentPatch,
       loaded: ref.watch(currentLoadedPatchNumberProvider(widget.profileId)),
       patchNames: ref.watch(patchNamesByNumberProvider(widget.profileId)),
       onSelected: (number) =>
-          ref.read(currentPatchNumberProvider(widget.profileId).notifier).state =
+          ref
+                  .read(currentPatchNumberProvider(widget.profileId).notifier)
+                  .state =
               number,
       onLoad: (number) => _load(profile, number),
-    );
-  }
-
-  Widget _rail(MidiDeviceProfile profile, bool connected) {
-    return MidiPerformanceRail(
-      selectedScene: ref.watch(currentSceneNumberProvider(widget.profileId)),
-      onSelectScene: connected ? (scene) => _sendScene(profile, scene) : null,
     );
   }
 

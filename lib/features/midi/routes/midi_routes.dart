@@ -3,7 +3,6 @@ import 'package:go_router/go_router.dart';
 import '../../../app/router/routes.dart';
 import '../hotone_ampero_mini/screens/hotone_ampero_mini_patch_list_screen.dart';
 import '../screens/captured_preset_import_screen.dart';
-import '../screens/live_control_screen.dart';
 import '../screens/midi_capture_log_screen.dart';
 import '../screens/midi_connection_screen.dart';
 import '../screens/midi_control_screen.dart';
@@ -70,11 +69,6 @@ List<RouteBase> midiRoutes() {
         GoRoute(
           path: Routes.midiCaptureLogSegment,
           builder: (context, state) => const MidiCaptureLogScreen(),
-        ),
-        GoRoute(
-          path: Routes.liveControlSegment,
-          builder: (context, state) =>
-              LiveControlScreen(profileId: _deviceId(state)),
         ),
         GoRoute(
           path: Routes.midiPatchBrowserSegment,

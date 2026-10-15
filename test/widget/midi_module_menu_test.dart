@@ -6,13 +6,12 @@ import 'package:tone_vault/features/midi/widgets/midi_module_menu.dart';
 
 /// The module header's one overflow menu.
 ///
-/// Worth pumping: the six destinations used to be three app-bar icons plus a
+/// Worth pumping: the five destinations used to be three app-bar icons plus a
 /// "More" list further down the screen, so what this widget has to prove is that
 /// none of them was dropped on the way into a single menu.
 void main() {
   const profileId = 'nux_mg30_v5';
   final destinations = {
-    'Live Control': Routes.liveControl(profileId),
     'Patches': Routes.midiPatches(profileId),
     'All Parameters': Routes.midiParameters(profileId),
     'CC Mapping': Routes.midiMapping(profileId),
@@ -55,6 +54,14 @@ void main() {
         reason: '$label is not in the menu',
       );
     }
+  });
+
+  testWidgets('Live Control is not one of them any more', (tester) async {
+    await tester.pumpWidget(app());
+    await tester.tap(find.byIcon(Icons.more_vert));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Live Control'), findsNothing);
   });
 
   testWidgets('choosing a destination goes there', (tester) async {
