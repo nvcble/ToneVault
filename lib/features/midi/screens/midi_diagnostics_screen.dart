@@ -10,6 +10,7 @@ import '../../../core/midi/profiles/nux_mg30_v5/nux_mg30_v5_profile.dart';
 import '../../../shared/widgets/empty_state.dart';
 import '../../../shared/widgets/failure_snack_bar.dart';
 import '../../../shared/widgets/inline_button_theme.dart';
+import '../../../shared/widgets/page_body.dart';
 import '../../../shared/widgets/section_label.dart';
 import '../data/midi_connection_snapshot.dart';
 import '../providers/midi_capture_controller.dart';
@@ -66,127 +67,135 @@ class MidiDiagnosticsScreen extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(title: const Text('MIDI Diagnostics')),
-      body: ListView(
-        children: [
-          const SectionLabel('Connection'),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text('${profile.manufacturer} ${profile.model}'),
-                // Firmware and transport are what this profile was built
-                // for, not something read off the connected unit - nothing
-                // yet queries the device's own firmware version.
-                Text(
-                  'Firmware: ${profile.firmwareVersion} (assumed, not detected)',
-                ),
-                Text(
-                  'Transport: ${profile.connectionTypes.map((t) => t.label).join(', ')}',
-                ),
-                const SizedBox(height: AppSpacing.sm),
-                MidiConnectionStatus(snapshot: snapshot),
-                const SizedBox(height: AppSpacing.sm),
-                if (snapshot.state != MidiConnectionState.connected)
-                  FilledButton(
-                    onPressed: snapshot.isBusy
-                        ? null
-                        : ref
-                              .read(midiConnectionProvider(profileId).notifier)
-                              .connect,
-                    child: const Text('Connect'),
-                  ),
-              ],
-            ),
-          ),
-          const SizedBox(height: AppSpacing.md),
-          const SectionLabel('MIDI Capture'),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
-            // Without a finite minimum width, the theme's column-spanning
-            // FilledButton takes a whole line of the wrap to itself.
-            child: InlineButtonTheme(
-              child: Wrap(
-                spacing: AppSpacing.sm,
-                runSpacing: AppSpacing.sm,
+      body: PageBody(
+        child: ListView(
+          children: [
+            const SectionLabel('Connection'),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  FilledButton(
-                    onPressed: capture.isCapturing
-                        ? null
-                        : captureController.start,
-                    child: const Text('Start Capture'),
+                  Text('${profile.manufacturer} ${profile.model}'),
+                  // Firmware and transport are what this profile was built
+                  // for, not something read off the connected unit - nothing
+                  // yet queries the device's own firmware version.
+                  Text(
+                    'Firmware: ${profile.firmwareVersion} (assumed, not detected)',
                   ),
-                  OutlinedButton(
-                    onPressed: capture.isCapturing
-                        ? captureController.stop
-                        : null,
-                    child: const Text('Stop Capture'),
+                  Text(
+                    'Transport: ${profile.connectionTypes.map((t) => t.label).join(', ')}',
                   ),
-                  OutlinedButton(
-                    onPressed: capture.entries.isEmpty
-                        ? null
-                        : captureController.clear,
-                    child: const Text('Clear'),
-                  ),
+                  const SizedBox(height: AppSpacing.sm),
+                  MidiConnectionStatus(snapshot: snapshot),
+                  const SizedBox(height: AppSpacing.sm),
+                  if (snapshot.state != MidiConnectionState.connected)
+                    FilledButton(
+                      onPressed: snapshot.isBusy
+                          ? null
+                          : ref
+                                .read(
+                                  midiConnectionProvider(profileId).notifier,
+                                )
+                                .connect,
+                      child: const Text('Connect'),
+                    ),
                 ],
               ),
             ),
-          ),
-          // The bytes themselves live on their own page: a few seconds of real
-          // traffic is enough rows to bury every control below this one.
-          ListTile(
-            leading: const Icon(Icons.receipt_long),
-            title: const Text('View Capture Log'),
-            subtitle: Text(
-              capture.entries.isEmpty
-                  ? capture.isCapturing
-                        ? 'Capturing. Nothing received yet.'
-                        : 'Nothing captured yet.'
-                  : '${capture.entries.length} message(s) recorded',
-            ),
-            trailing: const Icon(Icons.chevron_right),
-            onTap: () => context.push(Routes.midiCaptureLog(profileId)),
-          ),
-          const SizedBox(height: AppSpacing.md),
-          SectionLabel('${profile.displayName} MIDI Clock Test'),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
-            child: MidiClockPanel(profileId: profileId),
-          ),
-          const SizedBox(height: AppSpacing.md),
-          const SectionLabel('Manual Probe'),
-          const Padding(
-            padding: EdgeInsets.symmetric(horizontal: AppSpacing.md),
-            child: RawSysExSender(),
-          ),
-          if (profile is NuxMg30V5Profile) ...[
             const SizedBox(height: AppSpacing.md),
-            const SectionLabel('Preset Import (Milestone 1)'),
+            const SectionLabel('MIDI Capture'),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
-              child: NuxMg30V5PresetReadPanel(
-                profileId: profileId,
-                unitId: unitId,
+              // Without a finite minimum width, the theme's column-spanning
+              // FilledButton takes a whole line of the wrap to itself.
+              child: InlineButtonTheme(
+                child: Wrap(
+                  spacing: AppSpacing.sm,
+                  runSpacing: AppSpacing.sm,
+                  children: [
+                    FilledButton(
+                      onPressed: capture.isCapturing
+                          ? null
+                          : captureController.start,
+                      child: const Text('Start Capture'),
+                    ),
+                    OutlinedButton(
+                      onPressed: capture.isCapturing
+                          ? captureController.stop
+                          : null,
+                      child: const Text('Stop Capture'),
+                    ),
+                    OutlinedButton(
+                      onPressed: capture.entries.isEmpty
+                          ? null
+                          : captureController.clear,
+                      child: const Text('Clear'),
+                    ),
+                  ],
+                ),
               ),
             ),
-            if (unitId != null) ...[
+            // The bytes themselves live on their own page: a few seconds of real
+            // traffic is enough rows to bury every control below this one.
+            ListTile(
+              leading: const Icon(Icons.receipt_long),
+              title: const Text('View Capture Log'),
+              subtitle: Text(
+                capture.entries.isEmpty
+                    ? capture.isCapturing
+                          ? 'Capturing. Nothing received yet.'
+                          : 'Nothing captured yet.'
+                    : '${capture.entries.length} message(s) recorded',
+              ),
+              trailing: const Icon(Icons.chevron_right),
+              onTap: () => context.push(Routes.midiCaptureLog(profileId)),
+            ),
+            const SizedBox(height: AppSpacing.md),
+            SectionLabel('${profile.displayName} MIDI Clock Test'),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
+              child: MidiClockPanel(profileId: profileId),
+            ),
+            const SizedBox(height: AppSpacing.md),
+            const SectionLabel('Manual Probe'),
+            const Padding(
+              padding: EdgeInsets.symmetric(horizontal: AppSpacing.md),
+              child: RawSysExSender(),
+            ),
+            if (profile is NuxMg30V5Profile) ...[
               const SizedBox(height: AppSpacing.md),
+              const SectionLabel('Preset Import (Milestone 1)'),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
-                child: NuxMg30V5CaptureAllPanel(
+                child: NuxMg30V5PresetReadPanel(
                   profileId: profileId,
                   unitId: unitId,
                 ),
               ),
-              const SizedBox(height: AppSpacing.md),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
-                child: NuxMg30V5LayoutProbePanel(unitId: unitId),
-              ),
+              if (unitId != null) ...[
+                const SizedBox(height: AppSpacing.md),
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppSpacing.md,
+                  ),
+                  child: NuxMg30V5CaptureAllPanel(
+                    profileId: profileId,
+                    unitId: unitId,
+                  ),
+                ),
+                const SizedBox(height: AppSpacing.md),
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppSpacing.md,
+                  ),
+                  child: NuxMg30V5LayoutProbePanel(unitId: unitId),
+                ),
+              ],
             ],
+            const SizedBox(height: AppSpacing.xl),
           ],
-          const SizedBox(height: AppSpacing.xl),
-        ],
+        ),
       ),
     );
   }

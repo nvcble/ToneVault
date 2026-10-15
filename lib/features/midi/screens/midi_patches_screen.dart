@@ -11,6 +11,7 @@ import '../../../core/midi/midi_device_registry.dart';
 import '../../../core/midi/profiles/nux_mg30_v5/nux_mg30_v5_profile.dart';
 import '../../../shared/widgets/empty_state.dart';
 import '../../../shared/widgets/failure_snack_bar.dart';
+import '../../../shared/widgets/page_body.dart';
 import '../../../shared/widgets/segmented_switch.dart';
 import '../../patches/providers/patch_providers.dart';
 import '../data/midi_patch_sort.dart';
@@ -55,31 +56,33 @@ class MidiPatchesScreen extends ConsumerWidget {
           ),
         ],
       ),
-      body: pedalAsync.when(
-        loading: () => const Center(child: CircularProgressIndicator()),
-        error: (error, stackTrace) => EmptyState(
-          icon: Icons.error_outline,
-          title: 'Could not load this device\'s gear',
-          message: failureMessage(error),
-        ),
-        data: (pedal) => pedal == null
-            ? _LinkGearPrompt(profile: profile)
-            : Column(
-                children: [
-                  // A QuickTone export is the one patch source that needs no
-                  // hardware and no unverified protocol; see
-                  // `docs/nux_mg30_v5_patch_format.md`.
-                  if (profile is NuxMg30V5Profile)
-                    Mg30V5ImportFileTile(unitId: pedal.id),
-                  Expanded(
-                    child: _PatchList(
-                      profileId: profileId,
-                      profile: profile,
-                      unitId: pedal.id,
+      body: PageBody(
+        child: pedalAsync.when(
+          loading: () => const Center(child: CircularProgressIndicator()),
+          error: (error, stackTrace) => EmptyState(
+            icon: Icons.error_outline,
+            title: 'Could not load this device\'s gear',
+            message: failureMessage(error),
+          ),
+          data: (pedal) => pedal == null
+              ? _LinkGearPrompt(profile: profile)
+              : Column(
+                  children: [
+                    // A QuickTone export is the one patch source that needs no
+                    // hardware and no unverified protocol; see
+                    // `docs/nux_mg30_v5_patch_format.md`.
+                    if (profile is NuxMg30V5Profile)
+                      Mg30V5ImportFileTile(unitId: pedal.id),
+                    Expanded(
+                      child: _PatchList(
+                        profileId: profileId,
+                        profile: profile,
+                        unitId: pedal.id,
+                      ),
                     ),
-                  ),
-                ],
-              ),
+                  ],
+                ),
+        ),
       ),
     );
   }

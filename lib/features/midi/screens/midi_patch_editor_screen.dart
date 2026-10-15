@@ -5,6 +5,7 @@ import '../../../app/theme/app_spacing.dart';
 import '../../../core/midi/midi_device_registry.dart';
 import '../../../shared/widgets/empty_state.dart';
 import '../../../shared/widgets/failure_snack_bar.dart';
+import '../../../shared/widgets/page_body.dart';
 import '../../../shared/widgets/section_label.dart';
 import '../../patches/providers/patch_providers.dart';
 import '../../pedals/providers/pedal_providers.dart';
@@ -46,27 +47,30 @@ class MidiPatchEditorScreen extends ConsumerWidget {
       appBar: AppBar(
         title: Text(sceneAsync.valueOrNull?.name ?? 'Patch Editor'),
       ),
-      body: pedalAsync.when(
-        loading: () => const Center(child: CircularProgressIndicator()),
-        error: (error, stackTrace) => EmptyState(
-          icon: Icons.error_outline,
-          title: 'Could not load this device\'s gear',
-          message: failureMessage(error),
-        ),
-        data: (pedal) {
-          if (pedal == null) {
-            return const EmptyState(
-              icon: Icons.link_off,
-              title: 'Not gear yet',
-              message: 'Add this device as gear from its Patches screen first.',
+      body: PageBody(
+        child: pedalAsync.when(
+          loading: () => const Center(child: CircularProgressIndicator()),
+          error: (error, stackTrace) => EmptyState(
+            icon: Icons.error_outline,
+            title: 'Could not load this device\'s gear',
+            message: failureMessage(error),
+          ),
+          data: (pedal) {
+            if (pedal == null) {
+              return const EmptyState(
+                icon: Icons.link_off,
+                title: 'Not gear yet',
+                message:
+                    'Add this device as gear from its Patches screen first.',
+              );
+            }
+            return _SignalChain(
+              profileId: profileId,
+              sceneId: sceneId,
+              unitId: pedal.id,
             );
-          }
-          return _SignalChain(
-            profileId: profileId,
-            sceneId: sceneId,
-            unitId: pedal.id,
-          );
-        },
+          },
+        ),
       ),
     );
   }

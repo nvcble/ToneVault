@@ -10,6 +10,8 @@ import '../../../core/midi/midi_device_profile.dart';
 import '../../../core/midi/midi_device_registry.dart';
 import '../../../shared/widgets/empty_state.dart';
 import '../../../shared/widgets/failure_snack_bar.dart';
+import '../../../shared/widgets/fill_or_scroll.dart';
+import '../../../shared/widgets/page_body.dart';
 import '../data/live_control_navigation.dart';
 import '../providers/midi_connection_controller.dart';
 import '../providers/midi_device_link_providers.dart';
@@ -18,6 +20,7 @@ import '../providers/midi_mapping_providers.dart';
 import '../providers/patch_control_providers.dart';
 import '../widgets/current_patch_card.dart';
 import '../widgets/midi_scene_buttons.dart';
+import '../widgets/midi_trigger_controls.dart';
 
 /// A large-button, minimal screen for switching patches and scenes while
 /// playing - see section 12 of the MIDI module brief. Nothing here edits
@@ -40,27 +43,30 @@ class LiveControlScreen extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(title: const Text('Live Control')),
-      body: pedalAsync.when(
-        loading: () => const Center(child: CircularProgressIndicator()),
-        error: (error, stackTrace) => EmptyState(
-          icon: Icons.error_outline,
-          title: 'Could not load this device\'s gear',
-          message: failureMessage(error),
-        ),
-        data: (pedal) {
-          if (pedal == null) {
-            return const EmptyState(
-              icon: Icons.link_off,
-              title: 'Not gear yet',
-              message: 'Add this device as gear from its Patches screen first.',
+      body: PageBody(
+        child: pedalAsync.when(
+          loading: () => const Center(child: CircularProgressIndicator()),
+          error: (error, stackTrace) => EmptyState(
+            icon: Icons.error_outline,
+            title: 'Could not load this device\'s gear',
+            message: failureMessage(error),
+          ),
+          data: (pedal) {
+            if (pedal == null) {
+              return const EmptyState(
+                icon: Icons.link_off,
+                title: 'Not gear yet',
+                message:
+                    'Add this device as gear from its Patches screen first.',
+              );
+            }
+            return _LiveControlBody(
+              profileId: profileId,
+              profile: profile,
+              unitId: pedal.id,
             );
-          }
-          return _LiveControlBody(
-            profileId: profileId,
-            profile: profile,
-            unitId: pedal.id,
-          );
-        },
+          },
+        ),
       ),
     );
   }
@@ -109,60 +115,64 @@ class _LiveControlBody extends ConsumerWidget {
         final canAct =
             connected && ref.watch(experimentalProgramChangeEnabledProvider);
 
-        return Padding(
-          padding: const EdgeInsets.all(AppSpacing.lg),
-          child: Column(
-            children: [
-              if (!connected)
-                const Padding(
-                  padding: EdgeInsets.only(bottom: AppSpacing.md),
-                  child: Text('Not connected.'),
+        // The patch at the top and the controls at the foot, with the room
+        // between them going into the gap - and scrolling instead of
+        // overflowing on a screen too short for all of it, which is any phone
+        // held sideways.
+        return FillOrScroll(
+          child: Padding(
+            padding: const EdgeInsets.all(AppSpacing.lg),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    if (!connected)
+                      const Padding(
+                        padding: EdgeInsets.only(bottom: AppSpacing.md),
+                        child: Text('Not connected.'),
+                      ),
+                    CurrentPatchCard(
+                      current: current,
+                      onChangePatch: () =>
+                          context.push(Routes.midiPatchBrowser(profileId)),
+                    ),
+                  ],
                 ),
-              CurrentPatchCard(
-                current: current,
-                onChangePatch: () =>
-                    context.push(Routes.midiPatchBrowser(profileId)),
-              ),
-              const Spacer(),
-              MidiSceneButtons(
-                selectedScene: currentScene,
-                onSelect: canAct
-                    ? (scene) => _sendScene(context, ref, scene)
-                    : null,
-              ),
-              const SizedBox(height: AppSpacing.lg),
-              Row(
-                children: [
-                  Expanded(
-                    child: FilledButton(
-                      style: FilledButton.styleFrom(
-                        minimumSize: const Size.fromHeight(
-                          AppSpacing.minTouchTarget * 1.4,
-                        ),
-                      ),
-                      onPressed: canAct
-                          ? () => _step(context, ref, patches, current, -1)
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    MidiSceneButtons(
+                      selectedScene: currentScene,
+                      onSelect: canAct
+                          ? (scene) => _sendScene(context, ref, scene)
                           : null,
-                      child: const Text('Previous patch'),
                     ),
-                  ),
-                  const SizedBox(width: AppSpacing.md),
-                  Expanded(
-                    child: FilledButton(
-                      style: FilledButton.styleFrom(
-                        minimumSize: const Size.fromHeight(
-                          AppSpacing.minTouchTarget * 1.4,
+                    const SizedBox(height: AppSpacing.lg),
+                    // The same row and the same buttons as the scenes above
+                    // them, so the two sit together as one block of controls.
+                    MidiTriggerRow(
+                      children: [
+                        MidiTriggerButton(
+                          label: 'Previous patch',
+                          onPressed: canAct
+                              ? () => _step(context, ref, patches, current, -1)
+                              : null,
                         ),
-                      ),
-                      onPressed: canAct
-                          ? () => _step(context, ref, patches, current, 1)
-                          : null,
-                      child: const Text('Next patch'),
+                        MidiTriggerButton(
+                          label: 'Next patch',
+                          onPressed: canAct
+                              ? () => _step(context, ref, patches, current, 1)
+                              : null,
+                        ),
+                      ],
                     ),
-                  ),
-                ],
-              ),
-            ],
+                  ],
+                ),
+              ],
+            ),
           ),
         );
       },

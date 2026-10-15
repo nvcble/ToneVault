@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/midi/midi_device_registry.dart';
 import '../../../shared/widgets/empty_state.dart';
 import '../../../shared/widgets/failure_snack_bar.dart';
+import '../../../shared/widgets/page_body.dart';
 import '../providers/midi_mapping_providers.dart';
 import '../widgets/midi_mapping_tile.dart';
 
@@ -47,51 +48,53 @@ class MidiMappingScreen extends ConsumerWidget {
           ),
         ],
       ),
-      body: parametersAsync.when(
-        loading: () => const Center(child: CircularProgressIndicator()),
-        error: (error, stackTrace) => EmptyState(
-          icon: Icons.error_outline,
-          title: 'Could not load the mapping',
-          message: failureMessage(error),
+      body: PageBody(
+        child: parametersAsync.when(
+          loading: () => const Center(child: CircularProgressIndicator()),
+          error: (error, stackTrace) => EmptyState(
+            icon: Icons.error_outline,
+            title: 'Could not load the mapping',
+            message: failureMessage(error),
+          ),
+          data: (parameters) {
+            final overridden = overriddenAsync.valueOrNull ?? const <String>{};
+            return ListView.builder(
+              itemCount: parameters.length,
+              itemBuilder: (context, index) {
+                final definition = parameters[index];
+                return MidiMappingTile(
+                  definition: definition,
+                  isOverridden: overridden.contains(definition.name),
+                  onChanged: (cc) async {
+                    try {
+                      await ref
+                          .read(midiParameterMappingRepositoryProvider)
+                          .setOverride(
+                            profile: profile,
+                            parameterName: definition.name,
+                            ccNumber: cc,
+                          );
+                    } catch (error) {
+                      if (context.mounted) showFailureSnackBar(context, error);
+                    }
+                  },
+                  onReset: () async {
+                    try {
+                      await ref
+                          .read(midiParameterMappingRepositoryProvider)
+                          .resetOverride(
+                            deviceProfileId: profileId,
+                            parameterName: definition.name,
+                          );
+                    } catch (error) {
+                      if (context.mounted) showFailureSnackBar(context, error);
+                    }
+                  },
+                );
+              },
+            );
+          },
         ),
-        data: (parameters) {
-          final overridden = overriddenAsync.valueOrNull ?? const <String>{};
-          return ListView.builder(
-            itemCount: parameters.length,
-            itemBuilder: (context, index) {
-              final definition = parameters[index];
-              return MidiMappingTile(
-                definition: definition,
-                isOverridden: overridden.contains(definition.name),
-                onChanged: (cc) async {
-                  try {
-                    await ref
-                        .read(midiParameterMappingRepositoryProvider)
-                        .setOverride(
-                          profile: profile,
-                          parameterName: definition.name,
-                          ccNumber: cc,
-                        );
-                  } catch (error) {
-                    if (context.mounted) showFailureSnackBar(context, error);
-                  }
-                },
-                onReset: () async {
-                  try {
-                    await ref
-                        .read(midiParameterMappingRepositoryProvider)
-                        .resetOverride(
-                          deviceProfileId: profileId,
-                          parameterName: definition.name,
-                        );
-                  } catch (error) {
-                    if (context.mounted) showFailureSnackBar(context, error);
-                  }
-                },
-              );
-            },
-          );
-        },
       ),
     );
   }

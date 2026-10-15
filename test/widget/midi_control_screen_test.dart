@@ -8,13 +8,11 @@ import 'package:tone_vault/core/database/app_database.dart';
 import 'package:tone_vault/core/database/database_provider.dart';
 import 'package:tone_vault/core/midi/midi_endpoint.dart';
 import 'package:tone_vault/core/midi/midi_engine.dart';
-import 'package:tone_vault/core/midi/midi_message.dart';
 import 'package:tone_vault/core/midi/midi_parameter_names.dart';
 import 'package:tone_vault/core/midi/midi_transport_type.dart';
 import 'package:tone_vault/core/midi/profiles/nux_mg30_v5/nux_mg30_v5_profile.dart';
 import 'package:tone_vault/features/midi/providers/midi_connection_controller.dart';
 import 'package:tone_vault/features/midi/providers/midi_engine_providers.dart';
-import 'package:tone_vault/features/midi/providers/midi_mapping_providers.dart';
 import 'package:tone_vault/features/midi/screens/midi_control_screen.dart';
 import 'package:tone_vault/features/midi/widgets/patch_grid_tile.dart';
 
@@ -93,12 +91,24 @@ void main() {
     );
     await tester.pumpAndSettle();
 
-    // Eight slots - two rows of four - with the controls beside them, not
-    // below the fold.
+    // Eight slots - two rows of four - with the scenes beside them, not below
+    // the fold.
     expect(find.byType(PatchGridTile), findsNWidgets(8));
     expect(find.text('Scene 1'), findsOneWidget);
-    expect(find.text('Tap tempo'), findsOneWidget);
-    expect(find.text(MidiParameterNames.switchB), findsOneWidget);
+  });
+
+  testWidgets('the grid and the scenes are all this page has', (tester) async {
+    prepare();
+
+    await pumpControl(tester);
+
+    // Select Patch, tap tempo and the two footswitches were here and are
+    // gone: the browser is reached from Live Control, and the other three
+    // sent nothing the MG-30 acts on.
+    expect(find.text('Select Patch'), findsNothing);
+    expect(find.text('Tap tempo'), findsNothing);
+    expect(find.text(MidiParameterNames.switchA), findsNothing);
+    expect(find.text(MidiParameterNames.switchB), findsNothing);
   });
 
   testWidgets('has no toggle and no hardware-verification warning', (
@@ -201,89 +211,6 @@ void main() {
     expect(find.widgetWithText(FilledButton, 'Scene 1'), findsOneWidget);
     expect(find.widgetWithText(OutlinedButton, 'Scene 2'), findsOneWidget);
     expect(find.widgetWithText(OutlinedButton, 'Scene 3'), findsOneWidget);
-  });
-
-  testWidgets('tap tempo says so when no CC has been mapped to it', (
-    tester,
-  ) async {
-    prepare();
-    await container.read(midiConnectionProvider(profile.id).notifier).connect();
-
-    await pumpControl(tester);
-    transport.sent.clear();
-    await tester.tap(find.text('Tap tempo'));
-    await tester.pumpAndSettle();
-
-    // The chart documents no tap tempo CC, so nothing goes out until the user
-    // maps one - and the page says that rather than failing silently.
-    expect(transport.sent, isEmpty);
-    expect(find.textContaining('CC Mapping screen'), findsOneWidget);
-  });
-
-  testWidgets('a mapped switch latches on, then off, sending each way', (
-    tester,
-  ) async {
-    prepare();
-    await container
-        .read(midiParameterMappingRepositoryProvider)
-        .setOverride(
-          profile: profile,
-          parameterName: MidiParameterNames.switchA,
-          ccNumber: 90,
-        );
-    await container.read(midiConnectionProvider(profile.id).notifier).connect();
-
-    await pumpControl(tester);
-    transport.sent.clear();
-
-    await tester.tap(find.text(MidiParameterNames.switchA));
-    await tester.pumpAndSettle();
-    expect(
-      find.widgetWithText(FilledButton, MidiParameterNames.switchA),
-      findsOneWidget,
-    );
-
-    await tester.tap(find.text(MidiParameterNames.switchA));
-    await tester.pumpAndSettle();
-    expect(
-      find.widgetWithText(OutlinedButton, MidiParameterNames.switchA),
-      findsOneWidget,
-    );
-
-    expect(
-      transport.sent.whereType<ControlChangeMessage>().map(
-        (message) => (message.controller, message.value),
-      ),
-      [(90, ccOn), (90, ccOff)],
-    );
-  });
-
-  testWidgets('loading a patch unlatches the switches', (tester) async {
-    prepare();
-    await container
-        .read(midiParameterMappingRepositoryProvider)
-        .setOverride(
-          profile: profile,
-          parameterName: MidiParameterNames.switchA,
-          ccNumber: 90,
-        );
-    await container.read(midiConnectionProvider(profile.id).notifier).connect();
-
-    await pumpControl(tester);
-    await tester.tap(find.text(MidiParameterNames.switchA));
-    await tester.pumpAndSettle();
-
-    await tester.tap(find.text('02'));
-    await tester.pump(kDoubleTapTimeout ~/ 2);
-    await tester.tap(find.text('02'));
-    await tester.pumpAndSettle();
-
-    // The patch decides what its footswitches do, so the app stops claiming
-    // the last one's switch is still on.
-    expect(
-      find.widgetWithText(OutlinedButton, MidiParameterNames.switchA),
-      findsOneWidget,
-    );
   });
 
   testWidgets('loading a patch falls back to scene 1', (tester) async {

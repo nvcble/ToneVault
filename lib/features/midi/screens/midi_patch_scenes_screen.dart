@@ -8,6 +8,7 @@ import '../../../core/midi/midi_connection_state.dart';
 import '../../../core/midi/midi_device_registry.dart';
 import '../../../shared/widgets/empty_state.dart';
 import '../../../shared/widgets/failure_snack_bar.dart';
+import '../../../shared/widgets/page_body.dart';
 import '../../patches/providers/patch_providers.dart';
 import '../providers/midi_connection_controller.dart';
 import '../providers/midi_device_link_providers.dart';
@@ -43,121 +44,127 @@ class MidiPatchScenesScreen extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(title: const Text('Scenes')),
-      body: scenesAsync.when(
-        loading: () => const Center(child: CircularProgressIndicator()),
-        error: (error, stackTrace) => EmptyState(
-          icon: Icons.error_outline,
-          title: 'Could not load scenes',
-          message: failureMessage(error),
-        ),
-        data: (scenes) => scenes.isEmpty
-            ? const EmptyState(
-                icon: Icons.list_alt,
-                title: 'No scenes yet',
-                message: 'Add scenes for this patch from the Pedals tab.',
-              )
-            : ListView.builder(
-                itemCount: scenes.length,
-                itemBuilder: (context, index) {
-                  final scene = scenes[index];
-                  final numberAsync = ref.watch(sceneNumberProvider(scene.id));
-                  final sceneNumber = numberAsync.valueOrNull?.sceneNumber;
+      body: PageBody(
+        child: scenesAsync.when(
+          loading: () => const Center(child: CircularProgressIndicator()),
+          error: (error, stackTrace) => EmptyState(
+            icon: Icons.error_outline,
+            title: 'Could not load scenes',
+            message: failureMessage(error),
+          ),
+          data: (scenes) => scenes.isEmpty
+              ? const EmptyState(
+                  icon: Icons.list_alt,
+                  title: 'No scenes yet',
+                  message: 'Add scenes for this patch from the Pedals tab.',
+                )
+              : ListView.builder(
+                  itemCount: scenes.length,
+                  itemBuilder: (context, index) {
+                    final scene = scenes[index];
+                    final numberAsync = ref.watch(
+                      sceneNumberProvider(scene.id),
+                    );
+                    final sceneNumber = numberAsync.valueOrNull?.sceneNumber;
 
-                  return ListTile(
-                    title: Text(scene.name),
-                    subtitle: const Text('Tap to edit its blocks'),
-                    onTap: () => context.push(
-                      Routes.midiSceneEditor(profileId, patchId, scene.id),
-                    ),
-                    trailing: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        MidiNumberField(
-                          value: sceneNumber,
-                          onChanged: (number) async {
-                            try {
-                              await ref
-                                  .read(midiSceneNumberRepositoryProvider)
-                                  .setNumber(
-                                    patchId: patchId,
-                                    sceneId: scene.id,
-                                    sceneNumber: number,
-                                  );
-                            } catch (error) {
-                              if (context.mounted) {
-                                showFailureSnackBar(context, error);
-                              }
-                            }
-                          },
-                        ),
-                        const SizedBox(width: AppSpacing.sm),
-                        IconButton(
-                          icon: const Icon(Icons.sync_alt),
-                          tooltip: 'Send this scene',
-                          onPressed: connected && sceneNumber != null
-                              ? () async {
-                                  try {
-                                    final parameters = await ref.read(
-                                      effectiveParametersProvider(
-                                        profileId,
-                                      ).future,
+                    return ListTile(
+                      title: Text(scene.name),
+                      subtitle: const Text('Tap to edit its blocks'),
+                      onTap: () => context.push(
+                        Routes.midiSceneEditor(profileId, patchId, scene.id),
+                      ),
+                      trailing: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          MidiNumberField(
+                            value: sceneNumber,
+                            onChanged: (number) async {
+                              try {
+                                await ref
+                                    .read(midiSceneNumberRepositoryProvider)
+                                    .setNumber(
+                                      patchId: patchId,
+                                      sceneId: scene.id,
+                                      sceneNumber: number,
                                     );
-                                    await ref
-                                        .read(midiParameterSenderProvider)
-                                        .send(
-                                          profile: profile,
-                                          effectiveParameters: parameters,
-                                          parameterName: 'Scene',
-                                          value: sceneNumber - 1,
-                                        );
-                                  } catch (error) {
-                                    if (context.mounted) {
-                                      showFailureSnackBar(context, error);
-                                    }
-                                  }
+                              } catch (error) {
+                                if (context.mounted) {
+                                  showFailureSnackBar(context, error);
                                 }
-                              : null,
-                        ),
-                        IconButton(
-                          icon: const Icon(Icons.upload),
-                          tooltip: 'Send this scene\'s block values',
-                          onPressed: !connected
-                              ? null
-                              : () async {
-                                  try {
-                                    final parameters = await ref.read(
-                                      effectiveParametersProvider(
-                                        profileId,
-                                      ).future,
-                                    );
-                                    final sent = await ref
-                                        .read(midiSceneSendServiceProvider)
-                                        .sendSceneValues(
-                                          profile: profile,
-                                          effectiveParameters: parameters,
-                                          sceneId: scene.id,
-                                        );
-                                    if (context.mounted) {
-                                      ScaffoldMessenger.of(
-                                        context,
-                                      ).showSnackBar(
-                                        SnackBar(
-                                          content: Text('Sent $sent value(s).'),
-                                        ),
+                              }
+                            },
+                          ),
+                          const SizedBox(width: AppSpacing.sm),
+                          IconButton(
+                            icon: const Icon(Icons.sync_alt),
+                            tooltip: 'Send this scene',
+                            onPressed: connected && sceneNumber != null
+                                ? () async {
+                                    try {
+                                      final parameters = await ref.read(
+                                        effectiveParametersProvider(
+                                          profileId,
+                                        ).future,
                                       );
-                                    }
-                                  } catch (error) {
-                                    if (context.mounted) {
-                                      showFailureSnackBar(context, error);
+                                      await ref
+                                          .read(midiParameterSenderProvider)
+                                          .send(
+                                            profile: profile,
+                                            effectiveParameters: parameters,
+                                            parameterName: 'Scene',
+                                            value: sceneNumber - 1,
+                                          );
+                                    } catch (error) {
+                                      if (context.mounted) {
+                                        showFailureSnackBar(context, error);
+                                      }
                                     }
                                   }
-                                },
-                        ),
-                      ],
-                    ),
-                  );
-                },
-              ),
+                                : null,
+                          ),
+                          IconButton(
+                            icon: const Icon(Icons.upload),
+                            tooltip: 'Send this scene\'s block values',
+                            onPressed: !connected
+                                ? null
+                                : () async {
+                                    try {
+                                      final parameters = await ref.read(
+                                        effectiveParametersProvider(
+                                          profileId,
+                                        ).future,
+                                      );
+                                      final sent = await ref
+                                          .read(midiSceneSendServiceProvider)
+                                          .sendSceneValues(
+                                            profile: profile,
+                                            effectiveParameters: parameters,
+                                            sceneId: scene.id,
+                                          );
+                                      if (context.mounted) {
+                                        ScaffoldMessenger.of(
+                                          context,
+                                        ).showSnackBar(
+                                          SnackBar(
+                                            content: Text(
+                                              'Sent $sent value(s).',
+                                            ),
+                                          ),
+                                        );
+                                      }
+                                    } catch (error) {
+                                      if (context.mounted) {
+                                        showFailureSnackBar(context, error);
+                                      }
+                                    }
+                                  },
+                          ),
+                        ],
+                      ),
+                    );
+                  },
+                ),
+        ),
       ),
     );
   }

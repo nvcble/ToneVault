@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/midi/midi_log_entry.dart';
 import '../../../shared/widgets/empty_state.dart';
 import '../../../shared/widgets/failure_snack_bar.dart';
+import '../../../shared/widgets/page_body.dart';
 import '../data/midi_capture_export.dart';
 import '../providers/midi_capture_controller.dart';
 import '../widgets/midi_log_tile.dart';
@@ -35,22 +36,24 @@ class MidiCaptureLogScreen extends ConsumerWidget {
           ),
         ],
       ),
-      body: entries.isEmpty
-          ? EmptyState(
-              icon: Icons.cable,
-              title: 'Nothing captured yet',
-              message: capture.isCapturing
-                  ? 'Capturing. Use the device - change a patch, tap a footswitch - '
-                        'and whatever it sends will appear here.'
-                  : 'Start a capture on the Diagnostics screen first.',
-            )
-          : ListView.builder(
-              // Newest first: the reply to whatever was just tried is the row
-              // being looked for.
-              itemCount: entries.length,
-              itemBuilder: (context, index) =>
-                  MidiLogTile(entry: entries[entries.length - 1 - index]),
-            ),
+      body: PageBody(
+        child: entries.isEmpty
+            ? EmptyState(
+                icon: Icons.cable,
+                title: 'Nothing captured yet',
+                message: capture.isCapturing
+                    ? 'Capturing. Use the device - change a patch, tap a footswitch - '
+                          'and whatever it sends will appear here.'
+                    : 'Start a capture on the Diagnostics screen first.',
+              )
+            : ListView.builder(
+                // Newest first: the reply to whatever was just tried is the
+                // row being looked for.
+                itemCount: entries.length,
+                itemBuilder: (context, index) =>
+                    MidiLogTile(entry: entries[entries.length - 1 - index]),
+              ),
+      ),
     );
   }
 

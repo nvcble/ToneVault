@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 
-import '../../../app/router/routes.dart';
 import '../../../app/theme/app_spacing.dart';
 import '../../../core/midi/midi_connection_state.dart';
 import '../../../core/midi/midi_device_profile.dart';
@@ -13,7 +11,6 @@ import '../../../shared/widgets/failure_snack_bar.dart';
 import '../../../shared/widgets/orientation_lock.dart';
 import '../../../shared/widgets/split_pane.dart';
 import '../data/midi_connection_snapshot.dart';
-import '../providers/midi_clock_providers.dart';
 import '../providers/midi_connection_controller.dart';
 import '../providers/midi_engine_providers.dart';
 import '../providers/midi_mapping_providers.dart';
@@ -26,8 +23,8 @@ import '../widgets/patch_number_carousel.dart';
 /// `MidiSceneButtons`.
 const _defaultScene = 1;
 
-/// Patch selection, scenes, tap tempo and the two footswitches for one device:
-/// the page a player lands on and then plays from.
+/// Patch selection and scenes for one device: the page a player lands on and
+/// then plays from.
 ///
 /// Held sideways by default ([OrientationLock]): the patch grid wants width and
 /// the controls want to sit beside it rather than below the fold.
@@ -43,9 +40,6 @@ class MidiControlScreen extends ConsumerStatefulWidget {
 class _MidiControlScreenState extends ConsumerState<MidiControlScreen> {
   bool _selectedDefaultScene = false;
   ProviderSubscription<MidiConnectionSnapshot>? _connectionSubscription;
-
-  /// The footswitches this app has latched on, by parameter name.
-  final Set<String> _switchesOn = {};
 
   @override
   void initState() {
@@ -142,32 +136,9 @@ class _MidiControlScreenState extends ConsumerState<MidiControlScreen> {
 
   Widget _rail(MidiDeviceProfile profile, bool connected) {
     return MidiPerformanceRail(
-      onSelectPatch: () =>
-          context.push(Routes.midiPatchBrowser(widget.profileId)),
       selectedScene: ref.watch(currentSceneNumberProvider(widget.profileId)),
       onSelectScene: connected ? (scene) => _sendScene(profile, scene) : null,
-      onTapTempo: connected
-          ? () => _send(profile, MidiParameterNames.tapTempo, ccOn)
-          : null,
-      onTappedBpm: _tappedBpm,
-      // A copy: the rail is handed what is latched now, not a set it would see
-      // change underneath it.
-      switchesOn: {..._switchesOn},
-      onToggleSwitch: connected
-          ? (name, on) => _toggleSwitch(profile, name, on)
-          : null,
     );
-  }
-
-  /// A tapped tempo also steers the MIDI Clock stream - but only once the
-  /// user has turned clock output on in MIDI Diagnostics, and never by
-  /// starting one: a tap sets the rate of a stream that is already running
-  /// and does nothing at all otherwise. See `MidiClockOutputState`.
-  void _tappedBpm(int bpm) {
-    if (!ref.read(midiClockProvider(widget.profileId)).outputEnabled) {
-      return;
-    }
-    ref.read(midiClockProvider(widget.profileId).notifier).setBpm(bpm);
   }
 
   /// Sends one named parameter, reporting failure to the user rather than to
@@ -204,22 +175,6 @@ class _MidiControlScreenState extends ConsumerState<MidiControlScreen> {
     }
   }
 
-  Future<void> _toggleSwitch(
-    MidiDeviceProfile profile,
-    String parameterName,
-    bool on,
-  ) async {
-    if (await _send(profile, parameterName, on ? ccOn : ccOff) && mounted) {
-      setState(() {
-        if (on) {
-          _switchesOn.add(parameterName);
-        } else {
-          _switchesOn.remove(parameterName);
-        }
-      });
-    }
-  }
-
   Future<void> _load(MidiDeviceProfile profile, int patchNumber) async {
     // Program numbers run 0-127; stepping past either end does nothing rather
     // than sending a value the wire cannot carry.
@@ -246,11 +201,10 @@ class _MidiControlScreenState extends ConsumerState<MidiControlScreen> {
               .read(currentLoadedPatchNumberProvider(widget.profileId).notifier)
               .state =
           patchNumber;
-      // A patch change resets what the device itself has active - the scene,
-      // and whatever the footswitches were doing - so the app follows it back
-      // rather than showing a state that no longer matches what loaded.
+      // A patch change resets the scene the device has active, so the app
+      // follows it back rather than showing one that no longer matches what
+      // loaded.
       if (mounted) {
-        setState(_switchesOn.clear);
         await _sendScene(profile, _defaultScene);
       }
     } catch (error) {

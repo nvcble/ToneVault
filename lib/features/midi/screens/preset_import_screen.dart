@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/midi/midi_device_registry.dart';
 import '../../../shared/widgets/empty_state.dart';
 import '../../../shared/widgets/failure_snack_bar.dart';
+import '../../../shared/widgets/page_body.dart';
 import '../providers/midi_device_link_providers.dart';
 import '../providers/preset_import_providers.dart';
 import '../widgets/experimental_preset_import_panel.dart';
@@ -38,30 +39,33 @@ class PresetImportScreen extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(title: const Text('Import Presets')),
-      body: pedalAsync.when(
-        loading: () => const Center(child: CircularProgressIndicator()),
-        error: (error, stackTrace) => EmptyState(
-          icon: Icons.error_outline,
-          title: 'Could not load this device\'s gear',
-          message: failureMessage(error),
+      body: PageBody(
+        child: pedalAsync.when(
+          loading: () => const Center(child: CircularProgressIndicator()),
+          error: (error, stackTrace) => EmptyState(
+            icon: Icons.error_outline,
+            title: 'Could not load this device\'s gear',
+            message: failureMessage(error),
+          ),
+          data: (pedal) {
+            if (pedal == null) {
+              return const EmptyState(
+                icon: Icons.link_off,
+                title: 'Not gear yet',
+                message:
+                    'Add this device as gear from its Patches screen first.',
+              );
+            }
+            if (service == null) {
+              return ExperimentalPresetImportPanel(
+                profileId: profileId,
+                profile: profile,
+                unitId: pedal.id,
+              );
+            }
+            return PresetImportFlow(unitId: pedal.id, service: service);
+          },
         ),
-        data: (pedal) {
-          if (pedal == null) {
-            return const EmptyState(
-              icon: Icons.link_off,
-              title: 'Not gear yet',
-              message: 'Add this device as gear from its Patches screen first.',
-            );
-          }
-          if (service == null) {
-            return ExperimentalPresetImportPanel(
-              profileId: profileId,
-              profile: profile,
-              unitId: pedal.id,
-            );
-          }
-          return PresetImportFlow(unitId: pedal.id, service: service);
-        },
       ),
     );
   }

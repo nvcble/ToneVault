@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../shared/widgets/empty_state.dart';
+import '../../../shared/widgets/page_body.dart';
 import '../providers/midi_monitor_controller.dart';
 import '../widgets/midi_log_tile.dart';
 
@@ -25,19 +26,21 @@ class MidiMonitorScreen extends ConsumerWidget {
           ),
         ],
       ),
-      body: entries.isEmpty
-          ? const EmptyState(
-              icon: Icons.terminal,
-              title: 'Nothing logged yet',
-              message:
-                  'Every message sent to or received from the device will show up here.',
-            )
-          : ListView.builder(
-              reverse: true,
-              itemCount: entries.length,
-              itemBuilder: (context, index) =>
-                  MidiLogTile(entry: entries[entries.length - 1 - index]),
-            ),
+      body: PageBody(
+        child: entries.isEmpty
+            ? const EmptyState(
+                icon: Icons.terminal,
+                title: 'Nothing logged yet',
+                message:
+                    'Every message sent to or received from the device will show up here.',
+              )
+            : ListView.builder(
+                reverse: true,
+                itemCount: entries.length,
+                itemBuilder: (context, index) =>
+                    MidiLogTile(entry: entries[entries.length - 1 - index]),
+              ),
+      ),
     );
   }
 }
