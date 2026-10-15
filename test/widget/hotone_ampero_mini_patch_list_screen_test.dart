@@ -10,7 +10,9 @@ import 'package:tone_vault/core/midi/midi_endpoint.dart';
 import 'package:tone_vault/core/midi/midi_engine.dart';
 import 'package:tone_vault/core/midi/midi_transport_type.dart';
 import 'package:tone_vault/core/midi/profiles/hotone_ampero_mini/hotone_ampero_mini_profile.dart';
+import 'package:tone_vault/features/midi/hotone_ampero_mini/providers/hotone_ampero_mini_patch_selection_providers.dart';
 import 'package:tone_vault/features/midi/hotone_ampero_mini/screens/hotone_ampero_mini_patch_list_screen.dart';
+import 'package:tone_vault/features/midi/hotone_ampero_mini/widgets/ampero_mini_patch_grid_tile.dart';
 import 'package:tone_vault/features/midi/providers/midi_connection_controller.dart';
 import 'package:tone_vault/features/midi/providers/midi_engine_providers.dart';
 
@@ -48,10 +50,13 @@ void main() {
     });
   }
 
-  Future<void> pump(WidgetTester tester) async {
-    // Taller than the default 800x600 so the grid and its pager are both on
-    // screen - this screen is a page of tiles, not a scrolling list.
-    await tester.binding.setSurfaceSize(const Size(500, 1100));
+  /// A phone held upright, which is the only way this page is held - and the
+  /// shape it has to fit everything into, since it does not scroll.
+  Future<void> pump(
+    WidgetTester tester, {
+    Size size = const Size(400, 800),
+  }) async {
+    await tester.binding.setSurfaceSize(size);
     addTearDown(() => tester.binding.setSurfaceSize(null));
     await tester.pumpWidget(
       UncontrolledProviderScope(
@@ -72,10 +77,14 @@ void main() {
     await tester.pumpAndSettle();
   }
 
-  Future<void> search(WidgetTester tester, String query) async {
-    await tester.enterText(find.byType(TextField), query);
-    await tester.pumpAndSettle();
-  }
+  /// Puts the grid on the page holding [number] the way the app itself does:
+  /// the grid opens where the selection is, so pre-selecting a patch before
+  /// the first build is how a test reaches one 17 pages in.
+  void openOn(int number) =>
+      container
+              .read(hotoneAmperoMiniPreSelectedPatchNumberProvider.notifier)
+              .state =
+          number;
 
   testWidgets('a single tap only pre-selects; nothing is sent', (tester) async {
     prepare();
@@ -180,6 +189,57 @@ void main() {
     );
   });
 
+  testWidgets('twelve slots and the pager fit one upright screen', (
+    tester,
+  ) async {
+    prepare();
+
+    await pump(tester);
+
+    // The MG-30's landing page in this device's own terms: three by four,
+    // filling the screen, with nothing below the fold and no scrolling. An
+    // overflow fails the test rather than only striping the screen.
+    expect(find.byType(AmperoMiniPatchGridTile), findsNWidgets(12));
+    expect(tester.getRect(find.text('Page 1 of 17')).bottom, lessThan(800));
+  });
+
+  testWidgets('and on a small screen too, with smaller slots', (tester) async {
+    prepare();
+
+    await pump(tester, size: const Size(320, 560));
+
+    expect(find.byType(AmperoMiniPatchGridTile), findsNWidgets(12));
+    expect(tester.getRect(find.text('Page 1 of 17')).bottom, lessThan(560));
+    // Still a target worth hitting mid-song, not a sliver.
+    expect(
+      tester.getSize(find.byType(AmperoMiniPatchGridTile).first).height,
+      greaterThan(48),
+    );
+  });
+
+  testWidgets('searching jumps the grid to the patch, sending nothing', (
+    tester,
+  ) async {
+    prepare();
+    await container.read(midiConnectionProvider(profile.id).notifier).connect();
+    await pump(tester);
+
+    // The search is an app-bar icon rather than a field on the page: the page
+    // is twelve slots on one screen, and a field costs two rows of them.
+    await tester.tap(find.byIcon(Icons.search));
+    await tester.pumpAndSettle();
+    await tester.enterText(find.byType(TextField), 'F33-3');
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('F33-3').last);
+    await tester.pumpAndSettle();
+
+    // The last page of the grid, with nothing on the wire: finding a patch is
+    // not choosing it.
+    expect(find.text('Page 17 of 17'), findsOneWidget);
+    expect(find.text('F33-3'), findsOneWidget);
+    expect(transport.sent, isEmpty);
+  });
+
   testWidgets('the grid pages through all 198 patches', (tester) async {
     prepare();
     await pump(tester);
@@ -203,11 +263,10 @@ void main() {
     tester,
   ) async {
     prepare();
+    // 198 patches is the whole point, and the last one existing is what
+    // proves the count is not the MG-30's 128.
+    openOn(197);
     await pump(tester);
-
-    // Searched rather than paged to: 198 patches is the whole point, and the
-    // last one existing is what proves the count is not the MG-30's 128.
-    await search(tester, '197');
 
     expect(find.text('F33-3'), findsOneWidget);
   });
@@ -217,12 +276,19 @@ void main() {
   ) async {
     prepare();
     await container.read(midiConnectionProvider(profile.id).notifier).connect();
+    // F01-1, the patch the user double-tapped on hardware to no effect.
+    openOn(99);
     await pump(tester);
 
-    // F01-1, the patch the user double-tapped on hardware to no effect.
-    await search(tester, '099');
     expect(find.text('F01-1'), findsOneWidget);
-    expect(find.text('tap twice to try'), findsOneWidget);
+    // Its own tile says so - the rest of this page is factory patches too.
+    expect(
+      find.descendant(
+        of: find.widgetWithText(AmperoMiniPatchGridTile, 'F01-1'),
+        matching: find.text('tap twice to try'),
+      ),
+      findsOneWidget,
+    );
 
     await doubleTap(tester, 'F01-1');
     await tester.pumpAndSettle();
@@ -239,9 +305,9 @@ void main() {
   ) async {
     prepare();
     await container.read(midiConnectionProvider(profile.id).notifier).connect();
+    openOn(99);
     await pump(tester);
 
-    await search(tester, '099');
     await doubleTap(tester, 'F01-1');
     await tester.pumpAndSettle();
 
@@ -257,10 +323,8 @@ void main() {
   testWidgets('the last user patch, P33-3, is still sent', (tester) async {
     prepare();
     await container.read(midiConnectionProvider(profile.id).notifier).connect();
+    openOn(98);
     await pump(tester);
-
-    await search(tester, '098');
-    expect(find.text('tap twice to try'), findsNothing);
 
     await doubleTap(tester, 'P33-3');
 
@@ -271,16 +335,15 @@ void main() {
     tester,
   ) async {
     prepare();
-    await pump(tester);
-
     // The mismatch the user found on hardware: the app called index 98
     // "P32-3" while the pedal called it P33-3, and the pedal's next patch was
-    // F01-1. Both are checked here so the fix cannot regress on one side.
-    await search(tester, '098');
+    // F01-1. Both are checked here so the fix cannot regress on one side -
+    // one page holds the two of them.
+    openOn(98);
+    await pump(tester);
+
     expect(find.text('P33-3'), findsOneWidget);
     expect(find.text('P32-3'), findsNothing);
-
-    await search(tester, '099');
     expect(find.text('F01-1'), findsOneWidget);
   });
 

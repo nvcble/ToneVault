@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import '../../../app/theme/app_spacing.dart';
 import '../../../shared/widgets/paged_grid.dart';
 import 'patch_grid_tile.dart';
 
@@ -25,7 +24,6 @@ class PatchNumberCarousel extends StatelessWidget {
     this.patchNames = const {},
     this.columns = 4,
     this.rows = 2,
-    this.tileHeight,
     super.key,
   });
 
@@ -44,58 +42,39 @@ class PatchNumberCarousel extends StatelessWidget {
   final int columns;
   final int rows;
 
-  /// A fixed height per tile, or null - the default - to share out the height
-  /// the carousel is given.
-  final double? tileHeight;
-
   static const int totalSlots = 128;
-
-  /// The pager row and the selected-patch line, which come out of the height
-  /// before the rows divide what is left.
-  static const double _chromeHeight = 72;
-
-  /// Never smaller than this, however little room there is, and the height
-  /// used where nothing bounds the carousel at all - inside a scroll view,
-  /// where there is no height to share.
-  static const double _minTileHeight = 72;
 
   int get perPage => columns * rows;
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(
-      builder: (context, constraints) => Column(
-        children: [
-          PagedGrid(
+    return Column(
+      children: [
+        // The grid takes the height left over once the name line below has
+        // had its own, and shares it out between its rows - see
+        // `PagedGrid.tileHeight`.
+        Expanded(
+          child: PagedGrid(
             itemCount: totalSlots,
             columns: columns,
             rows: rows,
-            tileHeight: tileHeight ?? _rowShareOf(constraints.maxHeight),
-            initialPage: selected ~/ perPage,
+            selectedPage: selected ~/ perPage,
             // No indent of its own: the grid is the widest thing on the page
             // and the page's padding already holds it off the edge.
             padding: EdgeInsets.zero,
             itemBuilder: _buildTile,
           ),
-          // The full name of the selection, which a tile can only show the
-          // start of.
-          Text(
-            _labelFor(selected),
-            style: Theme.of(context).textTheme.titleMedium,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-          ),
-        ],
-      ),
+        ),
+        // The full name of the selection, which a tile can only show the
+        // start of.
+        Text(
+          _labelFor(selected),
+          style: Theme.of(context).textTheme.titleMedium,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+        ),
+      ],
     );
-  }
-
-  double _rowShareOf(double height) {
-    if (!height.isFinite) {
-      return _minTileHeight;
-    }
-    final forRows = height - _chromeHeight - (rows - 1) * AppSpacing.sm;
-    return (forRows / rows).clamp(_minTileHeight, double.infinity);
   }
 
   Widget _buildTile(BuildContext context, int number) => PatchGridTile(

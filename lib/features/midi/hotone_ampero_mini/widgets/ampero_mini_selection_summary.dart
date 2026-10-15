@@ -7,14 +7,18 @@ import '../data/ampero_mini_patch_layout.dart';
 /// blocks - never merged, since a single tap changing the first without sending
 /// anything is the point of the pre-select/activate split.
 ///
+/// Side by side, with the caveat on its own line underneath, and no card
+/// around it: the page this heads puts twelve patch slots on the one screen
+/// without scrolling, so every line of header comes out of the slots.
+///
 /// [sentNumber] is only ever what this app put on the wire. It is deliberately
 /// not called "on device": this pedal has no confirmed way of reporting which
 /// patch it has loaded, so a send is the strongest fact available and is
 /// labelled as one. An earlier version of this card claimed the pedal had
 /// confirmed the patch, reading its once-a-second counter as a patch report -
 /// which meant the counter, not the user's own choice, drove the display.
-class AmperoMiniCurrentSelectionCard extends StatelessWidget {
-  const AmperoMiniCurrentSelectionCard({
+class AmperoMiniSelectionSummary extends StatelessWidget {
+  const AmperoMiniSelectionSummary({
     required this.preSelectedNumber,
     required this.sentNumber,
     super.key,
@@ -26,32 +30,37 @@ class AmperoMiniCurrentSelectionCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(AppSpacing.md),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+    final sent = sentNumber;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
           children: [
-            _Block(
-              label: 'Pre-selected',
-              value: _value(preSelectedNumber),
-              theme: theme,
+            Expanded(
+              child: _Block(
+                label: 'Pre-selected',
+                value: _value(preSelectedNumber),
+                theme: theme,
+              ),
             ),
-            const SizedBox(height: AppSpacing.md),
-            _sentBlock(theme),
+            const SizedBox(width: AppSpacing.md),
+            Expanded(
+              child: _Block(
+                label: 'Last sent',
+                value: sent == null ? 'Not sent yet' : _value(sent),
+                theme: theme,
+              ),
+            ),
           ],
         ),
-      ),
-    );
-  }
-
-  Widget _sentBlock(ThemeData theme) {
-    final sent = sentNumber;
-    return _Block(
-      label: 'Last sent',
-      value: sent == null ? 'Not sent yet' : _value(sent),
-      note: sent == null ? null : 'This pedal cannot confirm what it loaded',
-      theme: theme,
+        if (sent != null)
+          Text(
+            'This pedal cannot confirm what it loaded',
+            style: theme.textTheme.bodySmall?.copyWith(
+              color: theme.colorScheme.outline,
+            ),
+          ),
+      ],
     );
   }
 
@@ -62,21 +71,14 @@ class AmperoMiniCurrentSelectionCard extends StatelessWidget {
 }
 
 class _Block extends StatelessWidget {
-  const _Block({
-    required this.label,
-    required this.value,
-    required this.theme,
-    this.note,
-  });
+  const _Block({required this.label, required this.value, required this.theme});
 
   final String label;
   final String value;
   final ThemeData theme;
-  final String? note;
 
   @override
   Widget build(BuildContext context) {
-    final note = this.note;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -86,14 +88,12 @@ class _Block extends StatelessWidget {
             color: theme.colorScheme.outline,
           ),
         ),
-        Text(value, style: theme.textTheme.titleMedium),
-        if (note != null)
-          Text(
-            note,
-            style: theme.textTheme.bodySmall?.copyWith(
-              color: theme.colorScheme.outline,
-            ),
-          ),
+        Text(
+          value,
+          style: theme.textTheme.titleMedium,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+        ),
       ],
     );
   }
