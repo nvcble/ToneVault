@@ -26,8 +26,8 @@ const _defaultScene = 1;
 /// Patch selection and scenes for one device: the page a player lands on and
 /// then plays from.
 ///
-/// Held upright ([OrientationLock]) and never scrolled: nine patch slots take
-/// whatever height is left over and the three scenes keep the foot of the
+/// Held upright ([OrientationLock]) and never scrolled: twelve patch slots
+/// take whatever height is left over and the three scenes keep the foot of the
 /// page, so everything a player reaches for mid-song is on the one screen.
 class MidiControlScreen extends ConsumerStatefulWidget {
   const MidiControlScreen({required this.profileId, super.key});
@@ -133,7 +133,7 @@ class _MidiControlScreenState extends ConsumerState<MidiControlScreen> {
   Widget _patchGrid(MidiDeviceProfile profile, int currentPatch) {
     return PatchNumberCarousel(
       columns: 3,
-      rows: 3,
+      rows: 4,
       selected: currentPatch,
       loaded: ref.watch(currentLoadedPatchNumberProvider(widget.profileId)),
       patchNames: ref.watch(patchNamesByNumberProvider(widget.profileId)),

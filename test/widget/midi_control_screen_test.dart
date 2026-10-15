@@ -72,17 +72,17 @@ void main() {
     await tester.pumpAndSettle();
   }
 
-  testWidgets('fits nine slots and the scenes onto one upright screen', (
+  testWidgets('fits twelve slots and the scenes onto one upright screen', (
     tester,
   ) async {
     prepare();
 
     await pumpControl(tester);
 
-    // Three rows of three, with the scenes under them - and an overflow here
+    // Four rows of three, with the scenes under them - and an overflow here
     // fails the test rather than only striping the screen.
-    expect(find.byType(PatchGridTile), findsNWidgets(9));
-    expect(find.text('Page 1 of 15'), findsOneWidget);
+    expect(find.byType(PatchGridTile), findsNWidgets(12));
+    expect(find.text('Page 1 of 11'), findsOneWidget);
     expect(find.text('Scene 1'), findsOneWidget);
     expect(find.text('Scene 3'), findsOneWidget);
 
@@ -100,7 +100,7 @@ void main() {
 
     await pumpControl(tester, size: const Size(320, 560));
 
-    expect(find.byType(PatchGridTile), findsNWidgets(9));
+    expect(find.byType(PatchGridTile), findsNWidgets(12));
     // The last thing on the page ends on the page: there is nothing to scroll
     // to, because there is nothing left over.
     expect(tester.getRect(find.text('Scene 3')).bottom, lessThan(560));

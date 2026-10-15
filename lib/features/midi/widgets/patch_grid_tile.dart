@@ -56,13 +56,17 @@ class PatchGridTile extends StatelessWidget {
                 color: foreground,
               ),
             ),
+            // One line: twelve slots to a page leaves a tile short enough that
+            // a second line of name would not fit under the number on a small
+            // phone. The full name of the selected slot is spelled out under
+            // the grid - see `PatchNumberCarousel`.
             Text(
               label,
               style: Theme.of(
                 context,
               ).textTheme.bodyMedium?.copyWith(color: foreground),
               textAlign: TextAlign.center,
-              maxLines: 2,
+              maxLines: 1,
               overflow: TextOverflow.ellipsis,
             ),
           ],
