@@ -1,8 +1,19 @@
 As a full stack developer with 10 years of experience with Flutter/Dart/Drift/SQLite/Firebase, do the following on this requirement:
 
-[Midi Module]
-1. Hotone Ampero Mini Landing Page, Make the patch lists a tile but in a grid view with pagination just like what we did with Nux MG-30 v5 controller.
-2. Hotone Ampero Mini Landing Page, when I tried to select F01-1 in mobile phone, Hotone Ampero Mini pedal doesn't react upon selection. I already double tap F01-1 but still no response with the Ampero Mini. You can check the logs here: C:\Users\MarkN\Downloads\tonevault-capture-ampero2.json.
-3. Hotone Ampero Mini Landing Page, when I double tap F01-1 it will be selected. But when I select other sample P01-2, it will not react on the mobile but the ampero mini pedal was changed to P01-2. Fix this bug.
+1. Add claude skill for version update. Current version 1.0.0
+skill: /version-update
+parameters: [prod | feature | bug]
+1 - prod
+0 - feature
+0 - bug
+
+2. Add claude skill for git commit and push
 
 Note: Do not generate or make your code longer. Generate your code short, simple, easy to maintain, and professional. Use reusable components as much as possible.
+
+Check and address this technical review:
+Should Fix — Formlay.Repo/Services/EntityService.cs (MalformedNestedLists check)
+The empty-section-reject predicate can't distinguish the actual bug shape from a normal in-progress authoring save — an author adds a repeating section via the palette, hasn't dragged a field in yet, clicks Save. EntityType/EntityForm has no draft/published flag to scope this to publish-time only. This is a real regression on the common "save as I go" flow, not hypothetical. Suggest shipping with this explicitly called out as an accepted risk, or scoping the check tighter.
+
+Should Fix: Formlay/Areas/Details/Controllers/EntityFormsController.cs (ThrowIfError)
+The new author-facing rejection message won't actually reach the user. Formster's fl_web_part.dart (SaveFormBuilder handler) hardcodes "Exception on form save" on any exception from this endpoint, discarding the real response body. Validation fires and protects data correctly, but the "author-facing" half of this fix's stated goal doesn't land for the only client that calls it
