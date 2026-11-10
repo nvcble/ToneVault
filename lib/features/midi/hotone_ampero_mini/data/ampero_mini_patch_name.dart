@@ -5,8 +5,8 @@
 /// of 2026-11-10 (`WelcomeToAmpero`). See `docs/ampero_mini_capture_1_findings.md`.
 ///
 /// The reply is a run of `12 00 02 0E` frames. Only the first (chunk 0) is used.
-/// After the `0E` byte, 0-based: byte 4 is the chunk counter, byte 8 the slot
-/// the data really belongs to, bytes 11-12 are two UNKNOWN bytes, and from byte
+/// After the `0E` byte, 0-based: byte 4 is the chunk counter, bytes 7-8 the slot
+/// the data really belongs to (high nibble, low nibble - slot 17 is `01 00`), bytes 11-12 are two UNKNOWN bytes, and from byte
 /// 13 the name follows as high-nibble / low-nibble pairs, ended by a `00 00`
 /// pair or after 16 characters. Padding was `00` in two samples and spaces in
 /// one, so trailing spaces are trimmed.
@@ -17,7 +17,7 @@ import 'ampero_mini_read_probe.dart';
 const int _headerLength = 7;
 const int _bodyStart = _headerLength + 4; // 12 00 02 0E
 const int _chunkOffset = 4;
-const int _slotOffset = 8;
+const int _slotOffset = 7; // high nibble; low nibble follows
 const int _nameOffset = 13;
 const int _maxNameChars = 16;
 
@@ -34,7 +34,10 @@ String? decodeAmperoMiniPatchName(List<int> payload, {required int index}) {
     if (payload[_headerLength + i] != lead[i]) return null;
   }
   if (payload[_bodyStart + _chunkOffset] != 0) return null;
-  if (payload[_bodyStart + _slotOffset] != index) return null;
+  final slot =
+      payload[_bodyStart + _slotOffset] << 4 |
+      payload[_bodyStart + _slotOffset + 1];
+  if (slot != index) return null;
 
   final chars = <int>[];
   var at = _bodyStart + _nameOffset;

@@ -32,8 +32,8 @@ List<int> _frame(int slot, List<int> name, {int chunk = 0}) => [
   chunk,
   0x00,
   0x01,
-  0x00,
-  slot,
+  slot >> 4,
+  slot & 0xF,
   0x00,
   0x00,
   0x06,
@@ -55,6 +55,18 @@ void main() {
         decodeAmperoMiniPatchName(_frame(0, name), index: 0),
         'WelcomeToAmpero',
       );
+    });
+
+    test('decodes slot 17 (index 16), whose slot byte is a nibble pair', () {
+      // Real reply from the pedal, 2026-11-10 hardware run: slot byte 7-8 = 01 00.
+      const hex =
+          '21 25 7f 4d 50 2d 32 12 00 02 0e 00 01 10 00 00 00 01 01 00 00 01 '
+          '03 02 04 02 06 05 06 05 06 06 07 09 02 00 04 04 06 09 07 02 07 04 '
+          '00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 '
+          '00 00 00 00 00 01';
+      final frame = [for (final b in hex.split(' ')) int.parse(b, radix: 16)];
+      expect(decodeAmperoMiniPatchName(frame, index: 16), 'Beefy Dirt');
+      expect(decodeAmperoMiniPatchName(frame, index: 0), isNull);
     });
 
     test('decodes a zero-padded name', () {

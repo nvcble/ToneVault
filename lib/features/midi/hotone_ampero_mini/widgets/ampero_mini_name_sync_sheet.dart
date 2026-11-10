@@ -86,28 +86,38 @@ class _AmperoMiniNameSyncSheetState
               Text(
                 'Stopped. ${outcome!.failure}. Names read so far are kept.',
                 style: TextStyle(color: theme.colorScheme.error),
-              )
-            else if (outcome != null && !_stop)
+              ),
+            if (outcome?.failure?.rawHex case final hex? when hex.isNotEmpty)
+              SelectableText('Reply: $hex', style: theme.textTheme.bodySmall),
+            if (outcome != null && outcome.failure == null && !_stop)
               const Text('Done.'),
             const SizedBox(height: AppSpacing.md),
             Row(
               children: [
+                // Expanded: the app theme gives buttons an infinite minimum
+                // width, which a bare Row cannot lay out.
                 if (_running)
-                  OutlinedButton(
-                    onPressed: _stop
-                        ? null
-                        : () => setState(() => _stop = true),
-                    child: Text(_stop ? 'Stopping...' : 'Stop'),
+                  Expanded(
+                    child: OutlinedButton(
+                      onPressed: _stop
+                          ? null
+                          : () => setState(() => _stop = true),
+                      child: Text(_stop ? 'Stopping...' : 'Stop'),
+                    ),
                   )
                 else ...[
-                  FilledButton(
-                    onPressed: _start,
-                    child: Text(outcome == null ? 'Start' : 'Run again'),
+                  Expanded(
+                    child: FilledButton(
+                      onPressed: _start,
+                      child: Text(outcome == null ? 'Start' : 'Run again'),
+                    ),
                   ),
                   const SizedBox(width: AppSpacing.sm),
-                  TextButton(
-                    onPressed: () => Navigator.of(context).pop(),
-                    child: const Text('Close'),
+                  Expanded(
+                    child: TextButton(
+                      onPressed: () => Navigator.of(context).pop(),
+                      child: const Text('Close'),
+                    ),
                   ),
                 ],
               ],

@@ -13,9 +13,21 @@ class AmperoMiniPatchRead {
 
 /// Why a read stopped. Never guessed past: the caller stops on any of these.
 class AmperoMiniReadFailure implements Exception {
-  const AmperoMiniReadFailure(this.index, this.reason);
+  const AmperoMiniReadFailure(this.index, this.reason, {this.raw});
   final int index;
   final String reason;
+
+  /// The reply that failed to decode, if there was one.
+  final List<int>? raw;
+
+  /// The reply as hex, for a screenshot; empty when there was none.
+  String get rawHex => raw == null
+      ? ''
+      : raw!
+            .take(72)
+            .map((b) => b.toRadixString(16).padLeft(2, '0'))
+            .join(' ');
+
   @override
   String toString() => 'Slot ${index + 1}: $reason';
 }
@@ -59,7 +71,11 @@ class AmperoMiniPatchReader {
       final payload = (reply as SysExMessage).payload;
       final name = decodeAmperoMiniPatchName(payload, index: index);
       if (name == null) {
-        throw AmperoMiniReadFailure(index, 'reply did not decode to a name');
+        throw AmperoMiniReadFailure(
+          index,
+          'reply did not decode to a name',
+          raw: payload,
+        );
       }
       return AmperoMiniPatchRead(name: name, raw: payload);
     } on MidiRequestTimedOut {
