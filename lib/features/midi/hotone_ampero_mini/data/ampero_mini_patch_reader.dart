@@ -1,6 +1,7 @@
 import '../../../../core/midi/midi_engine.dart';
 import '../../../../core/midi/midi_message.dart';
 import '../../../../core/midi/midi_request_failure.dart';
+import 'ampero_mini_patch_layout.dart';
 import 'ampero_mini_patch_name.dart';
 import 'ampero_mini_read_probe.dart';
 
@@ -23,16 +24,13 @@ class AmperoMiniReadFailure implements Exception {
   /// The reply as hex, for a screenshot; empty when there was none.
   String get rawHex => raw == null
       ? ''
-      : raw!
-            .take(72)
-            .map((b) => b.toRadixString(16).padLeft(2, '0'))
-            .join(' ');
+      : raw!.take(72).map((b) => b.toRadixString(16).padLeft(2, '0')).join(' ');
 
   @override
   String toString() => 'Slot ${index + 1}: $reason';
 }
 
-/// Reads user-patch names with the sequence verified on hardware 2026-11-10:
+/// Reads patch names with the sequence verified on hardware 2026-11-10:
 /// `08` selects the slot (the pedal acknowledges with `0C`), then `0D` returns
 /// the data for the slot chosen by that last `08`.
 class AmperoMiniPatchReader {
@@ -44,13 +42,21 @@ class AmperoMiniPatchReader {
   final MidiEngine _engine;
   final Duration timeout;
 
-  /// User bank, the only one verified (P02-1 and P03-1).
+  /// User bank, verified on hardware for all 99 slots.
   static const int userBank = 1;
 
-  /// Throws [AmperoMiniReadFailure] on silence or a reply that does not decode
-  /// for exactly [index].
-  Future<AmperoMiniPatchRead> readName(int index) async {
-    const bank = userBank;
+  /// Factory bank. UNVERIFIED on hardware: the editor's capture reads it with
+  /// the same sequence, but this app has not yet seen the pedal answer.
+  static const int factoryBank = 0;
+
+  /// Reads absolute [patchNumber] (0-98 user, 99-197 factory, as in the patch
+  /// list). Throws [AmperoMiniReadFailure] on silence or a reply that does not
+  /// decode for exactly that slot.
+  Future<AmperoMiniPatchRead> readName(int patchNumber) async {
+    final bank = amperoMiniIsUserPatch(patchNumber) ? userBank : factoryBank;
+    final index = amperoMiniIsUserPatch(patchNumber)
+        ? patchNumber
+        : patchNumber - amperoMiniUserPatchCount;
     try {
       await _engine.request(
         buildAmperoMiniReadProbe(bank: bank, index: index),
@@ -72,14 +78,14 @@ class AmperoMiniPatchReader {
       final name = decodeAmperoMiniPatchName(payload, index: index);
       if (name == null) {
         throw AmperoMiniReadFailure(
-          index,
+          patchNumber,
           'reply did not decode to a name',
           raw: payload,
         );
       }
       return AmperoMiniPatchRead(name: name, raw: payload);
     } on MidiRequestTimedOut {
-      throw AmperoMiniReadFailure(index, 'the pedal did not answer');
+      throw AmperoMiniReadFailure(patchNumber, 'the pedal did not answer');
     }
   }
 

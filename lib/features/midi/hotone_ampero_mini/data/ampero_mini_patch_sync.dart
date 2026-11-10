@@ -11,17 +11,18 @@ class AmperoMiniSyncOutcome {
   final AmperoMiniReadFailure? failure;
 }
 
-/// Reads the 99 user-patch names one slot at a time and stores each as soon as
+/// Reads patch names, user then factory, one slot at a time and stores each as soon as
 /// it is read. Stops at the first failure or when [shouldStop] returns true -
 /// it never skips a slot and carries on. Names come only from the pedal.
-Future<AmperoMiniSyncOutcome> syncAmperoMiniUserPatchNames({
+Future<AmperoMiniSyncOutcome> syncAmperoMiniPatchNames({
   required AmperoMiniPatchReader reader,
   required HotoneAmperoMiniPatchRepository repository,
   void Function(int done)? onProgress,
   bool Function()? shouldStop,
+  int count = amperoMiniPatchCount,
 }) async {
   var saved = 0;
-  for (var index = 0; index < amperoMiniUserPatchCount; index++) {
+  for (var index = 0; index < count; index++) {
     if (shouldStop?.call() ?? false) break;
     try {
       final read = await reader.readName(index);

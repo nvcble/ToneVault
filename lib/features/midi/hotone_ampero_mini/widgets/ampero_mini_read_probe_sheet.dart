@@ -145,7 +145,9 @@ class _ResultView extends StatelessWidget {
         Text(
           result.acknowledged
               ? 'The pedal sent the same acknowledgement the editor gets.'
-              : 'No acknowledgement like the editor\'s was seen.',
+              : result.replies.isEmpty
+              ? 'The pedal sent no reply.'
+              : 'The pedal replied (not the 08 acknowledgement; see below).',
           style: theme.textTheme.titleSmall,
         ),
         const SizedBox(height: AppSpacing.xs),

@@ -4,13 +4,17 @@ import 'package:tone_vault/features/midi/hotone_ampero_mini/data/ampero_mini_ban
 
 void main() {
   group('amperoMiniBankSelectAttempts', () {
-    test('offers four layouts for the first factory patch', () {
+    test('offers six layouts for the first factory patch', () {
       final attempts = amperoMiniBankSelectAttempts(99);
 
-      expect(attempts, hasLength(4));
+      expect(attempts, hasLength(6));
       expect(
         attempts.map((AmperoMiniBankSelectAttempt a) => a.summary),
-        containsAll(<String>['CC0=1, CC32=0, PC 0', 'CC0=1, PC 0']),
+        containsAll(<String>[
+          'CC61=20, CC0=0, PC 0',
+          'CC0=1, CC32=0, PC 0',
+          'CC0=1, PC 0',
+        ]),
       );
     });
 
@@ -27,7 +31,7 @@ void main() {
       // does from index 128 on - truncating it would send a different patch.
       final attempts = amperoMiniBankSelectAttempts(197);
 
-      expect(attempts, hasLength(3));
+      expect(attempts, hasLength(5));
       expect(
         attempts.every((AmperoMiniBankSelectAttempt a) => a.program <= 127),
         isTrue,
@@ -39,6 +43,12 @@ void main() {
       () {
         for (final attempt in amperoMiniBankSelectAttempts(99)) {
           final messages = attempt.messages(0);
+          if (attempt.editorPreface) {
+            expect(messages.first, isA<ControlChangeMessage>());
+            expect((messages.first as ControlChangeMessage).controller, 61);
+            expect((messages.first as ControlChangeMessage).value, 20);
+            messages.removeAt(0);
+          }
 
           expect(messages.last, isA<ProgramChangeMessage>());
           final ccs = messages.whereType<ControlChangeMessage>().toList();

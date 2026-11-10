@@ -19,6 +19,9 @@ import '../../../../core/midi/midi_support_level.dart';
 import '../../../../core/midi/patch_selection_defaults.dart';
 import 'ampero_mini_patch_layout.dart';
 
+const int _editorPrefaceController = 61;
+const int _editorPrefaceValue = 20;
+
 /// One candidate: a Bank Select pair, then a Program Change.
 class AmperoMiniBankSelectAttempt {
   const AmperoMiniBankSelectAttempt({
@@ -26,7 +29,12 @@ class AmperoMiniBankSelectAttempt {
     required this.lsb,
     required this.program,
     required this.hypothesis,
+    this.editorPreface = false,
   });
+
+  /// Whether to send `CC 61 = 20` first, as Hotone's editor does before every
+  /// patch selection (Observed in three captures; its meaning is Unknown).
+  final bool editorPreface;
 
   /// CC 0. Always sent.
   final int msb;
@@ -43,7 +51,17 @@ class AmperoMiniBankSelectAttempt {
   /// The exact messages this attempt puts on the wire, built by the generic
   /// [buildPatchSelectionMessages] so the probe cannot drift from how a
   /// confirmed selection would be sent.
-  List<MidiMessage> messages(int channel) => buildPatchSelectionMessages(
+  List<MidiMessage> messages(int channel) => [
+    if (editorPreface)
+      ControlChangeMessage(
+        channel: channel,
+        controller: _editorPrefaceController,
+        value: _editorPrefaceValue,
+      ),
+    ..._selection(channel),
+  ];
+
+  List<MidiMessage> _selection(int channel) => buildPatchSelectionMessages(
     defaults: const PatchSelectionDefaults(
       usesBankSelect: true,
       verificationStatus: MidiSupportLevel.needsHardwareVerification,
@@ -58,18 +76,36 @@ class AmperoMiniBankSelectAttempt {
   );
 
   String get summary =>
-      'CC0=$msb${lsb == null ? '' : ', CC32=$lsb'}, PC $program';
+      '${editorPreface ? 'CC61=20, ' : ''}CC0=$msb'
+      '${lsb == null ? '' : ', CC32=$lsb'}, PC $program';
 }
 
 /// The layouts to try for [patchIndex], most plausible first.
 ///
-/// Only ever four, and each varies one thing: whether the bank rides in the
+/// Six, and each varies one thing: whether the bank rides in the
 /// MSB or the LSB, whether an LSB is sent at all, and whether the program
 /// number counts from F01-1 or is the absolute patch index. A layout whose
 /// program number will not fit in seven bits is dropped rather than truncated.
 List<AmperoMiniBankSelectAttempt> amperoMiniBankSelectAttempts(int patchIndex) {
   final withinHalf = patchIndex - amperoMiniUserPatchCount;
   return [
+    // The editor's own layout, Observed in captures 2 and 3 (F01-1: CC61=20,
+    // CC0=0, PC 0). Not yet tried from this app, so still UNVERIFIED.
+    AmperoMiniBankSelectAttempt(
+      msb: 0,
+      lsb: null,
+      program: withinHalf,
+      editorPreface: true,
+      hypothesis:
+          "Exactly what Hotone's editor sends for a factory patch: CC 61 = "
+          '20, then bank 0, then the program counted from F01-1.',
+    ),
+    AmperoMiniBankSelectAttempt(
+      msb: 0,
+      lsb: null,
+      program: withinHalf,
+      hypothesis: "The editor's layout without the CC 61 message.",
+    ),
     AmperoMiniBankSelectAttempt(
       msb: 1,
       lsb: 0,

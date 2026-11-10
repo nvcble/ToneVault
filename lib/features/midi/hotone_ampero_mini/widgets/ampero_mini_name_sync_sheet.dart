@@ -9,7 +9,7 @@ import '../data/ampero_mini_patch_reader.dart';
 import '../data/ampero_mini_patch_sync.dart';
 import '../providers/hotone_ampero_mini_data_providers.dart';
 
-/// Reads the 99 user-patch names from the pedal into the local library.
+/// Reads the 198 patch names from the pedal into the local library.
 class AmperoMiniNameSyncSheet extends ConsumerStatefulWidget {
   const AmperoMiniNameSyncSheet({super.key});
 
@@ -40,7 +40,7 @@ class _AmperoMiniNameSyncSheetState
       _outcome = null;
     });
     final MidiEngine engine = ref.read(midiEngineProvider);
-    final outcome = await syncAmperoMiniUserPatchNames(
+    final outcome = await syncAmperoMiniPatchNames(
       reader: AmperoMiniPatchReader(engine),
       repository: ref.read(hotoneAmperoMiniPatchRepositoryProvider),
       onProgress: (n) {
@@ -60,7 +60,7 @@ class _AmperoMiniNameSyncSheetState
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final outcome = _outcome;
-    final total = amperoMiniUserPatchCount;
+    final total = amperoMiniPatchCount;
     return SafeArea(
       child: Padding(
         padding: const EdgeInsets.all(AppSpacing.md),
@@ -72,9 +72,10 @@ class _AmperoMiniNameSyncSheetState
             const SizedBox(height: AppSpacing.sm),
             Text(
               'Asks the pedal for the name of each of the 99 user patches '
-              '(P01-1 to P33-3) and stores them here, replacing names read '
-              'before. Factory patches are not read. It stops at the first '
-              'slot the pedal does not answer clearly.',
+              '(P01-1 to P33-3), then the 99 factory ones (F01-1 to F33-3), and '
+              'stores them here, replacing names read before. Factory reading '
+              'is new and untested on the pedal. It stops at the first slot '
+              'the pedal does not answer clearly; names read so far are kept.',
               style: theme.textTheme.bodySmall,
             ),
             const SizedBox(height: AppSpacing.md),

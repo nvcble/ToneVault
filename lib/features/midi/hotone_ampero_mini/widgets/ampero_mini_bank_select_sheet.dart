@@ -56,29 +56,32 @@ class _AmperoMiniBankSelectSheetState
     return SafeArea(
       child: Padding(
         padding: const EdgeInsets.all(AppSpacing.md),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text('Try to reach $label', style: theme.textTheme.titleMedium),
-            const SizedBox(height: AppSpacing.sm),
-            Text(
-              'A plain Program Change does not move this pedal to a factory '
-              'patch. These are untried guesses at how it might be addressed. '
-              'Watch the pedal as you send each one - nothing here can tell '
-              'whether it worked, and MIDI Diagnostics records what was sent.',
-              style: theme.textTheme.bodySmall?.copyWith(
-                color: theme.colorScheme.onSurfaceVariant,
+        // Scrollable: six attempts are taller than a short screen.
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text('Try to reach $label', style: theme.textTheme.titleMedium),
+              const SizedBox(height: AppSpacing.sm),
+              Text(
+                'A plain Program Change does not move this pedal to a factory '
+                'patch. These are untried guesses at how it might be addressed. '
+                'Watch the pedal as you send each one - nothing here can tell '
+                'whether it worked, and MIDI Diagnostics records what was sent.',
+                style: theme.textTheme.bodySmall?.copyWith(
+                  color: theme.colorScheme.onSurfaceVariant,
+                ),
               ),
-            ),
-            const SizedBox(height: AppSpacing.sm),
-            for (final attempt in attempts)
-              _AttemptTile(
-                attempt: attempt,
-                sent: _sent.contains(attempt.summary),
-                onSend: () => _send(attempt),
-              ),
-          ],
+              const SizedBox(height: AppSpacing.sm),
+              for (final attempt in attempts)
+                _AttemptTile(
+                  attempt: attempt,
+                  sent: _sent.contains(attempt.summary),
+                  onSend: () => _send(attempt),
+                ),
+            ],
+          ),
         ),
       ),
     );

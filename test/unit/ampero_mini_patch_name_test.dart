@@ -135,6 +135,32 @@ void main() {
       },
     );
 
+    test(
+      'a factory patch is asked for in bank 0 with its in-bank slot',
+      () async {
+        final reader = AmperoMiniPatchReader(
+          engine,
+          timeout: const Duration(milliseconds: 200),
+        );
+        final run = reader.readName(105); // F03-1 = bank 0, slot 6
+        await Future<void>.delayed(const Duration(milliseconds: 10));
+        // 11 00 02 08 00 <bank> <slot>
+        expect((transport.sent.single as SysExMessage).payload.sublist(7), [
+          0x11, 0, 2, 0x08, 0, 0, 6, //
+        ]);
+        transport.receive(
+          SysExMessage(
+            payload: [..._head, 0x12, 0, 2, 0x0C, 0, 0, 6, 7, 0x18, 1, 0x40],
+          ),
+        );
+        await Future<void>.delayed(const Duration(milliseconds: 10));
+        transport.receive(
+          SysExMessage(payload: _frame(6, _pairs('Slick Lead'))),
+        );
+        expect((await run).name, 'Slick Lead');
+      },
+    );
+
     test('a silent pedal stops the read with a failure', () async {
       final reader = AmperoMiniPatchReader(
         engine,
