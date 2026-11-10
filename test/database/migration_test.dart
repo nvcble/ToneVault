@@ -770,26 +770,29 @@ void main() {
     expect(patches.single.rawSysEx, [0xF0, 0x21, 0x25, 0xF7]);
   });
 
-  test('the MG-30 payload table is created exactly as a fresh one is', () async {
-    const tables = ['mg30_patch_payloads'];
+  test(
+    'the MG-30 payload table is created exactly as a fresh one is',
+    () async {
+      const tables = ['mg30_patch_payloads'];
 
-    final fresh = AppDatabase(NativeDatabase.memory());
-    final expected = <String, List<String>>{
-      for (final table in tables) table: await schemaFor(fresh, table),
-    };
-    await fresh.close();
+      final fresh = AppDatabase(NativeDatabase.memory());
+      final expected = <String, List<String>>{
+        for (final table in tables) table: await schemaFor(fresh, table),
+      };
+      await fresh.close();
 
-    final upgraded = openV1Database();
-    addTearDown(upgraded.close);
+      final upgraded = openV1Database();
+      addTearDown(upgraded.close);
 
-    for (final table in tables) {
-      expect(
-        await schemaFor(upgraded, table),
-        expected[table],
-        reason: '$table differs between an upgraded phone and a new install',
-      );
-    }
-  });
+      for (final table in tables) {
+        expect(
+          await schemaFor(upgraded, table),
+          expected[table],
+          reason: '$table differs between an upgraded phone and a new install',
+        );
+      }
+    },
+  );
 
   test('an upgraded database keeps the bytes a patch was read from', () async {
     final db = openV1Database();

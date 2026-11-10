@@ -1,9 +1,11 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../core/database/app_database.dart';
+import '../../../../core/database/daos/hotone_ampero_mini_favorite_dao.dart';
 import '../../../../core/database/daos/hotone_ampero_mini_patch_dao.dart';
 import '../../../../core/database/database_provider.dart';
 import '../../providers/midi_engine_providers.dart';
+import '../data/hotone_ampero_mini_favorite_repository.dart';
 import '../data/hotone_ampero_mini_midi_service.dart';
 import '../data/hotone_ampero_mini_patch_repository.dart';
 
@@ -38,3 +40,20 @@ final StreamProvider<List<HotoneAmperoMiniPatch>>
 hotoneAmperoMiniPatchesProvider = StreamProvider<List<HotoneAmperoMiniPatch>>(
   (ref) => ref.watch(hotoneAmperoMiniPatchRepositoryProvider).watchPatches(),
 );
+
+final Provider<HotoneAmperoMiniFavoriteRepository>
+hotoneAmperoMiniFavoriteRepositoryProvider =
+    Provider<HotoneAmperoMiniFavoriteRepository>(
+      (ref) => HotoneAmperoMiniFavoriteRepository(
+        HotoneAmperoMiniFavoriteDao(ref.watch(appDatabaseProvider)),
+        _deviceProfileId,
+      ),
+    );
+
+/// The slot indexes the user has starred, ascending.
+final StreamProvider<List<int>> hotoneAmperoMiniFavoritesProvider =
+    StreamProvider<List<int>>(
+      (ref) => ref
+          .watch(hotoneAmperoMiniFavoriteRepositoryProvider)
+          .watchFavoriteNumbers(),
+    );

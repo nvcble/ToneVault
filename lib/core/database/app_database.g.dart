@@ -16167,6 +16167,337 @@ class HotoneAmperoMiniPatchesCompanion
   }
 }
 
+class $HotoneAmperoMiniFavoritesTable extends HotoneAmperoMiniFavorites
+    with TableInfo<$HotoneAmperoMiniFavoritesTable, HotoneAmperoMiniFavorite> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $HotoneAmperoMiniFavoritesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'PRIMARY KEY AUTOINCREMENT',
+    ),
+  );
+  static const VerificationMeta _deviceProfileIdMeta = const VerificationMeta(
+    'deviceProfileId',
+  );
+  @override
+  late final GeneratedColumn<String> deviceProfileId = GeneratedColumn<String>(
+    'device_profile_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _patchNumberMeta = const VerificationMeta(
+    'patchNumber',
+  );
+  @override
+  late final GeneratedColumn<int> patchNumber = GeneratedColumn<int>(
+    'patch_number',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    deviceProfileId,
+    patchNumber,
+    createdAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'hotone_ampero_mini_favorites';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<HotoneAmperoMiniFavorite> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('device_profile_id')) {
+      context.handle(
+        _deviceProfileIdMeta,
+        deviceProfileId.isAcceptableOrUnknown(
+          data['device_profile_id']!,
+          _deviceProfileIdMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_deviceProfileIdMeta);
+    }
+    if (data.containsKey('patch_number')) {
+      context.handle(
+        _patchNumberMeta,
+        patchNumber.isAcceptableOrUnknown(
+          data['patch_number']!,
+          _patchNumberMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_patchNumberMeta);
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  List<Set<GeneratedColumn>> get uniqueKeys => [
+    {deviceProfileId, patchNumber},
+  ];
+  @override
+  HotoneAmperoMiniFavorite map(
+    Map<String, dynamic> data, {
+    String? tablePrefix,
+  }) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return HotoneAmperoMiniFavorite(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      deviceProfileId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}device_profile_id'],
+      )!,
+      patchNumber: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}patch_number'],
+      )!,
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created_at'],
+      )!,
+    );
+  }
+
+  @override
+  $HotoneAmperoMiniFavoritesTable createAlias(String alias) {
+    return $HotoneAmperoMiniFavoritesTable(attachedDatabase, alias);
+  }
+}
+
+class HotoneAmperoMiniFavorite extends DataClass
+    implements Insertable<HotoneAmperoMiniFavorite> {
+  final int id;
+
+  /// Named rather than assumed, as in `HotoneAmperoMiniPatches`.
+  final String deviceProfileId;
+
+  /// The pedal's own zero-based slot index, 0-197 - see
+  /// `HotoneAmperoMiniPatches.patchNumber`.
+  final int patchNumber;
+  final DateTime createdAt;
+  const HotoneAmperoMiniFavorite({
+    required this.id,
+    required this.deviceProfileId,
+    required this.patchNumber,
+    required this.createdAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['device_profile_id'] = Variable<String>(deviceProfileId);
+    map['patch_number'] = Variable<int>(patchNumber);
+    map['created_at'] = Variable<DateTime>(createdAt);
+    return map;
+  }
+
+  HotoneAmperoMiniFavoritesCompanion toCompanion(bool nullToAbsent) {
+    return HotoneAmperoMiniFavoritesCompanion(
+      id: Value(id),
+      deviceProfileId: Value(deviceProfileId),
+      patchNumber: Value(patchNumber),
+      createdAt: Value(createdAt),
+    );
+  }
+
+  factory HotoneAmperoMiniFavorite.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return HotoneAmperoMiniFavorite(
+      id: serializer.fromJson<int>(json['id']),
+      deviceProfileId: serializer.fromJson<String>(json['deviceProfileId']),
+      patchNumber: serializer.fromJson<int>(json['patchNumber']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'deviceProfileId': serializer.toJson<String>(deviceProfileId),
+      'patchNumber': serializer.toJson<int>(patchNumber),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+    };
+  }
+
+  HotoneAmperoMiniFavorite copyWith({
+    int? id,
+    String? deviceProfileId,
+    int? patchNumber,
+    DateTime? createdAt,
+  }) => HotoneAmperoMiniFavorite(
+    id: id ?? this.id,
+    deviceProfileId: deviceProfileId ?? this.deviceProfileId,
+    patchNumber: patchNumber ?? this.patchNumber,
+    createdAt: createdAt ?? this.createdAt,
+  );
+  HotoneAmperoMiniFavorite copyWithCompanion(
+    HotoneAmperoMiniFavoritesCompanion data,
+  ) {
+    return HotoneAmperoMiniFavorite(
+      id: data.id.present ? data.id.value : this.id,
+      deviceProfileId: data.deviceProfileId.present
+          ? data.deviceProfileId.value
+          : this.deviceProfileId,
+      patchNumber: data.patchNumber.present
+          ? data.patchNumber.value
+          : this.patchNumber,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('HotoneAmperoMiniFavorite(')
+          ..write('id: $id, ')
+          ..write('deviceProfileId: $deviceProfileId, ')
+          ..write('patchNumber: $patchNumber, ')
+          ..write('createdAt: $createdAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, deviceProfileId, patchNumber, createdAt);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is HotoneAmperoMiniFavorite &&
+          other.id == this.id &&
+          other.deviceProfileId == this.deviceProfileId &&
+          other.patchNumber == this.patchNumber &&
+          other.createdAt == this.createdAt);
+}
+
+class HotoneAmperoMiniFavoritesCompanion
+    extends UpdateCompanion<HotoneAmperoMiniFavorite> {
+  final Value<int> id;
+  final Value<String> deviceProfileId;
+  final Value<int> patchNumber;
+  final Value<DateTime> createdAt;
+  const HotoneAmperoMiniFavoritesCompanion({
+    this.id = const Value.absent(),
+    this.deviceProfileId = const Value.absent(),
+    this.patchNumber = const Value.absent(),
+    this.createdAt = const Value.absent(),
+  });
+  HotoneAmperoMiniFavoritesCompanion.insert({
+    this.id = const Value.absent(),
+    required String deviceProfileId,
+    required int patchNumber,
+    required DateTime createdAt,
+  }) : deviceProfileId = Value(deviceProfileId),
+       patchNumber = Value(patchNumber),
+       createdAt = Value(createdAt);
+  static Insertable<HotoneAmperoMiniFavorite> custom({
+    Expression<int>? id,
+    Expression<String>? deviceProfileId,
+    Expression<int>? patchNumber,
+    Expression<DateTime>? createdAt,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (deviceProfileId != null) 'device_profile_id': deviceProfileId,
+      if (patchNumber != null) 'patch_number': patchNumber,
+      if (createdAt != null) 'created_at': createdAt,
+    });
+  }
+
+  HotoneAmperoMiniFavoritesCompanion copyWith({
+    Value<int>? id,
+    Value<String>? deviceProfileId,
+    Value<int>? patchNumber,
+    Value<DateTime>? createdAt,
+  }) {
+    return HotoneAmperoMiniFavoritesCompanion(
+      id: id ?? this.id,
+      deviceProfileId: deviceProfileId ?? this.deviceProfileId,
+      patchNumber: patchNumber ?? this.patchNumber,
+      createdAt: createdAt ?? this.createdAt,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (deviceProfileId.present) {
+      map['device_profile_id'] = Variable<String>(deviceProfileId.value);
+    }
+    if (patchNumber.present) {
+      map['patch_number'] = Variable<int>(patchNumber.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('HotoneAmperoMiniFavoritesCompanion(')
+          ..write('id: $id, ')
+          ..write('deviceProfileId: $deviceProfileId, ')
+          ..write('patchNumber: $patchNumber, ')
+          ..write('createdAt: $createdAt')
+          ..write(')'))
+        .toString();
+  }
+}
+
 class $Mg30PatchPayloadsTable extends Mg30PatchPayloads
     with TableInfo<$Mg30PatchPayloadsTable, Mg30PatchPayload> {
   @override
@@ -16708,6 +17039,8 @@ abstract class _$AppDatabase extends GeneratedDatabase {
       $MidiPresetCapturesTable(this);
   late final $HotoneAmperoMiniPatchesTable hotoneAmperoMiniPatches =
       $HotoneAmperoMiniPatchesTable(this);
+  late final $HotoneAmperoMiniFavoritesTable hotoneAmperoMiniFavorites =
+      $HotoneAmperoMiniFavoritesTable(this);
   late final $Mg30PatchPayloadsTable mg30PatchPayloads =
       $Mg30PatchPayloadsTable(this);
   late final Index idxPedalsStatus = Index(
@@ -16847,6 +17180,8 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   );
   late final HotoneAmperoMiniPatchDao hotoneAmperoMiniPatchDao =
       HotoneAmperoMiniPatchDao(this as AppDatabase);
+  late final HotoneAmperoMiniFavoriteDao hotoneAmperoMiniFavoriteDao =
+      HotoneAmperoMiniFavoriteDao(this as AppDatabase);
   late final Mg30PatchPayloadDao mg30PatchPayloadDao = Mg30PatchPayloadDao(
     this as AppDatabase,
   );
@@ -16890,6 +17225,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     midiPatchRecents,
     midiPresetCaptures,
     hotoneAmperoMiniPatches,
+    hotoneAmperoMiniFavorites,
     mg30PatchPayloads,
     idxPedalsStatus,
     idxPedalsName,
@@ -33539,6 +33875,204 @@ typedef $$HotoneAmperoMiniPatchesTableProcessedTableManager =
       HotoneAmperoMiniPatch,
       PrefetchHooks Function()
     >;
+typedef $$HotoneAmperoMiniFavoritesTableCreateCompanionBuilder =
+    HotoneAmperoMiniFavoritesCompanion Function({
+      Value<int> id,
+      required String deviceProfileId,
+      required int patchNumber,
+      required DateTime createdAt,
+    });
+typedef $$HotoneAmperoMiniFavoritesTableUpdateCompanionBuilder =
+    HotoneAmperoMiniFavoritesCompanion Function({
+      Value<int> id,
+      Value<String> deviceProfileId,
+      Value<int> patchNumber,
+      Value<DateTime> createdAt,
+    });
+
+class $$HotoneAmperoMiniFavoritesTableFilterComposer
+    extends Composer<_$AppDatabase, $HotoneAmperoMiniFavoritesTable> {
+  $$HotoneAmperoMiniFavoritesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get deviceProfileId => $composableBuilder(
+    column: $table.deviceProfileId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get patchNumber => $composableBuilder(
+    column: $table.patchNumber,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$HotoneAmperoMiniFavoritesTableOrderingComposer
+    extends Composer<_$AppDatabase, $HotoneAmperoMiniFavoritesTable> {
+  $$HotoneAmperoMiniFavoritesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get deviceProfileId => $composableBuilder(
+    column: $table.deviceProfileId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get patchNumber => $composableBuilder(
+    column: $table.patchNumber,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$HotoneAmperoMiniFavoritesTableAnnotationComposer
+    extends Composer<_$AppDatabase, $HotoneAmperoMiniFavoritesTable> {
+  $$HotoneAmperoMiniFavoritesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get deviceProfileId => $composableBuilder(
+    column: $table.deviceProfileId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get patchNumber => $composableBuilder(
+    column: $table.patchNumber,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+}
+
+class $$HotoneAmperoMiniFavoritesTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $HotoneAmperoMiniFavoritesTable,
+          HotoneAmperoMiniFavorite,
+          $$HotoneAmperoMiniFavoritesTableFilterComposer,
+          $$HotoneAmperoMiniFavoritesTableOrderingComposer,
+          $$HotoneAmperoMiniFavoritesTableAnnotationComposer,
+          $$HotoneAmperoMiniFavoritesTableCreateCompanionBuilder,
+          $$HotoneAmperoMiniFavoritesTableUpdateCompanionBuilder,
+          (
+            HotoneAmperoMiniFavorite,
+            BaseReferences<
+              _$AppDatabase,
+              $HotoneAmperoMiniFavoritesTable,
+              HotoneAmperoMiniFavorite
+            >,
+          ),
+          HotoneAmperoMiniFavorite,
+          PrefetchHooks Function()
+        > {
+  $$HotoneAmperoMiniFavoritesTableTableManager(
+    _$AppDatabase db,
+    $HotoneAmperoMiniFavoritesTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$HotoneAmperoMiniFavoritesTableFilterComposer(
+                $db: db,
+                $table: table,
+              ),
+          createOrderingComposer: () =>
+              $$HotoneAmperoMiniFavoritesTableOrderingComposer(
+                $db: db,
+                $table: table,
+              ),
+          createComputedFieldComposer: () =>
+              $$HotoneAmperoMiniFavoritesTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<String> deviceProfileId = const Value.absent(),
+                Value<int> patchNumber = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+              }) => HotoneAmperoMiniFavoritesCompanion(
+                id: id,
+                deviceProfileId: deviceProfileId,
+                patchNumber: patchNumber,
+                createdAt: createdAt,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                required String deviceProfileId,
+                required int patchNumber,
+                required DateTime createdAt,
+              }) => HotoneAmperoMiniFavoritesCompanion.insert(
+                id: id,
+                deviceProfileId: deviceProfileId,
+                patchNumber: patchNumber,
+                createdAt: createdAt,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$HotoneAmperoMiniFavoritesTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $HotoneAmperoMiniFavoritesTable,
+      HotoneAmperoMiniFavorite,
+      $$HotoneAmperoMiniFavoritesTableFilterComposer,
+      $$HotoneAmperoMiniFavoritesTableOrderingComposer,
+      $$HotoneAmperoMiniFavoritesTableAnnotationComposer,
+      $$HotoneAmperoMiniFavoritesTableCreateCompanionBuilder,
+      $$HotoneAmperoMiniFavoritesTableUpdateCompanionBuilder,
+      (
+        HotoneAmperoMiniFavorite,
+        BaseReferences<
+          _$AppDatabase,
+          $HotoneAmperoMiniFavoritesTable,
+          HotoneAmperoMiniFavorite
+        >,
+      ),
+      HotoneAmperoMiniFavorite,
+      PrefetchHooks Function()
+    >;
 typedef $$Mg30PatchPayloadsTableCreateCompanionBuilder =
     Mg30PatchPayloadsCompanion Function({
       Value<int> id,
@@ -33998,6 +34532,11 @@ class $AppDatabaseManager {
       $$HotoneAmperoMiniPatchesTableTableManager(
         _db,
         _db.hotoneAmperoMiniPatches,
+      );
+  $$HotoneAmperoMiniFavoritesTableTableManager get hotoneAmperoMiniFavorites =>
+      $$HotoneAmperoMiniFavoritesTableTableManager(
+        _db,
+        _db.hotoneAmperoMiniFavorites,
       );
   $$Mg30PatchPayloadsTableTableManager get mg30PatchPayloads =>
       $$Mg30PatchPayloadsTableTableManager(_db, _db.mg30PatchPayloads);

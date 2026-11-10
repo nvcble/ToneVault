@@ -25,6 +25,7 @@ import 'daos/academy_progress_dao.dart';
 import 'daos/backup_dao.dart';
 import 'daos/change_log_dao.dart';
 import 'daos/configuration_dao.dart';
+import 'daos/hotone_ampero_mini_favorite_dao.dart';
 import 'daos/hotone_ampero_mini_patch_dao.dart';
 import 'daos/mg30_patch_payload_dao.dart';
 import 'daos/midi_device_link_dao.dart';
@@ -52,6 +53,7 @@ import 'tables/academy_progress_table.dart';
 import 'tables/change_logs_table.dart';
 import 'tables/configuration_values_table.dart';
 import 'tables/configurations_table.dart';
+import 'tables/hotone_ampero_mini_favorites_table.dart';
 import 'tables/hotone_ampero_mini_patches_table.dart';
 import 'tables/mg30_patch_payloads_table.dart';
 import 'tables/midi_device_links_table.dart';
@@ -129,6 +131,7 @@ part 'app_database.g.dart';
     MidiPatchRecents,
     MidiPresetCaptures,
     HotoneAmperoMiniPatches,
+    HotoneAmperoMiniFavorites,
     Mg30PatchPayloads,
   ],
   daos: [
@@ -151,6 +154,7 @@ part 'app_database.g.dart';
     MidiPatchRecentDao,
     MidiPresetCaptureDao,
     HotoneAmperoMiniPatchDao,
+    HotoneAmperoMiniFavoriteDao,
     Mg30PatchPayloadDao,
     BackupDao,
   ],

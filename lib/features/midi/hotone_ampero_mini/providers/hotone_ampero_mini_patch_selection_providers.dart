@@ -18,3 +18,8 @@ final StateProvider<int?> hotoneAmperoMiniActivePatchNumberProvider =
 /// or active.
 final StateProvider<int?> hotoneAmperoMiniEditingPatchNumberProvider =
     StateProvider<int?>((ref) => null);
+
+/// Whether the patch grid shows only the starred slots. UI-only, like the
+/// pre-selection: it changes what is listed, never what the pedal has loaded.
+final StateProvider<bool> hotoneAmperoMiniFavoritesOnlyProvider =
+    StateProvider<bool>((ref) => false);

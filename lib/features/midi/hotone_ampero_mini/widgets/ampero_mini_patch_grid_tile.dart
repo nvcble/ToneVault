@@ -23,6 +23,8 @@ class AmperoMiniPatchGridTile extends StatelessWidget {
     required this.name,
     required this.preSelected,
     required this.active,
+    required this.favorite,
+    required this.onToggleFavorite,
     required this.onTap,
     required this.onDoubleTap,
     super.key,
@@ -32,6 +34,11 @@ class AmperoMiniPatchGridTile extends StatelessWidget {
   final String? name;
   final bool preSelected;
   final bool active;
+
+  /// Whether the user has starred this slot, and what tapping the star does.
+  /// A star is the user's own mark and says nothing about the pedal.
+  final bool favorite;
+  final VoidCallback onToggleFavorite;
   final VoidCallback onTap;
   final VoidCallback onDoubleTap;
 
@@ -46,43 +53,73 @@ class AmperoMiniPatchGridTile extends StatelessWidget {
         ? null
         : colors.outline;
 
-    return InkWell(
-      onTap: onTap,
-      onDoubleTap: onDoubleTap,
-      borderRadius: BorderRadius.circular(AppSpacing.sm),
-      child: Container(
-        decoration: BoxDecoration(
-          color: active ? colors.primary : null,
-          borderRadius: BorderRadius.circular(AppSpacing.sm),
-          border: Border.all(
-            color: preSelected ? colors.primary : colors.outlineVariant,
-            width: preSelected ? 2 : 1,
+    // The star is a sibling of the tile's gesture area, not inside it: under
+    // an InkWell that listens for double taps, a tap on the star would wait out
+    // the double-tap window before it fired.
+    return Stack(
+      children: [
+        Positioned.fill(
+          child: InkWell(
+            onTap: onTap,
+            onDoubleTap: onDoubleTap,
+            borderRadius: BorderRadius.circular(AppSpacing.sm),
+            child: Container(
+              decoration: BoxDecoration(
+                color: active ? colors.primary : null,
+                borderRadius: BorderRadius.circular(AppSpacing.sm),
+                border: Border.all(
+                  color: preSelected ? colors.primary : colors.outlineVariant,
+                  width: preSelected ? 2 : 1,
+                ),
+              ),
+              alignment: Alignment.center,
+              child: _labels(theme, colors, selectable, foreground),
+            ),
           ),
         ),
-        alignment: Alignment.center,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(
-              amperoMiniPatchLabel(patchNumber),
-              style: theme.textTheme.titleMedium?.copyWith(
-                fontWeight: FontWeight.bold,
-                color: foreground,
-                decoration: selectable ? null : TextDecoration.lineThrough,
-              ),
-            ),
-            Text(
-              name ?? (selectable ? '(name unknown)' : 'tap twice to try'),
-              style: theme.textTheme.labelSmall?.copyWith(
-                color: foreground ?? colors.outline,
-                fontStyle: name == null ? FontStyle.italic : null,
-              ),
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-            ),
-          ],
+        Positioned(top: 0, right: 0, child: _star(colors, foreground)),
+      ],
+    );
+  }
+
+  Widget _star(ColorScheme colors, Color? foreground) {
+    return IconButton(
+      icon: Icon(favorite ? Icons.star : Icons.star_border),
+      iconSize: 20,
+      visualDensity: VisualDensity.compact,
+      tooltip: favorite ? 'Remove from favorites' : 'Add to favorites',
+      color: favorite ? colors.tertiary : foreground ?? colors.outline,
+      onPressed: onToggleFavorite,
+    );
+  }
+
+  Widget _labels(
+    ThemeData theme,
+    ColorScheme colors,
+    bool selectable,
+    Color? foreground,
+  ) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Text(
+          amperoMiniPatchLabel(patchNumber),
+          style: theme.textTheme.titleMedium?.copyWith(
+            fontWeight: FontWeight.bold,
+            color: foreground,
+            decoration: selectable ? null : TextDecoration.lineThrough,
+          ),
         ),
-      ),
+        Text(
+          name ?? (selectable ? '(name unknown)' : 'tap twice to try'),
+          style: theme.textTheme.labelSmall?.copyWith(
+            color: foreground ?? colors.outline,
+            fontStyle: name == null ? FontStyle.italic : null,
+          ),
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+        ),
+      ],
     );
   }
 }

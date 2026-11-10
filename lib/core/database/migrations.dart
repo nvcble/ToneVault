@@ -12,6 +12,7 @@ import 'migrations/schema_steps_v23.dart';
 import 'migrations/schema_steps_v24.dart';
 import 'migrations/schema_steps_v25.dart';
 import 'migrations/schema_steps_v26.dart';
+import 'migrations/schema_steps_v27.dart';
 import 'migrations/schema_steps_v2_v9.dart';
 
 /// Schema history. Every version bump gets an entry here and a matching branch
@@ -132,7 +133,10 @@ import 'migrations/schema_steps_v2_v9.dart';
 ///   is kept whole and a later decoder can read more out of patches already
 ///   imported. Purely additive: one new table and one index, no ALTER and no
 ///   DROP.
-const int currentSchemaVersion = 26;
+/// - v27: hotone_ampero_mini_favorites, the Ampero Mini patch slots the user has
+///   starred, keyed by slot index so a star works before any patch has been read
+///   from the pedal. Purely additive: one new table, no ALTER and no DROP.
+const int currentSchemaVersion = 27;
 
 MigrationStrategy buildMigrationStrategy(GeneratedDatabase database) {
   return MigrationStrategy(
@@ -157,6 +161,7 @@ MigrationStrategy buildMigrationStrategy(GeneratedDatabase database) {
       await upgradeThroughV24(database, from);
       await upgradeThroughV25(database, from);
       await upgradeThroughV26(database, from);
+      await upgradeThroughV27(database, from);
 
       if (to > currentSchemaVersion) {
         throw StateError('No migration registered up to schema $to.');

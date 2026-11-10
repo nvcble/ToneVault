@@ -65,6 +65,10 @@ class _HotoneAmperoMiniPatchListScreenState
     final connected =
         ref.watch(midiConnectionProvider(profile.id)).state ==
         MidiConnectionState.connected;
+    final favorites =
+        ref.watch(hotoneAmperoMiniFavoritesProvider).valueOrNull ??
+        const <int>[];
+    final favoritesOnly = ref.watch(hotoneAmperoMiniFavoritesOnlyProvider);
     final patchesAsync = ref.watch(hotoneAmperoMiniPatchesProvider);
     final byNumber = <int, HotoneAmperoMiniPatch>{
       for (final row
@@ -86,6 +90,17 @@ class _HotoneAmperoMiniPatchListScreenState
         appBar: AppBar(
           title: Text(profile.displayName),
           actions: [
+            IconButton(
+              icon: Icon(favoritesOnly ? Icons.star : Icons.star_border),
+              tooltip: favoritesOnly
+                  ? 'Show all patches'
+                  : 'Show favorites only',
+              onPressed: () =>
+                  ref
+                          .read(hotoneAmperoMiniFavoritesOnlyProvider.notifier)
+                          .state =
+                      !favoritesOnly,
+            ),
             IconButton(
               icon: const Icon(Icons.search),
               tooltip: 'Find a patch',
@@ -119,21 +134,54 @@ class _HotoneAmperoMiniPatchListScreenState
                 // the page holds twelve slots however tall the phone is and
                 // never scrolls.
                 Expanded(
-                  child: PagedGrid(
-                    itemCount: amperoMiniPatchCount,
-                    padding: EdgeInsets.zero,
-                    // Opens where the selection is, as the MG-30's grid does.
-                    selectedPage:
-                        preSelected ~/ HotoneAmperoMiniPatchListScreen._perPage,
-                    itemBuilder: (context, number) => AmperoMiniPatchGridTile(
-                      patchNumber: number,
-                      name: byNumber[number]?.name,
-                      preSelected: number == preSelected,
-                      active: number == sent,
-                      onTap: () => _preSelect(number),
-                      onDoubleTap: _doubleTapAction(number, connected, profile),
-                    ),
-                  ),
+                  child: favoritesOnly && favorites.isEmpty
+                      ? const EmptyState(
+                          icon: Icons.star_border,
+                          title: 'No favorites yet',
+                          message:
+                              'Tap the star on a patch to keep it here for quick access.',
+                        )
+                      : PagedGrid(
+                          // A fresh grid when the filter flips, so it opens on
+                          // its first page rather than a page that may not exist.
+                          key: ValueKey(favoritesOnly),
+                          itemCount: favoritesOnly
+                              ? favorites.length
+                              : amperoMiniPatchCount,
+                          padding: EdgeInsets.zero,
+                          // Opens where the selection is, as the MG-30's grid does.
+                          selectedPage: _pageOf(
+                            preSelected,
+                            favoritesOnly,
+                            favorites,
+                          ),
+                          itemBuilder: (context, index) {
+                            final number = favoritesOnly
+                                ? favorites[index]
+                                : index;
+                            return AmperoMiniPatchGridTile(
+                              patchNumber: number,
+                              name: byNumber[number]?.name,
+                              preSelected: number == preSelected,
+                              active: number == sent,
+                              favorite: favorites.contains(number),
+                              onToggleFavorite: () => ref
+                                  .read(
+                                    hotoneAmperoMiniFavoriteRepositoryProvider,
+                                  )
+                                  .setFavorite(
+                                    number,
+                                    isFavorite: !favorites.contains(number),
+                                  ),
+                              onTap: () => _preSelect(number),
+                              onDoubleTap: _doubleTapAction(
+                                number,
+                                connected,
+                                profile,
+                              ),
+                            );
+                          },
+                        ),
                 ),
               ],
             ),
@@ -141,6 +189,13 @@ class _HotoneAmperoMiniPatchListScreenState
         ),
       ),
     );
+  }
+
+  /// The grid page holding [number], counted in the favorites list when only
+  /// favorites are shown. Page 0 when it is not in that list.
+  int _pageOf(int number, bool favoritesOnly, List<int> favorites) {
+    final index = favoritesOnly ? favorites.indexOf(number) : number;
+    return index < 0 ? 0 : index ~/ HotoneAmperoMiniPatchListScreen._perPage;
   }
 
   /// Searching only pre-selects: the grid then opens on the page holding that
