@@ -8,6 +8,6 @@ As a full stack developer with 10 years of experience with Flutter/Dart/Drift/SQ
 Note: Do not make any changes yet. Check these if it is possible.
 
 
- Read docs/handoff/LATEST.md, check git status, then continue with next step 1
+Read docs/handoff/LATEST.md, check git status, then continue with next step 1.
 
- https://www.youtube.com/watch?v=JRafWM73JIE
+https://www.youtube.com/watch?v=Oq9lpvjkzl4
