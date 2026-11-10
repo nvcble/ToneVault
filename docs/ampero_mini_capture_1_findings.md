@@ -140,3 +140,20 @@ returned that name). Whether the user sent `08` for index 6 before this `0D`
 was not recorded - so "08 selects the slot that 0D reads" is **unconfirmed**.
 Discriminating test: send `0D` for an index that has had no `08` (e.g. 9) and
 see whose name comes back.
+
+### Verified on hardware: 08 selects the slot, 0D returns it
+
+User confirmed `08` for index 6 was sent before the "Slick Lead" `0D`, and the
+pedal's display did not change during any of the taps (it stayed on P01-1).
+Then `0D` for index 9 with no `08` first returned header index 09 but the
+"Slick Lead" body again. So:
+
+- `0D` returns the slot chosen by the **last `08`**; its header index only
+  echoes the request. (Verified, 3 replies: header/body slot 06/03, 06/06,
+  09/06.)
+- The body carries the real slot at byte 8 after `0E` (`00 01 <echo> 00 00 00
+  01 00 <real> ...`). Code must compare it to the slot it asked for and
+  reject mismatches.
+- Reading a patch this way does not move the pedal's display (Verified by the
+  user, one session).
+- Read sequence for a slot: `08` (wait for the `0C` ack), then `0D`.
