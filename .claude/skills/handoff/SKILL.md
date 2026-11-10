@@ -39,6 +39,13 @@ Every request and question, in order, each with its **outcome**: done / answered
 / blocked / declined / still open. Quote the user's own wording for any
 requirement or decision that shapes the design.
 
+**Carry forward open requirements.** Read the previous `LATEST.md` and the
+newest earlier handoffs for the same feature area. Every user requirement that
+is still open (not built, or built only in part) is listed here under
+"Carried-over requirements" and given a numbered next step, even if this
+session never touched it. A requirement that falls out of the latest handoff
+is silently lost.
+
 ### 3. What was done
 Grouped by topic. For each change: what and why, and the file paths touched.
 Mark each file `new`, `modified` or `deleted`. Include generated files
