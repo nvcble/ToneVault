@@ -179,12 +179,15 @@ void main() {
     // Nothing has been read off the device, so no tile may claim a name.
     expect(find.textContaining('Patch 0'), findsNothing);
     expect(find.text('(name unknown)'), findsWidgets);
-    expect(find.text('Names cannot be read from this pedal'), findsOneWidget);
+    expect(
+      find.text('Names are read from the pedal for user patches only'),
+      findsOneWidget,
+    );
 
     await tester.tap(find.text('Details'));
     await tester.pumpAndSettle();
     expect(
-      find.textContaining('No such command has been confirmed for this model'),
+      find.textContaining('Factory patch names have not been read yet'),
       findsOneWidget,
     );
   });

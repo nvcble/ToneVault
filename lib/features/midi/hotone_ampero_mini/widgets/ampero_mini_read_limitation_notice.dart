@@ -7,13 +7,11 @@ import '../../../../app/theme/app_spacing.dart';
 /// The tiles below it are the pedal's own 198 patch slots (OFFICIAL count), of
 /// which the 99 user patches are selectable - VERIFIED ON HARDWARE, because
 /// sending one does change the loaded patch, and because sending a factory one
-/// does not. They are *not* patches read out of the device: no request/response
-/// command for reading Ampero Mini patch data has been confirmed, so names and
-/// contents are genuinely unavailable rather than merely not fetched yet.
+/// does not. User patch names are read from the pedal by "Read pedal names"
+/// (VERIFIED ON HARDWARE, all 99); factory names and patch contents are not.
 ///
-/// The wording says names *should* come from the pedal, because that is the
-/// requirement and it is not met yet - it does not offer the user a way to
-/// type names instead, which would answer a different question than the one
+/// Names come only from the pedal - this notice never offers the user a way to
+/// type them instead, which would answer a different question than the one
 /// they asked.
 ///
 /// Deliberately one line high, with the rest behind Details: the patch list
@@ -36,7 +34,7 @@ class AmperoMiniReadLimitationNotice extends StatelessWidget {
           const SizedBox(width: AppSpacing.sm),
           Expanded(
             child: Text(
-              'Names cannot be read from this pedal',
+              'Names are read from the pedal for user patches only',
               style: theme.textTheme.bodySmall?.copyWith(
                 color: theme.colorScheme.onSurfaceVariant,
               ),
@@ -55,7 +53,7 @@ class AmperoMiniReadLimitationNotice extends StatelessWidget {
     showDialog<void>(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Why patches have no names'),
+        title: const Text('About patch names'),
         // Scrollable: this is four paragraphs, which does not fit a short
         // screen in landscape, and an overflowing dialog is unreadable.
         content: const SingleChildScrollView(
@@ -87,11 +85,11 @@ class AmperoMiniReadLimitationNotice extends StatelessWidget {
               ),
               SizedBox(height: AppSpacing.md),
               Text(
-                'Patch names should come from the pedal, and they will once the '
-                'command that asks it for a patch is known. No such command has '
-                'been confirmed for this model, and the pedal never sends names '
-                'unprompted, so there is nothing to display yet. Showing '
-                'made-up names would be worse than showing none.',
+                'User patch names are read from the pedal: choose "Read pedal '
+                'names" in the overflow menu. The pedal never sends names '
+                'unprompted, so they appear only after that sync. Factory '
+                'patch names have not been read yet, and showing made-up '
+                'names would be worse than showing none.',
               ),
               SizedBox(height: AppSpacing.md),
               Text(
