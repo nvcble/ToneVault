@@ -43,11 +43,7 @@ where the slot number lives; the editor's read-all; selecting factory F01-1.
 
 Observed, one editor session each:
 
-- **Correction:** the `12 00 02 0D 00 00 <n> 01` requests number **99** per
-  session, not 198 (the earlier count included both USB directions). 99 = the
-  user patches P01-1..P33-3, so `<n>` is plausibly the patch index 0-98, but
-  the values I looked at (04, 0D, 0E, 14, 15, 16, 1F ...) are not yet checked
-  against a known slot. **Inferred, not confirmed.**
+- **Correction to the correction:** the 198 requests are right. 99 per bank, two banks (0 = factory, 1 = user). See the read sequence below.
 - **Patch selection from the editor** is plain MIDI, sent last in each capture:
   - P02-1 (index 3): `B0 3D 14`, `B0 00 01`, `C0 03`
   - P03-1 (index 6): `B0 3D 14`, `B0 00 01`, `C0 06`
@@ -61,3 +57,32 @@ Observed, one editor session each:
   any capture. The patch data is fetched during the connect sequence.
 - The editor has no read-all or refresh button, so the connect sequence is the
   only bulk read there is to capture.
+
+## Read sequence, per patch (Observed in captures 1 and 2; direction checked)
+
+Bytes after the header `F0 21 25 7F 4D 50 2D 32`. `B` = bank (0 factory, 1 user),
+`I` = patch index 0-98 (0x00-0x62). The editor does this for **all 198 slots
+(2 banks x 99) while connecting**, in order, with no patch selected:
+
+1. HOST   `11 00 02 08 00 B I F7`          - 198 sent
+2. PEDAL  `12 00 02 0C 00 B I 07 18 01 40 F7` - reply to 1
+3. HOST   `12 00 02 0D 00 B I 01 F7`       - 198 sent
+4. HOST   `12 00 02 0F 00 B I 00 k 01 F7`  - k = 0..4, five per patch (990)
+5. PEDAL  `12 00 02 10 00 B I 00 05 F7`    - after the fifth `0F`
+6. PEDAL  `12 00 02 0E 00 B I ...` - the long data frames; these carry the name.
+   I have not yet worked out which request triggers them or how many there are
+   per patch.
+
+**Name check against the pedal (confirmed by the user):** the `0E` frame with
+`B=1, I=3` decodes to "D.Classic 90s LD" (P02-1) and `B=1, I=6` decodes to
+"Slick Lead" (P03-1). Both match what the editor shows. The same name also
+appears at `B=0, I=6`, so factory slot 6 is the same patch.
+
+Name encoding (Observed): ASCII, each character as two bytes, high 4 bits
+first, e.g. `05 03` = 'S'. Names are space-padded to about 16 characters.
+The exact offset of the first name byte inside the `0E` frame still needs
+pinning down before it goes in code.
+
+**Still unknown:** which of 1/3/4 is the actual "send me the patch" request,
+the full `0E` layout, the block on/off flags, and what `07 18 01 40` means.
+Replaying the sequence on the real pedal has **not** been tried.
