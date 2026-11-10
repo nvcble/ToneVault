@@ -1,5 +1,10 @@
 # Finding the Ampero Mini's patch-read command
 
+> **Status 2026-11-10:** the capture route worked. The read sequence (`08`
+> then `0D`) is decoded and the app reads all 99 user-patch names; see
+> `ampero_mini_capture_1_findings.md`. The text below is kept as the method
+> for what is still unknown (factory names, patch contents, write).
+
 Everything in ToneVault past "select a patch" is blocked on one unknown: the
 SysEx command that asks the Ampero Mini for a patch, and the reply it sends
 back. This document is how to obtain it.

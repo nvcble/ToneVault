@@ -157,3 +157,23 @@ Then `0D` for index 9 with no `08` first returned header index 09 but the
 - Reading a patch this way does not move the pedal's display (Verified by the
   user, one session).
 - Read sequence for a slot: `08` (wait for the `0C` ack), then `0D`.
+
+## Verified in the app (2026-11-10): full user-bank name sync
+
+"Read pedal names" read all 99 user-patch names from the pedal on a phone
+(Verified on hardware, user report; the 99 names themselves were not
+re-checked one by one). Corrections to the notes above:
+
+- **The slot is a nibble pair, not one byte.** In the `0E` body it is byte 7
+  (high nibble) and byte 8 (low nibble). A real slot-17 frame (index 16) has
+  `01 00` there, so slot = 0x10. Earlier samples only showed slots below 16,
+  where byte 7 is `00`, so byte 8 alone looked right. Slots 33+ (high nibble
+  2..6) are not yet seen on a frame of their own.
+- **Reply shape:** `0D` can answer with several `0E` chunks; only chunk 0
+  holds the name. Names are space-padded (`02 00` pairs), as the first
+  capture showed; the zero padding seen in one sample is not universal.
+- **Sequence per slot:** `08` (wait for the `0C` ack), then `0D`. Reject any
+  reply whose slot differs from the one asked for.
+- **Body byte 2** was `10` in the slot-17 frame; meaning Unknown, unused.
+- **Not tested:** empty user slots, names with non-printable-ASCII
+  characters, factory bank 0.
