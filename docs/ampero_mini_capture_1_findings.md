@@ -111,3 +111,15 @@ ack of request `08`.
 
 Screenshots cut the long frames at the bottom of the sheet, so the full
 length of the `0D` reply is not recorded yet.
+
+### Correction (same session): 0D does NOT yet read an arbitrary slot
+
+`0D` for bank 1 index 6 (should be "Slick Lead", P03-1) came back with header
+index 6 but a body byte-for-byte identical to the index-3 reply: still
+"D.Classic 90s LD". So the statement above that `0D` "returns the patch data"
+for the requested slot is **withdrawn**. Two explanations fit and are not
+separated: (a) `0D` returns the patch currently loaded on the pedal and echoes
+the requested index in its header; (b) it needs the editor's other requests
+first (`08`, `0F`) to select the slot. Test: send `08` then `0D` for index 6,
+and note which patch the pedal's display was on. No names may be stored from
+`0D` until a second, different name is read correctly.
