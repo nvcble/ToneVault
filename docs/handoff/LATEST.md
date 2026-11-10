@@ -1,103 +1,94 @@
-# Handoff - 2026-11-10 - Ampero Mini USB capture, read sequence, read probe
+# Handoff - 2026-11-10 - Ampero Mini: patch name read sequence verified on hardware
 
 ## 1. Snapshot
 
 - Date: 2026-11-10. Branch: `feature/mg30-v5-protocol`, pushed.
-- Last commit: `33b0199 Ampero Mini: add a one-message patch read probe`. Working tree was clean before this handoff files were written (this file and `LATEST.md` are the only uncommitted items).
-- Commits this session, oldest first: `8519105` favorites (stars, schema v27); `1f06cc7` /handoff skill + first handoff; `ec05d72` prompts file; `110525c` + `0e5c6b5` capture findings doc; `33b0199` read probe.
-- Goal: learn how to read real patch names / block state from the Hotone Ampero Mini, by capturing Hotone's own editor over USB; then build a first hardware probe.
+- Last commit: `7efd864 Add Ampero Mini capture handoff and update saved prompts`. Working tree was clean before this handoff was written (this file and `LATEST.md` are the only uncommitted items).
+- Commits this session: `6279a6c` probe 0D/0F steps; `128065c` retraction (0D returned the same patch for another slot); `a8fb54c` second sample "Slick Lead"; `40792b1` 08 selects / 0D returns (verified); `7efd864` previous handoff + prompts file.
+- Goal: use the app's Patch read probe on the real Hotone Ampero Mini to find the request that returns patch names.
 
 ## 2. What the user asked
 
-1. "Read docs/handoff/LATEST.md, check git status, then continue with next step 1" - **Done**: step 1 was the formatting-churn decision.
-2. "What is this reverts are for?" - **Answered**: `dart format lib test` last session reformatted 22 unrelated files.
-3. "Go revert" - **Done**: `git checkout --` on the 22 formatting-only files.
-4. `/ship` (before the revert) - **Done** as `8519105` containing only favorites files (15 files); other files left unstaged.
-5. "Go commit. And I recognize those changes" - **Done**: handoff skill/docs as `1f06cc7`, `prompts/claude-prompts.txt` as `ec05d72` (user recognized that change).
-6. "Before me testing it, can we proceed first with the wireshark?" - **Done** (captures made, section 4).
-7. "Where can I see this USBPcapN lists?" - **Answered** (Wireshark Capture > Options > Input tab > gear icon; given from memory, user then reported USBPcap1, so it worked).
-8. Captured P02-1, P03-1, F01-1 (user saved in `C:\Users\MarkN\Documents`, copied to `C:\Users\MarkN\ampero-captures\`). "There is no read all or refresh button in ampero mini editor." - **Noted**.
-9. Gave names: "P02-1 D.Classic 90s LD. P03-1 Slick Lead." - used to verify the decode. "Yes you can commit the findings now" - **Done** (`110525c`, `0e5c6b5`).
-10. "Go and build a small probe in the app." - **Done**, untested on hardware.
-11. "commit this and after that do /handoff" - **Done** (`33b0199`; this document).
+1. "Read docs/handoff/LATEST.md, check git status, then continue with next step 1" - **Done** (step 1 = run the probe; I checked APK mtime and asked).
+2. "I've executed the Patch read probe. What will I do next?" - **Answered** (asked for the result screen).
+3. Sent screenshots of the probe results - **Done**, each decoded (section 4).
+4. "My fault Teams are loading" - they re-sent the right (index 9) screenshot after a duplicate one.
+5. Answers to my questions: pedal display read "P01-1 WelcomeToAmpero"; "Yes I requested [08] since it is on your step"; "No it did not change pedal's display".
+6. "Commit and push first then after that, do /handoff" - **Done** (`7efd864` pushed); handoff = this file.
 
 ## 3. What was done
 
-New (hand-written):
-- `docs/ampero_mini_capture_1_findings.md` - capture findings with confidence labels (88 lines).
-- `lib/features/midi/hotone_ampero_mini/data/ampero_mini_read_probe.dart` - builds the request, recognises the acknowledgement.
-- `lib/features/midi/hotone_ampero_mini/widgets/ampero_mini_read_probe_sheet.dart` - bottom sheet UI.
-- `test/unit/ampero_mini_read_probe_test.dart` - 5 tests.
-- `docs/handoff/handoff-2026-11-10-ampero-mini-capture-and-probe.md`, `docs/handoff/LATEST.md` (uncommitted).
+Modified (hand-written):
+- `lib/features/midi/hotone_ampero_mini/data/ampero_mini_read_probe.dart` - `AmperoMiniProbeStep` enum (request08/0D/0F with `label`); `buildAmperoMiniReadProbe` takes `step` (default 08, old behaviour unchanged).
+- `lib/features/midi/hotone_ampero_mini/data/hotone_ampero_mini_midi_service.dart` - `probeRead(..., step: ...)`.
+- `lib/features/midi/hotone_ampero_mini/widgets/ampero_mini_read_probe_sheet.dart` - segmented selector "Request 08 / 0D / 0F".
+- `test/unit/ampero_mini_read_probe_test.dart` - one test for the 0D and 0F bytes (6 tests in file).
+- `docs/ampero_mini_capture_1_findings.md` - hardware results, a retraction, and the verified sequence (159 lines).
+- `docs/handoff/*`, `prompts/claude-prompts.txt` - committed in `7efd864`.
 
-Modified:
-- `lib/features/midi/hotone_ampero_mini/data/hotone_ampero_mini_midi_service.dart` - `probeRead({bank, index, listenFor})`: attaches a listener, sends the request, collects Ampero-header SysEx for 3 s (drops the pedal's tick/status broadcasts), reports `acknowledged`.
-- `lib/features/midi/hotone_ampero_mini/widgets/ampero_mini_diagnostics_menu.dart` - new "Patch read probe" menu item.
+Generated files: none.
 
-Generated: none this session (the favorites commit included the already-generated `*.g.dart` from last session).
-
-The probe sends exactly one message per tap: `F0 21 25 7F 4D 50 2D 32 11 00 02 08 00 <bank> <index> F7` (default bank 1, index 3 = P02-1).
+Bytes sent by the new steps (header `21 25 7F 4D 50 2D 32` first): 0D = `12 00 02 0D 00 <bank> <index> 01`; 0F = `12 00 02 0F 00 <bank> <index> 00 00 01` (only k=0 of the editor's five 0F messages).
 
 ## 4. What was found
 
-- **Verified (on this PC):** Wireshark and USBPcap are installed (`C:\Program Files\Wireshark\`, `C:\Program Files\USBPcap\`); `tshark` captures from the shell. Interface numbers shift between runs - list with `tshark -D`; at the end they were 10 = USBPcap1, 11 = USBPcap2. Capturing two USBPcap interfaces at once made one fail to start; capture one at a time. The Ampero Mini is on **USBPcap1**, USB device address 60 in the captures, `VID_84EF&PID_0080`, behind a generic hub.
-- **Verified (captures):** bulk OUT endpoint 0x03 / IN 0x83, USB-MIDI 4-byte packets. Wireshark reassembles SysEx; `tshark -V` shows `[Reassembled data: ...]`, which is the reliable way to read messages (my first `-x` parsing mixed up directions and gave a wrong "99 requests" claim; corrected in the doc).
-- **Observed (3 captures, direction checked on p02-1 / p03-1):** per patch slot the editor sends, while connecting and with no patch selected, for all 198 slots (bank 0 and bank 1, index 0-98):
-  1. `11 00 02 08 00 B I` -> pedal `12 00 02 0C 00 B I 07 18 01 40`
-  2. `12 00 02 0D 00 B I 01`
-  3. five `12 00 02 0F 00 B I 00 k 01` (k 0-4) -> pedal `12 00 02 10 00 B I 00 05`
-  4. long pedal frames `12 00 02 0E 00 B I ...` carrying the patch name.
-  All after the header `F0 21 25 7F 4D 50 2D 32`.
-- **Verified against the pedal (user-confirmed names):** the `0E` frame for bank 1 index 3 decodes to "D.Classic 90s LD" (P02-1) and bank 1 index 6 to "Slick Lead" (P03-1). Name encoding: ASCII, two bytes per character, high nibble first, space-padded to ~16. Bank 0 index 6 is also "Slick Lead".
-- **Observed:** editor patch selection is plain MIDI sent last: `B0 3D 14`, `B0 00 <bank>`, `C0 <index>`; bank 1 = user, bank 0 = factory (F01-1 sent `B0 00 00` then `C0 00`). This matches the app's pending Bank Select probe question; it is **not yet tried from the app on the pedal**. Meaning of `B0 3D 14` is **Unknown**.
-- **Unknown:** which of the 08 / 0D / 0F requests actually triggers the `0E` data frames; the first name byte's exact offset in a `0E` frame; per-block on/off flag location; meaning of `07 18 01 40`; whether the editor's sequence can be replayed.
-- **Verified:** the editor has no read-all/refresh button; the connect sequence is the only bulk read.
-- Earlier (previous session, still true): Ampero Editor 1.6.0 at `C:\Program Files\Hotone\Ampero Editor\`; its `Resource\Ampero\File\algorithm_50.xml` / `description50_en.xml` look like the Mini's block/parameter catalogue (Inferred) and could label decoded blocks.
+All on the user's phone + pedal, bank 1, one message per tap:
+
+- **Verified:** `08` (`11 00 02 08 00 B I`) draws only the ack `12 00 02 0C 00 B I 07 18 01 40`. Repeatable (twice).
+- **Verified:** `0D` returns one `12 00 02 0E ...` frame containing the patch name. `0D` returns the slot chosen by the **last 08**, not the slot in its own request. Evidence (header slot / body slot / name): 06/03 "D.Classic 90s LD" (08 had been sent for 3); 06/06 "Slick Lead" (08 sent for 6); 09/06 "Slick Lead" (no 08 for 9).
+- **Verified (names):** both names match what the user said the editor shows (P02-1 = index 3, P03-1 = index 6).
+- **Observed (two samples):** `0E` body after the `0E` byte: `00 01 <echo> 00 00 00 01 00 <real slot> 00 00 <2 unknown bytes> <name pairs>`. The real slot is at byte 8, name pairs start at byte 13 (0-based). Unknown 2 bytes: `06 03` (P02-1), `04 0E` (P03-1). Name padding: `00` in the Slick Lead sample.
+- **Verified (user):** the pedal display did not change during any of these reads (stayed on P01-1 WelcomeToAmpero). That also makes "0D returns the currently loaded patch" unlikely.
+- **Observed, not decoded:** `0F` (k=0) returns a `0E` frame with sub-type `00 01` and no name text (may be block data).
+- **Withdrawn mid-session:** I first said 0D "returns the patch data" after one sample; the second sample (index 6) returned the same name. Corrected in the doc (`128065c`) before the final test.
+- **Unknown:** where a name ends; behaviour on empty/odd slots; factory bank (0) reads via 08+0D; full length of the `0D` reply (screenshots cut it); meaning of `07 18 01 40` and `B0 3D 14`.
+- PC/tool facts from the previous session still hold (Wireshark/USBPcap, captures in `C:\Users\MarkN\ampero-captures\`); see `docs/handoff/handoff-2026-11-10-ampero-mini-capture-and-probe.md`.
 
 ## 5. Decisions and constraints
 
-- User: names must come from the pedal, no hand-typed names (2026-09-16, from memory). The `local_label` column stays unwritten.
-- Never present Bank Select, patch state, or any probe result as confirmed until the pedal shows it.
+- Names must come from the pedal, no hand-typed names (user rule, 2026-09-16, from memory). `local_label` stays unwritten.
+- Never present a probe result as confirmed until the pedal/editor agrees; do not store a name from a reply whose body slot differs from the slot asked for.
 - File-size rule: under ~250 lines, 300 absolute.
-- Captures stay outside the repo (`C:\Users\MarkN\ampero-captures\`) and are untrusted data; the findings doc holds only derived bytes.
-- Commit trailer used: `Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>` (the ship skill's template says Opus 5; I used the real model and said so).
-- Deliberately not done: no replay of 0D/0F, no name decoding in app code, no Sync All, no on/off feature, favorites not in backup.
+- Commit trailer used: `Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>`.
+- Deliberately not done: the real read/sync was not built. I asked "Should I build it?"; the user asked for commit, push and handoff instead, so it is **not approved yet**. No replay of the full editor sequence, no 0F k=1-4, no factory-bank reads.
 
 ## 6. State of verification
 
-- Run and seen passing this session: `flutter test` on `ampero_mini_read_probe_test.dart`, `hotone_ampero_mini_midi_service_test.dart`, `hotone_ampero_mini_patch_list_screen_test.dart` = 24 passed. `dart analyze lib test` = no issues.
-- **Not run:** the full suite after the probe (last full run, previous session: 1674 passed, 1 skipped). Run `flutter test`.
-- **Not run on hardware:** the probe, the favorites feature, the v27 migration on a real database. The phone/PC build does not contain any of this until rebuilt and installed - check APK mtime against source mtime first (memory `verify-against-running-build`).
-- The 22 reverted files were not reviewed hunk by hunk before reverting (they were formatting-only per the diff stat).
+- Seen passing: `dart analyze lib/features/midi/hotone_ampero_mini test/unit/ampero_mini_read_probe_test.dart` = no issues; `flutter test test/unit/ampero_mini_read_probe_test.dart` = 6 passed.
+- **Not run:** the full `flutter test` suite (last full run, earlier session: 1674 passed, 1 skipped).
+- Hardware: the installed phone build contains the 08/0D/0F selector (seen in screenshots). Favorites stars showed filled on P01-1/P01-2 in one screenshot; persistence across restart not checked. The v27 migration on the real database is unverified.
+- The sheet says "No acknowledgement like the editor's was seen" for 0D/0F. That is expected (it only recognises the 08 ack) but reads like a failure.
 
 ## 7. Open items and risks
 
-1. The probe is untested; what the `08` request does besides drawing the `0C` reply is Unknown. Risk is believed low (editor sent it 198 times without visibly moving the pedal) but not proven.
-2. The `ampero_mini_read_probe_sheet.dart` and `hotone_ampero_mini_patch_list_screen.dart` (256 lines, over the soft limit) - the latter is still not split.
-3. v27 migration untested on a real database; back up before first install.
-4. Stale memory notes (not edited): `ampero-mini-patch-read-blocker` (now outdated: a read sequence is observed), `ampero-mini-next-hardware-session` (the Bank Select question is probably answered by the capture), and neither mentions favorites, the editor, or the captures. Update after the probe result is known.
-5. `docs/ampero_mini_protocol_capture.md` still describes capturing as future work and says to tick USBPcap in the installer; it does not point to the findings doc.
-6. Git warns LF will become CRLF on touched files (pre-existing).
-7. The raw `.pcapng` files exist twice (`C:\Users\MarkN\Documents\` and `C:\Users\MarkN\ampero-captures\`); `probe_10.err` there is a stray log.
+1. The 08+0D sequence is proven for slots 3 and 6 of bank 1 only. Empty slots, bank 0 and index 98 are untested.
+2. The name-end rule is unknown. Check more names (long, trailing spaces) before coding it.
+3. `lib/features/midi/hotone_ampero_mini/widgets/hotone_ampero_mini_patch_list_screen.dart` (about 256 lines) is still over the soft limit.
+4. Stale memory notes (not edited): `ampero-mini-patch-read-blocker` (now wrong: a read works), `ampero-mini-next-hardware-session` (Bank Select question partly answered by the captures, still not tried from the app). Update after the real read exists.
+5. `docs/ampero_mini_protocol_capture.md` still describes capturing as future work.
+6. `docs/ampero_mini_capture_1_findings.md` is chronological with no top summary; add a short "verified protocol" section when building the real read.
+7. Git warns LF->CRLF on touched files (pre-existing).
+8. This handoff is uncommitted: run `/ship` to keep it.
 
 ## 8. Next steps
 
-1. **(User)** Rebuild and install the app (check APK mtime vs source). Connect the pedal, open the Ampero Mini page, menu (three dots) > Patch read probe > Send read request (default bank 1, index 3). Report the sheet's acknowledgement line and the received bytes. Blocker: user + hardware.
-2. **(Alone, after 1)** Record the result in `docs/ampero_mini_capture_1_findings.md`. If the `0C` ack came back: add probes for the `0D` request, then the `0F` requests, to find what elicits the `0E` data frame. If nothing came back: check the MIDI Monitor/Diagnostics for the transmitted bytes and whether the app's USB MIDI port reaches the SysEx port.
-3. **(Alone, parallel)** Pin down the `0E` frame layout from the three captures with `tshark -V` reassembled data: name offset, other fields, block on/off flags. Use `algorithm_50.xml` to label blocks. Start: `C:\Users\MarkN\ampero-captures\p02-1_read.pcapng`, filter `usb.device_address==60`.
-4. **(User, hardware)** Try the Bank Select layout found in the capture (`B0 00 00` + `C0 00` for factory F01-1, `B0 00 01` + `C0 n` for user) on the pedal via the existing factory-patch sheet; the existing four attempts do not include a plain "MSB 0, program 0" with `B0 3D 14` first - consider adding the editor's exact sequence as an attempt.
-5. **(Alone, after 1-3)** Build the real read: one patch -> decode name -> store in `hotone_ampero_mini_patches` -> Sync All -> details; names then fill the "(name unknown)" tiles with no favorites rework.
-6. **(User)** Verify favorites on the phone: stars fill and persist across a restart, favorites-only filter works.
-7. **(Alone)** Extract grid/filter code from `hotone_ampero_mini_patch_list_screen.dart` to get under the file-size limit.
-8. **(Alone)** Update `docs/ampero_mini_protocol_capture.md` and the stale memory notes (7.4, 7.5).
-9. **(Ask user)** Add favorites to the backup export (`lib/core/database/daos/backup_dao.dart`, `lib/features/backup/data/backup_document.dart`, `lib/features/backup/data/backup_upgrades.dart`) if wanted. Optionally a version bump via `/version-update` (last 1.1.4+7), kept separate from feature commits.
-10. **(Optional)** Further captures if needed: footswitch changes while the editor is open; a patch write (only if the user accepts overwriting a patch); the editor's "MIDI CC Mapping" screen contents (possible block on/off route via CC).
+1. **(Alone, needs the user's go-ahead)** Build the real read: per slot send `08`, wait for the `0C` ack with the same bank/index, send `0D`, require body slot (byte 8 after `0E`) == requested slot, decode name pairs from byte 13, store via `lib/features/midi/hotone_ampero_mini/data/hotone_ampero_mini_patch_repository.dart` into `hotone_ampero_mini_patches`, stop on the first timeout or mismatch. Start from `probeRead` in `hotone_ampero_mini_midi_service.dart`. Write the decoder as a pure function with unit tests on real frames (get them in step 2). Blocker: user approval to write names into their database.
+2. **(Alone, before 1)** Pull the full `0D` frames from the capture (`tshark -V`, `[Reassembled data]`, file `C:\Users\MarkN\ampero-captures\p02-1_read.pcapng`, filter `usb.device_address==60`) to learn frame length, where the name ends, and what empty slots look like. Also gives test fixtures.
+3. **(User, hardware)** Run 08 then 0D for an empty slot or one with a long name, and for bank 0 (factory); scroll the sheet to the bottom if the frame is cut; send screenshots.
+4. **(Alone)** Make the probe sheet say "reply received" instead of "No acknowledgement" for the 0D/0F steps.
+5. **(Alone, optional)** Decode more of the `0E` frame (block on/off, `0F` k=0-4) using `C:\Program Files\Hotone\Ampero Editor\Resource\Ampero\File\algorithm_50.xml` for labels.
+6. **(User, hardware)** Try the editor's Bank Select layout on the pedal (`B0 3D 14`, `B0 00 <bank>`, `C0 <index>`) via the factory-patch sheet.
+7. **(User)** Verify favorites on the phone: stars persist across restart, favorites-only filter works.
+8. **(Alone)** Split grid/filter code out of `hotone_ampero_mini_patch_list_screen.dart` to get under the size limit.
+9. **(Alone)** Update `docs/ampero_mini_protocol_capture.md` and the stale memory notes (7.4).
+10. **(Ask user)** Add favorites to backup export (`lib/core/database/daos/backup_dao.dart`, `lib/features/backup/data/backup_document.dart`, `lib/features/backup/data/backup_upgrades.dart`); optional `/version-update` (last 1.1.4+7), kept separate from feature commits.
+11. **(Alone)** Run the full `flutter test` for a baseline.
 
 ## 9. First move for the new session
 
-1. Read this file, run `git status --short` and `git log --oneline -3`.
-2. Ask whether the probe has been installed and tried, and what the sheet showed.
-3. If not yet installed, remind the user to rebuild and check the APK mtime; meanwhile start step 3.
+1. Read this file; run `git status --short` and `git log --oneline -3`.
+2. Ask the user whether to build the real read (step 1); meanwhile start step 2 (pull full frames from the capture).
+3. Run the full `flutter test` to get a baseline.
 
 Paste into the new session:
 
