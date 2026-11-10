@@ -30,6 +30,7 @@ class _AmperoMiniReadProbeSheetState
   // Defaults to the slot captured on 2026-11-10: user bank, P02-1.
   int _bank = 1;
   int _index = 3;
+  AmperoMiniProbeStep _step = AmperoMiniProbeStep.request08;
   bool _busy = false;
   AmperoMiniReadProbeResult? _result;
 
@@ -69,6 +70,15 @@ class _AmperoMiniReadProbeSheetState
                 ],
                 selected: {_bank},
                 onSelectionChanged: (s) => setState(() => _bank = s.first),
+              ),
+              const SizedBox(height: AppSpacing.sm),
+              SegmentedButton<AmperoMiniProbeStep>(
+                segments: [
+                  for (final s in AmperoMiniProbeStep.values)
+                    ButtonSegment(value: s, label: Text('Request ${s.label}')),
+                ],
+                selected: {_step},
+                onSelectionChanged: (s) => setState(() => _step = s.first),
               ),
               Row(
                 children: [
@@ -110,7 +120,7 @@ class _AmperoMiniReadProbeSheetState
     try {
       final result = await ref
           .read(hotoneAmperoMiniMidiServiceProvider)
-          .probeRead(bank: _bank, index: _index);
+          .probeRead(bank: _bank, index: _index, step: _step);
       if (mounted) setState(() => _result = result);
     } catch (error) {
       if (mounted) showFailureSnackBar(context, error);

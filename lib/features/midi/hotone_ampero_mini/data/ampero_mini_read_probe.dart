@@ -37,9 +37,30 @@ const int _replyCommand = 0x12;
 const int amperoMiniProbeBankCount = 2;
 const int amperoMiniProbeSlotsPerBank = 99;
 
-/// The request for [bank] / [index]. Throws [RangeError] outside the 2 x 99
-/// slots the editor was seen to address.
-SysExMessage buildAmperoMiniReadProbe({required int bank, required int index}) {
+/// The requests the editor sends per slot, in the order it sends them
+/// (OBSERVED in the captures). Which of them makes the pedal send the `0E`
+/// data frames is Unknown; that is what stepping through them is for.
+enum AmperoMiniProbeStep {
+  /// `11 00 02 08 00 B I` - drew the `0C` acknowledgement on hardware.
+  request08('08'),
+
+  /// `12 00 02 0D 00 B I 01` - the editor's second message.
+  request0D('0D'),
+
+  /// `12 00 02 0F 00 B I 00 0 01` - the first of the five `0F` requests.
+  request0F('0F');
+
+  const AmperoMiniProbeStep(this.label);
+  final String label;
+}
+
+/// The request for [bank] / [index] and [step]. Throws [RangeError] outside
+/// the 2 x 99 slots the editor was seen to address.
+SysExMessage buildAmperoMiniReadProbe({
+  required int bank,
+  required int index,
+  AmperoMiniProbeStep step = AmperoMiniProbeStep.request08,
+}) {
   RangeError.checkValueInInterval(
     bank,
     0,
@@ -52,9 +73,8 @@ SysExMessage buildAmperoMiniReadProbe({required int bank, required int index}) {
     amperoMiniProbeSlotsPerBank - 1,
     'index',
   );
-  return SysExMessage(
-    payload: [
-      ...amperoMiniSysExHeader,
+  final body = switch (step) {
+    AmperoMiniProbeStep.request08 => [
       _requestCommand,
       0x00,
       0x02,
@@ -63,7 +83,30 @@ SysExMessage buildAmperoMiniReadProbe({required int bank, required int index}) {
       bank,
       index,
     ],
-  );
+    AmperoMiniProbeStep.request0D => [
+      _replyCommand,
+      0x00,
+      0x02,
+      0x0D,
+      0x00,
+      bank,
+      index,
+      0x01,
+    ],
+    AmperoMiniProbeStep.request0F => [
+      _replyCommand,
+      0x00,
+      0x02,
+      0x0F,
+      0x00,
+      bank,
+      index,
+      0x00,
+      0x00,
+      0x01,
+    ],
+  };
+  return SysExMessage(payload: [...amperoMiniSysExHeader, ...body]);
 }
 
 /// True when [payload] is the acknowledgement the editor's request drew in the

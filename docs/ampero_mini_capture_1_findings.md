@@ -86,3 +86,28 @@ pinning down before it goes in code.
 **Still unknown:** which of 1/3/4 is the actual "send me the patch" request,
 the full `0E` layout, the block on/off flags, and what `07 18 01 40` means.
 Replaying the sequence on the real pedal has **not** been tried.
+
+## Hardware probe result (2026-11-10, app on phone, pedal on USB)
+
+The app's Patch read probe, bank 1 index 3 (P02-1), one message per tap:
+
+| Sent | Pedal answered | Verdict |
+|---|---|---|
+| `11 00 02 08 00 01 03` | `12 00 02 0C 00 01 03 07 18 01 40` | Verified: ack only, no name |
+| `12 00 02 0D 00 01 03 01` | one `12 00 02 0E 00 01 03 00 00 ...` frame | Verified: **this request returns the patch data** |
+| `12 00 02 0F 00 01 03 00 00 01` | one `0E` frame, sub-type `00 01` (not `00 00`), no name text | Verified it answers; contents not decoded |
+
+The `0D` reply decodes to "D.Classic 90s LD", the name the user confirmed for
+P02-1, using the nibble-pair encoding above. Counting from the `0E` byte, the
+name's first pair is the 14th byte after it (13 bytes lie between), in this one
+frame (Observed, one sample - confirm on a second slot before coding it). The
+13 bytes are `00 01 03 00 00 00 01 00 03 00 00 06 03`; their meaning is
+Unknown (`06 03` looks like a character pair but is not part of the name).
+
+Nothing is known yet about other effects of `0D` on the pedal: the user saw
+no visible change (not asked for `0D` specifically - ask). The probe sheet's
+"No acknowledgement" line for `0D`/`0F` is expected: it only recognises the `0C`
+ack of request `08`.
+
+Screenshots cut the long frames at the bottom of the sheet, so the full
+length of the `0D` reply is not recorded yet.

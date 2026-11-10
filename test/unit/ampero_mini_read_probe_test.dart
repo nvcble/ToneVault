@@ -122,6 +122,26 @@ void main() {
       },
     );
 
+    test('the 0D and 0F steps build the captured bytes', () {
+      final h = amperoMiniSysExHeader;
+      expect(
+        buildAmperoMiniReadProbe(
+          bank: 1,
+          index: 3,
+          step: AmperoMiniProbeStep.request0D,
+        ).payload,
+        [...h, 0x12, 0x00, 0x02, 0x0D, 0x00, 0x01, 0x03, 0x01],
+      );
+      expect(
+        buildAmperoMiniReadProbe(
+          bank: 1,
+          index: 3,
+          step: AmperoMiniProbeStep.request0F,
+        ).payload,
+        [...h, 0x12, 0x00, 0x02, 0x0F, 0x00, 0x01, 0x03, 0x00, 0x00, 0x01],
+      );
+    });
+
     test('a silent pedal gives no replies and no acknowledgement', () async {
       final result = await HotoneAmperoMiniMidiService(engine).probeRead(
         bank: 1,

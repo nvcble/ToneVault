@@ -67,9 +67,14 @@ class HotoneAmperoMiniMidiService {
   Future<AmperoMiniReadProbeResult> probeRead({
     required int bank,
     required int index,
+    AmperoMiniProbeStep step = AmperoMiniProbeStep.request08,
     Duration listenFor = const Duration(seconds: 3),
   }) async {
-    final request = buildAmperoMiniReadProbe(bank: bank, index: index);
+    final request = buildAmperoMiniReadProbe(
+      bank: bank,
+      index: index,
+      step: step,
+    );
     final replies = <List<int>>[];
     final subscription = _engine.incoming.listen((message) {
       if (message is! SysExMessage) return;
