@@ -123,3 +123,20 @@ the requested index in its header; (b) it needs the editor's other requests
 first (`08`, `0F`) to select the slot. Test: send `08` then `0D` for index 6,
 and note which patch the pedal's display was on. No names may be stored from
 `0D` until a second, different name is read correctly.
+
+### Second 0D sample (same session): "Slick Lead"
+
+`0D` for bank 1 index 6, sent after the correction above, returned a frame that
+decodes to **"Slick Lead"** (P03-1, name confirmed by the user). The name starts
+at the same place as in the first sample: byte 13 (0-based) after the `0E`
+byte, so the layout after `0E` is `00 01 <idx> 00 00 00 01 00 <idx> 00 00
+<2 unknown bytes> <name pairs...>`. The two unknown bytes were `06 03` for
+P02-1 and `04 0E` for P03-1 (meaning Unknown). Name pairs are followed by
+`00 00 ...` padding in this sample, not by space pairs `02 00`.
+
+The pedal's own display read "P01-1 WelcomeToAmpero" at this point, so the
+"0D returns the currently loaded patch" explanation is unlikely (it would have
+returned that name). Whether the user sent `08` for index 6 before this `0D`
+was not recorded - so "08 selects the slot that 0D reads" is **unconfirmed**.
+Discriminating test: send `0D` for an index that has had no `08` (e.g. 9) and
+see whose name comes back.
