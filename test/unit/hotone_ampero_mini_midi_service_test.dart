@@ -24,21 +24,35 @@ void main() {
 
     tearDown(() => engine.dispose());
 
-    test(
-      'selecting a patch sends a plain Program Change, no Bank Select',
-      () async {
-        await service.selectPatch(profile: profile, patchNumber: 5);
+    test('a user patch sends CC0=1 then Program Change = patch', () async {
+      await service.selectPatch(profile: profile, patchNumber: 5);
 
-        expect(transport.sent, hasLength(1));
-        final sent = transport.sent.single as ProgramChangeMessage;
-        expect(sent.channel, 0);
-        expect(sent.program, 5);
-      },
-    );
+      expect(transport.sent, hasLength(2));
+      final bank = transport.sent[0] as ControlChangeMessage;
+      expect([bank.controller, bank.value], [0, 1]);
+      expect((transport.sent[1] as ProgramChangeMessage).program, 5);
+    });
 
-    test('refuses a patch number outside 0-127', () async {
+    test('a factory patch sends CC61=20, CC0=0, PC = patch - 99', () async {
+      await service.selectPatch(profile: profile, patchNumber: 99);
+
+      expect(transport.sent, hasLength(3));
+      final pre = transport.sent[0] as ControlChangeMessage;
+      final bank = transport.sent[1] as ControlChangeMessage;
+      expect([pre.controller, pre.value], [61, 20]);
+      expect([bank.controller, bank.value], [0, 0]);
+      expect((transport.sent[2] as ProgramChangeMessage).program, 0);
+    });
+
+    test('the last factory patch is PC 98', () async {
+      await service.selectPatch(profile: profile, patchNumber: 197);
+
+      expect((transport.sent.last as ProgramChangeMessage).program, 98);
+    });
+
+    test('refuses a patch number outside 0-197', () async {
       await expectLater(
-        () => service.selectPatch(profile: profile, patchNumber: 128),
+        () => service.selectPatch(profile: profile, patchNumber: 198),
         throwsArgumentError,
       );
       expect(transport.sent, isEmpty);

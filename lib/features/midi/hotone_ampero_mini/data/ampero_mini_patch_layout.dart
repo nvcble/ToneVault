@@ -17,21 +17,14 @@ const int amperoMiniPatchesPerBank = 3;
 const int amperoMiniBanksPerSection =
     amperoMiniUserPatchCount ~/ amperoMiniPatchesPerBank;
 
-/// Whether patch [patchIndex] can be selected from this app at all.
+/// Whether patch [patchIndex] can be selected from this app: all 198.
 ///
-/// Only the user patches can be. VERIFIED ON HARDWARE (2026-09-16), from one
-/// positive and one negative result in the same session: Program Change 1
-/// loaded P01-2, while Program Change 99 - F01-1, the first factory patch -
-/// left the pedal on whatever it already had. So the program number equals the
-/// patch index, and the pedal's Program Change map covers its 99 user patches
-/// and stops there.
-///
-/// Reaching the factory half would need Bank Select, which is UNVERIFIED on
-/// this pedal and so is never sent: a program number the pedal ignores looks
-/// exactly like a working selection from this side, which is the bug this
-/// replaces.
+/// VERIFIED ON HARDWARE (2026-11-10, user report): a plain Program Change only
+/// reaches the user half (2026-09-16), but Bank Select CC 0 (0 factory, 1 user)
+/// plus Program Change reaches both - see `selectPatch` in
+/// `hotone_ampero_mini_midi_service.dart`.
 bool amperoMiniIsSelectableOverMidi(int patchIndex) =>
-    amperoMiniIsUserPatch(patchIndex);
+    patchIndex >= 0 && patchIndex < amperoMiniPatchCount;
 
 /// Whether [patchIndex] is one of the user patches rather than a factory one.
 bool amperoMiniIsUserPatch(int patchIndex) =>

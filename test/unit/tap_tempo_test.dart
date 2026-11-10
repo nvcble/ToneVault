@@ -44,10 +44,7 @@ void main() {
     test('keeps only the last window of gaps, so a tempo can be changed', () {
       final tapTempo = TapTempo(window: 2);
 
-      expect(
-        tapEvenly(tapTempo, const Duration(milliseconds: 500), 2),
-        120,
-      );
+      expect(tapEvenly(tapTempo, const Duration(milliseconds: 500), 2), 120);
       // Keeping the count means a new tempo arrives gradually - the old gaps
       // are still being averaged in until enough new ones push them out.
       expect(tapTempo.tap(start.add(const Duration(milliseconds: 1500))), 120);

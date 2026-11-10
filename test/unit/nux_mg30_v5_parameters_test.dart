@@ -75,10 +75,13 @@ void main() {
   });
 
   group('nuxMg30V5Parameters', () {
-    test('has the 86 rows the V5 chart documents, plus the three with no CC', () {
-      expect(nuxMg30V5Parameters, hasLength(89));
-      expect(_ccNumbers, hasLength(86));
-    });
+    test(
+      'has the 86 rows the V5 chart documents, plus the three with no CC',
+      () {
+        expect(nuxMg30V5Parameters, hasLength(89));
+        expect(_ccNumbers, hasLength(86));
+      },
+    );
 
     test('never repeats a CC number across blocks and global parameters', () {
       expect(_ccNumbers.toSet(), hasLength(_ccNumbers.length));

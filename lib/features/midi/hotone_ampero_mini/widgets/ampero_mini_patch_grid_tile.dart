@@ -9,11 +9,9 @@ import '../data/ampero_mini_patch_layout.dart';
 /// sent. A double tap is what activates it on the device, which is when
 /// [active] fills it.
 ///
-/// Factory patches are shown greyed with a struck-through label: the pedal has
-/// them, so hiding them would misrepresent it, but it does not respond to a
-/// plain Program Change for them - see [amperoMiniIsSelectableOverMidi]. Double
-/// tapping one offers the experimental Bank Select attempts instead of
-/// activating it, hence "tap twice to try".
+/// Every patch is selectable over MIDI (see [amperoMiniIsSelectableOverMidi]);
+/// the struck-through, greyed styling remains only for an index outside the
+/// pedal's 198 patches.
 ///
 /// [name] is only ever a name decoded from bytes the pedal sent, so it is null
 /// on every patch until a patch-read command is confirmed for this model.

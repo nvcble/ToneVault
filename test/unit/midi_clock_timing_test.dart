@@ -27,7 +27,8 @@ void main() {
 
     test('is one 24th of a beat', () {
       for (final bpm in [40, 75, 120, 200, 300]) {
-        final beat = midiClockPulseInterval(bpm) * midiClockPulsesPerQuarterNote;
+        final beat =
+            midiClockPulseInterval(bpm) * midiClockPulsesPerQuarterNote;
         expect(
           (beat.inMicroseconds - Duration.microsecondsPerMinute / bpm).abs(),
           lessThan(midiClockPulsesPerQuarterNote),
@@ -44,18 +45,9 @@ void main() {
 
   group('midiClockElapsedAtPulse', () {
     test('counts from the first pulse', () {
-      expect(
-        midiClockElapsedAtPulse(120, 1),
-        midiClockPulseInterval(120),
-      );
-      expect(
-        midiClockElapsedAtPulse(120, 48),
-        const Duration(seconds: 1),
-      );
-      expect(
-        midiClockElapsedAtPulse(60, 24),
-        const Duration(seconds: 1),
-      );
+      expect(midiClockElapsedAtPulse(120, 1), midiClockPulseInterval(120));
+      expect(midiClockElapsedAtPulse(120, 48), const Duration(seconds: 1));
+      expect(midiClockElapsedAtPulse(60, 24), const Duration(seconds: 1));
     });
 
     test('does not accumulate the interval rounding error', () {

@@ -62,10 +62,7 @@ void main() {
 
   group('RealTimeMessage', () {
     test('is the one status byte, with no channel and no data', () {
-      expect(
-        const RealTimeMessage(MidiRealTime.timingClock).toBytes(),
-        [0xF8],
-      );
+      expect(const RealTimeMessage(MidiRealTime.timingClock).toBytes(), [0xF8]);
       expect(const RealTimeMessage(MidiRealTime.start).toBytes(), [0xFA]);
       expect(const RealTimeMessage(MidiRealTime.stop).toBytes(), [0xFC]);
     });

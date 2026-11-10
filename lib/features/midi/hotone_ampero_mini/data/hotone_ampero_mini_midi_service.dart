@@ -3,6 +3,7 @@ import '../../../../core/midi/midi_engine.dart';
 import '../../../../core/midi/midi_message.dart';
 import '../../../../core/midi/midi_patch_selection.dart';
 import 'ampero_mini_bank_select_probe.dart';
+import 'ampero_mini_patch_layout.dart';
 import 'ampero_mini_read_probe.dart';
 import 'ampero_mini_sysex.dart';
 
@@ -15,34 +16,43 @@ class HotoneAmperoMiniMidiService {
 
   final MidiEngine _engine;
 
-  /// Sends a plain Program Change for [patchNumber] (0-127) - the one patch
-  /// selection mechanism confirmed on real hardware. Throws
-  /// [ArgumentError] for anything outside the range the wire can carry, and
-  /// whatever [MidiEngine.send] throws (for example when nothing is
-  /// connected) for anything else.
+  /// Selects [patchNumber] (0-197: 0-98 user, 99-197 factory).
+  ///
+  /// VERIFIED ON HARDWARE (2026-11-10, user report): CC 0 picks the bank
+  /// (0 factory, 1 user) and Program Change the slot within it. Factory
+  /// patches are sent as the editor does, `CC61=20, CC0=0, PC slot`; user
+  /// patches as `CC0=1, PC slot`. The bank is always sent so a factory
+  /// selection cannot leave a later user selection in the wrong bank. Only
+  /// slot 0 of each bank was seen to move the pedal; other slots follow the
+  /// same pattern but are not individually checked. Throws [ArgumentError]
+  /// outside 0-197, and whatever [MidiEngine.send] throws (for example when
+  /// nothing is connected).
   Future<void> selectPatch({
     required MidiDeviceProfile profile,
     required int patchNumber,
   }) async {
-    if (patchNumber < 0 || patchNumber > 127) {
+    if (patchNumber < 0 || patchNumber >= amperoMiniPatchCount) {
       throw ArgumentError.value(
         patchNumber,
         'patchNumber',
-        'Program Change only carries 0-127.',
+        'The Ampero Mini has patches 0-${amperoMiniPatchCount - 1}.',
       );
     }
-    final defaults = profile.patchSelectionDefaults;
-    if (defaults == null) {
-      throw StateError(
-        '${profile.displayName} has no confirmed patch selection mechanism.',
-      );
-    }
-    final messages = buildPatchSelectionMessages(
-      defaults: defaults,
-      channel: profile.defaultChannel,
-      patchNumber: patchNumber,
-    );
-    await _engine.sendAll(messages);
+    final channel = profile.defaultChannel;
+    final isUser = amperoMiniIsUserPatch(patchNumber);
+    await _engine.sendAll([
+      if (!isUser)
+        ControlChangeMessage(channel: channel, controller: 61, value: 20),
+      ControlChangeMessage(
+        channel: channel,
+        controller: bankSelectMsbCc,
+        value: isUser ? 1 : 0,
+      ),
+      ProgramChangeMessage(
+        channel: channel,
+        program: isUser ? patchNumber : patchNumber - amperoMiniUserPatchCount,
+      ),
+    ]);
   }
 
   /// Puts one EXPERIMENTAL Bank Select [attempt] on the wire and nothing else.

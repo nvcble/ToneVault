@@ -274,53 +274,30 @@ void main() {
     expect(find.text('F33-3'), findsOneWidget);
   });
 
-  testWidgets('a factory patch offers experimental attempts, sending none', (
+  testWidgets('double-tapping a factory patch selects it through Bank Select', (
     tester,
   ) async {
     prepare();
     await container.read(midiConnectionProvider(profile.id).notifier).connect();
-    // F01-1, the patch the user double-tapped on hardware to no effect.
     openOn(99);
     await pump(tester);
 
-    expect(find.text('F01-1'), findsOneWidget);
-    // Its own tile says so - the rest of this page is factory patches too.
     expect(
       find.descendant(
         of: find.widgetWithText(AmperoMiniPatchGridTile, 'F01-1'),
         matching: find.text('tap twice to try'),
       ),
-      findsOneWidget,
+      findsNothing,
     );
-
-    await doubleTap(tester, 'F01-1');
-    await tester.pumpAndSettle();
-
-    // Opening the sheet must not put anything on the wire, and it must not
-    // claim any of the layouts works.
     expect(transport.sent, isEmpty);
-    expect(find.text('Try to reach F01-1'), findsOneWidget);
-    expect(find.textContaining('nothing here can tell'), findsOneWidget);
-  });
-
-  testWidgets('a Bank Select attempt is sent only when the user asks', (
-    tester,
-  ) async {
-    prepare();
-    await container.read(midiConnectionProvider(profile.id).notifier).connect();
-    openOn(99);
-    await pump(tester);
 
     await doubleTap(tester, 'F01-1');
     await tester.pumpAndSettle();
 
-    await tester.tap(find.text('Send').first);
-    await tester.pumpAndSettle();
-
-    // CC 0, CC 32, then the Program Change - and reported as sent, never as
-    // selected, because only the pedal's display can settle that.
+    // CC61=20, CC0=0, then Program Change 0 - the sequence the user saw move
+    // the pedal to F01-1.
     expect(transport.sent, hasLength(3));
-    expect(find.text('Sent. Did the pedal move?'), findsOneWidget);
+    expect(find.text('Try to reach F01-1'), findsNothing);
   });
 
   testWidgets('the last user patch, P33-3, is still sent', (tester) async {

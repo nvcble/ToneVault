@@ -91,11 +91,9 @@ void main() {
 
         // 120 BPM is two beats a second, so 48 pulses.
         expect(harness.pulses, 48);
-        expect(
-          harness.sent.last.toBytes(),
-          [0xF8],
-          reason: 'a pulse is the single byte 0xF8',
-        );
+        expect(harness.sent.last.toBytes(), [
+          0xF8,
+        ], reason: 'a pulse is the single byte 0xF8');
 
         harness.generator.dispose();
       });

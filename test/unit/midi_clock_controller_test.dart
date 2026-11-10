@@ -122,10 +122,7 @@ void main() {
           1,
           reason: 'no second Start',
         );
-        expect(
-          harness.controller.state.entries.first.type,
-          'Tempo change',
-        );
+        expect(harness.controller.state.entries.first.type, 'Tempo change');
         expect(
           harness.controller.state.entries.first.detail,
           contains('60 BPM'),
@@ -212,27 +209,30 @@ void main() {
       });
     });
 
-    test('keeps clock pulses out of the engine log, but not Start and Stop', () {
-      fakeAsync((async) {
-        final harness = _Harness(async);
-        harness.startNow();
-        async.elapse(const Duration(seconds: 1));
-        harness.stopNow();
+    test(
+      'keeps clock pulses out of the engine log, but not Start and Stop',
+      () {
+        fakeAsync((async) {
+          final harness = _Harness(async);
+          harness.startNow();
+          async.elapse(const Duration(seconds: 1));
+          harness.stopNow();
 
-        final logged = [
-          for (final entry in harness.engine.history)
-            midiMessageTypeLabel(entry.message),
-        ];
-        expect(logged, ['Start', 'Stop']);
-        expect(
-          harness.pulses,
-          48,
-          reason: 'the pulses went out, they were just not logged',
-        );
+          final logged = [
+            for (final entry in harness.engine.history)
+              midiMessageTypeLabel(entry.message),
+          ];
+          expect(logged, ['Start', 'Stop']);
+          expect(
+            harness.pulses,
+            48,
+            reason: 'the pulses went out, they were just not logged',
+          );
 
-        harness.close();
-      });
-    });
+          harness.close();
+        });
+      },
+    );
   });
 
   group('MidiClockController safety', () {

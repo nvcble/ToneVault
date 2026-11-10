@@ -74,29 +74,17 @@ void main() {
       }
     });
 
-    test('no factory patch is selectable over MIDI', () {
-      // VERIFIED ON HARDWARE 2026-09-16: Program Change 99 - F01-1 - left the
-      // pedal on the patch it already had, while Program Change 1 loaded P01-2
-      // in the same session. The whole factory half is refused rather than
-      // sent-and-hoped-for, since a Program Change this pedal ignores is
-      // indistinguishable from a successful one at this end.
-      expect(amperoMiniIsSelectableOverMidi(99), isFalse);
-      expect(amperoMiniIsSelectableOverMidi(127), isFalse);
-      expect(amperoMiniIsSelectableOverMidi(amperoMiniPatchCount - 1), isFalse);
+    test('every factory patch is selectable over MIDI via Bank Select', () {
+      expect(amperoMiniIsSelectableOverMidi(99), isTrue);
+      expect(amperoMiniIsSelectableOverMidi(amperoMiniPatchCount - 1), isTrue);
+    });
+
+    test('an index past the last patch is not selectable', () {
+      expect(amperoMiniIsSelectableOverMidi(amperoMiniPatchCount), isFalse);
     });
 
     test('a negative index is not selectable', () {
       expect(amperoMiniIsSelectableOverMidi(-1), isFalse);
-    });
-
-    test('exactly the 99 factory patches are the unreachable ones', () {
-      final unreachable = [
-        for (var n = 0; n < amperoMiniPatchCount; n++)
-          if (!amperoMiniIsSelectableOverMidi(n)) n,
-      ];
-
-      expect(unreachable, hasLength(amperoMiniFactoryPatchCount));
-      expect(unreachable.every((n) => !amperoMiniIsUserPatch(n)), isTrue);
     });
   });
 }
